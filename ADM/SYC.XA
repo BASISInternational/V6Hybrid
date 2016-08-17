@@ -1,0 +1,93 @@
+0010 REM "SYC - Display Standard Error Message"
+0020 REM "Program SYC.XA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0045 REM "TITLE      : Title Code"
+0046 REM "           : 0 = No title"
+0047 REM "           : 1 = Error Recovery"
+0048 REM "           : 2 = Warning"
+0049 REM "           : 3 = Note"
+0060 REM "MESSAGE$[*]: Text messages to be displayed (input)"
+0063 REM "NUMBER     : Number of message lines (input)"
+0065 REM "Y          : Window row or -1 to center (input)"
+0067 REM "X          : Window column or -1 to center (input)"
+0070 REM "V$         : User input (returned)"
+0073 REM "V3         : Function key value (returned)"
+0075 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER TITLE,MESSAGE$[ALL],NUMBER,Y,X,V$,V3
+0500 REM " --- Initializations"
+0540 LET COLUMN=LEN(FNP$(MESSAGE$[NUMBER]))+2,WIN_X=X,WIN_Y=Y,TITLE$=""
+0580 IF TITLE=1 THEN LET TITLE$="Error Recovery"
+0585 IF TITLE=2 THEN LET TITLE$="Warning"
+0590 IF TITLE=3 THEN LET TITLE$="Note"
+0600 REM " --- Find longest message line"
+0610 LET L=0
+0620 FOR N=0 TO NUMBER
+0630 IF LEN(MESSAGE$[N])>L THEN LET L=LEN(MESSAGE$[N])
+0640 NEXT N
+0650 REM " --- Window dimensions"
+0655 LET HEIGHT=NUMBER+3,WIDTH=L+4
+0660 IF COLUMN+10>WIDTH THEN LET WIDTH=COLUMN+10
+0665 IF WIDTH>80 THEN LET WIDTH=80
+0700 REM " --- Background"
+0710 LET NAME$=""
+0720 IF X<0 THEN LET WIN_X=INT((80-WIDTH)/2)
+0730 IF Y<0 THEN LET WIN_Y=INT((24-HEIGHT)/2)
+0740 IF WIN_X+WIDTH>80 THEN LET WIN_X=80-WIDTH
+0745 IF WIN_X<0 THEN LET WIN_X=0,WIDTH=80
+0750 IF WIN_Y+HEIGHT>22 THEN LET WIN_Y=23-HEIGHT
+0790 CALL "SYC.WA",0,WIDTH,HEIGHT,WIN_X,WIN_Y,TITLE$,NAME$
+1000 REM " --- Display windowed message and prompt for input"
+1010 FOR L=0 TO NUMBER
+1020 LET X$=MESSAGE$[L]
+1030 IF LEN(X$)>WIDTH-2 THEN LET X$=X$(1,WIDTH-2)
+1040 PRINT @(1,L),X$,
+1050 NEXT L
+1090 PRINT @(0,0),'RB',
+1100 REM " --- Prompt for input"
+1110 IF COLUMN+8>=WIDTH THEN LET COLUMN=WIDTH-8
+1120 LET V0$="S",V1$="^S",V2$="",V3$="",V4$="",V0=1,V1=COLUMN,V2=NUMBER
+1130 GOSUB 7000
+4000 REM " --- All done"
+4090 GOTO 9900
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions"
+8080 DEF FNP$(Q$)=CVS(Q$,2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9910 CALL "SYC.WD",NAME$
+9950 EXIT
+9999 END

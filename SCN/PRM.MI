@@ -1,0 +1,95 @@
+0010 REM "PRM - Employee Maintenance - Payroll Check Inquiry
+0020 REM "Program PRM.MI"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.7 - 01Jul00 |"
+0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0031 REM "06Jan00 WGH: Maintain space following check Type heading (720,1160,4
+0031:020)
+0040 REM 
+0045 SETESC 9000
+0050 SETERR 9000
+0060 ON O9 GOTO 0070,1058,4100
+0200 REM " --- IOLists
+0240 PRT02A: IOLIST X0$,X[ALL]
+0500 REM " --- Init Data
+0520 DIM X[7],T[7]
+0530 LET M5$="-#####.00"
+0700 REM " --- Background
+0710 PRINT @(0,L0),'CE'
+0720 PRINT 'SB',@(15,5),"Payroll Check Inquiry",@(0,6),"Check No",@(9),"Date",
+0720:@(15),"T",@(17),H5$,@(71),"  Chk Amt",
+0790 PRINT 'SF',
+0800 REM " --- Options
+0900 REM " --- Init File
+0920 READ (PRT02_DEV,KEY=A0$,DOM=0930)
+0940 LET T0=0
+0950 LET L=L0+1
+1000 REM " --- Display
+1020 LET K$=KEY(PRT02_DEV,END=4000)
+1030 IF K$(1,11)<>A0$ THEN GOTO 4000
+1040 IF L<=L9 THEN GOTO 1060
+1045 GOSUB 6000
+1050 IF V3=4 THEN RUN "PRM.MA"
+1060 LET X1$="C"
+1070 READ (PRT02_DEV)IOL=PRT02A
+1080 IF X0$(22,1)="M" THEN LET X1$="M"
+1100 IF X0$(22,1)="R" THEN LET X1$="R"
+1110 FOR I=0 TO 7
+1120 LET T[I]=T[I]+X[I]
+1130 NEXT I
+1160 PRINT @(0,L),X0$(12,7),@(8),FNC$(X0$(19,3)),@(15),X1$,@(17),X[1]:M5$,X[7]
+1160:+X[2]:M5$,X[3]:M5$,X[4]:M5$,X[5]:M5$,X[6]:M5$,X[0]:M5$
+1180 LET L=L+1
+1290 GOTO 1000
+4000 REM " --- Total
+4020 PRINT @(11,21),"Total:",@(17),T[1]:M5$,T[7]+T[2]:M5$,T[3]:M5$,T[4]:M5$,T[
+4020:5]:M5$,T[6]:M5$,T[0]:M5$,
+4040 GOSUB 6000
+4100 RUN "PRM.MA"
+6000 REM " --- Clear Screen
+6020 LET V0$="S",V1$="CE",V2$="",V3$="",V4$="Continue (<Enter>)? ",V0=1,V1=FNV
+6020:(V4$),V2=22
+6025 GOSUB 7000
+6060 LET L=L0+1
+6070 PRINT @(0,L0+1),'CE',
+6090 RETURN
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions
+8010 DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+8020 DEF FNB$(Q1$)=FNA$(Q1$(2),Q1$)+"/"+FNA$(Q1$(3),Q1$)+"/"+FNA$(Q1$(1),Q1$)
+8030 DEF FNC$(Q1$)=FNA$(Q1$(2),Q1$)+FNA$(Q1$(3),Q1$)+FNA$(Q1$(1),Q1$)
+8095 DEF FNV(Q$)=42+INT(LEN(Q$)/2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 SETERR 9000
+9220 RUN "PRM.MA"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END

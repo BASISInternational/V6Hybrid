@@ -1,0 +1,62 @@
+0010 REM "SHC - UPS Shipping Labels (Pkg ID and Ship-To Address)"
+0020 REM "Program SHCALD"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.3 - 15May97 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0031 REM "05Feb97 JAL: Correct placement of address lines (85,2040)"
+0040 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER A1$,A2$,W0$,W1$,W[ALL],PRINTER,C1$,I8$,P0
+0500 REM " --- Initializations"
+0550 LET H0=3,X$=""
+0560 IF W1$(16,1)="Y" THEN LET X$=" (oversize)"
+0900 REM " --- Format addresses"
+0910 LET A$=A1$(31,96)+A1$(144,24)+A1$(127,9)
+0920 CALL "SYC.AA",A$,24,5,9,30
+1000 REM " --- Print shipper information"
+1005 PRINT (PRINTER)""
+1010 PRINT (PRINTER)@(H0+30),"+----------------+"
+1020 PRINT (PRINTER)@(H0+30),"| UPS SHIPPER NO |"
+1030 PRINT (PRINTER)@(H0+30),"| ",I8$(37,10),"     |"
+1040 PRINT (PRINTER)@(H0+30),"|PkgID",FNP$(W0$(3,15)),"-",W0$(18,3),"|"
+1050 PRINT (PRINTER)@(H0+30),"+----------------+"
+1500 REM " --- Print package information"
+1510 PRINT (PRINTER)""
+1530 PRINT (PRINTER)@(H0),"wt: ",W[0]," lbs",X$,@(H0+30),"P.O.: ",A2$(13,10)
+1550 PRINT (PRINTER)""
+2000 REM " --- Print recipient information"
+2010 PRINT (PRINTER)""
+2020 PRINT (PRINTER)@(H0+15),A1$(7,24),A1$(136,6)
+2030 FOR X=1 TO 121 STEP 30
+2040 PRINT (PRINTER)@(H0+15),A$(X,30)
+2050 NEXT X
+2090 PRINT (PRINTER)@(H0+15),W1$(29,24)
+3000 REM " --- Print trailing blank lines"
+3010 PRINT (PRINTER)""
+4000 REM " --- All done"
+4090 GOTO 9900
+8000 REM " --- Function Definitions"
+8080 DEF FNP$(Q$)=CVS(Q$,2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9950 EXIT
+9999 END

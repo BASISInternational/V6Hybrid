@@ -1,0 +1,71 @@
+0010 REM "OPM - Terminal Maintenance Hardcopy"
+0020 REM "Program OPM.AB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0090 SETERR 9000
+0095 SETESC 9000
+0100 REM "--- Open/Lock Files "
+0110 CALL "SYC.GA",7,1,"","",STATUS
+0115 IF STATUS>1 THEN GOTO 9900
+0200 REM " ---IOLISTS "
+0210 ARM07A: IOLIST A0$,A1$(1),A2$(1)
+0500 REM " --- Initialize Data "
+0510 DIM HEADINGS$[2]
+0540 LET HEADINGS$[0]=N1$,HEADINGS$[1]=N4$+" Listing"
+0550 LET L9=50,L=L9+1,WIDTH=132,PAGE=0,CLOCK$="",WHEN$=F0$(7,3)
+0700 REM " --- Background "
+0720 CALL "SYC.NB","Printing",4,COL
+1000 REM " --- Initial Read "
+1020 READ (ARM07_DEV,KEY=N0$,DOM=1030)
+1100 REM " --- Main Read "
+1120 READ (ARM07_DEV,END=4000)IOL=ARM07A
+1200 REM " --- Breaks "
+1220 IF POS(N0$=A0$)<>1 THEN GOTO 4000
+2000 REM " --- Print "
+2020 IF L>L9 THEN GOSUB 5000
+2030 PRINT @(COL,11),A0$(3),
+2040 PRINT (7)@(1),A0$(3),@(10),A1$(1,8),@(20),A1$(9,8),@(28),A1$(17,2),@(38),
+2040:A1$(21,8),@(49),A1$(29,4),@(57),A2$(31,1),@(63),A2$(32,2),@(69),A2$(1,8),
+2040:@(84),A2$(15,2),@(98),A2$(19,8),@(115),A2$(27,2),@(127),A2$(29,2)
+2220 LET L=L+1,T0=T0+1
+2290 GOTO 1100
+4000 REM " --- All Done"
+4010 PRINT (7)""
+4020 PRINT (7)T0," Terminal Records"
+4090 GOTO 9900
+5000 REM " --- Heading"
+5010 LET L=0
+5020 CALL "SYC.HA",7,HEADINGS$[ALL],2,PAGE,WIDTH,WHEN$,CLOCK$,STATUS
+5030 IF STATUS THEN EXITTO 9900
+5040 PRINT (7)"Term",@(8),"Xparency",@(17),"Xparency",@(27),"Cash Box",@(37),"
+5040:Hex Code",@(46),"Number",@(54),"Skip Wh",@(63),"Def",@(69),"Valid Counter
+5040:",@(84),"Default",@(98),"Valid Receipt",@(115),"Default",@(127),"Port"
+5050 PRINT (7)"ID",@(8),"On",@(17),"Off",@(27),"Port #",@(37),"To Open",@(46),
+5050:"Reps",@(54),"Entry",@(63),"Wh",@(69),"Printers",@(84),"Printer",@(98),"P
+5050:rinters",@(115),"Printer",@(127),"Numb"
+5060 PRINT (7)""
+5090 RETURN
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 SETERR 9000
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END

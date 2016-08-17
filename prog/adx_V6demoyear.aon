@@ -1,0 +1,689 @@
+rem ==========================================================================
+rem --- adx_V6demoyear.aon 
+rem --- Utility to change the year for Addon V6 demo data.
+rem --- Do NOT run this utility on production data!
+rem --- 
+rem --- Copyright BASIS International Ltd.  All Rights Reserved.
+rem ==========================================================================
+
+    setesc std_error
+    seterr std_error
+
+    use java.io.File
+    use java.io.FileReader
+    use java.io.FileWriter
+    use java.util.HashMap
+    use java.util.Properties
+    use java.util.Vector
+    use ::ado_file.src::FileObject
+    use java.util.Collections
+    use java.util.GregorianCalendar
+    use java.util.Iterator
+    use java.util.TreeSet
+    use ::bbtranslator.bbj::BBTranslator 
+
+rem --- Dictionary file templates
+
+    dim ddm01$:"data_name:c(12*),description:c(30),lstrev:c(6),data_type:c(1),reserved_str:c(68*),fld_length:n(3*),display_len:n(3*),reserved_num:n(1*)"
+    dim ddm03$:"file_name:c(6),record_id:c(1*),description:c(30),reserved_str:c(33*),reserved_num:n(3*)"
+    dim ddm04$:"file_name:c(6),record_id:c(1),layout_seq:c(3*),data_name:c(12),reserved_str1:c(41),fld_sep:c(1),reserved_str2:c(68*),reserved_num:n(1*),fld_repeats:n(3*),fld_occurs:n(3)"
+    dim ddm06$:"data_name:c(12),description:c(30),data_type:c(1),element_len:n(4),file_name:c(6),record_id:c(1),layout_seq:n(3*)"
+
+    element_map_key$="file_name:c(6),record_id:c(1),layout_seq:n(3)"
+    element_map_element$="data_name:c(12),description:c(30),data_type:c(1),element_len:n(4)"
+    
+rem --- Open V6 dictionary files
+
+    source_folder$=stbl("+V6DATA")
+
+    ddm01=unt
+    open (ddm01)source_folder$+"DDM-01"
+    ddm03=unt
+    open (ddm03)source_folder$+"DDM-03"
+    ddm04=unt
+    open (ddm04)source_folder$+"DDM-04"
+    ddm06=unt
+    open (ddm06)source_folder$+"DDM-06"
+
+rem --- Get user inputs
+
+    currentYear$=Option!.getOptionData("CURRENT_YEAR")
+    incYr=num(Option!.getOptionData("INCREMENT_YEAR"))
+
+rem --- Open log file
+
+    aonV6LogDir$=stbl("+V6DATA",err=*next)
+    location$ = aonV6LogDir$
+    gosub open_log
+
+rem --- Disable any V6 triggers
+
+    gosub disable_triggers
+
+rem --- Get date type elements and where used from ddm-06, set aside days_in_mth since it needs special handling
+
+    declare HashMap element_map!
+    declare HashMap element_occurs_map!
+    declare HashMap days_in_mth_map!
+    
+    element_map! = new HashMap()
+    element_occurs_map! = new HashMap()
+    
+    read (ddm06,key="",dom=*next)
+    
+    while 1
+    
+        readrecord (ddm06,end=*break)ddm06$
+        data_name$=tbl(cvs(ddm06.data_name$,7),tbl=az_09)
+        if pos(ddm06.file_name$(1,1)="D!")<>0 then continue
+        ddm06.data_name$=data_name$
+        if ddm06.data_type$="D"
+            element_map!.put(ddm06.file_name$+ddm06.record_id$+ddm06.layout_seq$,ddm06.data_name$+ddm06.description$+ddm06.data_type$+ddm06.element_len$)
+        endif
+    
+    wend
+
+rem --- Load xref for SYS-01 records from file_normalization file used by DataPort into hash for use here
+
+    file_normalization! = new java.util.HashMap()
+    dim file_normalization$:"sys01_key:c(16*=124),template_name:c(16*=)"
+    file_normalization = unt
+    found=0
+    open (file_normalization,err=*next)stbl("+DATAPORT_FILES",err=*next)+"file_normalization";found=1
+    if found
+        while 1
+           read (file_normalization,end=*break)file_normalization$
+           if len(file_normalization$) then
+              keyval$ = cvs(file_normalization.template_name$,7)
+              dataval$ = cvs(file_normalization.sys01_key$,7)
+              file_normalization!.put(keyval$,dataval$)
+           endif
+        wend
+        close (file_normalization)
+    endif
+
+rem --- Initializations
+
+    sysGUI! = BBjAPI().getSysGui()
+    sypdir$=stbl("+DIR_SYP",err=*next)
+    rec_id$="RECORD_ID_"
+    gCalendar!=new GregorianCalendar()
+
+rem --- Start progress meter
+                
+    declare BBTranslator Translate!
+    rdTransSpaceKey$=stbl("+PROPS_NAME")+"_"+stbl("+USER_LOCALE")+"_BBTranslator"
+    Translate!=cast(BBTranslator,BBjAPI().getGroupNamespace().getValue(rdTransSpaceKey$,err=*next))
+    if Translate!=null()
+        Translate!=BBTranslator.getInstance(stbl("+PROPS_NAME"),stbl("+USER_LOCALE"),null(),stbl("+PROPS_PATH"))
+        BBjAPI().getGroupNamespace().setValue(rdTransSpaceKey$,Translate!)
+    endif
+    meter_title$=Translate!.getTranslation("AON_UPDATING","Updating")+"..."
+    meter_total_recs=element_map!.size()
+    meter_proc_recs=0
+    meter_text$=""
+    meter_action$="WIN-LST-OK"
+    gosub disp_meter
+
+rem --- Main routine - sort the hash of tables/elements using a treeset; use that as the driver
+
+    declare TreeSet element_map_keys!
+    declare Iterator element_map_iter!
+    
+    element_map_keys! = new TreeSet(element_map!.keySet())
+    element_map_iter! = element_map_keys!.iterator()
+    elementVect!=BBjAPI().makeVector()
+    
+    dim newTableName$:element_map_key$
+    dim tableName$:element_map_key$
+    dim element$:element_map_element$
+    
+    while(element_map_iter!.hasNext())
+    
+        newTableName$ = cast(BBjString, element_map_iter!.next())
+        if newTableName.file_name$+newTableName.record_id$<>tableName.file_name$+tableName.record_id$
+            if cvs(tableName.file_name$,2)<>""
+                gosub process_table
+                elementVect!.clear()
+            endif
+        endif
+        tableName$=newTableName$
+        elementVect!.add(cast(BBjString, element_map!.get(newTableName$)))
+       
+    wend
+
+    goto done
+
+rem --- Have gathered all the date elements for a given table into elementVect!
+rem --- Create V6 template for table and key
+rem --- Rename table w/ tmp_, make new table
+rem --- Loop through records in tmp_table; loop through elements in each record; loop through occurrences of each element, if applicable
+rem --- Convert dates and write to new table
+rem --- Note: if template contains 'RECORD_ID_<x>' then only process matching records
+rem --- Note: if template is for a param record, open SYS-01 instead, and process just the given param record
+rem ---       this will mean all of SYS-01 gets processed for each param record, but left it that way rather than write a separate routine
+process_table:
+ 
+    rem --- Log progress
+    meter_text$="Processing: "+source_folder$+tableName.file_name$
+    meter_action$="MTR-LST"
+    gosub disp_meter
+    print(log_dev)meter_text$
+    print(log_dev)"  Date elements: ",elementVect!
+    
+    gosub create_template			
+
+    if v6_gen_table_tpl$=""
+        meter_text$="  *** unable to create template for: "+tableName.file_name$+"...skipping."
+        meter_action$="MTR-LST"
+        gosub disp_meter    
+        print (log_dev)meter_text$
+    else
+        disk_file$=tableName.file_name$
+        rem --- Does template include DAYS_IN_MTH element type and MONTH element type? If so, days in month may be adjusted for leap year
+		hasDaysInMth=iff(pos("DAYS_IN_MTH"=v6_gen_table_tpl$),1,0)
+        hasDaysInMth=hasDaysInMth+iff(pos(",MONTH:"=v6_gen_table_tpl$),1,0)
+        rem --- See if this is a param file (APS-01, ARS-01, etc., and change date in corresponding SYS-01 record)
+        sys01_key$=""
+        sys01_key!=file_normalization!.get(tableName.file_name$+tableName.record_id$)
+        if sys01_key!<>null()
+            sys01_key$=str(sys01_key!)
+            disk_file$="SYS-01"
+        endif
+
+        rem --- Rename file to tmp_file
+        error=1
+        rename source_folder$+disk_file$ to "tmp_"+disk_file$,err=*next; error=0
+        if error
+            rem --- Log progress
+            meter_text$="  *** error, file rename to tmp_"+disk_file$+" failed"
+            meter_action$="MTR-LST"
+            gosub disp_meter
+            print(log_dev)meter_text$
+            
+            return
+        endif
+
+        rem --- Open tmp_file for reading
+        error=1
+        read_dev=unt
+        open(read_dev,err=*next)source_folder$+"tmp_"+disk_file$; error=0
+        if error
+            rem --- Log progress
+            meter_text$="  *** error, cannot open tmp_"+disk_file$
+            meter_action$="MTR-LST"
+            gosub disp_meter
+            print(log_dev)meter_text$
+            
+            return
+        endif
+
+        rem --- Make new empty file based on tmp_file
+        error=1
+        read_fid$=fid(read_dev)
+        read_fin$=fin(read_dev)
+        if len(read_fin$)>86 key_def$=read_fin$(86) else key_def$=fill(8*48,$00$)
+        make_path$=source_folder$+disk_file$
+        make_fid$=read_fid$(1,8)+make_path$
+        file make_fid$,key_def$,err=*next; error=0
+        if error
+            rem --- Log progress
+            meter_text$="  *** error, cannot make new file: "+disk_file$
+            meter_action$="MTR-LST"
+            gosub disp_meter
+            print(log_dev)meter_text$
+            
+            return        
+        endif
+
+        rem --- Open new, empty file for output
+        error=1
+        write_dev=unt
+        open(write_dev,err=*next)source_folder$+disk_file$;error=0
+        if error
+            rem --- Log progress
+            meter_text$="  *** error, cannot open new file: "+disk_file$
+            meter_action$="MTR-LST"
+            gosub disp_meter
+            print(log_dev)meter_text$
+        
+        endif
+
+        dim v6rec$:v6_gen_table_tpl$
+        dim v6key$:v6_gen_key_tpl$
+        recs=0
+     
+        record_id$=""
+        rec_id=pos(rec_id$=v6_gen_table_tpl$)
+        if rec_id<>0
+            record_id$=v6_gen_table_tpl$(rec_id+len(rec_id$),1)
+            idfield$=rec_id$+record_id$
+        endif
+
+        while 1
+            ky$=key(read_dev,end=*break)
+            readrecord(read_dev)rec$
+            rem --- get key and rec w/o template in case working on non-normalized file
+            rem --- that way, if not on the desired record type, can just write back as is
+            v6key$=ky$
+            v6rec$=rec$
+            rem --- if file has multiple rec types, only manipulate data in the one matching our template
+            if record_id$<>""
+                if field(v6rec$,idfield$)<>record_id$ then goto record_wrap
+            endif
+            rem --- if working on a parameter record, only process the one we're on
+            if sys01_key$<>""
+                if pos(sys01_key$=v6key$)<>3 then goto record_wrap
+            endif
+
+            for element=0 to elementVect!.size()-1
+                element$=elementVect!.get(element)
+                occ!=element_occurs_map!.get(tableName.file_name$+tableName.record_id$+tableName.layout_seq$+cvs(element.data_name$,3))
+                if occ!=null()
+                    num_occurs=1
+                else
+                    num_occurs=num(occ!)
+                endif
+
+                for occurs=1 to num_occurs
+                    if num_occurs>1
+                        field$=cvs(element.data_name$,3)+"_"+str(occurs:"00")
+                    else
+                        field$=cvs(element.data_name$,3)
+                    endif
+                    
+                    wkdt$=field(v6rec$,field$)
+                    newDate$=""
+                
+                    rem switch element.element_len
+                    switch len(cvs(wkdt$,2))
+                    case 6;rem CYMMDD
+                        wkyy$=fnyy21_yy$(wkdt$(1,2));rem given 97 for 1997, A5 for 2005, B2 for 2012, returns just the 2-char numeric 97, 05, or 12
+                        newyy$=fnyear_yy21$(num(wkyy$)+incyr);rem increments and takes modulo, then puts back into 2 char like B2 for 2012, C4 for 2024
+                        if wkdt$(3,4)="0229" then wkdt$(3,4)="0228"; rem - eliminate leap year issues
+                        newDate$=newyy$+wkdt$(3,4)                    
+                    break
+                    case 3;rem packed YMD
+                        wkdt$=fnc$(wkdt$);rem converts 3-char packed into 6-char MMDDYY
+                        newdt$=wkdt$(1,4)+fnyear_yy$(num(wkdt$(5,2))+incyr);rem increment year part (e.g., 96+20=116 => 16) and put back w/ MMDD
+                        if newdt$(1,4)="0229" then let newdt$(1,4)="0228";rem - eliminate leap year issues
+                        newDate$=fnd$(newdt$);rem convert MMDDYY back into 3-char packed
+                    break
+                    case 2;rem CY
+                        wkyy$=fnyy21_yy$(wkdt$(1,2));rem given 97 for 1997, A5 for 2005, B2 for 2012, returns just the 2-char numeric 97, 05, or 12
+                        newDate$=fnyear_yy21$(num(wkyy$)+incyr);rem increments and takes modulo, then puts back into 2 char like B2 for 2012, C4 for 2024
+                        rem --- If present, adjust DAYS_IN_MTH for February
+                        rem --- Assumes only one YYYYMM and one DAYS_IN_MTH element in record.
+                        if hasDaysInMth=2 and v6rec.month$="02" then
+                            rem --- Get number of days in February this year
+                            daysInFeb=iff(gCalendar!.isLeapYear(mod(num(wkyy$)+incYr,100)),29,28)
+                            rem --- Update DAYS_IN_MTH
+                            field v6rec$, "DAYS_IN_MTH"=str(daysInFeb)
+                        endif
+                    break
+                    case 4;rem TODO YYYY - need to do anything here?
+                        escape;rem 4? only used for old PR mag media output?
+                    break
+                    case default;rem date field is empty
+                    break
+
+                    swend
+
+                    rem --- set new date back into record, and into key, if applicable
+                    field v6rec$, field$=newDate$
+                    if pos(field$=v6_gen_key_tpl$)<>0 then field v6key$, field$=newDate$
+                next occurs
+            next element
+            
+            ky$=v6key$
+            rec$=v6rec$
+
+record_wrap:
+            rem --- Notes: v6key$ and v6rec$ are templatized, ky$ and rec$ are not
+            rem --- Moved from ky$ and rec$ into v6key$ and v6rec$ at top of routine
+            rem --- If working on non-normalized file, will skip changing any recs that aren't the right record type
+            rem --- i.e., will come directly to record_wrap and write back using original ky$ and rec$
+            rem --- If we *have* processed a record, will move v6key$ and v6rec$ back into ky$ and rec$ before the write
+            writerecord(write_dev,key=ky$)rec$
+            recs=recs+1
+        wend
+    endif
+table_wrap:    
+    close (read_dev,err=*next)
+    close (write_dev,err=*next)
+
+    rem --- Erase tmp_file
+    erase source_folder$+"tmp_"+disk_file$,err=*next
+    rem --- Log progress
+    meter_text$="  Finished with: "+tableName.file_name$+" (disk file "+disk_file$+"). "+str(recs)+" records processed."
+    meter_action$="MTR-LST"
+    gosub disp_meter
+    print(log_dev)meter_text$
+
+    return
+
+create_template:rem create template for V6 file
+
+    v6_gen_table_tpl$=""
+    v6_gen_key_tpl$=""
+    data_seq_str$=""
+    fields=0
+    date_format$ = $$
+    element_occurs_map!.clear()
+
+    print (log_dev)"  Creating template for "+tableName.file_name$+tableName.record_id$
+
+    read(ddm04,key=tableName.file_name$+tableName.record_id$,dom=*next)
+
+    while 1
+
+        readrecord(ddm04,end=*break)ddm04$
+        if ddm04.file_name$<>tableName.file_name$ or ddm04.record_id$<>tableName.record_id$ then break
+
+        findrecord(ddm01,key=ddm04.data_name$,dom=*continue)ddm01$
+        rd_col_length=ddm01.fld_length
+        if ddm04.fld_repeats>1 then
+            rd_col_length=ddm01.fld_length*ddm04.fld_repeats
+        endif
+        rd_col_occurs_sfx$=""
+        rd_col_occurs$=""
+        rd_col_occurs=1
+        if ddm04.fld_occurs>1 then
+            rd_col_occurs$="YES"
+            rd_col_occurs=ddm04.fld_occurs
+            tmp!=element_map!.get(ddm04.file_name$+ddm04.record_id$+ddm04.layout_seq$)
+            if tmp!<>null()
+                tmp_fld_name$=tbl(cvs(ddm04.data_name$,7),tbl=az_09)
+                element_occurs_map!.put(ddm04.file_name$+ddm04.record_id$+ddm04.layout_seq$+tmp_fld_name$,str(rd_col_occurs))
+            endif
+        endif
+
+        data_seq_pos=pos(pad(ddm04.data_name$,16)=data_seq_str$,20)
+        if data_seq_pos<>0 then
+            rd_occur_adj=num(data_seq_str$(data_seq_pos+17,2))
+        else
+            rd_occur_adj=0
+            data_seq_str$=data_seq_str$+pad(ddm04.data_name$,16)+"-00;"
+        endif
+
+        for rd_curr_occur=1 to rd_col_occurs
+            data_seq_pos=pos(pad(ddm04.data_name$,16)=data_seq_str$,20)
+            data_seq_str$(data_seq_pos+17,2)=str(num(data_seq_str$(data_seq_pos+17,2))+1:"00")
+            if rd_col_occurs$="YES" or rd_occur_adj>0 then
+                rd_col_occurs_sfx$="_"+str(rd_curr_occur+rd_occur_adj:"00")
+            endif
+
+            rem --- Remove slashes from data name
+            data_name$ = ddm04.data_name$
+            s_pos = pos("/" = data_name$)
+
+            while s_pos
+                data_name$ = data_name$(1, s_pos-1) + data_name$(s_pos+1)
+                s_pos = pos("/" = data_name$)
+            wend
+
+            rem ' field names can only contain [A-Z0-9_]
+            data_name$=tbl(cvs(data_name$,7),tbl=az_09)
+            rd_temp_seg$=cvs(data_name$,3)+rd_col_occurs_sfx$+":"
+            datatype$=iff(ddm01.data_type$="N","N","C")
+            rd_temp_seg$=rd_temp_seg$+datatype$+"("+str(rd_col_length)
+            if rd_col_occurs$<>"YES"
+                if ddm04.fld_sep$="X" or ddm04.fld_sep$="Y" or ddm04.fld_sep$="E" then
+                    rd_temp_seg$=rd_temp_seg$+"*"
+                endif
+            endif    
+            if rd_col_occurs$="YES" or rd_occur_adj>0
+                if rd_curr_occur+rd_occur_adj=rd_col_occurs and datatype$="C" or datatype$<>"C"
+                    if ddm04.fld_sep$="X" or ddm04.fld_sep$="Y" or ddm04.fld_sep$="E"
+                        if rd_temp_seg$(len(rd_temp_seg$),1)<>"*"
+                            rd_temp_seg$=rd_temp_seg$+"*"
+                        endif
+                    endif
+                endif
+            endif  
+            rd_temp_seg$=rd_temp_seg$+")"
+            fields = fields + 1
+            if len(v6_gen_table_tpl$) then
+                v6_gen_table_tpl$=v6_gen_table_tpl$+","
+            endif
+            v6_gen_table_tpl$=v6_gen_table_tpl$+rd_temp_seg$
+            if pos(ddm04.fld_sep$="KX")
+                if len(v6_gen_key_tpl$) then
+                    v6_gen_key_tpl$=v6_gen_key_tpl$+","
+               endif
+               v6_gen_key_tpl$=v6_gen_key_tpl$+rd_temp_seg$
+               if v6_gen_key_tpl$(len(v6_gen_key_tpl$)-1,1)="*" then v6_gen_key_tpl$=v6_gen_key_tpl$(1,len(v6_gen_key_tpl$)-2)+")";rem strip delim at end of key template
+            endif
+            rem ' Date formats
+            if ddm01.data_type$="D" then
+                date_format$ = date_format$ + chr(rd_col_length)
+            else
+                if ddm01.data_type$="A" and rd_col_length=2 then
+                    date_format$ = date_format$ + chr(255)
+                else
+                    date_format$ = date_format$ + chr(0)
+                endif
+            endif
+        next rd_curr_occur
+
+    wend
+
+    return
+
+az_09: table 7f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 30 31 32 33 34 35 36 37 38 39 5f 5f 5f 5f 5f 5f 5f 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e 4f 50 51 52 53 54 55 56 57 58 59 5a 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f
+
+done:
+
+    rem --- final table
+    if cvs(tableName.file_name$,2)<>""
+        gosub process_table
+    endif
+
+    rem --- Enable disabled triggers
+    if disabledTriggers!.size() then
+        iter!=disabledTriggers!.iterator()
+        while iter!.hasNext()
+            trigger$=iter!.next()
+            aAdminTriggers!=aAdminBase!.getTriggers(trigger$)
+            aAdminTriggers!.setBoolean(BBjAdminTriggers.ENABLED, 1)
+            aAdminTriggers!.commit()
+            print "Enabled triggers for: ",trigger$
+            print (log_dev)"Enabled triggers for: ",trigger$
+        wend
+    endif
+
+    rem --- Stop progress meter
+    meter_text$=""
+    meter_proc_recs=meter_total_recs
+    meter_action$="LST-END"
+    gosub disp_meter
+
+    print (log_dev)$0a$+"V6 demo year processing completed"
+    print (log_dev)"End Time: "+DATE(0:"%Mz/%Dz/%Y %hz:%mz:%sz")+" "
+
+    goto std_exit
+
+disable_triggers:rem --- Disable triggers in V6 demo data directory
+    rd_dbserver$="localhost"
+    rd_dbserver$=stbl("+DBSERVER",err=*next)
+    rd_dbport=2002
+    rd_dbport=num(stbl("+DBPORT",err=*next),err=*next)
+    rd_dbssl=0
+    rd_dbssl=num(stbl("+DBSSL",err=*next),err=*next)
+    rd_user$="admin"
+    rd_user$=stbl("+USER_ID",err=*next)
+    rd_password$="admin123"
+    rdNSGroup!=BBjAPI().getGroupNamespace()
+    rdNSAdmin!=BBjAPI().getNamespace("adminobjects","barista",1)
+    rdAdmin!=rdNSAdmin!.getValue("+bar_admin_"+cvs(rd_user$,11),err=*next)
+    if rdAdmin!<>null() then
+        rd_user$=rdAdmin!.getUser()
+        rd_password$=rdAdmin!.getPassword()
+    endif
+    aAdminBase!=com.basis.api.admin.BBjAdminFactory.getBBjAdmin(java.net.InetAddress.getByName(rd_dbserver$),rd_dbport,rd_dbssl,rd_user$,rd_password$)
+    disabledTriggers!=BBjAPI().makeVector()
+    dataDir$=stbl("+V6DATA",err=std_exit); rem --- Data directory for V6 Addon demo data
+
+    triggerDir!=new File(dataDir$)
+    triggers!=new Vector(java.util.Arrays.asList(triggerDir!.listFiles(new TriggerFilter())))
+
+    if triggers!.size() then
+        iter!=triggers!.iterator()
+        while iter!.hasNext()
+            trigger$=iter!.next().getAbsolutePath()
+            trigger$=trigger$(1,pos(".trigger"=trigger$,-1)-1)
+            aAdminTriggers!=aAdminBase!.getTriggers(trigger$)
+            enable!=aAdminTriggers!.getBoolean(BBjAdminTriggers.ENABLED)
+            if enable! then
+                aAdminTriggers!.setBoolean(BBjAdminTriggers.ENABLED, 0)
+                aAdminTriggers!.commit()
+                disabledTriggers!.addItem(trigger$)
+                print "Disabled triggers for: ",trigger$
+                print (log_dev)"Disabled triggers for: ",trigger$
+            endif
+        wend
+    endif
+    
+    return
+
+disp_meter:rem --- Display Progress Meter
+
+    rem --- sysGUI! is not declared in bam_prog_bar.bbj, so can't declare it here
+    rem declare BBjSysGui sysGUI!
+
+    rem --- rdForm! is not declared in bam_prog_bar.bbj, so can't declare it here
+    rem declare BBjTopLevelWindow rdForm!
+
+    rem --- meterWin! is not declared in bam_prog_bar.bbj, so can't declare it here
+    rem declare BBjTopLevelWindow meterWin!
+
+    call sypdir$+"bam_prog_bar.bbj",
+:       sysGUI!,
+:       rdForm!,
+:       meterWin!,
+:       meter_title$,
+:       meter_total_recs,
+:       meter_proc_recs,
+:       meter_text$,
+:       meter_action$
+
+    return
+
+open_log:rem --- Open log file
+            
+    rem --- create logs directory at location
+    filePath$ = location$ + "/logs"
+    gosub fix_path
+    logDir$ = filePath$
+    FileObject.makeDirs(new File(logDir$))
+
+    rem --- create and open log file
+    log$ = logDir$+"/demoyear_"+DATE(0:"%Yd%Mz%Dz")+"_"+DATE(0:"%Hz%mz")+".txt"
+    erase log$,err=*next
+    string log$
+    log_dev=unt
+    open(log_dev)log$
+    
+    rem --- write log header info
+    print(log_dev)"V6Demoyear log started: " + date(0:"%Yd-%Mz-%Dz@%Hz:%mz:%sz")
+    print(log_dev)"Starting demo fiscal year: " + currentYear$
+    print(log_dev)"Increment fiscal year by: " + str(incYr)
+    print(log_dev)
+
+    return
+
+fix_path: rem --- Flip directory path separators
+    pos=pos("\"=filePath$)
+    while pos
+        filePath$=filePath$(1, pos-1)+"/"+filePath$(pos+1)
+        pos=pos("\"=filePath$)
+    wend
+    return
+
+rem --- functions
+
+    def FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+    def FNB$(Q1$)=FNA$(Q1$(2),Q1$)+"/"+FNA$(Q1$(3),Q1$)+"/"+FNA$(Q1$(1),Q1$)
+    def FNB6$(Q1$)=Q1$(3,2)+"/"+Q1$(5,2)+"/"+FNYY21_YY$(Q1$(1,2)) 
+    def FNC$(Q1$)=FNA$(Q1$(2),Q1$)+FNA$(Q1$(3),Q1$)+FNA$(Q1$(1),Q1$)           
+    def FND$(Q$)=CHR(FNYY_YEAR(Q$(5,2))+32)+CHR(NUM(Q$(1,2))+32)+CHR(NUM(Q$(3,2))+32)
+
+    rem --- FNYEAR_YY21$ Convert Numeric Year to 21st Century 2-Char Year"   
+    def FNYEAR_YY21$(Q)=FNYY_YY21$(STR(MOD(Q,100):"00"))
+
+    rem --- FNYEAR_YY$ Un-Convert 21st Century Numeric Year to 2-Char Year" 
+    def FNYEAR_YY$(Q)=STR(MOD(Q,100):"00") 
+
+    rem --- FNYY_YEAR Convert 2-Char Year to 21st Century Numeric Year"
+	def FNYY_YEAR(Q1$)
+	Q=NUM(FNYY21_YY$(Q1$)); if Q<50 then Q=Q+100
+	return Q
+	fnend
+    
+    rem --- FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+	def FNYY21_YY$(Q1$)
+	Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+	return Q1$
+	fnend
+
+    rem --- FNYY_YY21$ Convert 2-Char Year to 21st Century 2-Char Year
+	def FNYY_YY21$(Q1$)
+	Q3$=" ABCDE56789ABCDEFGHIJ",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+	return Q1$
+	fnend
+
+rem #include std_error.src
+
+std_error: rem --- Standard error handler (18Nov2014)
+
+    if tcb(19)>0
+        rem --- Escape handler
+        if and(chr(tcb(19)),$08$)=$08$
+            release
+        else
+            setesc std_error
+            return
+        endif
+    endif
+
+    if err=0   
+        rem --- Get tcb(12) and tcb(10) to send into bac_error
+        lock_byte=tcb(10)
+        lock_chan=tcb(12)  
+    endif
+
+    rd_err_text$=""
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    call stbl("+DIR_SYP")+"bac_error.bbj",pgm(-2),str(tcb(5)),str(err),rd_err_text$,rd_err_act$,lock_byte,lock_chan
+    if pos("ESCAPE"=rd_err_act$) seterr 0; setesc 0
+    if pos("RETRY"=rd_err_act$) retry
+    if pgm(-1)<>pgm(-2) status=999; exit 
+    release
+
+rem #endinclude std_error.src
+
+rem #include std_end.src
+
+std_exit: rem --- Standard program end (01Mar2006)
+
+    run stbl("+DIR_SYP")+"bas_process_end.bbj",err=*next
+    release
+
+rem #endinclude std_end.src
+    
+    end
+
+rem /**
+rem  * TriggerFilter Class to filter *.trigger files.
+rem  */
+class public TriggerFilter implements java.io.FilenameFilter
+
+    method public boolean accept(File dir!, String file!)
+        if file!.endsWith(".trigger")
+            methodret Boolean.valueOf("true")
+        else
+            methodret Boolean.valueOf("false")
+        endif
+    methodend
+    
+classend

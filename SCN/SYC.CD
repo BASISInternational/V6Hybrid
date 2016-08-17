@@ -1,0 +1,80 @@
+0010 REM "SYC - Calculate AP & AR Due Dates"
+0020 REM "Program SYC.CD"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.2 - 01Jan96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0031 REM "22Nov96 JWK: Calculate Prox terms as day of NEXT month (1230)
+0040 REM 
+0060 REM "TYPE$ : Day terms, or Prox terms (input)"
+0062 REM "FROM$ : From date, packed YMD (input)"
+0064 REM "DAYS  : Number of days when TYPE$="D" (input)"
+0066 REM "      : Day of the month when TYPE$="P" (input)"  
+0068 REM "DUE$  : Calculated due date, packed YMD (returned)"
+0070 REM "STATUS: Zero=No Error/Non-Zero=Error (returned)"
+0075 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER TYPE$,FROM$,DAYS,DUE$,STATUS
+0500 REM " --- Initializations"
+0550 LET DUE$=FROM$,V0$=FROM$,V$="",V=DAYS,STATUS=0
+1000 REM " --- Calculate For Number Of Days"
+1010 IF TYPE$<>"D" THEN GOTO 1200
+1020 CALL "SYC.CA",V0$,V$,V
+1030 IF V$="N" THEN LET V$="",STATUS=999
+1090 GOTO 4000
+1200 REM " --- Calculate For Specific Day Of The Month"
+1210 LET V1$=FNC$(V0$),V0=FNYY_YEAR(V1$(5,2))
+1220 LET V1=NUM(V1$(1,2))
+1230 LET V1=V1+1
+1240 LET V2=V
+1250 IF V1>12 THEN LET V0=V0+1,V1=1
+1260 LET V$=FND$(DATE(JUL(1900+V0,V1,V2,ERR=1300):"%Mz%Dz%Yz"))
+1270 GOTO 4000
+1300 REM " --- Bad Day Of The Month"
+1310 LET V2=V2-1
+1320 IF V2>0 THEN GOTO 1260
+1330 LET V$="",STATUS=999
+4000 REM " --- Done"
+4010 LET DUE$=V$
+4020 IF DUE$="" THEN LET DUE$=FROM$
+4090 GOTO 9900
+8000 REM " --- Functions"
+8010 DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+8030 DEF FNC$(Q1$)=FNA$(Q1$(2),Q1$)+FNA$(Q1$(3),Q1$)+FNA$(Q1$(1),Q1$)
+8040 DEF FND$(Q$)=CHR(FNYY_YEAR(Q$(5,2))+32)+CHR(NUM(Q$(1,2))+32)+CHR(NUM(Q$(3
+8040:,2))+32)
+8145 REM " --- FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+8150 DEF FNYY21_YY$(Q1$)
+8155 LET Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABC
+8155:DEFGHIJ"))
+8160 RETURN Q1$
+8165 FNEND
+8170 REM " --- FNYY_YEAR Convert 2-Char Year to 21st Century Numeric Year"
+8175 DEF FNYY_YEAR(Q1$)
+8180 LET Q=NUM(FNYY21_YY$(Q1$)); IF Q<50 THEN LET Q=Q+100
+8185 RETURN Q
+8190 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9220 LET STATUS=ERR
+9240 IF STATUS=0 THEN LET STATUS=999
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9950 EXIT
+9999 END

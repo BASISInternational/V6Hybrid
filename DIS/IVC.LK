@@ -1,0 +1,84 @@
+0010 REM "IVC - Inventory Code Lookup"
+0020 REM "Program IVC.LK"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0042 REM "ACTION    : Indicates record to lookup (input)"
+0043 REM "            1=Product Type"
+0044 REM "            2=Transaction Code"
+0045 REM "            3=Warehouse ID"
+0046 REM "            4=Buyer Code"
+0047 REM "            5=Item Class"
+0048 REM "            6=Item Type"
+0050 REM "COLUMN    : V1 Input field column (input)"
+0055 REM "ROW       : V2 Input field row (input)"
+0060 REM "SELECTION$: Selected key (returned)"
+0065 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER ACTION,COLUMN,ROW,SELECTION$
+0100 REM " --- Open/Lock Files"
+0110 LET FILES=1
+0120 DIM FILES$[FILES],OPTIONS$[FILES],CHANNELS[FILES]
+0125 LET FILES$[1]="IVM-10"
+0130 IF ACTION=5 THEN LET FILES$[1]="IVM-13"
+0135 IF ACTION=6 THEN LET FILES$[1]="IVM-15"
+0140 CALL "SYC.DA",1,1,1,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STATUS
+0150 IF STATUS>0 THEN GOTO 9900
+0160 LET CHANNEL=CHANNELS[1]
+0400 REM " --- Parameters"
+0410 LET NUMBER=1
+0500 REM " --- Initializations"
+0510 DIM DESCRIPTION$[NUMBER],LENGTH[NUMBER],POSITION[NUMBER],FIELDS[NUMBER]
+0550 LET FIELDS[0]=1,POSITION[0]=4,LENGTH[0]=3,X$="Code"
+0560 LET FIELDS[1]=1,POSITION[1]=7,LENGTH[1]=20,DESCRIPTION$[1]="Description"
+1000 REM " --- Adjust fields based on ACTION"
+1090 ON ACTION GOTO 9900,1100,1200,1300,1400,1500,1500,9900
+1100 REM " --- Product Types"
+1110 LET RECORD$="A",TITLE$="Product Types"
+1190 GOTO 3000
+1200 REM " --- Transaction Codes"
+1210 LET RECORD$="B",TITLE$="Transaction Codes"
+1220 LET LENGTH[0]=2,POSITION[1]=6
+1290 GOTO 3000
+1300 REM " --- Warehouse ID's"
+1310 LET RECORD$="C",TITLE$="Warehouse Lookup",X$="Whse"
+1320 LET LENGTH[0]=2,POSITION[1]=6,LENGTH[1]=24
+1390 GOTO 3000
+1400 REM " --- Buyer Code"
+1410 LET RECORD$="F",TITLE$="Buyer Codes"
+1490 GOTO 3000
+1500 REM " --- Item Class/Type"
+1510 LET RECORD$="",TITLE$="Item Classes",X$="Class"
+1520 IF ACTION=6 THEN LET TITLE$="Item Types",X$="Type"
+1530 LET POSITION[0]=3,FIELDS[1]=2,POSITION[1]=1
+3000 REM " --- Call standard windowed lookup"
+3010 LET WIN_Y=ROW+1,WIN_X=77-LENGTH[0]-LENGTH[1]-NUMBER*4,DESCRIPTION$[0]=X$
+3020 CALL "SYC.LK",CHANNEL,RECORD$,NUMBER,TITLE$,DESCRIPTION$[ALL],FIELDS[ALL]
+3020:,POSITION[ALL],LENGTH[ALL],WIN_X,WIN_Y,SELECTION$
+4000 REM " --- All done"
+4090 GOTO 9900
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to calling program"
+9910 CLOSE (CHANNEL,ERR=9911)
+9950 EXIT
+9999 END

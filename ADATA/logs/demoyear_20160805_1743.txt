@@ -1,0 +1,21 @@
+V6Demoyear log started: 2016-08-05@17:43:15
+Starting demo fiscal year: 96
+Increment fiscal year by: 1
+
+Unable to open: !ADDON
+Unable to open: !GLCON
+Unable to open: !PROCE
+Processing: APE-01
+   Creating template for APE-01A
+Finished with: APE-01.  0 records processed.
+Processing: APE-02
+   Creating template for APE-02A
+Finished with: APE-02.  0 records processed.
+Processing: APE-03
+   Creating template for APE-03A
+Finished with: APE-03.  0 records processed.
+Processing: APE-04
+   Creating template for APE-04A
+Finished with: APE-04.  0 records processed.
+Processing: APE-05
+   Creating template for APE-05A

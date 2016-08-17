@@ -1,0 +1,74 @@
+rem ' replicates writes to the Add-on 6.0 APM-12 (Bank Rec - Deposits Table) to the Barista Add-On glt-15 (Bank Rec - Other Transactions
+rem ' 6.1 APM-12 -- Barista glt-15
+
+rem TODO --- This trigger needs to be replaced with both an ir and iw; use the APM-11 triggers as a base.
+
+seterr handle_err
+
+rem ' set opts
+SETOPTS $0800C02000002040$
+
+rem ' if this is removed, be sure to remove the write to trace in the error handler
+trace = unt
+rem ' no long erase and string the file to ensure that permissions are not impacted
+open(trace,mode="O_TRUNC")"/mnt/data/basisaon/aon/trig_trace/trace-APM-12.log"
+settrace(trace)
+
+rem ' set global to the new glt-15 file
+trash$=stbl("ADDON_NEWCHKREC","/mnt/data/aon_prod/v16/data/")
+
+trash$=stbl("ADDON_OLDCHKREC","/mnt/data/basisaon/aon/ADATA/")
+
+
+rem ' 6.1 GLM-01 template
+inTemp$ = "FIRM_ID:C(2),GL_ACCOUNT:C(10),TRANS_NO:C(7*=10),TRANS_TYPE:C(1),POSTED_CODE:C(1),TRANS_DATE:C(6),DESCRIPTION:C(30),RESERVED_STR:C(12*=10),TRANS_AMT:N(7*=10),RESERVED_AMT:N(1*=10)"
+dim inRec$:inTemp$
+
+rem ' Barista Add-On glt-01 template
+outTemp$="FIRM_ID:C(2),GL_ACCOUNT:C(10),TRANS_NO:C(7*=10),TRANS_TYPE:C(1),POSTED_CODE:C(1),RESERVED_STR:C(6),DESCRIPTION:C(30),RESERVED_STR_02:C(12),TRNS_DATE:C(8*=10),TRANS_AMT:N(7*=10),RESERVED_NUM:N(1*=10)"
+dim outRec$:outTemp$
+
+rem '----declares
+Declare BBjTriggerData trigger!
+
+rem '----user defined functions
+
+rem '----FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+def FNYY21_YY$(Q1$)
+let Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+return Q1$
+fnend
+
+rem '----get the trigger data
+trigger! = BBJAPI().getFileSystem().getTriggerData()
+write(trace)trigger!.getFilename()
+
+rem '----get the write buffer into the template
+inRec$ = trigger!.getWriteBuffer()
+inRec$ = field(inRec$)
+
+rem '----assign the data
+outRec.FIRM_ID$ = inRec.FIRM_ID$
+outRec.GL_ACCOUNT$ = inRec.GL_ACCOUNT$
+outRec.TRANS_NO$ = inRec.TRANS_NO$
+
+outRec.TRANS_TYPE$ = inRec.TRANS_TYPE$
+outRec.POSTED_CODE$ = inRec.POSTED_CODE$
+outRec.DESCRIPTION$ = inRec.DESCRIPTION$
+outRec.TRNS_DATE$ = "20" + FNYY21_YY$(inRec.TRANS_DATE$(1,2)) + inRec.TRANS_DATE$(3)
+outRec.TRANS_AMT = inRec.TRANS_AMT
+
+rem '----open the target output 
+outRec = unt
+open(outRec)stbl("ADDON_NEWCHKREC")+"glt-15"
+
+rem '----write the data
+write record(outRec)outRec$
+close(outRec)
+
+end
+
+handle_err:
+    write (trace)"error: " + str(err) + " line " + str(tcb(5)) + " errmsg " + errmes(-1)
+    throw "An error " + str(err) + " occurred on line " + str(tcb(5)) + " of the trigger GLT-04.trigger.iw.src.", 275
+    end

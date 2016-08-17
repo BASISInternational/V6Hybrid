@@ -1,0 +1,81 @@
+0010 REM "POC - Display Vendor Information and Comments"
+0020 REM "Program POC.VA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0045 REM "ACTION$  : V=Display vendor/C=Display comments (input)"
+0050 REM "VENDOR$  : Firm ID + Vendor (input)"
+0055 REM "APM01_DEV: APM-01 channel number (input)"
+0060 REM "APM09_DEV: APM-09 channel number (input)"
+0065 REM "P3$      : Purchase order parameters (input)"
+0070 REM "L0       : First detail line on screen (input)"
+0073 REM "STATUS   : 0=No error (returned)"
+0075 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER ACTION$,VENDOR$,VENDLEN,M0$,APM01_DEV,APM09_DEV,P3$,L0,STATUS
+0200 REM " --- IOLIST's"
+0210 APM01A: IOLIST A0$(1),A1$(1)
+0500 REM " --- Initializations"
+0510 DIM A0$(8),A1$(195),PHONE$(14),FAX$(14),INFO$[5],INFO[5]
+0550 LET A0$(1)=VENDOR$,STATUS=11,PM$="(###) 000-0000",ROW=L0
+1000 REM " --- Retrieve and display vendor"
+1010 FIND (APM01_DEV,KEY=A0$,DOM=4000)IOL=APM01A
+1020 LET ADDRESS$=A1$(31,72)+FILL(24)+A1$(103,9),STATUS=0
+1030 CALL "SYC.AA",ADDRESS$,24,4,9,30
+1040 IF FNP$(A1$(112,10))<>"" THEN LET PHONE$(1)=FNF$(A1$(112,10),PM$)
+1050 IF FNP$(A1$(186,10))<>"" THEN LET FAX$(1)=FNF$(A1$(186,10),PM$)
+1060 PRINT @(9,3),FNF$(A0$(3,VENDLEN),M0$),@(9,4),A1$(1,30),@(9,5),ADDRESS$(1,
+1060:30),@(9,6),ADDRESS$(31,30),@(9,7),ADDRESS$(61,30),@(9,8),ADDRESS$(91,30),
+1070 IF POS("N"=ACTION$)=0 THEN PRINT @(9,L0-2),A1$(126,20),@(42),PHONE$,@(66)
+1070:,FAX$,
+2000 REM " --- Display comments"
+2010 IF POS("V"=ACTION$)=0 THEN GOTO 4000
+2020 IF P3$(2,1)<>"Y" THEN GOTO 4000
+2030 READ (APM09_DEV,KEY=A0$+P3$(59,2),DOM=2050)
+2040 GOTO 2080
+2050 LET K$=KEY(APM09_DEV,END=4000)
+2060 IF POS(A0$=K$)<>1 THEN GOTO 4000
+2070 IF NUM(P3$(61,2),ERR=4000)<>0 THEN IF K$(9,2)>P3$(61,2) THEN GOTO 4000
+2080 CALL "SYC.CM","W",A0$(1,2),A0$(3,6),P3$(59,2),P3$(61,2),APM09_DEV,48,12,1
+2080:,ROW
+4000 REM " --- All done"
+4090 GOTO 9900
+8000 REM " --- Function Definitions"
+8080 DEF FNP$(Q$)=CVS(Q$,2)
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF:
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9950 EXIT
+9999 END

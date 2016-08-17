@@ -1,0 +1,102 @@
+0010 REM "ARU - Zero Invoice Purge Update"
+0020 REM "Program ARU.DA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0080 SETERR 9000
+0090 SETESC 9000
+0200 REM " --- IOLists
+0220 ART01A: IOLIST A0$,A[ALL]
+0230 ART11A: IOLIST W0$,W1$,W[ALL]
+0500 REM " --- Init Data"
+0510 DIM A[1],W[1]
+0700 REM " --- Background
+0710 PRINT @(0,5),'CE','SF',@(5,5),"*** All Zero Balance Invoices Through ",FN
+0710:B$(P9$)," Will Be Removed ***",'RB',
+0720 CALL "SYC.NB","Purging Invoice",M0+9,COLUMN
+0800 REM " --- Options
+0810 LET V4$="Are You Ready To Purge These Invoices"
+0820 CALL "SYC.YN",0,V4$,0,V$,V3
+0830 IF V$<>"YES" THEN GOTO 9900
+0940 REM " --- Disallow 'M'enu option in Error Routine
+0950 LET EXIT_CTRL=1
+0990 READ (ART01_DEV,KEY=N0$,DOM=1000)
+1000 REM " --- Read ART-01 AR Open Invoice Header"
+1010 LET K0$=KEY(ART01_DEV,END=4000)
+1020 IF K0$(1,2)<>N0$ THEN GOTO 4000
+1200 READ (ART01_DEV)IOL=ART01A
+1220 IF A0$(24,3)>P9$ THEN GOTO 1700
+1240 PRINT @(COLUMN,11),FNF$(A0$(5,P[0]),M0$)," ",A0$(11,7),
+1300 REM " --- Init Invoice Total"
+1320 LET T9=A[0]
+1400 REM " --- Find Invoice Balance"
+1420 READ (ART11_DEV,KEY=K0$(1,17),DOM=1430)
+1500 REM " --- Read ART-11 AR Open Invoice Detail"
+1510 LET K$=KEY(ART11_DEV,END=1600)
+1520 IF K$(1,17)<>K0$(1,17) THEN GOTO 1600
+1540 READ (ART11_DEV)IOL=ART11A
+1560 IF W1$(2,3)>P9$ THEN GOTO 1700
+1580 LET T9=T9+W[0]+W[1]
+1590 GOTO 1500
+1600 REM " --- Keep Or Remove"
+1620 IF T9=0 THEN GOTO 2000
+1700 REM " --- Next Invoice"
+1790 GOTO 3900
+2000 REM " --- Remove Invoice"
+2010 REMOVE (ART01_DEV,KEY=K0$,DOM=2020)
+2020 READ (ART11_DEV,KEY=K0$(1,17),DOM=2030)
+2030 LET K$=KEY(ART11_DEV,END=2090)
+2040 IF K$(1,17)<>K0$(1,17) THEN GOTO 3000
+2050 REMOVE (ART11_DEV,KEY=K$)
+2060 GOTO 2030
+3000 REM " --- Still in invoice history?"
+3010 LET K$=A0$(1,17)+"000"
+3020 FIND (ART03_DEV,KEY=K$,DOM=3200)
+3090 GOTO 3900
+3200 REM " --- Remove xrefs"
+3210 LET K$=A0$(1,4)+A0$(11,7)+A0$(5,6)
+3220 REMOVE (ART43_DEV,KEY=K$,DOM=3230)
+3230 LET K$=A0$(1,4)+A0$(24,3)+A0$(11,7)+A0$(5,6)
+3240 REMOVE (ART53_DEV,KEY=K$,DOM=3900)
+3900 REM " --- Loop back for next record"
+3990 GOTO 1000
+4000 REM " --- Done"
+4090 GOTO 9900
+8000 REM " --- Functions"
+8010 DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+8020 DEF FNB$(Q1$)=FNA$(Q1$(2),Q1$)+"/"+FNA$(Q1$(3),Q1$)+"/"+FNA$(Q1$(1),Q1$)
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF:
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END

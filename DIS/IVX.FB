@@ -1,0 +1,150 @@
+0010 REM "IVX - LIFO/FIFO Maintenance (Report/Update Overlay)"
+0020 REM "Program IVX.FB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0080 SETESC 9000
+0090 SETERR 9000
+0200 REM " --- IOLIST's"
+0210 IVM01A: IOLIST A0$(1),A1$(1),A2$(1)
+0220 IVM02A: IOLIST B0$(1),B1$(1),B2$,B[ALL]
+0240 IVM04A: IOLIST D0$(1),D1$(1),D2$,D[ALL]
+0500 REM " --- Initialization"
+0505 PRECISION P[1]
+0510 DIM A0$(22),A1$(60),A2$(64),B0$(24),B1$(64),B[20],O[4],BUFFER$(WIDTH)
+0520 DIM D0$(30),D1$(16),D[5],MESSAGE$[3],BUFFER$(WIDTH)
+0530 DIM FILES[44],PARAMS[10],PARAMS$[10],REFS$[10],REFS[10],ITEM$[4]
+0550 LET O[0]=0,O[1]=P[0]+1,O[4]=WIDTH-M1,O[3]=O[4]-M3,O[2]=O[3]-M2
+0555 LET BUFFER$(1)="Item",BUFFER$(O[1]+1)="Description",NUMBER=0
+0560 LET L9=55,L=L9+1,PAGE=0,CLOCK$="",WHEN$=F0$(7,3)
+0570 LET FILES[1]=IVM01_DEV,FILES[4]=IVM04_DEV
+0575 LET PARAMS$[0]=F0$(7,3),PARAMS$[1]=WHEN$,PARAMS$[2]=P2$
+0580 LET PARAMS$[3]=P3$,PARAMS$[4]=P4$,ITEM$[0]=N0$,ITEM$[1]=WHSE$
+0585 LET REFS$[0]=WHEN$,REFS$[2]="Adjust"
+0590 ON O0 GOTO 4100,0600,0650,0650
+0600 REM " --- Diagnosis headings/print positions"
+0610 LET O[4]=WIDTH-M2,O[3]=O[4]-M2,O[2]=O[3]-M2
+0620 LET BUFFER$(O[3]-7)="On Hand",BUFFER$(O[4]-10)=P3$(3,1)+"IFO Total"
+0630 LET BUFFER$(WIDTH-10)="Difference",HEADINGS$[1]="Tier Diagnosis Report"
+0640 GOTO 0700
+0650 REM " --- Adjustment/Rebuild headings/print positions"
+0660 LET O[4]=WIDTH-M1,O[3]=O[4]-M3,O[2]=O[3]-M2,BUFFER$(O[3]-8)="Quantity"
+0670 LET BUFFER$(O[4]-9)="Unit Cost",BUFFER$(WIDTH-9)="Extension"
+0680 IF O0=2 THEN LET HEADINGS$[1]="Tier Adjustment Register"
+0690 IF O0>2 THEN LET HEADINGS$[1]="Tier Rebuild Register"
+0800 REM " --- Options"
+0805 ON O0 GOTO 4100,0950,0810,0850
+0810 LET MESSAGE$[0]=P3$(3,1)+"IFO Tiers which do NOT agree with the reported 
+0810:inventory on hand quantity"
+0815 LET MESSAGE$[1]="will be adjusted. A new tier will be added using the inv
+0815:entory item cost"
+0820 LET MESSAGE$[2]="and the difference between the sum of the current tiers 
+0820:and the current"
+0825 LET MESSAGE$[3]="quantity on hand (<Enter>=Continue)"
+0830 LET X=3
+0840 GOTO 0900
+0850 REM " --- Clear and Reset Warning"
+0860 LET MESSAGE$[0]="All "+P3$(3,1)+"IFO Tiers will be cleared. A new tier wi
+0860:ll"
+0870 LET MESSAGE$[1]="be created based on the inventory on hand quantity"
+0880 LET MESSAGE$[2]="and inventory item cost (<Enter>=Continue)"
+0890 LET X=2
+0900 REM " --- Display warning"
+0910 CALL "SYC.XA",2,MESSAGE$[ALL],X,-1,-1,V$,V3
+0920 IF V3<>0 THEN GOTO 4100
+0950 REM " --- Position file"
+0955 DIM DESCRIPTION$(O[2]-O[1])
+0960 LET HEADINGS$[4]=BUFFER$
+0970 CALL "SYC.GA",7,1,"","",STATUS
+0975 IF STATUS THEN GOTO 4100
+0980 CALL "SYC.NB","Processing",P[0],COLUMN
+0990 READ (IVM01_DEV,KEY=N0$,DOM=1000)
+1000 REM " --- Read next IVM-01 record"
+1010 LET K$=KEY(IVM01_DEV,END=4000)
+1020 IF POS(N0$=K$)<>1 THEN GOTO 4000
+1030 PRINT @(COLUMN,11),K$(3,P[0]),
+1040 READ (IVM01_DEV)IOL=IVM01A
+1045 IF POS(P3$(17,1)="SL")>0 AND A2$(19,2)="YY" THEN GOTO 3900
+1050 LET B0$(1)=N0$+WHSE$,B0$(5)=A0$(3),D0$(1)=B0$,FIRST$=B0$,TOTAL=0
+1060 FIND (IVM02_DEV,KEY=B0$,DOM=3900)IOL=IVM02A
+1080 LET DESCRIPTION$(1)=FNITEM$(A1$,P[3],P[4],P[5])
+1900 REM " --- Position IVM-04"
+1990 READ (IVM04_DEV,KEY=D0$,DOM=2000)IOL=IVM04A
+2000 REM " --- Read next tier record"
+2010 LET K$=KEY(IVM04_DEV,END=3000)
+2020 IF POS(FIRST$=K$)<>1 THEN GOTO 3000
+2090 ON O0 GOTO 4100,2100,2100,2200
+2100 REM " --- Accumulate tier totals"
+2110 READ (IVM04_DEV)IOL=IVM04A
+2120 LET TOTAL=TOTAL+D[0]
+2190 GOTO 2000
+2200 REM " --- Remove tier record"
+2210 REMOVE (IVM04_DEV,KEY=K$,DOM=2000)
+2290 GOTO 2000
+3000 REM " --- Done accumulating tier totals"
+3010 IF B[0]=TOTAL THEN GOTO 3900
+3090 ON O0 GOTO 4100,3500,3100,3100
+3100 REM " --- Update tier(s) if necessary"
+3110 LET ACTION$="TA",ITEM$[2]=A0$(3),REFS[0]=B[0]-TOTAL
+3120 IF REFS[0]>0 THEN LET REFS[1]=B[11]
+3150 CALL "IVC.UA",ACTION$,FILES[ALL],PARAMS[ALL],PARAMS$[ALL],ITEM$[ALL],REFS
+3150:$[ALL],REFS[ALL],STATUS
+3160 LET QTY=REFS[0],COST=REFS[1],EXTENSION=QTY*COST
+3500 REM " --- New page?"
+3510 IF L>L9 THEN GOSUB 5000
+3520 LET L=L+1,NUMBER=NUMBER+1
+3590 ON O0 GOTO 4100,3600,3700,3700
+3600 REM " --- Print Diagnosis detail line"
+3610 LET QTY=B[0]-TOTAL
+3620 PRINT (7)@(O[0]),A0$(3,P[0]),@(O[1]),DESCRIPTION$,@(O[2]),B[0]:M2$,@(O[3]
+3620:),TOTAL:M2$,@(O[4]),QTY:M2$
+3690 GOTO 3900
+3700 REM " --- Print Adjustment/Rebuild detail line"
+3710 PRINT (7)@(O[0]),A0$(3,P[0]),@(O[1]),DESCRIPTION$,@(O[2]),QTY:M2$,@(O[3])
+3710:,COST:M3$,@(O[4]),EXTENSION:M1$
+3900 REM " --- Loop back for next record"
+3990 GOTO 1000
+4000 REM " --- All done"
+4010 IF L+2>L9 THEN GOSUB 5000
+4020 PRINT (7)""
+4030 IF NUMBER>0 THEN GOTO 4050
+4040 PRINT (7)"Tiers Match Current On Hand Quantity For All Items"
+4045 GOTO 4100
+4050 IF O0=1 THEN LET X$="Tiers Do Not Match"
+4060 IF O0=2 THEN LET X$="Tiers Adjusted To Match"
+4070 IF O0=3 THEN LET X$="Single Tier Created Equal To"
+4080 LET X$=X$+" Current On Hand Quantity For "+STR(NUMBER)+" Items"
+4090 PRINT (7)X$
+4100 REM " --- Return to menu overlay"
+4190 RUN "IVX.FA"
+5000 REM " --- Report Heading"
+5010 LET L=HEADINGS+1
+5020 CALL "SYC.HA",7,HEADINGS$[ALL],HEADINGS,PAGE,WIDTH,WHEN$,CLOCK$,STATUS
+5030 IF STATUS>0 THEN EXITTO 9900
+5090 RETURN
+8000 REM " --- Functions"
+8090 DEF FNITEM$(Q$,Q1,Q2,Q3)=CVS(Q$(1,Q1)+" "+Q$(Q1+1,Q2)+" "+Q$(Q1+Q2+1,Q3),
+8090:32)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to menu"
+9950 RUN "SYS.AA"
+9999 END

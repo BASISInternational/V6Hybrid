@@ -1,0 +1,133 @@
+0010 REM "OPE - Order Entry Additional Options Window"
+0020 REM "Program OPC.DD"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0042 REM "PREC   : Inventory Precision (input)"
+0044 REM "LINE   : Window row location (input)"
+0046 REM "EMSK$  : Extension mask (input)"
+0048 REM "UMSK$  : Unit mask (input)"
+0050 REM "I_TYPE$: Order line item line code (input)"
+0052 REM "L_TYPE$: Order line type (input)"
+0054 REM "W0$    : Order line item 1st string (input/returned)"
+0056 REM "W1$    : Order line item 2nd string (input/returned)"
+0058 REM "W[n]   : Order line item numerics (input/returned)"
+0060 REM "MSG$   : COMMIT if quantity should be committed (returned)"
+0070 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER PREC,LINE,EMSK$,UMSK$,PMSK$,I_TYPE$,L_TYPE$,W0$,W1$,W[ALL],MSG$
+0500 REM " --- Initialize Data"
+0510 PRECISION PREC
+0520 LET PMSK=LEN(PMSK$),MSG$=""
+0540 LET WIDTH=44+PMSK,HEIGHT=6,WIN_X=INT(20-PMSK/2),HEADING$="Additional Opti
+0540:ons"
+0550 IF LINE+2+HEIGHT>22 THEN LET WIN_Y=LINE-HEIGHT-2 ELSE LET WIN_Y=LINE+2
+0560 IF W1$(44,1)=" " THEN LET W1$(44,1)="Y"
+0570 LET SAVPRICE=W[1],SAVLIST=W[5]
+0710 CALL "SYC.WA",MODE,WIDTH,HEIGHT,WIN_X,WIN_Y,HEADING$,NAME$
+0720 PRINT 'SB',@(2,0),"List Price:",@(2,1),"Discount %:",@(3,2),"Net Price:",
+0720:@(16+PMSK,0),"Ship Date:",@(16+PMSK,1),"Committed?:",@(16+PMSK,2),"Man'l 
+0720:Price:    Prnt'd?:",
+0740 PRINT 'SF'
+0900 GOSUB 5000
+1000 REM " --- Override List Price"
+1005 LET I0=0
+1010 IF POS(L_TYPE$="SPN")=0 THEN LET V3=0; GOTO 1090
+1020 LET V0$="N",V1$="C",V2$=STR(W[5]),V3$=PMSK$,V4$="Enter an Override List P
+1020:rice. ",V0=7,V1=14,V2=0
+1040 GOSUB 7000
+1060 LET W[5]=V
+1080 IF W[5]<>SAVLIST THEN GOSUB 3800
+1090 GOTO 3900
+1200 REM " --- Override Disc %"
+1205 IF POS(L_TYPE$="SPN")=0 THEN GOTO 1290
+1210 LET V0$="N",V1$="C",V2$=STR(W[8]),V3$=PMSK$,V4$="Enter a Discount % to Ma
+1210:rk Down from List",V0=7,V1=14,V2=1
+1220 GOSUB 7000
+1240 LET W[8]=V
+1260 GOSUB 3800
+1290 GOTO 3900
+1400 REM " --- Ship Date"
+1420 LET V0$="D",V1$="CR",V2$=W1$(41,3),V3$="",V4$="Enter Scheduled Ship Date 
+1420:for This Item. ",V0=3,V1=27+PMSK,V2=0
+1440 GOSUB 7000
+1460 LET W1$(41,3)=V$
+1490 GOTO 3900
+1600 REM " --- Committed?"
+1605 IF I_TYPE$="P" THEN GOTO 1690
+1610 LET V0$="Y",V1$="C",V2$=W1$(44,1),V3$="",V4$="Should These Items be Commi
+1610:tted to This Order?",V0=1,V1=28+PMSK,V2=1
+1620 GOSUB 7000
+1630 IF W1$(44,1)="N" AND V$="Y" THEN LET MSG$="COMMIT" ELSE LET MSG$=""
+1640 LET W1$(44,1)=V$
+1650 IF W1$(44,1)="N" THEN LET W1$(45,1)="N"
+1690 GOTO 3900
+3800 REM " --- Recalculate Price/Discount
+3810 LET W[1]=W[5]*(100-W[8])*0.01
+3820 IF W[1]<>SAVPRICE THEN LET W0$(22,1)="Y"
+3840 GOSUB 5020
+3890 RETURN
+3900 REM " --- Next Field"
+3905 IF V3=4 THEN GOTO 4000
+3910 IF V3<>2 THEN GOTO 3940
+3920 IF I0>0 THEN LET I0=I0-1
+3930 GOTO 3950
+3940 LET I0=I0+1
+3960 ON I0 GOTO 1000,1200,1400,1600,3990
+4000 REM " --- Options"
+4020 LET V0$="S",V1$="C",V2$="",V3$="",V4$="<Enter>=Continue   <F2>=Modify",V0
+4020:=1,V1=FNV1(V4$,WIDTH),V2=HEIGHT-2
+4030 GOSUB 7000
+4040 IF V3=2 THEN GOTO 1000
+4100 CALL "SYC.WD",NAME$
+4190 GOTO 9900
+5000 REM " --- Print Here"
+5010 PRINT @(27+PMSK,0),FNB$(W1$(41)),@(28+PMSK,1),W1$(44,1)
+5020 PRINT @(29+PMSK,2),W0$(22,1),@(41+PMSK,2),W1$(45,1),@(14,0),W[5]:PMSK$,@(
+5020:14,1),W[8]:PMSK$,@(14,2),W[1]:PMSK$
+5090 RETURN
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions"
+8010 DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+8020 DEF FNB$(Q1$)=FNA$(Q1$(2),Q1$)+"/"+FNA$(Q1$(3),Q1$)+"/"+FNA$(Q1$(1),Q1$)
+8025 DEF FNC(Q$,Q)=INT((Q-LEN(Q$))/2)
+8080 DEF FNV1(Q$,Q)=FNC(Q$,Q)+LEN(Q$)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 SETERR 9000
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to Caller"
+9910 CALL "SYC.WD",ERR=9920,NAME$
+9920 CALL "SYC.WB","0",1
+9930 PRINT @(0,20),
+9950 EXIT
+9999 END

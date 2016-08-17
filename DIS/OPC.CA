@@ -1,0 +1,131 @@
+0010 REM "OPC - Credit Management Status Display"
+0020 REM "Program OPC.CA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0050 REM "ARE03_DEV : ARE-03 Channel"
+0052 REM "ARM02_DEV : ARM-02 Channel"
+0054 REM "N0$       : Current Firm"
+0056 REM "CUSTOMER$ : Customer Number"
+0058 REM "CREDIT$   : 1st Data String From ARS-01 C Record"
+0060 REM "S$        : Order/Invoice Entry General Flag String"
+0062 REM "M1$       : Amount Mask"
+0064 REM "TYPE      : 0 = Display Without A Window"
+0066 REM "            1 = Display Inside A Window"
+0080 SETESC 9000
+0085 SETERR 9000
+0090 ENTER ARE03_DEV,ARM02_DEV,N0$,CUSTOMER$,CREDIT$,S$,M1$,TYPE
+0200 REM " --- IOLists"
+0210 ARE03A: IOLIST A0$(1),A[ALL]
+0220 ARM02A: IOLIST C0$,C1$(1),C[ALL]
+0500 REM " --- Init Data"
+0510 DIM A0$(117),A[10],C1$(64),C[10]
+0520 LET AGING_BUCKET=NUM(CREDIT$(8,1))
+0530 IF AGING_BUCKET=0 THEN LET AGING_BUCKET=5
+0540 LET T0=0,T1=0,T2=0,T8=0,T9=0,L0=0
+0550 LET WIN_X=2,WIN_Y=11,HEIGHT=12,WIDTH=17+LEN(M1$),O=0,TITLE$="Customer Cre
+0550:dit Status"
+0560 IF TYPE=0 THEN LET O=3,L0=WIN_Y+1,HEIGHT=HEIGHT-1
+0600 REM " --- Get Customer Detail Record"
+0610 READ (ARM02_DEV,KEY=N0$+CUSTOMER$+"  ",DOM=0620)IOL=ARM02A
+0700 REM " --- Display Background"
+0705 IF CREDIT$(35,1)="N" THEN GOTO 1000
+0710 ON TYPE GOTO 0715,0750
+0715 REM " --- Without Window"
+0720 CALL "SYC.WC",0,0,WIDTH,HEIGHT,WIN_X,WIN_Y,1
+0725 PRINT @(WIN_X+(FNC(TITLE$,WIDTH)-1),WIN_Y)," ",TITLE$," ",
+0730 FOR X=L0 TO L0+8
+0735 PRINT @(O,X),FILL(WIDTH-2),
+0740 NEXT X
+0745 GOTO 0780
+0750 REM " --- Inside Window"
+0760 CALL "SYC.WA",0,WIDTH,HEIGHT,WIN_X,WIN_Y,TITLE$,WIN_NAME$
+0770 PRINT @(0,L0),'CE',
+0780 REM " --- Background"
+0790 PRINT 'SB',@(O+2,L0),"Credit Limit:",@(O+1,L0+1),"Open Invoices:",@(O+3,L
+0790:0+2),"Open Orders:",@(O+4,L0+3),"Open B/O's:",@(O+3,L0+4),"Held Orders:",
+0790:@(O+3,L0+6),"Credit Left:",@(O+1,L0+7),"Over",@(O+9,L0+7)," Days:",@(O+1,
+0790:L0+8),"Customer Hold:",'SF',
+1000 REM " --- Total Open Orders"
+1010 READ (ARE03_DEV,KEY=N0$+"  "+CUSTOMER$,DOM=1020)
+1020 LET K$=KEY(ARE03_DEV,END=1100)
+1030 IF K$(1,10)<>N0$+"  "+CUSTOMER$ THEN GOTO 1100
+1040 READ (ARE03_DEV)IOL=ARE03A
+1050 IF POS(A0$(21,1)="PV")>0 THEN GOTO 1090
+1060 IF A0$(23,1)="B" THEN LET T1=T1+A[6] ELSE IF A0$(101,1)="C" THEN LET T2=T
+1060:2+A[6] ELSE LET T0=T0+A[6]
+1090 GOTO 1020
+1100 REM " --- Total Open Invoices"
+1110 FOR X=0 TO 5
+1120 LET T9=T9+C[X]
+1130 NEXT X
+1200 REM " --- Total Past Due Invoices"
+1210 FOR X=AGING_BUCKET TO 5
+1220 LET T8=T8+C[X]
+1230 NEXT X
+1300 REM " --- Set Check Credit Limit Flag"
+1310 IF C1$(39,1)="Y" THEN LET S$(1,1)="0"; GOTO 2000
+1320 IF C1$(39,1)="E" THEN LET S$(1,1)="1"; GOTO 2000
+1330 IF CREDIT$(16,1)="Y" AND C[6]>0 AND C[6]<T9+T0+T1+T2 THEN LET S$(1,1)="0"
+1330:; GOTO 2000
+1340 IF NUM(CREDIT$(26,9))>0 THEN IF A[6]>NUM(CREDIT$(26,9)) THEN LET S$(1,1)=
+1340:"0"; GOTO 2000
+1350 IF T8>NUM(CREDIT$(9,7)) THEN LET S$(1,1)="0"; GOTO 2000
+1390 LET S$(1,1)="1"
+2000 REM " --- Print Credit Management Data"
+2010 IF CREDIT$(35,1)="N" THEN GOTO 4000
+2020 PRINT @(O+15,L0),C[6]:M1$,@(O+15,L0+1),T9:M1$,@(O+15,L0+2),T0:M1$,@(O+15,
+2020:L0+3),T1:M1$,@(O+15,L0+4),T2:M1$,
+2030 IF C[6]>0 THEN PRINT @(O+15,L0+6),C[6]-(T9+T0+T1+T2):M1$,
+2040 PRINT @(O+5,L0+7),(AGING_BUCKET-1)*30,@(O+15,L0+7),T8:M1$,@(O+17,L0+8),C1
+2040:$(39,1),
+2100 REM " --- Window Prompt"
+2110 ON TYPE GOTO 4000,2120
+2120 LET V0$="S",V1$="",V2$="",V3$="",V4$="<Enter>=Continue",V0=1,V1=FNV1(V4$,
+2120:WIDTH),V2=22
+2140 GOSUB 7000
+2150 GOTO 4000
+4000 REM " --- Done"
+4090 GOTO 9900
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions"
+8010 DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+8025 DEF FNC(Q$,Q)=INT((Q-LEN(Q$))/2)
+8080 DEF FNV1(Q$,Q)=FNC(Q$,Q)+LEN(Q$)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Exit to host"
+9210 SETERR 9000
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Exit to Caller"
+9910 READ (ARE03_DEV,KEY=N0$+"  "+CUSTOMER$,DOM=9920); REM "Reset file pointer
+9930 IF POS(" "<>WIN_NAME$) THEN CALL "SYC.WD",WIN_NAME$
+9950 EXIT
+9999 END

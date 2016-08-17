@@ -1,0 +1,99 @@
+0010 REM "IVU - Price/Cost Change Update"
+0020 REM "Program IVU.GA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0070 SETERR 9000
+0080 SETESC 9000
+0090 PRECISION P[1]
+0200 REM " --- IOLIST's"
+0210 IVM02A: IOLIST B0$(1),B1$(1),B2$,B[ALL]
+0220 IVM07A: IOLIST C0$(1),C1$(1),C[ALL]
+0230 IVE05A: IOLIST W0$(1),W1$,W2$,W[ALL]
+0240 IVE06A: IOLIST W0$(1),W1$,W2$,W[ALL]
+0500 REM " --- Initializations"
+0510 DIM C[12]
+0550 LET ROW=5,P=O0
+0560 IF O0>1 THEN LET ROW=3,P=0
+0700 REM " --- Background"
+0710 PRINT @(0,ROW),'CE',
+0800 REM " --- Options"
+0810 LET V4$="Are You Ready To Update The "+F5$
+0820 CALL "SYC.YN",0,V4$,0,V$,V3
+0830 IF V$<>"YES" THEN GOTO 9900
+0910 CALL "SYC.NB","Updating",11+O0+P[0],COLUMN
+0940 REM " --- Disallow 'M'enu option in Error Routine
+0950 LET EXIT_CTRL=1
+0970 REM " --- Position file"
+0990 READ (CHANNEL,KEY=FIRST$,DOM=1000)
+1000 REM " --- Next entry record"
+1010 LET K$=KEY(CHANNEL,END=4000)
+1020 IF POS(FIRST$=K$)<>1 THEN GOTO 4000
+1090 ON O0 GOTO 1100,1200,1300
+1100 REM " --- Price change"
+1110 READ (CHANNEL)IOL=IVE05A
+1120 LET X$=W0$(3,2)
+1190 GOTO 2000
+1200 REM " --- Cost change"
+1210 IF K$(3,3)>F0$(7,3) THEN GOTO 4000
+1220 READ (CHANNEL)IOL=IVE06A
+1230 LET X$=FNB$(K$(3,3))
+1290 GOTO 2000
+1300 REM " --- Price change reversal"
+1310 READ (CHANNEL)
+1320 LET W0$(1)=K$(1,6)+K$(10),X$=W0$(3,2)
+2000 REM " --- Get warehouse record"
+2010 PRINT @(COLUMN,11),X$," ",W0$(5+P,2)," ",W0$(7+P,P[0]),
+2020 LET B0$(1)=N0$+W0$(5+P)
+2030 EXTRACT (IVM02_DEV,KEY=B0$,DOM=3900)IOL=IVM02A
+2090 ON O0 GOTO 2100,2200,2300
+2100 REM " --- Update list price"
+2110 LET B1$(54,2)=B1$(52,2),B[10]=B[9],B1$(52,2)=W0$(3,2),B[9]=W[0]
+2190 GOTO 3000
+2200 REM " --- Update standard cost"
+2210 LET B[11]=W[0],B[13]=W[0]
+2250 REM " --- Update Lot/Serial Standard Cost"
+2255 IF LS$<>"Y" THEN GOTO 2295
+2260 READ (IVM07_DEV,KEY=B0$,DOM=2270)
+2270 LET IVM07_K$=KEY(IVM07_DEV,END=2295)
+2275 IF POS(B0$=IVM07_K$)<>1 THEN GOTO 2295
+2280 EXTRACT (IVM07_DEV,KEY=IVM07_K$)IOL=IVM07A
+2285 LET C[3]=W[0],C[5]=W[0]
+2290 WRITE (IVM07_DEV,KEY=IVM07_K$)IOL=IVM07A
+2295 GOTO 3000
+2300 REM " --- Reverse list price"
+2310 LET X$=B1$(52,2),X=B[9],B1$(52,2)=B1$(54,2),B[9]=B[10]
+2320 LET B1$(54,2)=X$,B[10]=X
+3000 REM " --- Update warehouse record"
+3010 WRITE (IVM02_DEV,KEY=B0$)IOL=IVM02A
+3900 REM " --- Loop back for next record"
+3910 REMOVE (CHANNEL,KEY=K$,DOM=3920)
+3990 GOTO 1000
+4000 REM " --- All done"
+4010 CALL "SYC.BB",STATUS
+4090 GOTO 9900
+8000 REM " --- Functions"
+8010 DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+8020 DEF FNB$(Q1$)=FNA$(Q1$(2),Q1$)+"/"+FNA$(Q1$(3),Q1$)+"/"+FNA$(Q1$(1),Q1$)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END

@@ -1,0 +1,99 @@
+0010 REM "IVC - Return Warehouse Activity"
+0020 REM "Program IVC.WB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.3 - 15May97 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0031 REM "09Jan97 JJD: Prevent "L" option from clearing year/period from key p
+0031:rior to initial file read (6020)"
+0040 REM 
+0041 REM "ACTION$    : Action to perform (input)"
+0042 REM "             ""  = Return info for specific warehouse"
+0043 REM "             "A" = Return info for all warehouses"
+0044 REM "             "T" = Return total beginning balance instead of first"
+0045 REM "             "L" = Return info for lot/serial number"
+0050 REM "CHANNELS[N]: Channel Numbers (input)"
+0052 REM "             [2] = IVM-12 or IVM-17"
+0053 REM "             [3] = IVM-03"
+0059 REM "ITEM$[n]   : Inventory Item Information"
+0060 REM "             [0] = Firm ID"
+0061 REM "             [1] = Warehouse ID (optional)"
+0062 REM "             [2] = Inventory Item Number"
+0063 REM "             [3] = Lot/Serial Number"
+0064 REM "PERIOD$[n] : Period Range (input)"
+0065 REM "             [0] = Beginning Period/Year (YYMM)"
+0066 REM "             [1] = Ending Period/Year (YYMM)"
+0068 REM "ACTIVITY[n]: Warehouse Activity (returned)"
+0069 REM "             [0] to [12] = IVM-12/17 numerics"
+0075 REM "STATUS     : Status Code (returned)"
+0080 REM 
+0085 SETERR 9000
+0087 SETESC 9000
+0090 ENTER ACTION$,CHANNELS[ALL],ITEM$[ALL],PERIOD$[ALL],ACTIVITY[ALL],STATUS
+0200 REM " --- IOLIST's"
+0220 IVM12A: IOLIST B0$(1),B1$,B2$,B[ALL]
+0400 REM " --- Parameters"
+0410 LET KEYLEN=28,PERIOD=25
+0420 IF POS("L"=ACTION$)>0 THEN LET KEYLEN=48,PERIOD=45
+0500 REM " --- Initializations"
+0510 DIM B0$(KEYLEN),B[12]
+0550 LET IVM12_DEV=CHANNELS[2],IVM03_DEV=CHANNELS[3]
+0560 LET N0$=ITEM$[0],WAREHOUSE$=ITEM$[1],ITEM$=ITEM$[2],STATUS=0
+0570 IF POS("L"=ACTION$)>0 THEN LET LOTSER$=ITEM$[3]
+0580 FOR X=0 TO 12
+0585 LET ACTIVITY[X]=0
+0590 NEXT X
+1000 REM " --- Single Warehouse"
+1010 IF POS("A"=ACTION$)>0 THEN GOTO 1900
+1020 GOSUB 6000
+1090 GOTO 4000
+1900 REM " --- Position warehouse file"
+1990 READ (IVM03_DEV,KEY=N0$+"G"+ITEM$,DOM=2000)
+2000 REM " --- All Warehouses"
+2010 LET K$=KEY(IVM03_DEV,END=4000)
+2020 IF POS(N0$+"G"+ITEM$=K$)<>1 THEN GOTO 4000
+2030 READ (IVM03_DEV)
+2040 LET WAREHOUSE$=K$(24,2)
+2050 GOSUB 6000
+2090 GOTO 2000
+4000 REM " --- All done"
+4090 GOTO 9900
+6000 REM " --- Position activity file to beginning period/year"
+6010 LET B0$(1)=N0$+WAREHOUSE$,B0$(5)=ITEM$,B0$(PERIOD)=PERIOD$[0],FIRST=1
+6020 IF POS("L"=ACTION$)>0 THEN LET B0$(25,20)=LOTSER$
+6080 READ (IVM12_DEV,KEY=B0$,DOM=6100)IOL=IVM12A
+6090 GOTO 6150
+6100 REM " --- Read activity record(s) and accumulate totals"
+6110 LET K$=KEY(IVM12_DEV,END=6190)
+6120 IF POS(B0$(1,KEYLEN-4)=K$)<>1 THEN GOTO 6190
+6130 IF K$(KEYLEN-3)>PERIOD$[1] THEN GOTO 6190
+6140 READ (IVM12_DEV)IOL=IVM12A
+6150 FOR X=1 TO 12
+6155 LET ACTIVITY[X]=ACTIVITY[X]+B[X]
+6160 NEXT X
+6170 IF FIRST THEN LET ACTIVITY[0]=ACTIVITY[0]+B[0]
+6175 IF POS("T"=ACTION$)=0 THEN LET FIRST=0
+6180 GOTO 6100
+6190 RETURN
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 LET STATUS=999
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to calling program"
+9950 EXIT
+9999 END

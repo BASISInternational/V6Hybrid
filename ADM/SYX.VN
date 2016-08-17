@@ -1,0 +1,59 @@
+0010 REM "SYX - v6.0 Administrator Upgrade Trigger"
+0020 REM "Program SYX.VN"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0050 BEGIN
+0080 SETERR 9000
+0090 SETESC 9900
+4000 REM " --- Initiate Administrator 5.2-to-6.0 Upgrade Process"
+4010 RUN "SYX60A"
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions"
+8090 DEF FNV(Q$)=42+INT(LEN(Q$)/2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9800
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9800 REM " --- Distribution installation and/or rename problem"
+9810 PRINT @(0,11),'CE',
+9820 CALL "SYC.WC",ERR=9830,0,0,80,8,0,11,0
+9830 PRINT @(2,12),"If you are upgrading to ADD+ON Software Version 6.0:"
+9840 PRINT @(2,14),"Reload the Administrator media and try the installation pr
+9840:ocedure again."
+9850 PRINT @(2,16),"If problems persist:"
+9860 PRINT @(2,17),"Call ADD+ON Software Support at (800) 275-6350"
+9870 LET V4$="Press <Enter> to continue:"
+9880 LET V0$="S",V1$="CF",V2$="",V3$="",V0=1,V1=FNV(V4$),V2=22
+9890 GOSUB 7000
+9900 REM " --- Abort installation"
+9910 PRINT @(1,20),'CE','SF',"ADD+ON Software Installation Terminated."
+9950 RELEASE
+9999 END

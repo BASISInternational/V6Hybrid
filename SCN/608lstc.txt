@@ -1,0 +1,95 @@
+
+ *ERR                           ADD+ON Manufacturing Company
+0011  *ERR /0014/00  10:06              Software Change Report                
+0011:   Page  1
+ *ERR                         <DETAIL - FROM FIRST THRU LAST>
+
+ *ERR        Ref      Chg    Change   Svr
+ *ERR Prgm   Num      Ver    Date     Cde Author
+
+ *ERR AR - Accounts Receivable
+
+ *ERR ARE.AC          6.0.8  10/16/00  Y  KJS
+ *ERR                 Update invoice balances correctly when applied amount is
+ *ERR                 changed to zero.
+ *ERR ARR.GA     3097 6.0.8  10/13/00  G  JAL
+ *ERR                 Allow <F1>=Last when beginning customer number is entere
+:d.
+ *ERR ARU.XA     3097 6.0.8  10/13/00  G  JAL
+ *ERR                 Allow <F1>=Last when beginning customer number is entere
+:d.
+
+ *ERR BM - Bill of Materials
+
+ *ERR BMU.CB     4074 6.0.8  08/03/00  R  KJS
+ *ERR                 Prevent error 47 when resequencing by operations.
+
+ *ERR IV - Inventory Control
+
+ *ERR IVC.QD 10130001 6.0.8  10/13/00  G  JAL
+ *ERR                 Inquiry displays one more record than it should when an 
+:ending
+ *ERR                 date is entered. Test against key instead of previous re
+:cord.
+ *ERR IVC.UA     4061 6.0.8  08/03/00  Y  KJS
+ *ERR                 Not updating Item Vendor data (IVM-05) correctly.
+
+ *ERR OP - Order/Invoice Processing
+
+ *ERR OPR.IB     4068 6.0.8  10/13/00  G  JAL
+
+ *ERR PO - Purchase Order Processing System
+
+ *ERR POR.MB 10120001 6.0.8  10/12/00  Y  JAL
+ *ERR                 PO's with Y2K dates were not being placed or printed in 
+:last
+ *ERR                 (future) column of the report when appropriate.
+
+ *ERR SA - Sales Analysis
+
+ *ERR SAR.AB          6.0.8  10/25/00  G  KJS
+ *ERR                 S/A report always uses 12 periods
+ *ERR SAR.AC     4067 6.0.8  08/03/00  R  KJS
+ *ERR                 Prevent error one from numeric mask overflow.
+ *ERR SAR.AD          6.0.8  10/25/00  G  KJS
+ *ERR                 S/A report always uses 12 periods
+
+ *ERR SY - Administrator
+
+ *ERR SYC.EA          6.0.8  11/09/00  G  KJS
+ *ERR                 Modifications for the Web Kit.
+ *ERR SYC.ES          6.0.8  11/09/00  G  KJS
+ *ERR                 Modifications for the Web Kit.
+ *ERR SYC.KA          6.0.8  11/08/00  G  KJS
+ *ERR                 Correct confusing behavior. Requires corresponding v6.0.
+:8 SCN
+
+ *ERR                 to SYC.KA dated 11/07/2000.                          AD
+:D+ON Manufacturing Company
+0011  *ERR /0014/00  10:06              Software Change Report                
+0011:   Page  2
+ *ERR                         <DETAIL - FROM FIRST THRU LAST>
+
+ *ERR        Ref      Chg    Change   Svr
+ *ERR Prgm   Num      Ver    Date     Cde Author
+
+ *ERR SY - Administrator
+
+ *ERR SYC.KA          6.0.8  11/07/00  R  KJS
+ *ERR                 Avoid error 42 by correcting page calculation; avoid err
+:or 47
+ *ERR                 when <F4> after adding comment to a nex page.
+
+ *ERR WO - Shop Floor Control
+
+ *ERR WOU.CA          6.0.8  10/20/00  Y  KJS
+ *ERR                 The entire process is exited if one item or warehouse is
+ *ERR                 missing
+ *ERR WOU.RA          6.0.8  10/20/00  Y  KJS
+ *ERR                 The entire process is exited if one item or warehouse is
+ *ERR                 missing
+ *ERR WOX.JA          6.0.8  10/25/00  Y  KJS
+ *ERR                 Clearing WO reference from wrong detail file
+
+ *ERR TOTAL RECORDS:  18
+0003  *ERR Red      6 Yellow      9 Green

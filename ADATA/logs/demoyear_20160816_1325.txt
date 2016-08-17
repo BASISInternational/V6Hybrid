@@ -1,0 +1,859 @@
+V6Demoyear log started: 2016-08-16@13:25:51
+Starting demo fiscal year: 1996
+Increment fiscal year by: 20
+
+Processing: ../apps/V6Hybrid/ADATA/!ADDON
+  Date elements: [CURRENT_DATECurrent System Date           D0006]
+  Creating template for !ADDONA
+  *** error, file rename to tmp_!ADDON failed
+Processing: ../apps/V6Hybrid/ADATA/!GLCON
+  Date elements: [CURRENT_YEARCurrent Year                  D0002, GL_YEAR     Current GL Fiscal Year        D0002, TRNS_DATE   Transaction Date              D0006, YEAR        Year                          D0002, PER_BEG_DATEPeriod Beginning Date         D0006, PER_BEG_DATEPeriod Beginning Date         D0006, PER_BEG_DATEPeriod Beginning Date         D0006, PER_END_DATEPeriod Ending Date            D0006, PER_END_DATEPeriod Ending Date            D0006, PER_END_DATEPeriod Ending Date            D0006, PER_BEG_DATEPeriod Beginning Date         D0006, PER_END_DATEPeriod Ending Date            D0006, PER_BEG_DATEPeriod Beginning Date         D0006, PER_END_DATEPeriod Ending Date            D0006]
+  Creating template for !GLCONA
+  *** error, file rename to tmp_!GLCON failed
+Processing: ../apps/V6Hybrid/ADATA/!PROCE
+  Date elements: [CURRENT_DATECurrent System Date           D0006]
+  Creating template for !PROCEA
+  *** error, file rename to tmp_!PROCE failed
+Processing: ../apps/V6Hybrid/ADATA/APE-01
+  Date elements: [INVOICE_DATEInvoice Date                  D0003, ACCTING_DATEAccounting Date               D0003, INV_DUE_DATEInvoice Due Date              D0003, DISC_DATE   Discount Date                 D0003]
+  Creating template for APE-01A
+  Finished with: APE-01 (disk file APE-01). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/APE-02
+  Date elements: [CHECK_DATE  Check Date                    D0003]
+  Creating template for APE-02A
+  Finished with: APE-02 (disk file APE-02). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/APE-03
+  Date elements: [INVOICE_DATEInvoice Date                  D0003, ACCTING_DATEAccounting Date               D0003, INV_DUE_DATEInvoice Due Date              D0003, DISC_DATE   Discount Date                 D0003]
+  Creating template for APE-03A
+  Finished with: APE-03 (disk file APE-03). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/APE-04
+  Date elements: [INVOICE_DATEInvoice Date                  D0003, INV_DUE_DATEInvoice Due Date              D0003, DISC_DATE   Discount Date                 D0003]
+  Creating template for APE-04A
+  Finished with: APE-04 (disk file APE-04). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/APE-05
+  Date elements: [CHECK_DATE  Check Date                    D0003]
+  Creating template for APE-05A
+  Finished with: APE-05 (disk file APE-05). 80records processed.
+Processing: ../apps/V6Hybrid/ADATA/APE-22
+  Date elements: [INVOICE_DATEInvoice Date                  D0003]
+  Creating template for APE-22A
+  Finished with: APE-22 (disk file APE-22). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/APM-01
+  Date elements: [OPENED_DATE Date Opened                   D0003]
+  Creating template for APM-01A
+  Finished with: APM-01 (disk file APM-01). 36records processed.
+Processing: ../apps/V6Hybrid/ADATA/APM-02
+  Date elements: [LSTINV_DATE Last Invoice Date             D0003, LSTPAY_DATE Last Payment Date             D0003]
+  Creating template for APM-02A
+  Finished with: APM-02 (disk file APM-02). 38records processed.
+Processing: ../apps/V6Hybrid/ADATA/APM-06
+  Date elements: [PRI_REV_DATEPrior Review Date             D0003, NXT_REV_DATENext Review Date              D0003, LSTREC_DATE Last Receipt Date             D0003]
+  Creating template for APM-06A
+  Finished with: APM-06 (disk file APM-06). 12records processed.
+Processing: ../apps/V6Hybrid/ADATA/APM-11
+  Date elements: [BNK_CHK_DATEBank Check Date               D0006]
+  Creating template for APM-11A
+  Finished with: APM-11 (disk file APM-11). 240records processed.
+Processing: ../apps/V6Hybrid/ADATA/APM-12
+  Date elements: [TRNS_DATE   Transaction Date              D0006]
+  Creating template for APM-12A
+  Finished with: APM-12 (disk file APM-12). 34records processed.
+Processing: ../apps/V6Hybrid/ADATA/APM-13
+  Date elements: [PRI_END_DATEPrior Statement Ending Date   D0006, CURSTM_DATE Current Statement Date        D0006]
+  Creating template for APM-13A
+  Finished with: APM-13 (disk file APM-13). 8records processed.
+Processing: ../apps/V6Hybrid/ADATA/APS-01
+  Date elements: [CURRENT_YEARCurrent Year                  D0002]
+  Creating template for APS-01A
+  Finished with: APS-01 (disk file SYS-01). 43records processed.
+Processing: ../apps/V6Hybrid/ADATA/APT-01
+  Date elements: [INVOICE_DATEInvoice Date                  D0003, ACCTING_DATEAccounting Date               D0003, INV_DUE_DATEInvoice Due Date              D0003, DISC_DATE   Discount Date                 D0003]
+  Creating template for APT-01A
+  Finished with: APT-01 (disk file APT-01). 100records processed.
+Processing: ../apps/V6Hybrid/ADATA/APT-02
+  Date elements: [ACCTING_DATEAccounting Date               D0003]
+  Creating template for APT-02A
+  Finished with: APT-02 (disk file APT-02). 84records processed.
+Processing: ../apps/V6Hybrid/ADATA/APT-03
+  Date elements: [INVOICE_DATEInvoice Date                  D0003]
+  Creating template for APT-03A
+  Finished with: APT-03 (disk file APT-03). 300records processed.
+Processing: ../apps/V6Hybrid/ADATA/APT-11
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for APT-11A
+  Finished with: APT-11 (disk file APT-11). 56records processed.
+Processing: ../apps/V6Hybrid/ADATA/APW-01
+  Date elements: [CHECK_DATE  Check Date                    D0003]
+  Creating template for APW-01A
+  *** error, file rename to tmp_APW-01 failed
+Processing: ../apps/V6Hybrid/ADATA/APW-04
+  Date elements: [ACCTING_DATEAccounting Date               D0003]
+  Creating template for APW-04A
+  *** error, file rename to tmp_APW-04 failed
+Processing: ../apps/V6Hybrid/ADATA/APW-14
+  Date elements: [ACCTING_DATEAccounting Date               D0003]
+  Creating template for APW-14A
+  *** error, file rename to tmp_APW-14 failed
+Processing: ../apps/V6Hybrid/ADATA/ARE-01
+  Date elements: [RECEIPT_DATEReceipt Date                  D0003]
+  Creating template for ARE-01A
+  Finished with: ARE-01 (disk file ARE-01). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/ARE-02
+  Date elements: [INVOICE_DATEInvoice Date                  D0003, INV_DUE_DATEInvoice Due Date              D0003, DISC_DATE   Discount Date                 D0003]
+  Creating template for ARE-02A
+  Finished with: ARE-02 (disk file ARE-02). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/ARE-03
+  Date elements: [INVOICE_DATEInvoice Date                  D0003, SHIPMNT_DATEShip Date                     D0003, ORDER_DATE  Order Date                    D0003]
+  Creating template for ARE-03A
+  Finished with: ARE-03 (disk file ARE-03). 32records processed.
+Processing: ../apps/V6Hybrid/ADATA/ARE-05
+  Date elements: [INV_DATE    Invoice Date (YYMMDD)         D0006]
+  Creating template for ARE-05A
+  Finished with: ARE-05 (disk file ARE-05). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/ARE-06
+  Date elements: [INVOICE_DATEInvoice Date                  D0003, INV_DUE_DATEInvoice Due Date              D0003, DISC_DATE   Discount Date                 D0003]
+  Creating template for ARE-06A
+  Finished with: ARE-06 (disk file ARE-06). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/ARE-08
+  Date elements: [INVOICE_DATEInvoice Date                  D0003, SHIPMNT_DATEShip Date                     D0003, ORDER_DATE  Order Date                    D0003]
+  Creating template for ARE-08A
+  *** error, file rename to tmp_ARE-08 failed
+Processing: ../apps/V6Hybrid/ADATA/ARE-11
+  Date elements: [RECEIPT_DATEReceipt Date                  D0003]
+  Creating template for ARE-11A
+  Finished with: ARE-11 (disk file ARE-11). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/ARE-13
+  Date elements: [EST_SHP_DATEEstimated Ship Date           D0003]
+  Creating template for ARE-13A
+  Finished with: ARE-13 (disk file ARE-13). 62records processed.
+Processing: ../apps/V6Hybrid/ADATA/ARE-15
+  Date elements: [TRNS_DATE   Transaction Date              D0006]
+  Creating template for ARE-15A
+  Finished with: ARE-15 (disk file ARE-15). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/ARE-18
+  Date elements: [EST_SHP_DATEEstimated Ship Date           D0003]
+  Creating template for ARE-18A
+  *** error, file rename to tmp_ARE-18 failed
+Processing: ../apps/V6Hybrid/ADATA/ARE-20
+  Date elements: [INVOICE_DATEInvoice Date                  D0003, EXPIRE_DATE Expiration Date               D0003]
+  Creating template for ARE-20A
+  Finished with: ARE-20 (disk file ARE-20). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/ARE-21
+  Date elements: [RECEIPT_DATEReceipt Date                  D0003]
+  Creating template for ARE-21A
+  Finished with: ARE-21 (disk file ARE-21). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/ARM-01
+  Date elements: [OPENED_DATE Date Opened                   D0003]
+  Creating template for ARM-01A
+  Finished with: ARM-01 (disk file ARM-01). 30records processed.
+Processing: ../apps/V6Hybrid/ADATA/ARM-02
+  Date elements: [LSTINV_DATE Last Invoice Date             D0003, LSTPAY_DATE Last Payment Date             D0003]
+  Creating template for ARM-02A
+  Finished with: ARM-02 (disk file ARM-02). 30records processed.
+Processing: ../apps/V6Hybrid/ADATA/ARM-06
+  Date elements: [LSTINV_DATE Last Invoice Date             D0003, LSTPAY_DATE Last Payment Date             D0003]
+  Creating template for ARM-06A
+  Finished with: ARM-06 (disk file ARM-06). 28records processed.
+Processing: ../apps/V6Hybrid/ADATA/ARM-09
+  Date elements: [LIEN_DATE   Lien Date                     D0003, FST_SHP_DATEFirst Shipment Date           D0003, LSTINV_DATE Last Invoice Date             D0003]
+  Creating template for ARM-09A
+  Finished with: ARM-09 (disk file ARM-09). 4records processed.
+Processing: ../apps/V6Hybrid/ADATA/ARM-14
+  Date elements: [REV_DATE    Review Date                   D0006]
+  Creating template for ARM-14C
+  Finished with: ARM-14 (disk file ARM-14). 16records processed.
+Processing: ../apps/V6Hybrid/ADATA/ARM-14
+  Date elements: [REV_DATE    Review Date                   D0006]
+  Creating template for ARM-14D
+  Finished with: ARM-14 (disk file ARM-14). 16records processed.
+Processing: ../apps/V6Hybrid/ADATA/ARS-01
+  Date elements: [LSTCOM_DATE Last Committed Date           D0003, CURRENT_YEARCurrent Year                  D0002]
+  Creating template for ARS-01A
+  Finished with: ARS-01 (disk file SYS-01). 43records processed.
+Processing: ../apps/V6Hybrid/ADATA/ART-01
+  Date elements: [INVOICE_DATEInvoice Date                  D0003, INV_DUE_DATEInvoice Due Date              D0003, DISC_DATE   Discount Date                 D0003]
+  Creating template for ART-01A
+  Finished with: ART-01 (disk file ART-01). 304records processed.
+Processing: ../apps/V6Hybrid/ADATA/ART-02
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for ART-02A
+  Finished with: ART-02 (disk file ART-02). 16records processed.
+Processing: ../apps/V6Hybrid/ADATA/ART-03
+  Date elements: [INVOICE_DATEInvoice Date                  D0003, SHIPMNT_DATEShip Date                     D0003, ORDER_DATE  Order Date                    D0003]
+  Creating template for ART-03A
+  Finished with: ART-03 (disk file ART-03). 258records processed.
+Processing: ../apps/V6Hybrid/ADATA/ART-05
+  Date elements: [INVOICE_DATEInvoice Date                  D0003]
+  Creating template for ART-05A
+  Finished with: ART-05 (disk file ART-05). 254records processed.
+Processing: ../apps/V6Hybrid/ADATA/ART-06
+  Date elements: [RECEIPT_DATEReceipt Date                  D0003]
+  Creating template for ART-06A
+  Finished with: ART-06 (disk file ART-06). 104records processed.
+Processing: ../apps/V6Hybrid/ADATA/ART-07
+  Date elements: [INVOICE_DATEInvoice Date                  D0003, EXPIRE_DATE Expiration Date               D0003]
+  Creating template for ART-07A
+  Finished with: ART-07 (disk file ART-07). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/ART-11
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for ART-11A
+  Finished with: ART-11 (disk file ART-11). 274records processed.
+Processing: ../apps/V6Hybrid/ADATA/ART-13
+  Date elements: [EST_SHP_DATEEstimated Ship Date           D0003]
+  Creating template for ART-13A
+  Finished with: ART-13 (disk file ART-13). 352records processed.
+Processing: ../apps/V6Hybrid/ADATA/ART-16
+  Date elements: [RECEIPT_DATEReceipt Date                  D0003]
+  Creating template for ART-16A
+  Finished with: ART-16 (disk file ART-16). 200records processed.
+Processing: ../apps/V6Hybrid/ADATA/ART-26
+  Date elements: [RECEIPT_DATEReceipt Date                  D0003]
+  Creating template for ART-26A
+  Finished with: ART-26 (disk file ART-26). 6records processed.
+Processing: ../apps/V6Hybrid/ADATA/ART-53
+  Date elements: [INVOICE_DATEInvoice Date                  D0003]
+  Creating template for ART-53A
+  Finished with: ART-53 (disk file ART-53). 308records processed.
+Processing: ../apps/V6Hybrid/ADATA/ARW-03
+  Date elements: [EST_SHP_DATEEstimated Ship Date           D0003, ORDER_DATE  Order Date                    D0003]
+  Creating template for ARW-03A
+  *** error, file rename to tmp_ARW-03 failed
+Processing: ../apps/V6Hybrid/ADATA/ARW-05
+  Date elements: [RECEIPT_DATEReceipt Date                  D0003]
+  Creating template for ARW-05A
+  *** error, file rename to tmp_ARW-05 failed
+Processing: ../apps/V6Hybrid/ADATA/ARW-07
+  Date elements: [RECEIPT_DATEReceipt Date                  D0003]
+  Creating template for ARW-07A
+  *** error, file rename to tmp_ARW-07 failed
+Processing: ../apps/V6Hybrid/ADATA/ARW-20
+  Date elements: [INVOICE_DATEInvoice Date                  D0003]
+  Creating template for ARW-20A
+  *** error, file rename to tmp_ARW-20 failed
+Processing: ../apps/V6Hybrid/ADATA/BME-01
+  Date elements: [PROD_DATE   Production Date               D0003]
+  Creating template for BME-01A
+  Finished with: BME-01 (disk file BME-01). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/BME-02
+  Date elements: [PROD_DATE   Production Date               D0003]
+  Creating template for BME-02A
+  Finished with: BME-02 (disk file BME-02). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/BMM-01
+  Date elements: [LSTRVS_DATE Last Revision Date            D0003, LSTACT_DATE Last Activity Date            D0003, CREATE_DATE Creation Date                 D0003]
+  Creating template for BMM-01A
+  Finished with: BMM-01 (disk file BMM-01). 15records processed.
+Processing: ../apps/V6Hybrid/ADATA/BMM-02
+  Date elements: [EFFECT_DATE Date Effective                D0003, OBSOLT_DATE Obsolete Date                 D0003]
+  Creating template for BMM-02A
+  Finished with: BMM-02 (disk file BMM-02). 95records processed.
+Processing: ../apps/V6Hybrid/ADATA/BMM-03
+  Date elements: [EFFECT_DATE Date Effective                D0003, OBSOLT_DATE Obsolete Date                 D0003]
+  Creating template for BMM-03A
+  Finished with: BMM-03 (disk file BMM-03). 71records processed.
+Processing: ../apps/V6Hybrid/ADATA/BMM-05
+  Date elements: [EFFECT_DATE Date Effective                D0003, OBSOLT_DATE Obsolete Date                 D0003]
+  Creating template for BMM-05A
+  Finished with: BMM-05 (disk file BMM-05). 10records processed.
+Processing: ../apps/V6Hybrid/ADATA/BMM-22
+  Date elements: [EFFECT_DATE Date Effective                D0003, OBSOLT_DATE Obsolete Date                 D0003]
+  Creating template for BMM-22A
+  Finished with: BMM-22 (disk file BMM-22). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/BMM-23
+  Date elements: [EFFECT_DATE Date Effective                D0003, OBSOLT_DATE Obsolete Date                 D0003]
+  Creating template for BMM-23A
+  Finished with: BMM-23 (disk file BMM-23). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/BMM-25
+  Date elements: [EFFECT_DATE Date Effective                D0003, OBSOLT_DATE Obsolete Date                 D0003]
+  Creating template for BMM-25A
+  Finished with: BMM-25 (disk file BMM-25). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/GLE-01
+  Date elements: [TRANS_DATE  Transaction Date              D0003, REVERSE_DATEReversal Date                 D0003]
+  Creating template for GLE-01A
+  Finished with: GLE-01 (disk file GLE-01). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/GLE-02
+  Date elements: [TRANS_DATE  Transaction Date              D0003, REVERSE_DATEReversal Date                 D0003]
+  Creating template for GLE-02A
+  Finished with: GLE-02 (disk file GLE-02). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/GLM-06
+  Date elements: [LSTUSE_DATE Date Last Used                D0006, LSTUPD_DATE Date Last Updated             D0006]
+  Creating template for GLM-06A
+  Finished with: GLM-06 (disk file GLM-06). 117records processed.
+Processing: ../apps/V6Hybrid/ADATA/GLM-07
+  Date elements: [PROCESS_DATEProcess Through Date          D0006, LSTUSE_DATE Date Last Used                D0006]
+  Creating template for GLM-07A
+  Finished with: GLM-07 (disk file GLM-07). 8records processed.
+Processing: ../apps/V6Hybrid/ADATA/GLM-08
+  Date elements: [CREATED_DATEDate Created                  D0006, LSTREV_DATE Last Revision Date            D0006]
+  Creating template for GLM-08A
+  Finished with: GLM-08 (disk file GLM-08). 6records processed.
+Processing: ../apps/V6Hybrid/ADATA/GLS-01
+  Date elements: [CURRENT_YEARCurrent Year                  D0002, LOCKED_DATE Date Locked                   D0003]
+  Creating template for GLS-01A
+  Finished with: GLS-01 (disk file SYS-01). 43records processed.
+Processing: ../apps/V6Hybrid/ADATA/GLT-04
+  Date elements: [POSTING_YEARGL Posting Year               D0002, TRNS_DATE   Transaction Date              D0006, POSTING_YEARGL Posting Year               D0002]
+  Creating template for GLT-04A
+  Finished with: GLT-04 (disk file GLT-04). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/GLT-05
+  Date elements: [TRNS_DATE   Transaction Date              D0006, POSTING_YEARGL Posting Year               D0002]
+  Creating template for GLT-05A
+  Finished with: GLT-05 (disk file GLT-05). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/GLT-06
+  Date elements: [POSTING_YEARGL Posting Year               D0002, TRNS_DATE   Transaction Date              D0006]
+  Creating template for GLT-06A
+  Finished with: GLT-06 (disk file GLT-06). 11640records processed.
+Processing: ../apps/V6Hybrid/ADATA/GLW-11
+  Date elements: [POSTING_YEARGL Posting Year               D0002, TRNS_DATE   Transaction Date              D0006, YEAR        Year                          D0002]
+  Creating template for GLW-11A
+  *** error, file rename to tmp_GLW-11 failed
+Processing: ../apps/V6Hybrid/ADATA/IVE-01
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for IVE-01A
+  Finished with: IVE-01 (disk file IVE-01). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVE-02
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for IVE-02A
+  Finished with: IVE-02 (disk file IVE-02). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVE-03
+  Date elements: [CUTOFF_DATE Cutoff Date                   D0003]
+  Creating template for IVE-03A
+  Finished with: IVE-03 (disk file IVE-03). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVE-06
+  Date elements: [EFFECT_DATE Date Effective                D0003]
+  Creating template for IVE-06A
+  Finished with: IVE-06 (disk file IVE-06). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVM-01
+  Date elements: [LSTREC_DATE Last Receipt Date             D0003, LSTBLT_DATE Last Built Date               D0003, LSTSAL_DATE Last Sale Date                D0003, LSTISS_DATE Last Issue Date               D0003, LSTADJ_DATE Last Adjustment Date          D0003, LSTXIN_DATE Last Transfer In Date         D0003, LSTXOT_DATE Last Transfer Out Date        D0003, LSTRET_DATE Last Return Date              D0003]
+  Creating template for IVM-01A
+  Finished with: IVM-01 (disk file IVM-01). 98records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVM-02
+  Date elements: [LSTPHY_DATE Last Physical Date            D0003, LSTREC_DATE Last Receipt Date             D0003, LSTBLT_DATE Last Built Date               D0003, LSTSAL_DATE Last Sale Date                D0003, LSTISS_DATE Last Issue Date               D0003, LSTADJ_DATE Last Adjustment Date          D0003, LSTXIN_DATE Last Transfer In Date         D0003, LSTXOT_DATE Last Transfer Out Date        D0003, LSTRET_DATE Last Return Date              D0003]
+  Creating template for IVM-02A
+  Finished with: IVM-02 (disk file IVM-02). 148records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVM-04
+  Date elements: [RECEIPT_DATEReceipt Date                  D0003]
+  Creating template for IVM-04A
+  Finished with: IVM-04 (disk file IVM-04). 308records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVM-05
+  Date elements: [LAST_PO_DATELast Purchase Date            D0003]
+  Creating template for IVM-05A
+  Finished with: IVM-05 (disk file IVM-05). 170records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVM-06
+  Date elements: [FROM_DATE   From Date                     D0003, THRU_DATE   Thru Date                     D0003]
+  Creating template for IVM-06A
+  Finished with: IVM-06 (disk file IVM-06). 6records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVM-07
+  Date elements: [LSTPHY_DATE Last Physical Date            D0003, LSTREC_DATE Last Receipt Date             D0003, LSTBLT_DATE Last Built Date               D0003, LSTSAL_DATE Last Sale Date                D0003, LSTISS_DATE Last Issue Date               D0003, LSTADJ_DATE Last Adjustment Date          D0003, LSTXIN_DATE Last Transfer In Date         D0003, LSTXOT_DATE Last Transfer Out Date        D0003, LSTRET_DATE Last Return Date              D0003]
+  Creating template for IVM-07A
+  Finished with: IVM-07 (disk file IVM-07). 600records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVM-10
+  Date elements: [CUTOFF_DATE Cutoff Date                   D0003]
+  Creating template for IVM-10P
+  Finished with: IVM-10 (disk file IVM-10). 96records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVM-12
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for IVM-12A
+  Finished with: IVM-12 (disk file IVM-12). 590records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVM-17
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for IVM-17A
+  Finished with: IVM-17 (disk file IVM-17). 728records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVS-01
+  Date elements: [CURRENT_YEARCurrent Year                  D0002]
+  Creating template for IVS-01A
+  Finished with: IVS-01 (disk file SYS-01). 43records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVS-10
+  Date elements: [RUN_DATE    Last Run Date                 D0003]
+  Creating template for IVS-10A
+  Finished with: IVS-10 (disk file IVS-10). 9records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVS-10
+  Date elements: [YEAR        Year                          D0002, RUN_DATE    Last Run Date                 D0003]
+  Creating template for IVS-10I
+  Finished with: IVS-10 (disk file IVS-10). 9records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVS-10
+  Date elements: [YEAR        Year                          D0002, RUN_DATE    Last Run Date                 D0003]
+  Creating template for IVS-10W
+  Finished with: IVS-10 (disk file IVS-10). 9records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVT-01
+  Date elements: [TRANS_DATE  Transaction Date              D0003, SYSTEM_DATE Current System Date           D0003]
+  Creating template for IVT-01A
+  Finished with: IVT-01 (disk file IVT-01). 926records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVT-02
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for IVT-02A
+  Finished with: IVT-02 (disk file IVT-02). 90records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVT-03
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for IVT-03A
+  Finished with: IVT-03 (disk file IVT-03). 300records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVT-04
+  Date elements: [TRANS_DATE  Transaction Date              D0003, SYSTEM_DATE Current System Date           D0003]
+  Creating template for IVT-04A
+  Finished with: IVT-04 (disk file IVT-04). 3338records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVT-05
+  Date elements: [WRITTN_DATE Date Written                  D0003]
+  Creating template for IVT-05A
+  Finished with: IVT-05 (disk file IVT-05). 6records processed.
+Processing: ../apps/V6Hybrid/ADATA/IVW-04
+  Date elements: [RECEIPT_DATEReceipt Date                  D0003]
+  Creating template for IVW-04A
+  *** error, file rename to tmp_IVW-04 failed
+Processing: ../apps/V6Hybrid/ADATA/IVW-06
+  Date elements: [EFFECT_DATE Date Effective                D0003]
+  Creating template for IVW-06A
+  *** error, file rename to tmp_IVW-06 failed
+Processing: ../apps/V6Hybrid/ADATA/MPE-03
+  Date elements: [PLAN_DATE   Plan Date                     D0006]
+  Creating template for MPE-03A
+  Finished with: MPE-03 (disk file MPE-03). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/MPE-05
+  Date elements: [TRNS_DATE   Transaction Date              D0006, REQD_DATE   Date Required                 D0006]
+  Creating template for MPE-05A
+  Finished with: MPE-05 (disk file MPE-05). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/MPM-01
+  Date elements: [PLAN_DATE   Plan Date                     D0006]
+  Creating template for MPM-01A
+  Finished with: MPM-01 (disk file MPM-01). 1records processed.
+Processing: ../apps/V6Hybrid/ADATA/MPM-02
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for MPM-02A
+  Finished with: MPM-02 (disk file MPM-02). 6records processed.
+Processing: ../apps/V6Hybrid/ADATA/MPW-01
+  Date elements: [PLAN_DATE   Plan Date                     D0006]
+  Creating template for MPW-01A
+  *** error, file rename to tmp_MPW-01 failed
+Processing: ../apps/V6Hybrid/ADATA/MPW-02
+  Date elements: [SHIP_DATE   Ship Date                     D0006]
+  Creating template for MPW-02A
+  *** error, file rename to tmp_MPW-02 failed
+Processing: ../apps/V6Hybrid/ADATA/MPW-03
+  Date elements: [TRNS_DATE   Transaction Date              D0006]
+  Creating template for MPW-03A
+  *** error, file rename to tmp_MPW-03 failed
+Processing: ../apps/V6Hybrid/ADATA/MPW-04
+  Date elements: [TRNS_DATE   Transaction Date              D0006, REQUIRE_DATEDate Required                 D0003]
+  Creating template for MPW-04A
+  *** error, file rename to tmp_MPW-04 failed
+Processing: ../apps/V6Hybrid/ADATA/MPW-05
+  Date elements: [REQD_DATE   Date Required                 D0006, TRNS_DATE   Transaction Date              D0006]
+  Creating template for MPW-05A
+  *** error, file rename to tmp_MPW-05 failed
+Processing: ../apps/V6Hybrid/ADATA/MPW-06
+  Date elements: [REQD_DATE   Date Required                 D0006]
+  Creating template for MPW-06A
+  *** error, file rename to tmp_MPW-06 failed
+Processing: ../apps/V6Hybrid/ADATA/PFXXXA
+  Date elements: [CREATED_DATEDate Created                  D0006]
+  Creating template for PFXXXAA
+  *** error, file rename to tmp_PFXXXA failed
+Processing: ../apps/V6Hybrid/ADATA/POE-01
+  Date elements: [ORD_DATE    Order Date                    D0006, PROMISE_DATEDelivery Promised By Date     D0006, NOT_B4_DATE Don't Deliver Before Date     D0006, REQD_DATE   Date Required                 D0006]
+  Creating template for POE-01A
+  Finished with: POE-01 (disk file POE-01). 8records processed.
+Processing: ../apps/V6Hybrid/ADATA/POE-02
+  Date elements: [ORD_DATE    Order Date                    D0006, PROMISE_DATEDelivery Promised By Date     D0006, NOT_B4_DATE Don't Deliver Before Date     D0006, REQD_DATE   Date Required                 D0006, RECPT_DATE  Receipt Date                  D0006]
+  Creating template for POE-02A
+  Finished with: POE-02 (disk file POE-02). 16records processed.
+Processing: ../apps/V6Hybrid/ADATA/POE-03
+  Date elements: [ORD_DATE    Order Date                    D0006, PROMISE_DATEDelivery Promised By Date     D0006, NOT_B4_DATE Don't Deliver Before Date     D0006, REQD_DATE   Date Required                 D0006, RECPT_DATE  Receipt Date                  D0006]
+  Creating template for POE-03A
+  Finished with: POE-03 (disk file POE-03). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/POE-04
+  Date elements: [ORD_DATE    Order Date                    D0006, PROMISE_DATEDelivery Promised By Date     D0006, NOT_B4_DATE Don't Deliver Before Date     D0006, REQD_DATE   Date Required                 D0006, RECPT_DATE  Receipt Date                  D0006]
+  Creating template for POE-04A
+  Finished with: POE-04 (disk file POE-04). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/POE-05
+  Date elements: [INV_DATE    Invoice Date (YYMMDD)         D0006, ACCT_DATE   Accounting Date               D0006, DUE_DATE    Invoice Due Date              D0006, PO_DISC_DATEDiscount Date                 D0006]
+  Creating template for POE-05A
+  Finished with: POE-05 (disk file POE-05). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/POE-06
+  Date elements: [CYCLE_DATE  Cycle Date                    D0003]
+  Creating template for POE-06A
+  Finished with: POE-06 (disk file POE-06). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/POE-07
+  Date elements: [BEGREV_DATE Beginning Review Date         D0003, REVEND_DATE Ending Review Date            D0003]
+  Creating template for POE-07A
+  Finished with: POE-07 (disk file POE-07). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/POE-11
+  Date elements: [REQD_DATE   Date Required                 D0006, PROMISE_DATEDelivery Promised By Date     D0006, NOT_B4_DATE Don't Deliver Before Date     D0006]
+  Creating template for POE-11A
+  Finished with: POE-11 (disk file POE-11). 24records processed.
+Processing: ../apps/V6Hybrid/ADATA/POE-12
+  Date elements: [REQD_DATE   Date Required                 D0006, PROMISE_DATEDelivery Promised By Date     D0006, NOT_B4_DATE Don't Deliver Before Date     D0006]
+  Creating template for POE-12A
+  Finished with: POE-12 (disk file POE-12). 88records processed.
+Processing: ../apps/V6Hybrid/ADATA/POE-13
+  Date elements: [REQD_DATE   Date Required                 D0006, PROMISE_DATEDelivery Promised By Date     D0006, NOT_B4_DATE Don't Deliver Before Date     D0006]
+  Creating template for POE-13A
+  Finished with: POE-13 (disk file POE-13). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/POE-14
+  Date elements: [REQD_DATE   Date Required                 D0006, PROMISE_DATEDelivery Promised By Date     D0006, NOT_B4_DATE Don't Deliver Before Date     D0006]
+  Creating template for POE-14A
+  Finished with: POE-14 (disk file POE-14). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/POM-01
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for POM-01A
+  Finished with: POM-01 (disk file POM-01). 12records processed.
+Processing: ../apps/V6Hybrid/ADATA/POT-04
+  Date elements: [ORD_DATE    Order Date                    D0006, PROMISE_DATEDelivery Promised By Date     D0006, NOT_B4_DATE Don't Deliver Before Date     D0006, REQD_DATE   Date Required                 D0006, RECPT_DATE  Receipt Date                  D0006]
+  Creating template for POT-04A
+  Finished with: POT-04 (disk file POT-04). 138records processed.
+Processing: ../apps/V6Hybrid/ADATA/POT-05
+  Date elements: [INV_DATE    Invoice Date (YYMMDD)         D0006, ACCT_DATE   Accounting Date               D0006, DUE_DATE    Invoice Due Date              D0006, PO_DISC_DATEDiscount Date                 D0006]
+  Creating template for POT-05A
+  Finished with: POT-05 (disk file POT-05). 44records processed.
+Processing: ../apps/V6Hybrid/ADATA/POT-14
+  Date elements: [REQD_DATE   Date Required                 D0006, PROMISE_DATEDelivery Promised By Date     D0006, NOT_B4_DATE Don't Deliver Before Date     D0006]
+  Creating template for POT-14A
+  Finished with: POT-14 (disk file POT-14). 398records processed.
+Processing: ../apps/V6Hybrid/ADATA/POT-24
+  Date elements: [RECPT_DATE  Receipt Date                  D0006]
+  Creating template for POT-24A
+  Finished with: POT-24 (disk file POT-24). 366records processed.
+Processing: ../apps/V6Hybrid/ADATA/POT-34
+  Date elements: [RECPT_DATE  Receipt Date                  D0006]
+  Creating template for POT-34A
+  Finished with: POT-34 (disk file POT-34). 366records processed.
+Processing: ../apps/V6Hybrid/ADATA/POT-44
+  Date elements: [RECPT_DATE  Receipt Date                  D0006]
+  Creating template for POT-44A
+  Finished with: POT-44 (disk file POT-44). 398records processed.
+Processing: ../apps/V6Hybrid/ADATA/POW-04
+  Date elements: [RECPT_DATE  Receipt Date                  D0006]
+  Creating template for POW-04A
+  *** error, file rename to tmp_POW-04 failed
+Processing: ../apps/V6Hybrid/ADATA/POW-05
+  Date elements: [RECPT_DATE  Receipt Date                  D0006]
+  Creating template for POW-05A
+  *** error, file rename to tmp_POW-05 failed
+Processing: ../apps/V6Hybrid/ADATA/POW-10
+  Date elements: [ORDER_DATE  Order Date                    D0003, RECEIPT_DATEReceipt Date                  D0003, PROMISE_DATEDelivery Promised By Date     D0006]
+  Creating template for POW-10A
+  *** error, file rename to tmp_POW-10 failed
+Processing: ../apps/V6Hybrid/ADATA/PRE-01
+  Date elements: [CHECK_DATE  Check Date                    D0003]
+  Creating template for PRE-01A
+  Finished with: PRE-01 (disk file PRE-01). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/PRE-02
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for PRE-02A
+  Finished with: PRE-02 (disk file PRE-02). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/PRM-01
+  Date elements: [BIRTH_DATE  Birth Date                    D0003, HIRE_DATE   Hire Date                     D0003, ANNIV_DATE  Anniversary Date              D0003, REVIEW_DATE Review Date                   D0003, TERM_DATE   Termination Date              D0003]
+  Creating template for PRM-01A
+  Finished with: PRM-01 (disk file PRM-01). 24records processed.
+Processing: ../apps/V6Hybrid/ADATA/PRM-03
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for PRM-03W
+  Finished with: PRM-03 (disk file PRM-03). 48records processed.
+Processing: ../apps/V6Hybrid/ADATA/PRM-12
+  Date elements: [NEW_CHG_DATENew Change Date               D0006]
+  Creating template for PRM-12A
+  Finished with: PRM-12 (disk file PRM-12). 30records processed.
+Processing: ../apps/V6Hybrid/ADATA/PRS-01
+  Date elements: [CURRENT_YEARCurrent Year                  D0002]
+  Creating template for PRS-01A
+  Finished with: PRS-01 (disk file SYS-01). 43records processed.
+Processing: ../apps/V6Hybrid/ADATA/PRS-01
+  Date elements: [PAY_END_DATEPayroll Period End Date       D0003, CHECK_DATE  Check Date                    D0003]
+  Creating template for PRS-01B
+  Finished with: PRS-01 (disk file SYS-01). 43records processed.
+Processing: ../apps/V6Hybrid/ADATA/PRS-05
+  Date elements: [W2_PAY_YEAR W2 Payment Year               D0004]
+  Creating template for PRS-051
+  *** error, file rename to tmp_PRS-05 failed
+Processing: ../apps/V6Hybrid/ADATA/PRS-05
+  Date elements: [W2_PAY_YEAR W2 Payment Year               D0004]
+  Creating template for PRS-053
+  *** error, file rename to tmp_PRS-05 failed
+Processing: ../apps/V6Hybrid/ADATA/PRS-05
+  Date elements: [W2_PAY_YEAR W2 Payment Year               D0004]
+  Creating template for PRS-055
+  *** error, file rename to tmp_PRS-05 failed
+Processing: ../apps/V6Hybrid/ADATA/PRT-02
+  Date elements: [CHECK_DATE  Check Date                    D0003]
+  Creating template for PRT-02A
+  Finished with: PRT-02 (disk file PRT-02). 132records processed.
+Processing: ../apps/V6Hybrid/ADATA/PRT-03
+  Date elements: [CHECK_DATE  Check Date                    D0003, PAY_END_DATEPayroll Period End Date       D0003]
+  Creating template for PRT-03A
+  Finished with: PRT-03 (disk file PRT-03). 50records processed.
+Processing: ../apps/V6Hybrid/ADATA/PRT-04
+  Date elements: [PAY_END_DATEPayroll Period End Date       D0003]
+  Creating template for PRT-04A
+  Finished with: PRT-04 (disk file PRT-04). 178records processed.
+Processing: ../apps/V6Hybrid/ADATA/PRW-01
+  Date elements: [CHECK_DATE  Check Date                    D0003]
+  Creating template for PRW-01A
+  *** error, file rename to tmp_PRW-01 failed
+Processing: ../apps/V6Hybrid/ADATA/PRW-02
+  Date elements: [CHECK_DATE  Check Date                    D0003]
+  Creating template for PRW-02A
+  *** error, file rename to tmp_PRW-02 failed
+Processing: ../apps/V6Hybrid/ADATA/PRX-10
+  Date elements: [TAX_UPDT_YR Tax Update Year               D0004]
+  Creating template for PRX-10Y
+  Finished with: PRX-10 (disk file PRX-10). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/SAM-01
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for SAM-01A
+  Finished with: SAM-01 (disk file SAM-01). 460records processed.
+Processing: ../apps/V6Hybrid/ADATA/SAM-02
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for SAM-02A
+  Finished with: SAM-02 (disk file SAM-02). 80records processed.
+Processing: ../apps/V6Hybrid/ADATA/SAM-03
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for SAM-03A
+  Finished with: SAM-03 (disk file SAM-03). 160records processed.
+Processing: ../apps/V6Hybrid/ADATA/SAM-04
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for SAM-04A
+  Finished with: SAM-04 (disk file SAM-04). 172records processed.
+Processing: ../apps/V6Hybrid/ADATA/SAM-05
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for SAM-05A
+  Finished with: SAM-05 (disk file SAM-05). 458records processed.
+Processing: ../apps/V6Hybrid/ADATA/SAM-06
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for SAM-06A
+  Finished with: SAM-06 (disk file SAM-06). 4records processed.
+Processing: ../apps/V6Hybrid/ADATA/SAM-07
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for SAM-07A
+  Finished with: SAM-07 (disk file SAM-07). 68records processed.
+Processing: ../apps/V6Hybrid/ADATA/SAM-08
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for SAM-08A
+  Finished with: SAM-08 (disk file SAM-08). 106records processed.
+Processing: ../apps/V6Hybrid/ADATA/SAM-09
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for SAM-09A
+  Finished with: SAM-09 (disk file SAM-09). 78records processed.
+Processing: ../apps/V6Hybrid/ADATA/SAM-10
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for SAM-10A
+  Finished with: SAM-10 (disk file SAM-10). 260records processed.
+Processing: ../apps/V6Hybrid/ADATA/SAM-11
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for SAM-11A
+  Finished with: SAM-11 (disk file SAM-11). 10records processed.
+Processing: ../apps/V6Hybrid/ADATA/SAM-12
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for SAM-12A
+  Finished with: SAM-12 (disk file SAM-12). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/SAM-21
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for SAM-21A
+  Finished with: SAM-21 (disk file SAM-21). 460records processed.
+Processing: ../apps/V6Hybrid/ADATA/SHE-01
+  Date elements: [SHIP_DATE   Ship Date                     D0006, ORD_DATE    Order Date                    D0006]
+  Creating template for SHE-01A
+  Finished with: SHE-01 (disk file SHE-01). 14records processed.
+Processing: ../apps/V6Hybrid/ADATA/SHE-04
+  Date elements: [SHIP_DATE   Ship Date                     D0006]
+  Creating template for SHE-04A
+  Finished with: SHE-04 (disk file SHE-04). 44records processed.
+Processing: ../apps/V6Hybrid/ADATA/SHM-02
+  Date elements: [OPENED_DATE Date Opened                   D0003]
+  Creating template for SHM-02A
+  Finished with: SHM-02 (disk file SHM-02). 28records processed.
+Processing: ../apps/V6Hybrid/ADATA/SHM-10
+  Date elements: [LSTREV_DATE Last Revision Date            D0006]
+  Creating template for SHM-10O
+  Finished with: SHM-10 (disk file SHM-10). 1035records processed.
+Processing: ../apps/V6Hybrid/ADATA/SHT-01
+  Date elements: [SHIP_DATE   Ship Date                     D0006, SHIP_DATE   Ship Date                     D0006, ORD_DATE    Order Date                    D0006]
+  Creating template for SHT-01A
+  Finished with: SHT-01 (disk file SHT-01). 76records processed.
+Processing: ../apps/V6Hybrid/ADATA/SHT-02
+  Date elements: [SHIP_DATE   Ship Date                     D0006]
+  Creating template for SHT-02A
+  Finished with: SHT-02 (disk file SHT-02). 96records processed.
+Processing: ../apps/V6Hybrid/ADATA/SHT-04
+  Date elements: [SHIP_DATE   Ship Date                     D0006]
+  Creating template for SHT-04A
+  Finished with: SHT-04 (disk file SHT-04). 344records processed.
+Processing: ../apps/V6Hybrid/ADATA/SHT-04
+  Date elements: [SHIP_DATE   Ship Date                     D0006]
+  Creating template for SHT-04B
+  Finished with: SHT-04 (disk file SHT-04). 344records processed.
+Processing: ../apps/V6Hybrid/ADATA/SHT-04
+  Date elements: [SHIP_DATE   Ship Date                     D0006]
+  Creating template for SHT-04C
+  Finished with: SHT-04 (disk file SHT-04). 344records processed.
+Processing: ../apps/V6Hybrid/ADATA/SHT-04
+  Date elements: [SHIP_DATE   Ship Date                     D0006]
+  Creating template for SHT-04D
+  Finished with: SHT-04 (disk file SHT-04). 344records processed.
+Processing: ../apps/V6Hybrid/ADATA/SHT-05
+  Date elements: [SHIP_DATE   Ship Date                     D0006, CLSD_DATE   Date Closed                   D0006]
+  Creating template for SHT-05A
+  Finished with: SHT-05 (disk file SHT-05). 14records processed.
+Processing: ../apps/V6Hybrid/ADATA/SHW-31
+  Date elements: [SHIP_DATE   Ship Date                     D0006]
+  Creating template for SHW-31A
+  *** error, file rename to tmp_SHW-31 failed
+Processing: ../apps/V6Hybrid/ADATA/SYE-01
+  Date elements: [GEN_DATE    Generation Date (YYYYMMDD)    D0008]
+  Creating template for SYE-01A
+  Finished with: SYE-01 (disk file SYE-01). 3records processed.
+Processing: ../apps/V6Hybrid/ADATA/SYM-03
+  Date elements: [LSTREV_DATE Last Revision Date            D0006]
+  Creating template for SYM-03A
+  Finished with: SYM-03 (disk file SYM-03). 472records processed.
+Processing: ../apps/V6Hybrid/ADATA/SYM-49
+  Date elements: [OPEN_DATE   Date Opened                   D0006, LSTUSE_DATE Date Last Used                D0006]
+  Creating template for SYM-49A
+  Finished with: SYM-49 (disk file SYM-49). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/SYS-01
+  Date elements: [SYSTEM_DATE Current System Date           D0003, CURRENT_DATECurrent System Date           D0006]
+  Creating template for SYS-01T
+  Finished with: SYS-01 (disk file SYS-01). 43records processed.
+Processing: ../apps/V6Hybrid/ADATA/SYS-11
+  Date elements: [LSTREV_DATE Last Revision Date            D0006]
+  Creating template for SYS-11A
+  Finished with: SYS-11 (disk file SYS-11). 22records processed.
+Processing: ../apps/V6Hybrid/ADATA/SYSTEM
+  Date elements: [CURRENT_DATECurrent System Date           D0006]
+  Creating template for SYSTEMA
+  Finished with: SYSTEM (disk file SYSTEM). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/WKW-02
+  Date elements: [INVOICE_DATEInvoice Date                  D0003]
+  Creating template for WKW-02A
+  *** error, file rename to tmp_WKW-02 failed
+Processing: ../apps/V6Hybrid/ADATA/WOE-01
+  Date elements: [OPENED_DATE Date Opened                   D0003, ESTSTT_DATE Estimated Start Date          D0003, ESTCMP_DATE Estimated Completion Date     D0003, ACT_ST_DATE Actual Start Date             D0003, LSTACT_DATE Last Activity Date            D0003, CLOSED_DATE Date Closed                   D0003, CLS_INP_DATEClose Input Date              D0003]
+  Creating template for WOE-01A
+  Finished with: WOE-01 (disk file WOE-01). 60records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOE-02
+  Date elements: [REQUIRE_DATEDate Required                 D0003]
+  Creating template for WOE-02A
+  Finished with: WOE-02 (disk file WOE-02). 307records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOE-03
+  Date elements: [REQUIRE_DATEDate Required                 D0003]
+  Creating template for WOE-03D
+  Finished with: WOE-03 (disk file WOE-03). 771records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOE-06
+  Date elements: [CLOSED_DATE Date Closed                   D0003]
+  Creating template for WOE-06A
+  Finished with: WOE-06 (disk file WOE-06). 140records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOE-11
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for WOE-11A
+  Finished with: WOE-11 (disk file WOE-11). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOE-12
+  Date elements: [TRANS_DATE  Transaction Date              D0003, NEW_TRN_DATETransaction Date After Adjust D0003]
+  Creating template for WOE-12A
+  Finished with: WOE-12 (disk file WOE-12). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOE-13
+  Date elements: [ISSUED_DATE Date Issued                   D0003]
+  Creating template for WOE-13A
+  Finished with: WOE-13 (disk file WOE-13). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOE-15
+  Date elements: [ISSUED_DATE Date Issued                   D0003]
+  Creating template for WOE-15A
+  Finished with: WOE-15 (disk file WOE-15). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOE-21
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for WOE-21A
+  Finished with: WOE-21 (disk file WOE-21). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOE-22
+  Date elements: [REQUIRE_DATEDate Required                 D0003]
+  Creating template for WOE-22A
+  Finished with: WOE-22 (disk file WOE-22). 430records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOE-23
+  Date elements: [REQUIRE_DATEDate Required                 D0003]
+  Creating template for WOE-23A
+  Finished with: WOE-23 (disk file WOE-23). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOE-25
+  Date elements: [REQUIRE_DATEDate Required                 D0003]
+  Creating template for WOE-25A
+  Finished with: WOE-25 (disk file WOE-25). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOE-31
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for WOE-31A
+  Finished with: WOE-31 (disk file WOE-31). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOE-32
+  Date elements: [REQUIRE_DATEDate Required                 D0003]
+  Creating template for WOE-32A
+  Finished with: WOE-32 (disk file WOE-32). 41records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOE-42
+  Date elements: [TRANS_DATE  Transaction Date              D0003, NEW_TRN_DATETransaction Date After Adjust D0003]
+  Creating template for WOE-42A
+  Finished with: WOE-42 (disk file WOE-42). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOM-04
+  Date elements: [YEAR        Year                          D0002]
+  Creating template for WOM-04A
+  Finished with: WOM-04 (disk file WOM-04). 95records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOM-05
+  Date elements: [SCHED_DATE  Schedule Date                 D0003]
+  Creating template for WOM-05A
+  Finished with: WOM-05 (disk file WOM-05). 418records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOM-06
+  Date elements: [SCHED_DATE  Schedule Date                 D0003]
+  Creating template for WOM-06A
+  Finished with: WOM-06 (disk file WOM-06). 259records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOM-07
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for WOM-07A
+  Finished with: WOM-07 (disk file WOM-07). 552records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOS-01
+  Date elements: [CURRENT_YEARCurrent Year                  D0002]
+  Creating template for WOS-01A
+  Finished with: WOS-01 (disk file SYS-01). 43records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOT-01
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for WOT-01A
+  Finished with: WOT-01 (disk file WOT-01). 92records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOT-02
+  Date elements: [CLOSED_DATE Date Closed                   D0003, OPENED_DATE Date Opened                   D0003]
+  Creating template for WOT-02A
+  Finished with: WOT-02 (disk file WOT-02). 0records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOT-03
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for WOT-03A
+  Finished with: WOT-03 (disk file WOT-03). 69records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOT-11
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for WOT-11A
+  Finished with: WOT-11 (disk file WOT-11). 57records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOT-12
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for WOT-12A
+  Finished with: WOT-12 (disk file WOT-12). 16records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOT-21
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for WOT-21A
+  Finished with: WOT-21 (disk file WOT-21). 125records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOT-23
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for WOT-23A
+  Finished with: WOT-23 (disk file WOT-23). 84records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOT-31
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for WOT-31A
+  Finished with: WOT-31 (disk file WOT-31). 7records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOT-33
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for WOT-33A
+  Finished with: WOT-33 (disk file WOT-33). 9records processed.
+Processing: ../apps/V6Hybrid/ADATA/WOW-04
+  Date elements: [SELECT_DATE Report Selection Date         D0003]
+  Creating template for WOW-04A
+  *** error, file rename to tmp_WOW-04 failed
+Processing: ../apps/V6Hybrid/ADATA/WOW-06
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for WOW-06A
+  *** error, file rename to tmp_WOW-06 failed
+Processing: ../apps/V6Hybrid/ADATA/WOW-08
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for WOW-08A
+  *** error, file rename to tmp_WOW-08 failed
+Processing: ../apps/V6Hybrid/ADATA/WOW-11
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+  Creating template for WOW-11A
+  *** error, file rename to tmp_WOW-11 failed
+
+V6 demo year processing completed
+End Time: 08/16/2016 01:26:06 

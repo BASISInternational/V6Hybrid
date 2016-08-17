@@ -1,0 +1,177 @@
+0010 REM "SYC - Set Function Keys Back to Default CTL Values"
+0020 REM "Program SYC.FK"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0031 REM "13Dec00 KJS: Get Home and End to work (m2240,a3372,a3374,a3376,a3378
+0031:)
+0032 REM "29Mar01 KJS: Always start with the BASIS !EDIT and !TERMS (a500,a510
+0032:,a520,a530,a550,a590)
+0040 REM 
+0045 REM "STATUS: 0=No Error (returned)"
+0050 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER STATUS
+0100 REM 
+0110 REM "This routine does five things:
+0120 REM "1) Set F5 to F10 to return CTL values instead of DATE, LIST, etc.
+0140 REM "2) Sets F5 to F10 to terminate the INPUTE statement.
+0150 REM "3) Sets the Up/Down Arrows and PgUp/PgDn to terminate INPUTE.
+0160 REM "4) Sets the INS and DEL edit functions from the default CTRL+E
+0170 REM "   and CTRL+X to the INS and DEL keys on the keyboard
+0180 REM "5) Adds certain options to the SETOPTS
+0190 REM 
+0500 REM "=================================================================
+0510 REM "Start with the standard BASIS values for !EDIT and !TERMS
+0520 REM "=================================================================
+0530 REM 
+0550 LET JUNK$=STBL("!EDIT",STBL("!SEDIT")),JUNK$=STBL("!TERMS",STBL("!STERMS"
+0550:))
+0590 REM 
+1000 REM "=================================================================
+1010 REM "Function key reset - Use CTL values for F1 to F12
+1020 REM "=================================================================
+1030 REM "FL=Function key load, 3=Set, 1st byte=Number of keys to set
+1040 REM 
+1050 REM "The following sequence is repeated for each function key:
+1060 REM "1) Function key number $00$ through $0B$
+1070 REM "2) Length of control sequence to load ($01$)
+1080 REM "3) Control sequence to load
+1090 REM 
+1100 PRINT 'FL'+"3"+$0C0001810101820201830301840401850501860601870701880801890
+1100:9018A0A018B0B018C$,
+1110 REM 
+1200 REM "=================================================================
+1210 REM "Set Function keys F1 to F12 terminate INPUTE
+1220 REM "=================================================================
+1230 REM "Add function keys to environment variable !TERMS
+1240 REM 
+1250 LET A$=$8101820283038404850586068707880889098A0A8B0B8C0C$
+1260 LET B$=STBL("!TERMS"); REM "Get current
+1270 IF POS(A$=B$)=0 THEN LET B$=STBL("!TERMS",A$+B$)
+1280 REM 
+1400 REM "=================================================================
+1410 REM "Set Up/Down Arrows and PgUp/PgDn to return CTL values 33 34 37 38
+1420 REM "=================================================================
+1430 REM "This is the same sequence as above showing function keys 33 and 34"
+1440 REM "with the values currently assigned the up and down arrows"
+1450 REM 
+1460 PRINT 'FL'+"3"+$042101A12201A22501A52601A6$,
+1470 LET A$=$A121A222A525A626$,B$=STBL("!TERMS")
+1480 IF POS(A$=B$)=0 THEN LET B$=STBL("!TERMS",A$+B$)
+1490 REM 
+1500 REM "=================================================================
+1510 REM "Set Up/Down Arrows and Function Keys to terminate INPUTE
+1520 REM "=================================================================
+1530 REM "After the function key load has been performed and !TERMS is set"
+1540 REM "we still have to set the keys up in the !EDIT variable so that"
+1550 REM "they will work the same with the INPUTE and CALL "_edit" routines."
+1560 REM 
+1570 LET A$=$8101820283038404850586068707880889098A0A8B0B8C0CA121A222A525A626$
+1580 PRINT 'EL'+"3"+$040201A10301A20601A50701A6$,
+1590 LET B$=STBL("!EDIT")
+1600 IF POS(A$=B$)=0 THEN LET B$=STBL("!EDIT",A$+B$)
+1610 REM 
+2000 REM "=================================================================
+2010 REM "Set editing keys to from Control-n to use real keys
+2020 REM "=================================================================
+2040 REM "Here we set the INS and DEL keys to send high order byte characters
+2050 REM "to get them out of the regular character sequences.  The first byte
+2060 REM "EL=Edit key load, 3=Set, 1st byte=Number of keys to set
+2070 REM 
+2080 REM "The following sequence is repeated for each edit key:
+2090 REM "1) Edit key number $00$ through $09$
+2100 REM "2) Length of control sequence to load ($01$)
+2110 REM "3) Control sequence to load
+2120 REM 
+2130 REM "Edit keys are defined in BBx as follows:
+2140 REM 
+2150 REM "0=Left Arrow"         5=End Key ('EN')
+2160 REM "1=Right Arrow"        6=Page Up Key ('PU')
+2170 REM "2=Up Arrow"           7=Page Down Key ('PD')
+2180 REM "3=Down Arrow"         8=Insert Key ('IN')
+2190 REM "4=Home Key ('KH')     9=Delete Key ('DL')
+2200 REM 
+2210 REM "NOTE: These keys must be present and defined the same way
+2220 REM "      in termcap in order to work correctly!"
+2230 REM 
+2240 PRINT 'EL'+"3"+$0600011D01011C0801A30901A40401A80501A9$,
+2250 REM 
+3000 REM "===============================================================
+3010 REM "Change default values in !EDIT to match new values
+3020 REM "===============================================================
+3040 REM "The structure of the !EDIT variable is as follows:
+3050 REM 
+3060 REM "The first byte indicates the value transmitted from the keyboard
+3070 REM "The second byte indicates which editor function is invoked
+3080 REM 
+3090 REM "Function Values in !EDIT are as follows:"
+3100 REM 
+3110 REM "0-62 = Enter           70 = Toggle Insert   78 = Ins Line
+3120 REM "  63 = Help            71 = Ins Character   79 = Del Line
+3130 REM "  64 = Left Arrow      72 = Del Character   80 = Page Down
+3140 REM "  65 = Right Arrow     73 = Tab"            81 = Page Up
+3150 REM "  66 = Up Arrow        74 = Backtab         82 = Reprint
+3160 REM "  67 = Down Arrow      75 = Clear           83 = Next Word
+3170 REM "  68 = Backspace       76 = Beginning       84 = Previous Word
+3180 REM "  69 = Restore Value   77 = End
+3190 REM 
+3200 LET E$=STBL("!EDIT")
+3210 FOR X=0 TO INT(LEN(E$)/2)-1
+3220 REM "Change function 71 (Ins) to $A3$
+3230 IF ASC(E$(X*2+2,1))=71 THEN LET E$(X*2+1,1)=$A3$
+3240 REM "Change function 72 (Del) to $A4$
+3250 IF ASC(E$(X*2+2,1))=72 THEN LET E$(X*2+1,1)=$A4$
+3260 REM "Change function 81 (PgUp) to $A5$
+3270 IF ASC(E$(X*2+2,1))=81 THEN LET E$(X*2+1,1)=$A5$
+3280 REM "Change function 80 (PgDn) to $A6$
+3290 IF ASC(E$(X*2+2,1))=80 THEN LET E$(X*2+1,1)=$A6$
+3300 REM "Change function 66 (Up) to $A1$
+3310 IF ASC(E$(X*2+2,1))=66 THEN LET E$(X*2+1,1)=$A1$
+3320 REM "Change function 67 (Down) to $A2$
+3330 IF ASC(E$(X*2+2,1))=67 THEN LET E$(X*2+1,1)=$A2$
+3340 REM "Change function 64 (Left) to $1D$
+3350 IF ASC(E$(X*2+2,1))=64 THEN LET E$(X*2+1,1)=$1D$
+3360 REM "Change function 65 (Right) to $1C$
+3370 IF ASC(E$(X*2+2,1))=65 THEN LET E$(X*2+1,1)=$1C$
+3372 REM "Change function 76 (Home) to $A8$
+3374 IF ASC(E$(X*2+2,1))=76 THEN LET E$(X*2+1,1)=$A8$
+3376 REM "Change function 77 (End) to $A9$
+3378 IF ASC(E$(X*2+2,1))=77 THEN LET E$(X*2+1,1)=$A9$
+3380 NEXT X
+3390 LET B$=STBL("!EDIT",E$)
+3400 REM 
+3500 REM "===============================================================
+3510 REM "SETOPTS - Set BBx options to ADD+ON defaults
+3520 REM "===============================================================
+3530 REM 
+3540 REM "1) Disable Error 43 (mask overflows)
+3550 REM "2) Enable advisory locking
+3560 REM "3) Add non-destructive cursor positioning
+3570 REM 
+3580 LET OPTIONS$=OPTS,OPTIONS$=IOR(OPTIONS$(1,3),$008840$)
+3590 SETOPTS OPTIONS$
+4000 REM " --- All done"
+4090 GOTO 9900
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 EXIT
+9999 END

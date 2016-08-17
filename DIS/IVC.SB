@@ -1,0 +1,85 @@
+0010 REM "IVC - Inventory Warning Messages"
+0020 REM "Program IVC.SB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0045 REM "ACTION$: Warning to display (Input)"
+0047 REM "         A=Accounts Payable Required"
+0050 REM "         L=Lot/Serial Required"
+0055 REM "         S=Standard Costing Required"
+0060 REM "         F=LIFO/FIFO Required"
+0065 REM "         P=Physical Inventory File In Use"
+0067 REM "         R=Accounts Receivable Required"
+0070 REM "STATUS : 0=No Error (Returned)"
+0075 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER ACTION$,STATUS
+0500 REM " --- Initializations"
+0510 DIM MESSAGE$[2]
+0550 LET LINES=2
+0900 REM " --- Branch based on ACTION$"
+0990 ON POS(ACTION$="LSFPAR") GOTO 4000,1000,1100,1200,1300,1400,1500
+1000 REM " --- Lot/Serial Required"
+1010 LET MESSAGE$[0]="Inventory Parameters Indicate That Lotted/Serialized Inv
+1010:entory Is"
+1020 LET MESSAGE$[1]="Not Being Used. This Task May Not Be Used Unless Lotted/
+1020:Serialized"
+1030 LET MESSAGE$[2]="Inventory Is In Use (<Enter>=Continue)"
+1090 GOTO 3000
+1100 REM " --- Standard Costing Required"
+1110 LET MESSAGE$[0]="The Inventory Costing Method In The Inventory Parameters
+1110:"
+1120 LET MESSAGE$[1]="Must Be Set To Standard Costing In Order To Use This Tas
+1120:k."
+1130 LET MESSAGE$[2]="            Press <Enter> To Continue"
+1190 GOTO 3000
+1200 REM " --- LIFO/FIFO Required"
+1210 LET MESSAGE$[0]="Inventory Parameters Indicate That LIFO or FIFO Inventor
+1210:y Is"
+1220 LET MESSAGE$[1]="Not Being Used. This Task May Not Be Used Unless LIFO or
+1220: FIFO"
+1230 LET MESSAGE$[2]="Inventory Is In Use (<Enter>=Continue)"
+1290 GOTO 3000
+1300 REM " --- Physical Inventory File In Use"
+1310 LET MESSAGE$[0]="The Physical Inventory File Is Currently In Use By Anoth
+1310:er"
+1320 LET MESSAGE$[1]="User. This Task May Not Be Used While That File Is In Us
+1320:e."
+1330 LET MESSAGE$[2]="            Press <Enter> To Continue"
+1390 GOTO 3000
+1400 REM " --- AP Is Not Installed"
+1410 LET X$="Accounts Payable"
+1490 GOTO 1550
+1500 REM " --- AR Is Not Installed"
+1510 LET X$="Accounts Receivable"
+1550 LET MESSAGE$[0]=X$+" Is Required To Run This Task (<Enter>=Continue)"
+1560 LET LINES=0
+3000 REM " --- Display message"
+3010 CALL "SYC.XA",3,MESSAGE$[ALL],LINES,-1,-1,V$,V3
+4000 REM " --- All Done"
+4010 LET STATUS=0
+4090 GOTO 9900
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to Calling Program"
+9950 EXIT
+9999 END

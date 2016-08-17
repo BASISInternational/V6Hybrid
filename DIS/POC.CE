@@ -1,0 +1,76 @@
+0010 REM "POC - Return first/last scheduled dates"
+0020 REM "Program POC.CE"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0045 REM "POM01_DEV: Calendar file channel POM-01/MPM-02 (input)"
+0047 REM "N0$      : Firm ID (input)"
+0050 REM "BEGDATE$ : First date scheduled or null (returned)"
+0055 REM "ENDDATE$ : Last date scheduled or null (returned)"
+0065 REM "STATUS   : 0=No error (returned)"
+0070 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER POM01_DEV,N0$,BEGDATE$,ENDDATE$,STATUS
+0200 REM " --- IOLISTs"
+0210 POM01A: IOLIST A0$(1),A1$(1)
+0500 REM " --- Init Data"
+0510 DIM A0$(6),A1$(31)
+0550 LET BEGDATE$="",ENDDATE$=""
+0900 REM " --- Position file"
+0990 READ (POM01_DEV,KEY=N0$,DOM=1000)
+1000 REM " --- Get First Day Scheduled"
+1010 LET K$=KEY(POM01_DEV,END=1900)
+1020 IF POS(N0$=K$)<>1 THEN GOTO 1900
+1030 READ (POM01_DEV)IOL=POM01A
+1040 LET WORKDAY$=STR(POS(" "<>A1$):"00")
+1050 IF WORKDAY$="00" THEN LET WORKDAY$="01"
+1060 LET BEGDATE$=FND$(A0$(5,2)+WORKDAY$+A0$(3,2))
+1900 REM " --- Position file"
+1990 READ (POM01_DEV,KEY=N0$+$FF$,DOM=2000)
+2000 REM " --- Get Last Day Scheduled"
+2010 LET K$=KEYP(POM01_DEV,END=4000)
+2020 IF POS(N0$=K$)<>1 THEN GOTO 4000
+2030 READ (POM01_DEV,KEY=K$)IOL=POM01A
+2040 LET WORKDAY$=STR(POS(" "<>A1$,-1):"00")
+2050 IF WORKDAY$="00" THEN LET WORKDAY$="01"
+2060 LET ENDDATE$=FND$(A0$(5,2)+WORKDAY$+A0$(3,2))
+4000 REM " --- All done"
+4090 GOTO 9900
+8000 REM " --- Functions"
+8040 DEF FND$(Q$)=CHR(FNYY_YEAR(Q$(5,2))+32)+CHR(NUM(Q$(1,2))+32)+CHR(NUM(Q$(3
+8040:,2))+32)
+8145 REM " --- FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+8150 DEF FNYY21_YY$(Q1$)
+8155 LET Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABC
+8155:DEFGHIJ"))
+8160 RETURN Q1$
+8165 FNEND
+8170 REM " --- FNYY_YEAR Convert 2-Char Year to 21st Century Numeric Year"
+8175 DEF FNYY_YEAR(Q1$)
+8180 LET Q=NUM(FNYY21_YY$(Q1$)); IF Q<50 THEN LET Q=Q+100
+8185 RETURN Q
+8190 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9950 EXIT
+9999 END

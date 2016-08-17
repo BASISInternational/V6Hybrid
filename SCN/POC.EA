@@ -1,0 +1,136 @@
+0010 REM "POC - Delete Requisition, Purchase Order or Receipt"
+0020 REM "Program POC.EA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.5 - 01Dec98 |"
+0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0031 REM "12Jul96 JAL: Lot/Serial entry records and Item By PO xref records we
+0031:ren't being removed when receipts were deleted. (1230,1240)"
+0032 REM "13May97 WGH: When deleting a PO, use conversion factor to adjust inv
+0032:entory quantity (1320)"
+0033 REM "11Jun98 JWK: Not removing Nonstock WO Link (1210)
+0040 REM 
+0041 REM "TYPE$      : Record type (input)"
+0042 REM "           : R=Requisition/P=Purchase Order"
+0043 REM "           : Q=QA Receiver/C=PO Receiver"
+0045 REM "CHANNELS[n]: Channel numbers (input)"
+0046 REM "           : [1]=POS-10              [7]=POE-41/42/43/44"
+0047 REM "           : [2]=POM-02              [8]=POE-51/52/53/54"
+0048 REM "           : [3]=POE-01/02/03/04     [9]=IVM-01"
+0049 REM "           : [4]=POE-11/12/13/14    [10]=IVM-02"
+0050 REM "           : [5]=POE-21/22/23/24    [11]=WOE-22"
+0051 REM "           : [6]=POE-31/32/33/34    [12]=WOE-32"
+0056 REM "PARAMS[n]  : Numeric parameters (input)"
+0057 REM "           : [0]=Inventory precision"
+0060 REM "PARAMS$[n] : String parameters (input)"
+0061 REM "           : [0]=Firm ID               [3]=4th IV param string"
+0062 REM "           : [1]=SF installed?         [4]=5th IV param string"
+0063 REM "           : [2]=3rd IV param string"
+0066 REM "A0$        : Header record 1st string (input)"
+0068 REM "A1$        : Header record 2nd string (input)"
+0070 REM "STATUS     : 0=No error (returned)"
+0075 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER TYPE$,CHANNELS[ALL],PARAMS[ALL],PARAMS$[ALL],A0$,A1$,STATUS
+0100 REM " --- Open/Lock Files"
+0110 LET POS10_DEV=CHANNELS[1],POM02_DEV=CHANNELS[2],POE02_DEV=CHANNELS[3]
+0120 LET POE12_DEV=CHANNELS[4],POE22_DEV=CHANNELS[5],POE32_DEV=CHANNELS[6]
+0130 LET POE42_DEV=CHANNELS[7],POE52_DEV=CHANNELS[8],IVM01_DEV=CHANNELS[9]
+0140 LET IVM02_DEV=CHANNELS[10],WOE22_DEV=CHANNELS[11],WOE32_DEV=CHANNELS[12]
+0200 REM " --- IOLIST's"
+0210 POE12A: IOLIST W0$(1),W1$(1),W2$(1),W3$(1),W4$(1),W5$,W6$,W[ALL]
+0220 POM02A: IOLIST Y0$(1),Y1$(1)
+0400 REM " --- Parameters"
+0410 LET KEYLEN=18
+0420 IF POS(TYPE$="QC") THEN LET KEYLEN=25
+0430 LET N0$=PARAMS$[0],SF$=PARAMS$[1],PLACES=PARAMS[0]
+0440 LET I2$=PARAMS$[2],I3$=PARAMS$[3],I4$=PARAMS$[4]
+0500 REM " --- Initializations"
+0505 PRECISION PLACES
+0510 DIM W0$(KEYLEN),W1$(64),W2$(32),W3$(22),W4$(40),W[12],Y0$(4),Y1$(32)
+0520 DIM FILES[99],ITEM$[6],PARAMS$[20],PARAMS[20],REFS[20],REFS$[20]
+0900 REM " --- Position detail file"
+0990 READ (POE12_DEV,KEY=A0$,DOM=1000)
+1000 REM " --- Remove detail lines"
+1010 LET K$=KEY(POE12_DEV,END=2000)
+1020 IF POS(A0$=K$)<>1 THEN GOTO 2000
+1030 READ (POE12_DEV)IOL=POE12A
+1040 REMOVE (POE12_DEV,KEY=K$,DOM=2000)
+1050 IF W0$(1,2)+W1$(1,2)=Y0$ THEN GOTO 1200
+1060 LET Y0$(1)=W0$(1,2)+W1$(1,2),Y1$(1)=""
+1070 FIND (POM02_DEV,KEY=Y0$,DOM=1200)IOL=POM02A
+1200 REM " --- Remove Item/PO xref"
+1210 IF Y1$(21,1)<>"S" THEN GOTO 1500
+1220 LET K$=W0$(1,2)+W3$(3)+W0$(9)+W0$(3,6)
+1230 IF POS(TYPE$="QC") THEN LET K$=K$(1,22)+W0$(16)+W0$(3,6)+W0$(9,7)
+1240 REMOVE (POE42_DEV,KEY=K$,DOM=1300)
+1300 REM " --- Reduce quantity on-order"
+1310 IF POS(TYPE$="P")=0 THEN GOTO 1400
+1320 LET ITEM$[0]=N0$,ITEM$[1]=W3$(1,2),ITEM$[2]=W3$(3),REFS[0]=-(W[3]-W[7])*W
+1320:[0]
+1330 LET FILES[1]=IVM01_DEV,FILES[2]=IVM02_DEV,ACTION$="OO"
+1340 LET PARAMS$[2]=I2$,PARAMS$[3]=I3$,PARAMS$[4]=I4$
+1350 CALL "IVC.UA",ACTION$,FILES[ALL],PARAMS[ALL],PARAMS$[ALL],ITEM$[ALL],REFS
+1350:$[ALL],REFS[ALL],STATUS
+1400 REM " --- Delete lot/serial file"
+1410 IF POS(TYPE$="QC")=0 THEN GOTO 1500
+1420 LET CHANNEL=POE22_DEV; REM "POE-23 or POE-24
+1430 IF CHANNEL THEN GOSUB 6000
+1500 REM " --- Delete rejection detail file"
+1510 IF POS(TYPE$="Q")=0 THEN GOTO 1600
+1520 LET CHANNEL=POE63_DEV
+1530 IF CHANNEL THEN GOSUB 6000
+1600 REM " --- Remove any existing work order link"
+1610 IF SF$<>"Y" THEN GOTO 1900
+1620 IF POS(Y1$(21,1)="NS")=0 THEN GOTO 1900
+1630 IF POS(TYPE$="RP")=0 THEN GOTO 1900
+1640 IF FNP$(W2$(1,7))="" THEN GOTO 1900
+1650 LET PO$=W0$(9),OLDWO$=W2$(1,10),NEWWO$=""
+1660 CALL "POC.WA",WOE22_DEV,WOE32_DEV,N0$,PO$,TYPE$,Y1$,OLDWO$,NEWWO$,PLACES,
+1660:STATUS
+1900 REM " --- Loop back for next detail"
+1990 GOTO 1000
+2000 REM " --- Remove print record"
+2010 IF POS(TYPE$="QC") THEN GOTO 2500
+2020 REMOVE (POE22_DEV,KEY=A0$,DOM=2030)
+2030 LET K$=A0$(1,2)+A0$(9)+A0$(3,6)
+2500 REM " --- Remove header"
+2510 IF POS(TYPE$="QC") THEN LET K$=A0$(1,2)+A0$(16,7)+A0$(3,6)+A0$(9,7)
+2520 REMOVE (POE32_DEV,KEY=K$,DOM=2530)
+2530 LET K$=A0$(1,2)+A1$(112,7)+A0$(3)
+2540 IF POS(TYPE$="QC") THEN LET K$=A0$(1,2)+A0$(9,7)+A0$(3,6)+A0$(16,7)
+2550 IF POS(TYPE$="PQC") THEN REMOVE (POE52_DEV,KEY=K$,DOM=2560)
+2560 REMOVE (POE02_DEV,KEY=A0$,DOM=3000)
+4000 REM " --- All done"
+4090 GOTO 9900
+6000 REM " --- Remove Record"
+6010 READ (CHANNEL,KEY=A0$,DOM=6020)
+6020 LET K$=KEY(CHANNEL,END=6090)
+6040 IF POS(A0$=K$)<>1 THEN GOTO 6090
+6060 REMOVE (CHANNEL,KEY=K$)
+6080 GOTO 6020
+6090 RETURN
+8000 REM " --- Functions"
+8080 DEF FNP$(Q$)=CVS(Q$,2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9950 EXIT
+9999 END

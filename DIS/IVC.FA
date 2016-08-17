@@ -1,0 +1,67 @@
+0010 REM "IVC - Activity Type Descriptions"
+0020 REM "Program IVC.FA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0045 REM "SELECTION$  : Activity Type Code (input)"
+0050 REM "DESCRIPTION$: Activity Description (returned)"
+0055 REM "TITLE$      : Activity Column Title (returned)"
+0060 REM "STATUS      : 0=No Error (returned)"
+0065 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER SELECTION$,DESCRIPTION$,TITLE$,STATUS
+0400 REM " --- Parameters"
+0410 LET NUMBER=15
+0500 REM " --- Initializations"
+0510 DIM DESCRIPTIONS$[NUMBER],TITLES$[NUMBER]
+0540 LET DESCRIPTION$="(Unknown)",TITLE$=DESCRIPTION$,STATUS=11
+0545 LET TYPES$="RECBLTSLDISSADJXFIXFORETENDBEGIN OUTUSEXFROTH"
+0550 LET DESCRIPTIONS$[1]="Quantity Received",TITLES$[1]="Received"
+0555 LET DESCRIPTIONS$[2]="Quantity Built",TITLES$[2]="Built"
+0560 LET DESCRIPTIONS$[3]="Quantity Sold",TITLES$[3]="Sold"
+0565 LET DESCRIPTIONS$[4]="Quantity Issued",TITLES$[4]="Issued"
+0570 LET DESCRIPTIONS$[5]="Adjustment Quantity",TITLES$[5]="Adjustments"
+0575 LET DESCRIPTIONS$[6]="Quantity Transferred In",TITLES$[6]="Xfer In"
+0580 LET DESCRIPTIONS$[7]="Quantity Transferred Out",TITLES$[7]="Xfer Out"
+0585 LET DESCRIPTIONS$[8]="Quantity Returned",TITLES$[8]="Returned"
+0590 LET DESCRIPTIONS$[9]="Ending Balance",TITLES$[9]="Ending"
+0595 LET DESCRIPTIONS$[10]="Beginning Balance",TITLES$[10]="Beginning"
+0600 LET DESCRIPTIONS$[11]="Quantity Received And Built",TITLES$[11]="Rec'd/Bu
+0600:ilt"
+0605 LET DESCRIPTIONS$[12]="Quantity Sold And Issued",TITLES$[12]="Sold/Issued
+0605:"
+0610 LET DESCRIPTIONS$[13]="Ending Balance - Beginning",TITLES$[13]="Usage"
+0615 LET DESCRIPTIONS$[14]="Net Quantity Transferred",TITLES$[14]="Transfers"
+0620 LET DESCRIPTIONS$[15]="Adjustment Quantity + Returns",TITLES$[15]="Other"
+1000 REM " --- Return DESCRIPTION$/TITLE$ based on SELECTION$"
+1010 LET P=POS(SELECTION$=TYPES$,3)
+1020 IF P=0 THEN GOTO 4000
+1030 LET P=INT((P-1)/3)+1,STATUS=0
+1040 LET DESCRIPTION$=DESCRIPTIONS$[P],TITLE$=TITLES$[P]
+4000 REM " --- All done"
+4090 GOTO 9900
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 LET STATUS=999
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to calling program"
+9950 EXIT
+9999 END

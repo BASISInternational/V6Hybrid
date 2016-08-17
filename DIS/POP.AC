@@ -1,0 +1,235 @@
+0010 REM "POP - Parameter Maintenance (Default Values)"
+0020 REM "Program POP.AC"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0080 SETERR 9000
+0090 SETESC 9000
+0200 REM " --- IOLIST's"
+0210 POS01A: IOLIST A0$,A1$,A2$,A3$(1),A4$
+0220 POM02A: IOLIST B0$(1),B1$(1)
+0240 POM04A: IOLIST C0$(1),C1$(1)
+0500 REM " --- Initializations"
+0510 DIM A3$(128),B0$(4),B1$(32),C0$(5),C1$(20)
+0700 REM " --- Background"
+0710 PRINT @(0,3),'CE',
+0720 CALL "SYC.WC",1,0,47,0,14,12,0
+0730 CALL "SYC.WC",1,0,47,0,14,17,0
+0740 PRINT 'SB',@(17,4),"Requisition Hold Flag:",@(14,5),"Requisition Message 
+0740:Code:",@(11,6),"Purchase Order Message Code:",@(29,7),"Line Code:",@(30,8
+0740:),"Ship Via:",@(25,9),"Freight Terms:",@(32,10),"F.O.B.:",@(21,12)," Requ
+0740:isition Generation Defaults ",@(15,13),"Standard Type Line Code:",@(14,14
+0740:),"Non-Stock Type Line Code:",@(16,15),"Message Type Line Code:",@(26,17)
+0740:," Invoice Entry Defaults ",@(18,18),"Other Type Line Code:",'SF',
+1200 REM " --- Retrieve record"
+1210 FIND (SYS01_DEV,KEY=A0$,DOM=1400)IOL=POS01A
+1300 REM " --- Display"
+1310 GOSUB 5000
+1390 GOTO 4000
+1400 REM " --- New record"
+1490 GOSUB 5000
+2000 REM " --- Hold?"
+2010 LET V4$="Automatically Hold All Requisitions Unless Overridden (Y/N)?"
+2020 LET V0$="Y",V1$="C",V2$=A3$(48,1),V3$="",V0=1,V1=40,V2=4,I0=0
+2030 GOSUB 7000
+2040 ON V3 GOTO 2050,2000,3900,2000,3900
+2050 LET A3$(48,1)=V$
+2090 GOTO 3900
+2200 REM " --- Requisition Message"
+2210 LET V4$="Enter The Default Message To Be Printed On Requisitions (<F3>=Lo
+2210:okup)"
+2220 LET V0$="S",V1$="C",V2$=A3$(49,3),V3$="",V0=3,V1=40,V2=5
+2225 GOSUB 7000
+2230 ON V3 GOTO 2250,2200,3900,2240,3900
+2240 CALL "POC.LK",2,V1,V2,V$
+2250 LET C0$(1)=N0$+V$,C1$(1)=""
+2260 FIND (POM04_DEV,KEY=C0$,DOM=2270)IOL=POM04A
+2270 PRINT @(V1,V2),C0$(3)," ",C1$(1,20),
+2280 LET A3$(49,3)=V$
+2290 GOTO 3900
+2400 REM " --- Purchase Order Message"
+2410 LET V4$="Enter The Default Message To Be Printed On Purchase Orders (<F3>
+2410:=Lookup)"
+2420 LET V0$="S",V1$="C",V2$=A3$(52,3),V3$="",V0=3,V1=40,V2=6
+2425 GOSUB 7000
+2430 ON V3 GOTO 2450,2400,3900,2440,3900
+2440 CALL "POC.LK",2,V1,V2,V$
+2450 LET C0$(1)=N0$+V$,C1$(1)=""
+2460 FIND (POM04_DEV,KEY=C0$,DOM=2470)IOL=POM04A
+2470 PRINT @(V1,V2),C0$(3)," ",C1$(1,20),
+2480 LET A3$(52,3)=V$
+2490 GOTO 3900
+2600 REM " --- Line Code"
+2610 LET V4$="Enter The Default Line Code For Requisition/Purchase Order Entry
+2610: (<F3>=Lookup)"
+2620 LET V0$="S",V1$="C",V2$=A3$(56,2),V3$="",V0=2,V1=40,V2=7
+2625 GOSUB 7000
+2630 ON V3 GOTO 2650,2600,3900,2640,3900
+2640 CALL "POC.LK",1,V1,V2,V$
+2650 LET B0$(1)=N0$+V$,B1$(1)=""
+2660 FIND (POM02_DEV,KEY=B0$,DOM=2670)IOL=POM02A
+2670 PRINT @(V1,V2),B0$(3)," ",B1$(1,20),
+2680 LET A3$(56,2)=V$
+2690 GOTO 3900
+2800 REM " --- Ship Via"
+2810 LET V4$="Enter The Default Shipping Method Or Carrier For Requisitions/Pu
+2810:rchase Orders"
+2820 LET V0$="S",V1$="C",V2$=A3$(3,15),V3$="",V0=15,V1=40,V2=8
+2830 GOSUB 7000
+2840 ON V3 GOTO 2850,2800,3900,2800,3900
+2850 LET A3$(3,15)=V$
+2890 GOTO 3900
+3000 REM " --- Freight Terms"
+3010 LET V4$="Enter The Default Freight Terms For Requisitions/Purchase Orders
+3010:"
+3020 LET V0$="S",V1$="C",V2$=A3$(18,15),V3$="",V0=15,V1=40,V2=9
+3030 GOSUB 7000
+3040 ON V3 GOTO 3050,3000,3900,3000,3900
+3050 LET A3$(18,15)=V$
+3090 GOTO 3900
+3200 REM " --- F.O.B."
+3210 LET V4$="Enter Any Default F.O.B. Information For Requisitions/Purchase O
+3210:rders"
+3220 LET V0$="S",V1$="C",V2$=A3$(33,15),V3$="",V0=15,V1=40,V2=10
+3230 GOSUB 7000
+3240 ON V3 GOTO 3250,3200,3900,3200,3900
+3250 LET A3$(33,15)=V$
+3290 GOTO 3900
+3400 REM " --- Requisition Generation Default Standard Line Code"
+3405 STYPE:
+3410 LET V4$="Enter The Default Line Type 'S' Line Code For Requisition Creati
+3410:on (<F3>=Lookup)"
+3420 LET V0$="S",V1$="C",V2$=A3$(63,2),V3$="",V0=2,V1=40,V2=13
+3430 GOSUB 7000
+3440 ON V3 GOTO 3460,STYPE,3900,3450,3900
+3450 CALL "POC.LK",1,V1,V2,V$
+3460 GOSUB 6000
+3465 IF STATUS THEN GOTO STYPE
+3470 IF B1$(21,1)<>"S" THEN GOTO STYPE
+3475 PRINT @(V1,V2),B0$(3)," ",B1$(1,20),
+3480 LET A3$(63,2)=V$
+3490 GOTO 3900
+3500 REM " --- Requisition Generation Default Non-Stock Line Code"
+3505 NTYPE:
+3510 LET V4$="Enter The Default Line Type 'N' Line Code For Requisition Creati
+3510:on (<F3>=Lookup)"
+3520 LET V0$="S",V1$="C",V2$=A3$(65,2),V3$="",V0=2,V1=40,V2=14
+3530 GOSUB 7000
+3540 ON V3 GOTO 3560,NTYPE,3900,3550,3900
+3550 CALL "POC.LK",1,V1,V2,V$
+3560 GOSUB 6000
+3565 IF STATUS THEN GOTO NTYPE
+3570 IF B1$(21,1)<>"N" THEN GOTO NTYPE
+3575 PRINT @(V1,V2),B0$(3)," ",B1$(1,20),
+3580 LET A3$(65,2)=V$
+3590 GOTO 3900
+3600 REM " --- Requisition Generation Default Message Line Code"
+3605 MTYPE:
+3610 LET V4$="Enter The Default Line Type 'M' Line Code For Requisition Creati
+3610:on (<F3>=Lookup)"
+3620 LET V0$="S",V1$="C",V2$=A3$(67,2),V3$="",V0=2,V1=40,V2=15
+3630 GOSUB 7000
+3640 ON V3 GOTO 3660,MTYPE,3900,3650,3900
+3650 CALL "POC.LK",1,V1,V2,V$
+3660 GOSUB 6000
+3665 IF STATUS THEN GOTO MTYPE
+3670 IF B1$(21,1)<>"M" THEN GOTO MTYPE
+3675 PRINT @(V1,V2),B0$(3)," ",B1$(1,20),
+3680 LET A3$(67,2)=V$
+3690 GOTO 3900
+3700 REM " --- Invoice Line Code"
+3710 LET V4$="Enter The Default Other Type Line Code For PO Invoice Entry (<F3
+3710:>=Lookup)"
+3720 LET V0$="S",V1$="C",V2$=A3$(70,2),V3$="",V0=2,V1=40,V2=18
+3725 GOSUB 7000
+3730 ON V3 GOTO 3750,3700,3900,3740,3900
+3740 CALL "POC.LK",1,V1,V2,V$
+3750 GOSUB 6000
+3760 IF STATUS THEN GOTO 3700
+3765 IF B1$(21,1)<>"O" THEN GOTO 3700
+3770 PRINT @(V1,V2),B0$(3)," ",B1$(1,20),
+3780 LET A3$(70,2)=V$
+3790 GOTO 3900
+3900 REM " --- Next Field"
+3910 IF V3=4 THEN GOTO 4000
+3920 IF V3<>2 THEN GOTO 3950
+3930 IF I0>0 THEN LET I0=I0-1
+3940 GOTO 3960
+3950 LET I0=I0+1
+3960 ON I0 GOTO 2000,2200,2400,2600,2800,3000,3200,STYPE,NTYPE,MTYPE,3700,3990
+3990 GOSUB 5000
+4000 REM " --- Correct?"
+4010 LET V0$="S",V4$="Is The Above Information Correct (Y/N)?"
+4020 LET V1$="KC",V2$="Y",V3$="",V0=6,V1=42+INT(LEN(V4$)/2),V2=22
+4030 GOSUB 7000
+4040 ON V3 GOTO 4050,4000,4000,4000,4900
+4050 IF V$="DELETE" THEN GOTO 4200
+4090 ON POS(V$="YN") GOTO 4000,4100,2000
+4100 REM " --- Write record"
+4110 WRITE (SYS01_DEV,KEY=A0$)IOL=POS01A
+4190 GOTO 4900
+4200 REM " --- Remove records"
+4210 REMOVE (SYS01_DEV,KEY=A0$,DOM=4220)
+4220 REMOVE (POS10_DEV,KEY=N0$+"N",DOM=4290)
+4290 GOTO 9900
+4900 REM " --- Run menu overlay"
+4990 RUN "POP.AA"
+5000 REM " --- Display"
+5010 LET B1$(1)="",C1$(1)=""
+5020 FIND (POM04_DEV,KEY=N0$+A3$(49,3),DOM=5030)IOL=POM04A
+5030 LET V4$=C1$,C1$(1)=""
+5040 FIND (POM04_DEV,KEY=N0$+A3$(52,3),DOM=5050)IOL=POM04A
+5050 LET V$=A3$(56,2)
+5060 GOSUB 6000
+5070 LET V$=A3$(63,2),V0$=B1$(1,20)
+5080 GOSUB 6000
+5090 LET V$=A3$(65,2),V1$=B1$(1,20)
+5100 GOSUB 6000
+5110 LET V$=A3$(67,2),V2$=B1$(1,20)
+5120 GOSUB 6000
+5130 LET V$=A3$(70,2),V3$=B1$(1,20)
+5140 GOSUB 6000
+5180 PRINT @(40,4),A3$(48,1),@(40,5),A3$(49,3)," ",V4$,@(40,6),A3$(52,3)," ",C
+5180:1$,@(40,7),A3$(56,2)," ",V0$,@(40,8),A3$(3,15),@(40,9),A3$(18,15),@(40,10
+5180:),A3$(33,15),@(40,13),A3$(63,2)," ",V1$,@(40,14),A3$(65,2)," ",V2$,@(40,1
+5180:5),A3$(67,2)," ",V3$,@(40,18),A3$(70,2)," ",B1$(1,20),
+5190 RETURN
+6000 REM " --- Retrieve line code description"
+6010 LET STATUS=11,B0$(1)=N0$+V$,B1$(1)=""
+6020 FIND (POM02_DEV,KEY=B0$,DOM=6090)IOL=POM02A
+6030 LET STATUS=0
+6090 RETURN
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END

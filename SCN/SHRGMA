@@ -1,0 +1,142 @@
+0010 REM "SHR - Miscellaneous Carrier Manifest Program"
+0020 REM "Program SHRGMA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.4 - 15Dec97 |"
+0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0031 REM "27Oct97 JAL: Prevent Error 47/1110 (520)"
+0040 REM 
+0080 SETERR 9000
+0090 SETESC 9000
+0200 REM " --- IOLIST's"
+0210 SHE01A: IOLIST A0$(1),A1$(1),A2$(1),A[ALL]
+0220 SHE02A: IOLIST W0$(1),W1$(1),W[ALL]
+0500 REM " --- Initializations"
+0510 DIM A0$(K9),A1$(168),A2$(64),A[8],W0$(K9),W1$(128),W[20]
+0520 DIM H[8],O[8],T[4],HEADINGS$[2],J$(H0,"-"),J0$(6,"0")
+0530 LET H1$=N1$,R$="A",P=17,K=13,H0=131,WHEN$=F0$(7,3)
+0545 IF R6$="" THEN GOTO 0560
+0550 LET D$=FNB6$(R9$),H3$="Reprinted "+H3$,R$="C",P=33,B=55,K=23
+0560 LET H3$=H3$+D$,M1$="##,##0.00-",M2$="##,##0",M3$="##0.00"
+0570 LET M1=LEN(M1$),M2=LEN(M2$),M3=LEN(M3$),HEADINGS$[0]=H1$
+0575 LET HEADINGS$[1]=H2$,HEADINGS$[2]=H3$
+0600 REM " --- Initialize print positions"
+0605 DIM U1$(M1-1,"-")
+0610 LET O[0]=0,O[1]=7,O[2]=20,O[3]=30,O[4]=61
+0620 LET O[5]=70,O[6]=78,O[7]=O[6]+M1+1,O[8]=O[7]+M1+1
+0630 FOR X=0 TO 8
+0635 LET H[X]=O[X]
+0640 NEXT X
+0650 LET H[6]=H[6]+M1-8,H[7]=H[7]+M1-7,H[8]=H[8]+M1-7
+0680 LET WAREHOUSE$=C1$(31,96)+C1$(137,9)
+0690 CALL "SYC.AA",WAREHOUSE$,24,4,9,30
+0900 REM " --- Position File"
+0950 LET V$=N0$+R$+C$+WHSE$
+0960 IF R6$<>"" THEN LET V$=N0$+R$+R9$+C$
+0970 LET V=LEN(V$)
+0990 READ (SHE04_DEV,KEY=V$,DOM=1000)
+1000 REM " --- Read next transaction record"
+1010 LET K$=KEY(SHE04_DEV,END=4000)
+1020 IF POS(V$=K$)<>1 THEN GOTO 4000
+1030 READ (SHE04_DEV)
+1040 PRINT @(COLUMN,11),K$(P,7),
+1100 REM " --- Additional reads"
+1110 LET A0$(1,K9)=K$(1,2)+K$(P,15)+J0$(1,3)+R9$
+1120 FIND (SHE01_DEV,KEY=A0$,DOM=1900)IOL=SHE01A
+1130 LET W0$(1,K9)=K$(1,2)+K$(P,15)+K$(P+15,3)+R9$
+1140 FIND (SHE02_DEV,KEY=W0$,DOM=1900)IOL=SHE02A
+1150 IF W1$(59,2)<>WHSE$ THEN GOTO 1900
+1400 REM " --- Print addresses?"
+1410 LET L5=2
+1415 IF P9$<>"Y" THEN GOTO 1500
+1420 LET A$=A1$(31,96)+A1$(144,24)+A1$(127,9)
+1425 CALL "SYC.AA",A$,24,5,9,30
+1430 FOR X=1 TO 180 STEP 30
+1440 IF FNP$(A$(X,30))<>"" THEN LET L5=(X-1)/30+1
+1450 NEXT X
+1500 REM " --- Print detail line"
+1510 IF L+L5>L9 THEN GOSUB 5000
+1520 LET L=L+2,X4$=W0$(3,7)+"-"+W0$(18,3),X5$=""
+1530 IF W1$(28,1)="Y" THEN LET X4$="Voided"
+1535 IF A1$(1,6)<>J0$(1,6) THEN LET X5$=A1$(1,6)
+1540 PRINT (7)""
+1550 PRINT (7)@(O[0]),W1$(12,4),@(O[1]),X4$,@(O[2]),X5$,@(O[3]),A1$(7,24),A1$(
+1550:136,6),
+1560 IF W1$(28,1)="Y" THEN GOTO 1590
+1570 PRINT (7)@(O[4]),W1$(4,7),@(O[5]),W[0]:M2$,@(O[6]),W[4]:M1$,@(O[7]),W[9]:
+1570:M1$,@(O[8]),W[10]:M1$
+1580 GOTO 1600
+1590 PRINT (7)""
+1600 REM " --- Print remainder of address"
+1610 IF P9$<>"Y" THEN GOTO 1700
+1620 FOR X=1 TO L5*30 STEP 30
+1630 PRINT (7)@(O[3]),A$(X,30)
+1640 LET L=L+1
+1650 NEXT X
+1700 REM " --- Accumulate totals"
+1710 IF W1$(28,1)="Y" THEN GOTO 1900
+1720 LET T[0]=T[0]+1,T[1]=T[1]+W[0],T[2]=T[2]+W[4]
+1730 LET T[3]=T[3]+W[9],T[4]=T[4]+W[10]
+1900 REM " --- Loop back for next record"
+1990 GOTO 1000
+4000 REM " --- All done"
+4010 DIM U9$(O[8]+M1-1,"-")
+4020 IF L>L9 THEN GOSUB 5000
+4030 PRINT (7)U9$
+4040 PRINT (7)@(O[1]),"Manifest Totals -",T[0]," Packages",@(O[5]),T[1]:M2$,@(
+4040:O[6]),T[2]:M1$,@(O[7]),T[3]:M1$,@(O[8]),T[4]:M1$
+4900 REM " --- Run update overlay"
+4910 IF R6$<>"" THEN GOTO 9900
+4990 RUN "SHU.AA"
+5000 REM " --- Report heading"
+5010 LET L=6,X$=""
+5020 CALL "SYC.HA",7,HEADINGS$[ALL],2,PAGE,H0,WHEN$,CLOCK$,STATUS
+5030 IF STATUS>0 THEN EXITTO 9900
+5035 PRINT (7)""
+5040 PRINT (7)C1$(1,30),@(H0-21),"Shipper: ",CARRIER$(37,10)
+5045 PRINT (7)C1$(31,24),@(H0-20),"Pickup: ",CARRIER$(54,12)
+5050 FOR X=31 TO 150 STEP 30
+5060 IF FNP$(WAREHOUSE$(X,30))="" THEN GOTO 5090
+5070 PRINT (7)WAREHOUSE$(X,30)
+5080 LET L=L+1
+5090 NEXT X
+5100 REM " --- Manifest Heading"
+5120 PRINT (7)@(H[6]),"Freight",@(H[7]),"Addt'l",@(H[8]),"Total"
+5130 PRINT (7)@(H[0]),"Trans",@(H[1]),"Package ID",@(H[2]),"Customer",@(H[3]),
+5130:"Name/Address",@(H[4]),"Service",@(H[5]),"Weight",@(H[6]),"Charge",@(H[7]
+5130:),"Charge",@(H[8]),"Charge"
+5140 PRINT (7)@(H[0]),J$(1,5),@(H[1]),J$(1,11),@(H[2]),J$(1,8),@(H[3]),J$(1,30
+5140:),@(H[4]),J$(1,7),@(H[5]),J$(1,M2),@(O[6]),U1$,@(O[7]),U1$,@(O[8]),U1$
+5150 LET L=L+3
+5190 RETURN
+8000 REM " --- Function Definitions"
+8025 DEF FNB6$(Q$)=Q$(3,2)+"/"+Q$(5,2)+"/"+FNYY21_YY$(Q$(1,2))
+8080 DEF FNP$(Q$)=CVS(Q$,2)
+8145 REM " --- FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+8150 DEF FNYY21_YY$(Q1$)
+8155 LET Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABC
+8155:DEFGHIJ"))
+8160 RETURN Q1$
+8165 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 SETERR 9000
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to Menu"
+9950 RUN "SYS.AA"
+9999 END

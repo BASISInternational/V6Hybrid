@@ -1,0 +1,69 @@
+0010 REM "SYC - Menu Security Manager"
+0020 REM "Program SYC.QX"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0045 REM "ACTION$    : Action code (input)"
+0047 REM "             M=Use passed SECURITY$"
+0050 REM "SECURITY$  : User security level when ACTION$=M (input)"
+0055 REM "OPTION     : Selected option (input)"
+0060 REM "OPTLIST$[n]: Standard option list matrix (input)"
+0065 REM "STATUS     : 0=No error (returned)"
+0070 REM 
+0080 SETERR 9000
+0085 SETESC 4900
+0090 ENTER ACTION$,SECURITY$,OPTION,OPTLIST$[ALL],STATUS
+0400 REM " --- Parameters"
+0410 DIM SPEED$(128)
+0420 IF POS("M"=ACTION$)>0 THEN GOTO 0500
+0450 LET SPEED$(1)=STBL("!SPEEDSEARCH",ERR=4900),SECURITY$=SPEED$(65,1)
+0500 REM " --- Initializations"
+0550 LET REQUIRED$=OPTLIST$[1,OPTION,5],PASSWORD$=OPTLIST$[1,OPTION,6],NAME$="
+0550:"
+1000 REM " --- Security level OK?"
+1010 IF REQUIRED$="" THEN GOTO 1100
+1020 IF SECURITY$<REQUIRED$ THEN GOTO 4900
+1100 REM " --- Password processing"
+1110 IF PASSWORD$="" THEN GOTO 4000
+1120 CALL "SYC.WA",0,38,3,21,11,TITLE$,NAME$
+1130 PRINT @(1,0),"Please Enter the Password:",'SB',"[",'SF',"XXXXXX",'SB',"]"
+1130:,'SF','RB',
+1140 INPUT (0,ERR=1160)@(33),'CI','EE',V$,
+1150 PRINT 'BE',
+1160 IF FNU$(FNP$(V$))<>FNU$(FNP$(PASSWORD$)) THEN GOTO 4900
+4000 REM " --- All done"
+4010 LET STATUS=0
+4090 GOTO 9900
+4900 REM " --- Security Violation"
+4910 DIM MESSAGE$[1]
+4920 LET STATUS=1,TITLE$="System Security"
+4930 LET MESSAGE$[0]="Security Violation! Access Denied (<Enter>=Continue)"
+4940 CALL "SYC.XA",2,MESSAGE$[ALL],0,22,-1,V$,V3
+4990 GOTO 9900
+8000 REM " --- Functions"
+8080 DEF FNP$(Q$)=CVS(Q$,2)
+8090 DEF FNU$(Q$)=CVS(Q$,4)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9910 IF NAME$<>"" THEN CALL "SYC.WD",NAME$
+9950 EXIT
+9999 END

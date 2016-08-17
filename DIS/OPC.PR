@@ -1,0 +1,73 @@
+0010 REM "OPC - Print Ribbon Background/Data"
+0020 REM "Program:  OPC.PR"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0050 REM "N0$      : Current Firm"
+0051 REM "A0$      : 1st data string in ARE-03 record"
+0052 REM "ARM09_DEV: ARM-09 channel (0 if not using Job Numbers)"
+0053 REM "ACTION   : 0 = Clear, then display background"
+0054 REM "           1 = Display ribbon data"
+0055 REM "           2 = (0 & 1) Clear, then display background and data"
+0080 SETESC 9000
+0085 SETERR 9000
+0090 ENTER N0$,A0$,ARM09_DEV,ACTION
+0200 REM " --- IOLists"
+0210 ARM09A: IOLIST X0$,X1$
+0500 REM " --- Init Data"
+0520 IF A0$(22,1)="I" THEN LET INV_ORD$="Inv" ELSE LET INV_ORD$="Ord"
+0600 REM " --- Process Flow Control"
+0610 ON ACTION GOTO 0700,1000,0700
+0700 REM " --- Display Background"
+0710 PRINT @(0,9),'CL',@(0,10),'CL',@(0,11),'CL',
+0720 CALL "SYC.WC",1,0,80,0,0,12,0
+0750 PRINT 'SB',@(0,9),"Ord",@(52),"Sd Tr Ds Sls Ms Ter Tx Lp",@(0,10),"Typ",@
+0750:(5),INV_ORD$," Date",@(16),"Ship Date",@(30),"PO Number",@(41),"Ship Via"
+0750:,@(52),"Cd Cd Cd Psn Cd Cde Cd Cd",
+0760 IF ARM09_DEV THEN PRINT @(5,9),"Job #"
+0790 PRINT 'SF'
+1000 REM " --- Verify Ribbon Data"
+1005 IF ACTION=0 THEN GOTO 4000
+1010 IF A0$(22,1)="I" AND NUM(A0$(42,7))=0 THEN GOTO 4000
+1020 IF A0$(22,1)<>"I" AND NUM(A0$(11,7))=0 THEN GOTO 4000
+1030 IF A0$(21,1)="P" THEN LET TYPE$="Q" ELSE LET TYPE$="S"
+1040 IF A0$(22,1)="I" THEN LET DATE$=A0$(24,3) ELSE LET DATE$=A0$(77,3)
+1100 GOSUB 5000
+4000 REM " --- Done"
+4090 GOTO 9900
+5000 REM " --- Display Ribbon Data"
+5010 PRINT @(0,7),A0$(82,4),
+5020 PRINT @(1,11),TYPE$,@(5),FNB$(DATE$),@(16),FNB$(A0$(27,3)),@(30),A0$(49,1
+5020:0)," ",A0$(32,10)," ",A0$(64,2)," ",A0$(62,2)," ",A0$(66,2)," ",A0$(59,3)
+5020:," ",A0$(70,2)," ",A0$(72,3)," ",A0$(80,2)," ",A0$(75,2),
+5050 IF ARM09_DEV=0 THEN GOTO 5090
+5060 FIND (ARM09_DEV,KEY=N0$+A0$(5,6)+A0$(86,10),DOM=5090)IOL=ARM09A
+5070 PRINT @(11,9),A0$(86,10),@(22,9),X1$(1,27),
+5090 RETURN
+8000 REM " --- Functions"
+8010 DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+8020 DEF FNB$(Q1$)=FNA$(Q1$(2),Q1$)+"/"+FNA$(Q1$(3),Q1$)+"/"+FNA$(Q1$(1),Q1$)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Exit to host"
+9210 SETERR 9000
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to Caller"
+9950 EXIT
+9999 END

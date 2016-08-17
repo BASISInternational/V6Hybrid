@@ -1,0 +1,39 @@
+0010 REM "PRE - Payroll Entry - Mini-Menu Process"
+0020 REM "Program PRE.BX"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0085 SETESC 9000
+0090 SETERR 9000
+4900 REM " --- Process submenu"
+4905 PRINT @(0,22),'CL',
+4920 DIM MENUS$[1]
+4925 LET MENUS=1,MENUS$[MENUS]="PRE.BA",WIN_X=0,WIN_Y=L0+1,O0=1
+4930 CALL "SYC.OA",MENUS,MENUS$[ALL],WIN_X,WIN_Y,DESCRIPTION$,SELECTION$
+4940 CALL "SYC.WC",1,0,80,0,0,9,0
+4950 PRINT @(0,10),'CE',
+4960 IF SELECTION$="" THEN RUN "PRE.BA"
+4970 IF SELECTION$=MENUS$[1] THEN GOTO 2000
+4990 RUN SELECTION$,ERR=4900
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END

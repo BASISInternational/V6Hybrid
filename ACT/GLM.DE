@@ -1,0 +1,92 @@
+0010 REM "GLM - Financial Report Maintenance (Hardcopy)"
+0020 REM "Program GLM.DE"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0080 SETERR 9000
+0090 SETESC 9000
+0100 REM " --- Open/Lock Files"
+0170 CALL "SYC.GA",7,1,"","",STATUS
+0175 IF STATUS THEN GOTO 9900
+0200 REM " --- IOLists"
+0220 GLM22A: IOLIST B0$,B1$,B2$,B3$
+0500 REM " --- Init Data"
+0510 LET HEADINGS=3
+0520 DIM HEADINGS$[HEADINGS]
+0550 LET HEADINGS$[0]=N1$,HEADINGS$[1]=N3$
+0560 LET HEADINGS$[2]="Financial Report Format Listing For Report "+A0$(3,2)+"
+0560: "+FNP$(A0$(9,20))
+0570 LET H0=132,WHEN$=F0$(7,3),CLOCK$="",H=0,L9=59,L=L9+1,T0=0
+0900 REM " --- Position file"
+0990 READ (GLM22_DEV,KEY=A0$(1,8),DOM=1000)
+1000 REM " --- Detail Read"
+1010 LET K$=KEY(GLM22_DEV,END=4000)
+1020 IF POS(A0$(1,4)=K$)<>1 THEN GOTO 4000
+1030 READ (GLM22_DEV)IOL=GLM22A
+2000 REM " --- Print"
+2010 IF L+1>L9 THEN GOSUB 5000
+2020 LET X=5
+2030 IF B1$(1,1)="D" THEN LET X=6
+2040 IF B1$(1,1)="T" THEN LET X=7
+2050 PRINT (7)B0$(5,4),@(X),B1$(1,1),@(X+2),B1$(2,35),@(43),B1$(37,3),@(47),B1
+2050:$(40,5),@(53),B1$(45,3),@(57),B1$(48,3),@(61),B1$(51,1),
+2060 FOR X=0 TO 4
+2070 PRINT (7)@(63+X*5),B2$(3*X+1,3),B2$(X+16,1),
+2080 NEXT X
+2090 FOR X=0 TO 7
+2100 PRINT (7)@(90+X*5),B3$(3*X+1,3),
+2110 NEXT X
+2120 PRINT (7)""
+2130 LET L=L+1,T0=T0+1
+3900 REM " --- Loop back for next record"
+3990 GOTO 1000
+4000 REM " --- All done"
+4010 IF L+2>L9 THEN GOSUB 5000
+4020 PRINT (7)""
+4030 PRINT (7)T0," Detail Lines"
+4090 RUN "GLM.DA"
+5000 REM " --- Report Heading"
+5010 LET L=HEADINGS+1
+5020 CALL "SYC.HA",7,HEADINGS$[ALL],HEADINGS,H,H0-1,WHEN$,CLOCK$,STATUS
+5030 IF STATUS THEN EXITTO 9900
+5050 PRINT (7)@(90),"Pos1 Pos2 Pos3 Pos4 Pos5 Pos6 Pos7 Pos8"
+5060 PRINT (7)"Heading No: ",A0$(29,2),@(22),"Dollar Mask: ",A1$,@(53),"Ratio 
+5060:Mask: ",A3$,
+5070 FOR X=0 TO 7
+5080 PRINT (7)@(90+X*5),PERIOD$[X],ACT_BUDG$[X],AMT_UNIT$[X],RATIO_PER$[X],
+5090 NEXT X
+5100 PRINT (7)""
+5110 PRINT (7)@(24),"Unit Mask: ",A2$,@(51),"Percent Mask: ",A4$,
+5120 FOR X=0 TO 7
+5130 PRINT (7)@(90+X*5),DEFAULT_POS$[X],
+5140 NEXT X
+5150 PRINT (7)""
+5160 PRINT (7)""
+5170 PRINT (7)@(0),"Line",@(5),"T",@(7),"Description",@(43),"Col",@(47),"Edit"
+5170:,@(53),"Tot",@(57),"Pct",@(61),"A",@(63),"Tot1 Tot2 Tot3 Tot4 Tot5"
+5180 LET L=L+6
+5190 RETURN
+8000 REM " --- Functions"
+8080 DEF FNP$(Q$)=CVS(Q$,2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END

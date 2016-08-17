@@ -1,0 +1,57 @@
+0010 REM "SYC - Kode Lookup"
+0020 REM "Program SYC.LZ"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0042 REM "COLUMN    : Screen field column (input)"
+0044 REM "ROW       : Screen field row (input)"
+0046 REM "DESCFLD   : Description string number (input)"
+0048 REM "CHANNEL   : Channel number of code file (input)"
+0050 REM "KEYPOS    : Code position in key (input)"
+0052 REM "KEYLEN    : Code length (input)"
+0054 REM "DESCPOS   : Description position in DESCFLD (input)"
+0056 REM "DESCLEN   : Description length (input)"
+0058 REM "SELECTION$: User selection (returned)"
+0060 REM "RECORD$   : Code record ID (input)"
+0062 REM "RESERVED$ : Reserved for future use"
+0070 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER COLUMN,ROW,DESCFLD,CHANNEL,KEYPOS,KEYLEN,DESCPOS,DESCLEN,SELECTION$
+0090:,RECORD$,RESERVED$
+0500 REM " --- Initializations"
+0510 DIM DESCRIPTION$[1],FIELD[1],POSITION[1],LENGTH[1]
+0540 LET NUMBER=1,WIN_X=COLUMN+KEYLEN+2,WIN_Y=V2+2,TITLE$="Code Lookup"
+0550 LET DESCRIPTION$[0]="Code",DESCRIPTION$[1]="Description"
+0560 LET FIELD[0]=1,POSITION[0]=KEYPOS,LENGTH[0]=KEYLEN
+0570 LET FIELD[1]=DESCFLD,POSITION[1]=DESCPOS,LENGTH[1]=DESCLEN
+0590 IF DESCPOS=0 THEN LET POSITION[1]=POSITION[0]+LENGTH[0]
+1000 REM " --- Call windowed lookup"
+1010 CALL "SYC.LK",CHANNEL,RECORD$,NUMBER,TITLE$,DESCRIPTION$[ALL],FIELD[ALL],
+1010:POSITION[ALL],LENGTH[ALL],WIN_X,WIN_Y,SELECTION$
+1020 PRINT @(COLUMN,ROW),SELECTION$,
+4000 REM " --- All done"
+4090 GOTO 9900
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9950 EXIT
+9999 END

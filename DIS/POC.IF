@@ -1,0 +1,151 @@
+0010 REM "POC - Requsition/Purchase Order Printing Input"
+0020 REM "Program POC.IF"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0042 REM "TYPE$      : Record type (input)"
+0044 REM "           : R=Requisition/P=Purchase Order"
+0048 REM "APM01_DEV  : APM-01 channel number (input)"
+0050 REM "PARAMS[n]  : Numeric parameters (input)"
+0052 REM "           : [0]=Vendor number length"
+0054 REM "PARAMS$[n] : String parameters (input/returned)"
+0056 REM "           : [0]=Firm ID          [3]=Restart (Y/N)?"
+0058 REM "           : [1]=Print sequence   [4]=Vendor mask"
+0060 REM "           : [2]=User message"
+0062 REM "V$         : User input (returned)"
+0064 REM "V3         : Function key value (returned)"
+0070 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER TYPE$,APM01_DEV,PARAMS[ALL],PARAMS$[ALL],V$,V3
+0200 REM " --- IOLIST's"
+0210 APM01A: IOLIST A0$(1),A1$(1)
+0400 REM " --- Parameters"
+0410 LET N0$=PARAMS$[0],SEQUENCE$=PARAMS$[1],POMESSAGE$=PARAMS$[2]
+0420 LET RESTART$=PARAMS$[3],VENDOR$=PARAMS$[4],M0$=PARAMS$[5]
+0430 LET VENDLEN=PARAMS[0],M0=LEN(M0$)
+0500 REM " --- Initializations"
+0510 DIM A0$(8),A1$(30)
+0550 LET P$="Purchase Order",W=MIN(79-(42+M0),30)
+0560 IF TYPE$="R" THEN LET P$="Requisition"
+0700 REM " --- Background"
+0710 FOR X=4 TO 10 STEP 2
+0720 CALL "SYC.WC",1,0,80,1,0,X,0
+0730 NEXT X
+0750 PRINT 'SB',@(30,3),"Sequence:",@(31,5),"Message:",@(31,7),"Restart:",@(32
+0750:,9),"Vendor:",'SF',
+0900 REM " --- Display defaults"
+0910 GOSUB 5000
+1000 REM " --- Sequence"
+1010 LET V4$="Select The Sequence For Printing The "+P$+"s"
+1015 PRINT @(0,21),'CL',@(FNC(V4$,80)),V4$,
+1020 LET V4$=TYPE$+"="+P$+"  N=Vendor Number  A=Vendor Alternate Sort  W=Wareh
+1020:ouse"
+1030 LET V0$="S",V1$="CR",V2$=SEQUENCE$,V3$=TYPE$+"NAW",V0=1,V1=40,V2=3,I0=0
+1040 GOSUB 7000
+1045 PRINT @(0,21),'CL',
+1050 ON V3 GOTO 1060,1000,3900,1000,3900
+1060 IF POS(V$=TYPE$+"NAW")=0 THEN GOTO 1000
+1070 LET SEQUENCE$=V$
+1090 GOTO 3900
+1200 REM " --- Message"
+1210 LET V4$="Enter An Optional Message To Be Printed On Each "+P$
+1220 LET V0$="S",V1$="C",V2$=POMESSAGE$,V3$="",V0=38,V1=40,V2=5
+1230 GOSUB 7000
+1240 ON V3 GOTO 1250,1200,3900,1200,3900
+1250 LET POMESSAGE$=V$
+1290 GOTO 3900
+1400 REM " --- Restart?"
+1405 IF SEQUENCE$<>"N" THEN GOTO 3900
+1410 LET V4$="Restart Printing With A Specific Vendor (Y/N)?"
+1420 LET V0$="Y",V1$="C",V2$=RESTART$,V3$="",V0=1,V1=40,V2=7
+1430 GOSUB 7000
+1440 ON V3 GOTO 1450,1400,3900,1400,3900
+1450 LET RESTART$=V$
+1490 GOTO 3900
+1600 REM " --- Vendor number"
+1605 IF RESTART$="N" THEN GOTO 3900
+1610 IF SEQUENCE$<>"N" THEN GOTO 3900
+1615 LET V4$="Enter The Vendor To Restart Printing With (<F3>=Lookup)"
+1620 LET V0$="M",V1$="KCE",V2$=VENDOR$,V3$=M0$,V0=6,V1=40,V2=9
+1630 GOSUB 7000
+1640 ON V3 GOTO 1660,1600,3900,1650,3900
+1650 CALL "SYC.LV",V$
+1660 LET A0$(1)=N0$+V$
+1670 FIND (APM01_DEV,KEY=A0$,DOM=1600)IOL=APM01A
+1680 PRINT @(V1,V2),FNF$(A0$(3,VENDLEN),M0$)," ",A1$,
+1685 LET VENDOR$=A0$(3)
+1690 GOTO 3900
+3900 REM " --- Next Field"
+3905 IF V3=4 THEN GOTO 4000
+3910 IF V3<>2 THEN GOTO 3940
+3920 IF I0>0 THEN LET I0=I0-1
+3930 GOTO 3950
+3940 LET I0=I0+1
+3960 ON I0 GOTO 1000,1200,1400,1600,3990
+3990 GOSUB 5000
+4000 REM " --- Correct?"
+4010 CALL "SYC.YN",1,"Is The Above Information Correct",2,V$,V3
+4020 ON V3 GOTO 4030,4000,4000,4000,9900
+4030 ON POS(V$="YN") GOTO 4000,9900,1000
+5000 REM " --- Display"
+5010 PRINT @(40,3),SEQUENCE$,@(40,5),POMESSAGE$,'CL',@(40,7),RESTART$,@(40,9),
+5010:'CL',
+5020 IF RESTART$="N" THEN GOTO 5090
+5030 IF SEQUENCE$<>"N" THEN GOTO 5090
+5040 LET A0$(1)=N0$+VENDOR$,A1$(1)=""
+5050 FIND (APM01_DEV,KEY=A0$,DOM=5060)IOL=APM01A
+5060 PRINT @(40,9),FNF$(A0$(3,VENDLEN),M0$)," ",A1$(1,W),
+5090 RETURN
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions"
+8025 DEF FNC(Q$,Q)=INT((Q-LEN(Q$))/2)
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF:
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9910 LET PARAMS$[1]=SEQUENCE$,PARAMS$[2]=POMESSAGE$
+9920 LET PARAMS$[3]=RESTART$,PARAMS$[4]=VENDOR$
+9950 EXIT
+9999 END

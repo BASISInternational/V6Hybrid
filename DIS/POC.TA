@@ -1,0 +1,76 @@
+0010 REM "POC - Accumulate Total For Requisition, PO Or Receipt"
+0020 REM "Program POC.TA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0042 REM "TYPE$    : Record type (Input)"
+0044 REM "           R=Requisition/P=Purchase Order"
+0046 REM "           Q=QA Receipt/C=PO Receipt"
+0048 REM "POE11_DEV: POE-11/12/13/14 channel number (Input)"
+0050 REM "POM02_DEV: POM-02 channel number (Input)"
+0052 REM "A0$      : Current header record key (Input)"
+0054 REM "W0$      : Current detail record key (Input)"
+0056 REM "V1       : Column position to display total (Input)"
+0058 REM "V2       : Row position to display total (Input)"
+0060 REM "M1$      : Mask to use when displaying total (Input)"
+0062 REM "PLACES   : Number of decimal places precision (Input)"
+0064 REM "TOTAL    : Document total (Returned)"
+0066 REM "STATUS   : 0=No error (Returned)"
+0068 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER TYPE$,POE11_DEV,POM02_DEV,A0$,W0$,V1,V2,M1$,PLACES,TOTAL,STATUS
+0200 REM " --- IOLIST's"
+0210 POE11A: IOLIST B0$(1),B1$(1),B2$(1),B3$(1),B4$(1),B5$,B6$,B[ALL]
+0310 POM02A: IOLIST Y0$(1),Y1$(1)
+0500 REM " --- Initializations"
+0510 DIM B0$(25),B1$(48),B2$(32),B3$(22),B4$(40),B[12],Y0$(4),Y1$(32)
+0550 LET TOTAL=0,Y0$(1)="",N0$=A0$(1,2)
+0900 REM " --- Position detail file"
+0990 READ (POE11_DEV,KEY=A0$,DOM=1000)
+1000 REM " --- Read next detail record"
+1010 LET K$=KEY(POE11_DEV,END=4000)
+1020 IF POS(A0$=K$)<>1 THEN GOTO 4000
+1030 READ (POE11_DEV)IOL=POE11A
+1040 IF N0$+B1$(1,2)=Y0$ THEN GOTO 2000
+1200 REM " --- Read line code"
+1210 LET Y0$(1)=N0$+B1$(1,2)
+1220 FIND (POM02_DEV,KEY=Y0$,DOM=3900)IOL=POM02A
+2000 REM " --- Accumulate total"
+2010 LET QTY=B[7]
+2020 IF TYPE$="R" THEN LET QTY=B[2]
+2030 IF TYPE$="P" THEN LET QTY=B[3]-B[7]
+2040 IF Y1$(21,1)="O" THEN LET QTY=1
+2070 PRECISION 2
+2080 LET TOTAL=(TOTAL+(QTY*B[1]))*1
+2090 PRECISION PLACES
+3900 REM " --- Loop back for next record"
+3990 GOTO 1000
+4000 REM " --- All done"
+4010 PRECISION PLACES
+4020 PRINT @(V1,V2),TOTAL:M1$,
+4080 READ (POE11_DEV,KEY=W0$,DOM=9900)
+4090 GOTO 9900
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9950 EXIT
+9999 END

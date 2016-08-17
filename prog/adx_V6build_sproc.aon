@@ -1,0 +1,362 @@
+rem --- build_sprocs.aon
+rem --- Copyright BASIS International Ltd.  All Rights Reserved.
+rem --- prototype for table-driven sproc definition
+
+rem --- delete and re-define SPROCs used for V6Hybrid demo
+
+    seterr std_error
+    setesc std_error
+    
+    if argc>1
+        for curr_argv=1 to argc-1
+            temp_argv$=argv(curr_argv)
+            if pos("-u"=temp_argv$)=1 user_id$=temp_argv$(3);rem User ID
+            if pos("-l"=temp_argv$)=1 launch_source$=temp_argv$(3);rem Launch source
+        next curr_argv
+    endif
+
+    if user_id$=""
+        use ::sys/prog/bao_security.bbj::Security
+        user_id$=Security.getURLUser()
+    endif
+
+    if cvs(user_id$,3)<>""
+        user_id$=stbl("+USER_ID",cvs(user_id$,4))
+    else
+        release;rem couldn't get user id?
+    endif
+
+rem --- Retrieve the program path
+
+    pgmdir$=stbl("+DIR_PGM",err=*next)
+
+rem --- Retrieve sysinfo data
+
+    call stbl("+DIR_SYP")+"bas_process_beg.bbj",stbl("+USER_ID"),rd_table_chans$[all]
+
+    sysinfo_template$=stbl("+SYSINFO_TPL",err=*next)
+    dim sysinfo$:sysinfo_template$
+    sysinfo$=stbl("+SYSINFO",err=*next)
+    firm_id$=sysinfo.firm_id$
+    milestone=1
+    
+rem --- Open File(s)
+    
+    num_files=1
+    dim open_tables$[1:num_files],open_opts$[1:num_files],open_chans$[1:num_files],open_tpls$[1:num_files]
+    open_tables$[1]="ADS_AUTOLAUNCH",open_opts$[1]="OTA"
+
+    gosub open_tables
+
+    ads_autolaunch=num(open_chans$[1]);dim ads_autolaunch$:open_tpls$[1]
+	
+rem --- init
+
+    database$=stbl("+DBNAME",err=std_exit)
+    wdir$=dir("")
+    chdir(stbl("+V6_DIR_SPROCS",err=*next))
+    sproc_dir$=dir("")
+    chdir wdir$
+    sproc_path$=dsk("")+sproc_dir$
+    barista_cfg_path$=dsk("")+dir("")+stbl("+DIR_CFG")
+    
+rem --- init progress meter
+
+    total_recs=10;rem alter as more 'create procedure' statements are added - eventually will be table driven
+    curr_rec=0
+    task_val$="BUILDSPROC"
+    task_desc$="Create SPROC Defs"
+
+    progress! = bbjAPI().getGroupNamespace()
+    progress!.setValue("+process_task",task_val$+"^C^"+task_desc$+"^CNC^"+str(total_recs)+"^")
+
+rem --- init for sql
+
+    chan = sqlunt
+    SQLOPEN(chan) database$
+    
+rem -- main loop (this will eventually be table-driven)
+
+rem --- first drop all std Addon SPROCs
+
+	sql_action$="DROP PROCEDURE"
+	abort_on_exec_err=0; rem OK if DROP fails to EXEC, but not OK if CREATE fails or if PREP fails
+	
+	sproc_vw_name$="CUST_STMTS"
+    sqlprep$=sql_action$+" "+sproc_vw_name$+" "
+    gosub create_sproc_def
+
+	sproc_vw_name$="ARCMPSLS_BAR"
+	sqlprep$=sql_action$+" "+sproc_vw_name$+" "
+	gosub create_sproc_def		
+
+	sproc_vw_name$="SATOPCST_BAR_60"
+	sqlprep$=sql_action$+" "+sproc_vw_name$+" "
+	gosub create_sproc_def		
+
+	sproc_vw_name$="SATOPCST_SBR_60"
+	sqlprep$=sql_action$+" "+sproc_vw_name$+" "
+	gosub create_sproc_def		
+
+	sproc_vw_name$="SAREPTOT_SBR_60"
+	sqlprep$=sql_action$+" "+sproc_vw_name$+" "
+	gosub create_sproc_def		
+
+	sproc_vw_name$="SATOPREP_LIN_60"
+	sqlprep$=sql_action$+" "+sproc_vw_name$+" "
+	gosub create_sproc_def		
+
+	sproc_vw_name$="SATOPREP_SAR_60"
+	sqlprep$=sql_action$+" "+sproc_vw_name$+" "
+	gosub create_sproc_def		
+
+	sproc_vw_name$="SATOPREP_PIE_60"
+	sqlprep$=sql_action$+" "+sproc_vw_name$+" "
+	gosub create_sproc_def	
+
+	sproc_vw_name$="SATOPREP_SBR_60"
+	sqlprep$=sql_action$+" "+sproc_vw_name$+" "
+	gosub create_sproc_def
+	
+rem --- now add them back (i.e., drop, then add, in case anything has changed)
+
+	sql_action$="CREATE PROCEDURE"
+	abort_on_exec_err=1; rem OK if DROP fails to EXEC, but not OK if CREATE fails or if PREP fails
+	
+    sproc_vw_name$="CUST_STMTS"
+	sqlprep$="CREATE PROCEDURE CUST_STMTS "
+    sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, CUSTOMER_ID CHAR(6) IN, STATEMENT_DATE CHAR(6) IN, "
+    sqlprep$=sqlprep$+"LOGO_FILE VARCHAR(60) IN, BARISTA_WD VARCHAR(50) IN) "
+    sqlprep$=sqlprep$+"'"+sproc_path$+"custStatements.prc' '"+barista_cfg_path$+"barista.cfg' "
+    sqlprep$=sqlprep$+"RESULT_SET "
+    sqlprep$=sqlprep$+"{_begin_}{_end_} 'Customer Stmts'"
+
+    gosub create_sproc_def
+
+	rem --- Dashboard: ARCMPSLS_BAR
+	sproc_vw_name$="ARCMPSLS_BAR"
+	sqlprep$="CREATE PROCEDURE ARCMPSLS_BAR "
+	sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, CUSTOMER_NBR CHAR(6) IN, "
+	sqlprep$=sqlprep$+"SLSPSN_CODE CHAR(3) IN)"	
+	sqlprep$=sqlprep$+"'"+sproc_path$+"ARCMPSLS_BAR.prc' '"+barista_cfg_path$+"barista.cfg' "
+	sqlprep$=sqlprep$+"RESULT_SET "
+	sqlprep$=sqlprep$+"{_begin_}{_end_} 'Dashboard SA Sales Compare - Bar Widget'"
+
+	gosub create_sproc_def
+	
+	rem --- Dashboard: SATOPCST_BAR_60
+	sproc_vw_name$="SATOPCST_BAR_60"
+	sqlprep$="CREATE PROCEDURE SATOPCST_BAR_60 "
+	sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, YEAR CHAR(4) IN, NUM_TO_LIST VARCHAR(1) IN, "
+	sqlprep$=sqlprep$+"MASKS VARCHAR(1) IN, BARISTA_WD VARCHAR(50) IN)"	
+	sqlprep$=sqlprep$+"'"+sproc_path$+"SATOPCST_BAR_60.prc' '"+barista_cfg_path$+"barista.cfg' "
+	sqlprep$=sqlprep$+"RESULT_SET "
+	sqlprep$=sqlprep$+"{_begin_}{_end_} 'Dashboard SA Top Customers by Sales - Bar Widget'"
+
+	gosub create_sproc_def
+	
+	satopcst_sbr_60:
+	rem --- Dashboard: SATOPCST_SBR_60
+	sproc_vw_name$="SATOPCST_SBR_60"
+	sqlprep$="CREATE PROCEDURE SATOPCST_SBR_60 "
+	sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, YEAR CHAR(4) IN, NUM_TO_LIST VARCHAR(1) IN, "
+	sqlprep$=sqlprep$+"MASKS VARCHAR(1) IN, BARISTA_WD VARCHAR(50) IN, ALL_PROD_TYPES VARCHAR(50) IN)"	
+	sqlprep$=sqlprep$+"'"+sproc_path$+"SATOPCST_SBR_60.prc' '"+barista_cfg_path$+"barista.cfg' "
+	sqlprep$=sqlprep$+"RESULT_SET "
+	sqlprep$=sqlprep$+"{_begin_}{_end_} 'Dashboard SA Top Customers by Sales - Stacked Bar Widget'"
+
+	gosub create_sproc_def
+	
+	rem --- Dashboard: SAREPTOT_SBR_60
+	sproc_vw_name$="SAREPTOT_SBR_60"
+	sqlprep$="CREATE PROCEDURE SAREPTOT_SBR_60 "
+	sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, YEAR CHAR(4) IN, NUM_TO_LIST VARCHAR(1) IN, "
+	sqlprep$=sqlprep$+"MASKS VARCHAR(1) IN, BARISTA_WD VARCHAR(50) IN, ALL_PROD_TYPES VARCHAR(50) IN)"   
+	sqlprep$=sqlprep$+"'"+sproc_path$+"SAREPTOT_SBR_60.prc' '"+barista_cfg_path$+"barista.cfg' "
+	sqlprep$=sqlprep$+"RESULT_SET "
+	sqlprep$=sqlprep$+"{_begin_}{_end_} 'Dashboard SA Sales by Salesrep - Stacked Bar Widget'"
+
+	gosub create_sproc_def
+	
+	rem --- Dashboard: SATOPREP_LIN_60
+	sproc_vw_name$="SATOPREP_LIN_60"
+	sqlprep$="CREATE PROCEDURE SATOPREP_LIN_60 "
+	sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, INCLUDE_TYPE CHAR(1) IN, YEAR CHAR(4) IN, "
+	sqlprep$=sqlprep$+"NUM_TO_LIST VARCHAR(1) IN, MASKS VARCHAR(1) IN, BARISTA_WD VARCHAR(50) IN)"	
+	sqlprep$=sqlprep$+"'"+sproc_path$+"SATOPREP_LIN_60.prc' '"+barista_cfg_path$+"barista.cfg' "
+	sqlprep$=sqlprep$+"RESULT_SET "
+	sqlprep$=sqlprep$+"{_begin_}{_end_} 'Dashboard SA Top Salesreps - Line Widget'"
+
+	gosub create_sproc_def
+	
+	rem --- Dashboard: SATOPREP_SAR_60
+	sproc_vw_name$="SATOPREP_SAR_60"
+	sqlprep$="CREATE PROCEDURE SATOPREP_SAR_60 "
+	sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, INCLUDE_TYPE CHAR(1) IN, YEAR CHAR(4) IN, "
+	sqlprep$=sqlprep$+"NUM_TO_LIST VARCHAR(1) IN, MASKS VARCHAR(1) IN, BARISTA_WD VARCHAR(50) IN)"	
+	sqlprep$=sqlprep$+"'"+sproc_path$+"SATOPREP_SAR_60.prc' '"+barista_cfg_path$+"barista.cfg' "
+	sqlprep$=sqlprep$+"RESULT_SET "
+	sqlprep$=sqlprep$+"{_begin_}{_end_} 'Dashboard SA Top Salesreps - Stacked Area Widget'"
+
+	gosub create_sproc_def
+	
+	rem --- Dashboard: SATOPREP_PIE_60
+	sproc_vw_name$="SATOPREP_PIE_60"
+	sqlprep$="CREATE PROCEDURE SATOPREP_PIE_60 "
+	sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, YEAR CHAR(4) IN, NUM_TO_LIST VARCHAR(1) IN, "
+	sqlprep$=sqlprep$+"MASKS VARCHAR(1) IN, BARISTA_WD VARCHAR(50) IN)"	
+	sqlprep$=sqlprep$+"'"+sproc_path$+"SATOPREP_PIE_60.prc' '"+barista_cfg_path$+"barista.cfg' "
+	sqlprep$=sqlprep$+"RESULT_SET "
+	sqlprep$=sqlprep$+"{_begin_}{_end_} 'Dashboard SA Top Salesreps - Pie Widget'"
+
+	gosub create_sproc_def
+	
+	satoprep_sbr_60:
+	rem --- Dashboard: SATOPREP_SBR_60
+	sproc_vw_name$="SATOPREP_SBR_60"
+	sqlprep$="CREATE PROCEDURE SATOPREP_SBR_60 "
+	sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, YEAR CHAR(4) IN, NUM_TO_LIST VARCHAR(1) IN, "
+	sqlprep$=sqlprep$+"MASKS VARCHAR(1) IN, BARISTA_WD VARCHAR(50) IN, ALL_PROD_TYPES VARCHAR(50) IN)"	
+	sqlprep$=sqlprep$+"'"+sproc_path$+"SATOPREP_SBR_60.prc' '"+barista_cfg_path$+"barista.cfg' "
+	sqlprep$=sqlprep$+"RESULT_SET "
+	sqlprep$=sqlprep$+"{_begin_}{_end_} 'Dashboard SA Top Salesreps - Stacked Bar Widget'"
+
+	gosub create_sproc_def
+
+
+done:
+
+sqlclose(chan)
+
+update_status:rem --- Update AutoLaunch Status
+
+    extractrecord(ads_autolaunch,key="BUILDSPROC")ads_autolaunch$; rem Advisory Locking
+    ads_autolaunch.process_status$="C"
+    ads_autolaunch.trans_date$=date(0:"%Yl%Mz%Dz")
+    ads_autolaunch.trans_time$=date(0:"%Hz%mz%sz")
+    ads_autolaunch$=field(ads_autolaunch$)
+    writerecord(ads_autolaunch)ads_autolaunch$
+
+goto std_exit
+
+create_sproc_def:rem --- Create SPROC definitions
+
+	errored_sqlverb$=""
+	prep_err=0
+	exec_err=0
+	
+    SQLPREP(chan,err=err_sqlprep) sqlprep$
+    SQLEXEC(chan,err=err_sqlexec)
+    curr_rec=curr_rec+1
+    if mod(curr_rec,milestone)=0
+		progress!.setValue("+process_task",task_val$+"^U^"+str(curr_rec)+"^")
+    endif
+	
+	rem Conditionally end processing if PREP or EXEC have errors
+	if errored_sqlverb$<>""	
+		err_sqlprep:	
+			prep_err=1
+			errored_sqlverb$="SQLPREP()"
+
+		err_sqlexec:
+			if errored_sqlverb$=""
+				exec_err=1
+				if abort_on_exec_err then errored_sqlverb$="SQLEXEC()"
+			endif
+			
+		if prep_err OR (exec_err AND abort_on_exec_err)		   
+			error_text$="Unknown error message"
+			error_text$=SQLERR(chan,err=*next)
+			
+			msg_id$="AD_SQL_CREATE_ERROR"
+			dim msg_tokens$[4]
+				msg_tokens$[1]=errored_sqlverb$
+				msg_tokens$[2]=sql_action$
+				msg_tokens$[3]=sproc_vw_name$
+				msg_tokens$[4]=error_text$			
+			gosub disp_message
+			goto std_exit
+		endif
+	endif
+
+return
+
+open_tables:rem -----<Open Tables
+
+    call stbl("+DIR_SYP")+"bac_open_tables.bbj",
+:       open_beg,
+:       open_end,
+:       open_tables$[all],
+:       open_opts$[all],
+:       open_chans$[all],
+:       open_tpls$[all],
+:       rd_table_chans$[all],
+:       open_batch,
+:       open_status$
+
+    if open_status$<>""
+        msg_id$="ENTRY_OPEN_ERROR"
+        dim msg_tokens$[1]
+            msg_tokens$[1]=open_status$
+        gosub disp_message
+        goto std_exit
+    endif
+
+    return
+
+disp_message:rem --- Display Message Dialog
+
+    call stbl("+DIR_SYP")+"bac_message.bbj",msg_id$,msg_tokens$[all],msg_opt$,table_chans$[all]
+
+    return
+
+rem #include std_error.src
+
+std_error: rem --- Standard error handler (18Nov2014)
+
+    if tcb(19)>0
+        rem --- Escape handler
+        if and(chr(tcb(19)),$08$)=$08$
+            release
+        else
+            setesc std_error
+            return
+        endif
+    endif
+
+    if err=0   
+        rem --- Get tcb(12) and tcb(10) to send into bac_error
+        lock_byte=tcb(10)
+        lock_chan=tcb(12)  
+    endif
+
+    rd_err_text$=""
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    call stbl("+DIR_SYP")+"bac_error.bbj",pgm(-2),str(tcb(5)),str(err),rd_err_text$,rd_err_act$,lock_byte,lock_chan
+    if pos("ESCAPE"=rd_err_act$) seterr 0; setesc 0
+    if pos("RETRY"=rd_err_act$) retry
+    if pgm(-1)<>pgm(-2) status=999; exit 
+    release
+
+
+rem #endinclude std_error.src
+
+rem #include std_end.src
+
+std_exit: rem --- Standard program end (01Mar2006)
+
+    if errored_sqlverb$="" 
+		if pos("SPROC_UPDT"=sysinfo.menu_option_id$)<>0
+			msg_id$="AD_SPROC_UPDT"
+			gosub disp_message;rem only display message if running stand-alone
+		endif
+    endif
+    
+    progress!.setValue("+process_task",task_val$+"^D^")
+    run stbl("+DIR_SYP",err=*next)+"bas_process_end.bbj",err=*next
+	release
+
+rem #endinclude std_end.src
+
+    end
+

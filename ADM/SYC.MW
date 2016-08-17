@@ -1,0 +1,59 @@
+0010 REM "SYC - Window Move"
+0020 REM "Program SYC.MW"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0045 REM "STATUS: 0=No error (returned)"
+0050 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER STATUS
+0500 REM " --- Initializations"
+0550 LET STATUS=0,FIN$=FIN(0)
+0800 REM " --- In a window?"
+0810 IF ASC(FIN$(10,1))=0 THEN GOTO 9900
+1000 REM " --- Read keyboard and process input"
+1010 PRINT 'EE',
+1020 READ RECORD(0,SIZ=1)FKEY$
+1030 PRINT 'BE',
+1040 LET FIN$=FIN(0),TOP=ASC(FIN$(6,1)),LEFT=ASC(FIN$(5,1))
+1050 LET HEIGHT=ASC(FIN$(8,1)),WIDTH=ASC(FIN$(7,1))
+1090 ON POS(FKEY$=$81828384A1A21D081C$) GOTO 1060,4000,4000,4000,4000,2000,220
+1090:0,2400,2400,2600
+2000 REM " --- Up"
+2010 IF TOP>1 THEN PRINT 'MOVE'(LEFT-1,TOP-2),
+2090 GOTO 1000
+2200 REM " --- Down"
+2210 IF TOP+HEIGHT<22 THEN PRINT 'MOVE'(LEFT-1,TOP),
+2290 GOTO 1000
+2400 REM " --- Left"
+2410 IF LEFT>1 THEN PRINT 'MOVE'(LEFT-2,TOP-1),
+2490 GOTO 1000
+2600 REM " --- Right"
+2610 IF LEFT+WIDTH<79 THEN PRINT 'MOVE'(LEFT,TOP-1),
+2690 GOTO 1000
+4000 REM " --- All done"
+4090 GOTO 9900
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9950 EXIT
+9999 END

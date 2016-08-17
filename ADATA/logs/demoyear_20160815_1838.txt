@@ -1,0 +1,11 @@
+V6Demoyear log started: 2016-08-15@18:38:36
+Starting demo fiscal year: 1996
+Increment fiscal year by: 20
+
+Processing: ../apps/V6Hybrid/ADATA/MPM-01
+  Date elements: [PLAN_DATE   Plan Date                     D0006]
+  Creating template for MPM-01A
+  *** error, file rename to tmp_MPM-01 failed
+
+V6 demo year processing completed
+End Time: 08/15/2016 06:39:02 

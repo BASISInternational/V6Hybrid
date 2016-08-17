@@ -1,0 +1,86 @@
+0010 REM "SYC - Resize Mask"
+0020 REM "Program SYC.RM"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0045 REM "MASK$ : Mask to be resized (input)"
+0050 REM "LENGTH: Actual mask length (returned)"
+0055 REM "MIN   : Minimum size (input)"
+0060 REM "MAX   : Maximum size (input)"
+0070 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER MASK$,LENGTH,MIN,MAX
+0500 REM " --- Initializations"
+0510 DIM J1$(80)
+0550 LET LENGTH=LEN(MASK$),M$=MASK$,M=LEN(M$)
+1000 REM " --- Verify minimum and maximum mask sizes"
+1020 IF MIN<1 THEN LET MIN=1
+1030 IF MAX>80 THEN LET MAX=80
+1040 IF MIN>MAX THEN GOTO 4000
+1500 REM " --- Test mask size"
+1510 IF M<MIN THEN GOTO 2000
+1520 IF M>MAX THEN GOTO 3000
+1590 GOTO 4000
+2000 REM " --- Mask is too small"
+2010 IF POS("("=M$)=1 THEN LET M$=J1$+M$(2),M$="("+M$(LEN(M$)-(MIN-2)) ELSE LE
+2010:T M$=J1$+M$,M$=M$(LEN(M$)-(MIN-1))
+2090 GOTO 4000
+3000 REM " --- Mask is too big"
+3100 REM " --- Remove trailing CR and DR"
+3110 IF POS(M$(M-1,2)="DRCR",2)=0 THEN GOTO 3200
+3120 LET M$=M$(1,M-2)+"-"
+3180 LET M=LEN(M$)
+3190 IF M<=MAX THEN GOTO 3900
+3200 REM " --- Remove parenthesis"
+3210 IF POS("("=M$)=0 AND POS(")"=M$)=0 THEN GOTO 3300
+3220 IF POS("("=M$)>0 THEN LET M$=FNR$(M$,POS("("=M$)); GOTO 3220
+3230 IF POS(")"=M$)>0 THEN LET M$=FNR$(M$,POS(")"=M$)); GOTO 3230
+3240 LET M$=M$+"-"
+3280 LET M=LEN(M$)
+3290 IF M<=MAX THEN GOTO 3900
+3300 REM " --- Remove commas"
+3310 IF POS(","=M$)=0 THEN GOTO 3400
+3320 IF POS(","=M$)>0 THEN LET M$=FNR$(M$,POS(","=M$)); GOTO 3320
+3380 LET M=LEN(M$)
+3390 IF M<=MAX THEN GOTO 3900
+3400 REM " --- Remove # right of decimal point and last zero"
+3410 IF POS("#"=M$)=0 OR POS("#"=M$,-1)<POS("."=M$) OR POS("#"=M$,-1)<POS("0"=
+3410:M$,-1) THEN GOTO 3500
+3420 LET M$=FNR$(M$,POS("#"=M$,-1))
+3480 LET M=LEN(M$)
+3490 IF M<=MAX THEN GOTO 3900 ELSE GOTO 3400
+3500 REM " --- Remove left most digits"
+3510 IF M$(1,1)="-" THEN LET M$=M$(2)+"-"
+3520 LET M$=M$(M-(MAX-1))
+3580 LET M=LEN(M$)
+3900 REM " --- Recheck mask minimum size"
+3910 GOTO 1500
+4000 REM " --- All done"
+4010 LET MASK$=M$,LENGTH=LEN(MASK$)
+4090 GOTO 9900
+8000 REM " --- Functions"
+8090 DEF FNR$(Q$,Q)=Q$(1,Q-1)+Q$(Q+1)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9950 EXIT
+9999 END

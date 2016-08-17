@@ -1,0 +1,97 @@
+0010 REM "SYC - Yes/No Update Prompt"
+0020 REM "Program SYC.YN"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0045 REM "TYPE   : Window Flag"
+0046 REM "       : 0 = Windowed"
+0047 REM "       : 1 = No window"
+0060 REM "PROMPT$: Prompt to be displayed (input)"
+0063 REM "PROMPT : Type of Prompt (input)"
+0064 REM "       : 0 = Prompt for YES/NO in middle of screen"
+0065 REM "       : 1 = Prompt for Y/N at bottom of screen - default N"
+0066 REM "       : 2 = Prompt for Y/N at bottom of screen - default Y"
+0067 REM "       : 3 = Prompt for Y/N in middle of screen - default N"
+0068 REM "       : 4 = Prompt for Y/N in middle of screen - default Y"
+0070 REM "FIELD$ : User input (returned)"
+0073 REM "FKEY   : Function key value (returned)"
+0075 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER TYPE,PROMPT$,PROMPT,FIELD$,FKEY
+0400 REM " --- Parameters"
+0420 LET X$=FIN(0),MAXCOL=MIN(DEC(X$(7,1)),80),MAXROW=MIN(DEC(X$(8,1)),22)
+0500 REM " --- Initializations"
+0540 LET MESSAGE$=PROMPT$,NAME$=""
+0550 ON PROMPT GOTO 0560,0600,0600,0600
+0560 LET NEEDED=3,WIN_Y=11,V0$="S",DEFAULT$="No",OPTIONS$=" (Yes/No)?"
+0590 GOTO 0700
+0600 REM 
+0610 LET NEEDED=1,WIN_Y=20,V0$="Y",DEFAULT$="N",OPTIONS$=" (Y/N)?"
+0620 IF PROMPT=2 OR PROMPT=4 THEN LET DEFAULT$="Y"
+0630 IF PROMPT=3 OR PROMPT=4 THEN LET WIN_Y=11
+0700 REM " --- Background"
+0710 LET L=LEN(MESSAGE$),WIDTH=L+NEEDED+LEN(OPTIONS$)+6
+0720 IF WIDTH<MAXCOL+1 THEN GOTO 0750
+0730 LET MESSAGE$=MESSAGE$(1,L-1)
+0740 GOTO 0700
+0750 LET MESSAGE$=MESSAGE$+OPTIONS$,L=LEN(MESSAGE$),WIDTH=L+NEEDED+6
+0760 LET HEIGHT=3,WIN_X=INT((MAXCOL-WIDTH)/2),TITLE$="",NAME$=""
+0770 IF TYPE=1 THEN GOTO 0800
+0780 CALL "SYC.WA",0,WIDTH,HEIGHT,WIN_X,WIN_Y,TITLE$,NAME$
+0790 PRINT @(1,0),MESSAGE$,
+0800 REM " --- Prompt for input"
+0810 LET V1$="^",V2$=DEFAULT$,V3$="",V4$="",V0=NEEDED,V1=L+2,V2=0
+0815 IF TYPE=1 THEN LET V4$=MESSAGE$,V1=FNV1(V4$,MAXCOL),V2=MAXROW,V1$="^C"
+0820 GOSUB 7000
+0830 IF V3=4 THEN GOTO 3900
+0840 IF PROMPT>0 THEN IF POS(V$="YN")>0 THEN GOTO 4000
+0850 IF V$="YES" THEN GOTO 4000
+0860 IF V$="NO" THEN GOTO 4000
+0890 GOTO 0800
+3900 REM " --- <F4> means NO!"
+3910 LET V$=DEFAULT$
+3920 IF PROMPT=2 OR PROMPT=4 THEN LET V$="N"
+4000 REM " --- All done"
+4010 LET FIELD$=FNU$(V$),FKEY=V3
+4090 GOTO 9900
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions"
+8025 DEF FNC(Q$,Q)=INT((Q-LEN(Q$))/2)
+8080 DEF FNV1(Q$,Q)=FNC(Q$,Q)+LEN(Q$)+1
+8090 DEF FNU$(Q$)=CVS(Q$,4)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9910 IF TYPE<>1 THEN CALL "SYC.WD",NAME$
+9950 EXIT
+9999 END

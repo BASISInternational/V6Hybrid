@@ -1,0 +1,95 @@
+0010 REM "SYC - Verify Application Installed
+0020 REM "Program SYC.VA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0042 REM "MODULE$   : 2 character module ID (input)"
+0044 REM "INFO$[n]  : Information array (output)"
+0046 REM "             [0] Module description"
+0048 REM "             [1] Multiple firms (Y/N)"
+0050 REM "             [2] Default Firm ID"
+0052 REM "             [3] Installed (Y/N)"
+0054 REM "             [4] Version number"
+0056 REM "             [5] BBx data path"
+0058 REM "             [6] BBx program path"
+0060 REM "             [9] Post to GL (Y/N)"
+0062 REM "            [20] Installed for this firm (Y/N)"
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER MODULE$,INFO$[ALL]
+0100 REM " --- Open Files"
+0110 LET FILES=2
+0120 DIM FILES$[FILES],OPTIONS$[FILES],CHANNELS[FILES]
+0130 LET FILES$[1]="SYS-01",FILES$[2]="SYM-04"
+0140 CALL "SYC.DA",1,1,2,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STATUS
+0150 IF STATUS>0 THEN GOTO 9900
+0190 LET SYS01_DEV=CHANNELS[1],SYM04_DEV=CHANNELS[2]
+0200 REM " --- IOLIST's"
+0260 SYM04A: IOLIST A0$(1),A1$(1),A2$(1),A3$(1),A[ALL]
+0270 SYS01T: IOLIST X$,F0$,X$,X$,X$,F4$,F5$
+0280 GLS01A: IOLIST G0$,G1$,G2$,G3$(1),G4$(1)
+0400 REM " --- Parameters"
+0410 FIND (SYS01_DEV,KEY="T"+FID(0),DOM=9800)IOL=SYS01T
+0420 LET N0$=F0$(16,2)
+0500 REM " --- Init Data
+0510 DIM A0$(2),A1$(64),A2$(50),A3$(50),A[2],G3$(325),G4$(32)
+1000 REM " --- Get System Description Record"
+1010 LET INFO$[20]="N"
+1020 FIND (SYM04_DEV,KEY=MODULE$,DOM=1030)IOL=SYM04A
+1030 LET INFO$[0]=FNP$(A1$(1,35)),INFO$[1]=A1$(36,1),INFO$[2]=A1$(37,2)
+1040 LET INFO$[3]=A1$(39,1),INFO$[4]=A1$(40,5),INFO$[5]=FNP$(A2$)
+1050 LET INFO$[6]=FNP$(A3$),INFO$[9]=A1$(46,1)
+1900 REM " --- Post to G/L?"
+1910 IF POS(INFO$[9]="YN")=0 THEN LET INFO$[9]="Y"
+1920 IF INFO$[9]="N" THEN GOTO 2000
+1930 LET A1$(39,1)="N"
+1940 FIND (SYM04_DEV,KEY="GL",DOM=1950)IOL=SYM04A
+1950 LET INFO$[9]=A1$(39,1)
+1960 IF INFO$[9]="N" THEN GOTO 2000
+1980 FIND (SYS01_DEV,KEY=N0$+"GL00",DOM=2000)IOL=GLS01A
+1990 IF G4$(7,1)="N" THEN LET INFO$[9]="N"
+2000 REM " --- Translate module to retrieve parameter record (if necessary)"
+2010 LET PARAMETERS$=MODULE$
+2020 IF MODULE$="OP" THEN LET PARAMETERS$="AR"
+2030 IF MODULE$="PO" THEN LET PARAMETERS$="IV"
+2040 IF MODULE$="BR" THEN LET PARAMETERS$="AP"
+2050 IF MODULE$="MP" THEN LET PARAMETERS$="IV"
+2100 REM " --- Get Parameter Record"
+2110 IF POS(MODULE$="DDGESY",2)>0 THEN GOTO 2200
+2120 FIND (SYM04_DEV,KEY=PARAMETERS$,DOM=4000)
+2200 REM " --- Installed for this firm?"
+2210 IF INFO$[3]="Y" THEN LET INFO$[20]="Y"
+4000 REM " --- All done"
+4090 GOTO 9900
+8000 REM " --- Functions"
+8080 DEF FNP$(Q$)=CVS(Q$,2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9800 REM " --- Display Parameter record error"
+9810 LET LINE_ERR$=LST(PGM(TCB(5)))
+9820 CALL "SYC.YA",LINE_ERR$,N2$,ERR
+9900 REM " --- Return to calling program"
+9910 CLOSE (SYS01_DEV,ERR=9911)
+9915 CLOSE (SYM04_DEV,ERR=9916)
+9920 IF INFO$[3]<>"Y" THEN LET INFO$[3]="N"
+9930 IF INFO$[20]<>"Y" THEN LET INFO$[20]="N"
+9950 EXIT
+9999 END

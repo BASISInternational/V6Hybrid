@@ -1,0 +1,155 @@
+0010 REM "POE - Quality Assurance Receipt Entry (Initialize Quantities)"
+0020 REM "Program POE.CB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.2 - 01Jan96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0031 REM "09Oct96 WGH: Write POE-43 x-ref only for 'S' Line Types (4190)"
+0040 REM 
+0085 SETERR 9000
+0090 SETESC 9000
+0200 REM " --- IOLIST's"
+0210 POE03A: IOLIST A0$(1),A1$(1),A2$,A3$,A[ALL]
+0220 IVM01A: IOLIST B0$(1),B1$(1),B2$(1),B3$(1),B4$(1),B5$,B6$(1),B[ALL]
+0230 IVM02A: IOLIST C0$(1),C1$(1),C2$,C[ALL]
+0310 POE13A: IOLIST W0$(1),W1$(1),W2$(1),W3$(1),W4$(1),W5$,W6$,W[ALL]
+0320 POM02A: IOLIST Y0$(1),Y1$(1)
+0340 POE43A: IOLIST X4$(1)
+0500 REM " --- Initializations"
+0505 PRECISION I[1]
+0510 DIM B0$(22),B1$(60),B2$(64),B3$(40),B4$(21),B[12]
+0520 DIM C0$(24),C1$(64),C[20],X4$(45)
+0550 LET A1$(134,1)="N",DEFAULT$="Y",APPROVE$="Y"
+0700 REM " --- Background"
+0710 PRINT @(0,L0),'CE','SB',@(17,L0+1),"Completely Receive This Purchase Orde
+0710:r (Y/N)?",@(13,L0+3),"Set Quantity Received Equal To Quantity Ordered (Y/
+0710:N)?",@(21,L0+5),"Approve All Receipt Quantities (Y/N)?",'SF',
+0900 REM " --- Display defaults"
+0910 GOSUB 5000
+1000 REM " --- Receive complete?"
+1010 LET V0$="Y",V1$="CR",V2$=A1$(134,1),V3$="",V0=1,V1=63,V2=L0+1,I0=0
+1020 LET V4$="Y=No Backorders     N=Backorders Will Be Permitted"
+1030 GOSUB 7000
+1040 ON V3 GOTO 1050,1000,3900,1000,3900
+1050 LET A1$(134,1)=V$
+1090 GOTO 3900
+1200 REM " --- Default to quantity ordered?"
+1210 LET V0$="Y",V1$="CR",V2$=DEFAULT$,V3$="",V0=1,V1=68,V2=L0+3
+1220 LET V4$="Y=Set Receipt Quantity Equal To Quantity Ordered/N=Set Receipt Q
+1220:uantity To Zero"
+1230 GOSUB 7000
+1240 ON V3 GOTO 1250,1200,3900,1200,3900
+1250 LET DEFAULT$=V$
+1290 GOTO 3900
+1400 REM " --- Approve received quantities"
+1405 IF DEFAULT$="N" THEN LET APPROVE$="N"; GOTO 3900
+1410 LET V0$="Y",V1$="CR",V2$=APPROVE$,V3$="",V0=1,V1=59,V2=L0+5
+1420 LET V4$="Y=Set Quantity Approved To Receipt Quantity   N=Set Quantity App
+1420:roved To Zero"
+1430 GOSUB 7000
+1440 ON V3 GOTO 1450,1400,3900,1400,3900
+1450 LET APPROVE$=V$
+1490 GOTO 3900
+3900 REM " --- Next Field"
+3905 IF V3=4 THEN GOTO 3990
+3910 IF V3<>2 THEN GOTO 3940
+3920 IF I0>0 THEN LET I0=I0-1
+3930 GOTO 3950
+3940 LET I0=I0+1
+3960 ON I0 GOTO 1000,1200,1400,3990
+3990 GOSUB 5000
+4000 REM " --- Update header"
+4010 LET NOTNEW=0
+4020 WRITE (POE03_DEV,KEY=A0$)IOL=POE03A
+4030 CALL "SYC.NB","Updating",11,COLUMN
+4090 READ (POE13_DEV,KEY=A0$,DOM=4100)
+4100 REM " --- Update detail"
+4110 LET K$=KEY(POE13_DEV,END=4500)
+4120 IF POS(A0$=K$)<>1 THEN GOTO 4500
+4125 PRINT @(COLUMN,11),K$(16,7)," ",K$(23,3),
+4130 READ (POE13_DEV)IOL=POE13A
+4135 IF N0$+W1$(1,2)=Y0$(1,4) THEN GOTO 4150
+4140 LET Y0$(1)=N0$+W1$(1,2),Y1$(1)=""
+4145 FIND (POM02_DEV,KEY=Y0$,DOM=4150)IOL=POM02A
+4150 LET W1$(41,1)="N",X4$(1)=N0$+W3$(3)+W0$(16)+W0$(3)
+4160 IF DEFAULT$="Y" THEN LET W[4]=W[3]-W[7]
+4170 IF APPROVE$="Y" THEN LET W[5]=W[4],W1$(41,1)="Y"
+4180 WRITE (POE13_DEV,KEY=K$)IOL=POE13A
+4190 IF Y1$(21,1)="S" THEN WRITE (POE43_DEV,KEY=X4$)IOL=POE43A
+4200 REM " --- Retrieve warehouse/item"
+4210 IF SF$="N" THEN GOTO 4400
+4220 IF FNP$(W2$(1,7))="" THEN GOTO 4400
+4230 IF Y1$(21,1)<>"S" THEN GOTO 4400
+4240 LET B0$(1)=N0$+W3$(3),C0$(1)=N0$+W3$,C1$(1)=""
+4250 FIND (IVM01_DEV,KEY=B0$,DOM=4400)IOL=IVM01A
+4260 FIND (IVM02_DEV,KEY=C0$,DOM=4400)IOL=IVM02A
+4270 IF C1$(60,1)<>"Y" THEN GOTO 4400
+4300 REM " --- Special order item for unreleased work order?"
+4310 LET K$=N0$+"  "+"A"+W2$(1,7)
+4320 FIND (WOE04_DEV,KEY=K$,DOM=4350)
+4330 GOTO 4400
+4360 LET X$="",V4$=FNP$(W3$(3))
+4370 IF LEN(V4$)<10 THEN LET X$=FILL(INT((10-LEN(V4$))/2))
+4375 LET MESSAGE$[0]=X$+"Line "+W0$(23,3)+" Contains A Special Order Item ("+V
+4375:4$+")"
+4380 LET MESSAGE$[1]="For Work Order "+W2$(1,7)+" Which Has Not Been Released"
+4385 LET MESSAGE$[2]=FILL(10)+"Press <Enter> To Continue"
+4390 CALL "SYC.XA",2,MESSAGE$[ALL],2,22,-1,V$,V3
+4400 REM " --- Loop back for next line item"
+4490 GOTO 4100
+4500 REM " --- Edit receipt if no backorders?"
+4510 IF A1$(134,1)="N" THEN GOTO 4900
+4520 CALL "SYC.YN",1,"Do You Wish To Edit This Receipt",1,V$,V3
+4530 ON V3 GOTO 4540,4500,4500,4500,4800
+4540 ON POS(V$="YN") GOTO 4500,4900,4800
+4800 REM " --- Return to header overlay"
+4810 PRINT @(0,L0-2),'CE',
+4820 LET O0=1,ACTION$="B"
+4830 CALL "POC.RA",TYPE$,ACTION$,RIBBON$[ALL],RIBBON[ALL],RFILES[ALL],A$[ALL],
+4830:A[ALL],V3
+4890 RUN "POE.CA"
+4900 REM " --- Run detail overlay"
+4990 RUN "POE.CC"
+5000 REM " --- Display"
+5010 PRINT @(63,L0+1),A1$(120,1),@(68,L0+3),DEFAULT$,@(59,L0+5),APPROVE$,
+5090 RETURN
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Function Definitions"
+8070 DEF FNP(Q1,Q2,Q3,Q4,Q5)=(80-(Q1+(Q2*2)+Q3+Q4+20))-Q5
+8080 DEF FNP$(Q$)=CVS(Q$,2)
+8090 DEF FNV(Q$)=42+INT(LEN(Q$)/2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9800 REM " --- Display Parameter record error"
+9810 LET LINE_ERR$=LST(PGM(TCB(5)))
+9820 CALL "SYC.YA",LINE_ERR$,N2$,ERR
+9900 REM " --- Return to menu"
+9950 RUN "SYS.AA"
+9999 END

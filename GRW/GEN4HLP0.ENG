@@ -1,0 +1,2307 @@
+# Topics are arranged primarily by \\program\subject.  Any topics 
+# starting with \\GENV4 are considered generic topics. 
+# 
+# Use [text] for underline ("\[" and "\]" for actual brackets) 
+# Use {text} for dim text 
+# Use ~ for line draw 
+
+# REMEMBER TO SAVE THE .TXT FILE AS TEXT FILE (CTL-F5 IN WORDPERECT)
+# ALSO BE SURE THAT THIS DOCUMENT IS FORMATTED FOR STANDARD PRINTER
+\\GEN4LIST\ENTRY
+Enter your list command by typing, and using the standard cursor
+movement keys.  If your command exceeds one screen, General will scroll
+up and down as necessary, and you may use the page up and down keys to
+move quickly through screens of text.
+
+Your command can occupy many paragraphs.  It doesn't matter how many
+spaces or blank lines separate each word in the command, except for
+quoted items, in which a blank line equals 80 spaces.  You can also
+indent portions of the command to make them more readable.
+
+Once you are complete, press the [Done] key, and General will parse the
+command and execute it.
+.page
+[Other options]
+
+To exit LIST command entry, and return to the main menu, press the Exit
+key.  If you have started entering a command, General will prompt to
+verify that you want to exit, losing the entry you made.
+
+If you would like to split the screen, and let General help you choose
+files, fields, and keywords, then press the Assist key.
+
+If you would like to view the LIST command stack, and possibly copy a
+previous command onto the current one, press the History key.
+.page
+[LIST command overview]
+
+The LIST command is the primary means of producing reports in General. 
+A LIST command consists of five parts:
+
+     The word LIST, indicating the start of a report definition.
+
+     A file name, such as CUSTOMERS, or AR.INVOICES.
+
+     A "field-phrase", which consists of one or more fields from the
+     file selected, optionally intermixed with keywords, such as TOTAL,
+     BREAK, and NO-DUPLICATES.
+
+     A "sort-phrase", which is a list of field names, optionally
+     prefixed by sort phrase keywords such as DESCENDING.  The sort-
+     phrase is optional.
+.page
+[LIST command overview, continued]
+
+     A "select-phrase", which a list of expressions that define the
+     conditions each record must meet in order to be placed on the
+     report.  Expressions take the form of relations between fields or
+     between fields and constants.  Examples of expressions include
+     YTD.SLS>0, SLM.NAME="JOHN SMITH", CURRENT_BALANCE+100>CREDIT_LIMIT,
+     and so on.  Multiple expressions can be connected with the keywords
+     AND and OR.
+
+LIST commands also support header and footer sub-phrases, which exist
+inside the field-phrase.  These sub-phrases are used to custom define
+report- and group-headers and footers.
+.page
+[Other commands]
+
+In addition to the LIST command, you can directly enter commands to
+bypass the main General menu.  These commands are:
+
+PROMPT         Interactive mode for report creation.
+
+STACK          Access to the command history (the last 18 LIST
+               commands).
+
+RUN            Re-execute stored commands (saved from STACK or PROMPT).
+
+DICTIONARY     Dictionary maintenance.
+
+CONFIG         System, terminal, and printer configuration.
+
+QUIT           Exit General.
+\\GEN4LIST\COMMAND ENTRY
+Enter your list command by typing, and using the standard cursor
+movement keys.  If your command exceeds one screen, General will scroll
+up and down as necessary, and you may use the page up and down keys to
+move quickly through screens of text.
+
+Your command can occupy many paragraphs.  It doesn't matter how many
+spaces or blank lines separate each word in the command, except for
+quoted items, in which a blank line equals 80 spaces.  You can also
+indent portions of the command to make them more readable.
+
+Once you are complete, press the [Done] key, and General will parse the
+command and execute it.
+.page
+[Other options]
+
+To exit assist mode, and return to full-screen command entry, press the
+Quit Assist key.
+
+To change to the field or keyword selection window, press the Toggle
+Window key.
+
+If you would like to view the LIST command stack, and possibly copy a
+previous command onto the current one, press the History key.
+.page
+[LIST command overview]
+
+The LIST command is the primary means of producing reports in General. 
+A LIST command consists of five parts:
+
+     The word LIST, indicating the start of a report definition.
+
+     A file name, such as CUSTOMERS, or AR.INVOICES.
+
+     A "field-phrase", which consists of one or more fields from the
+     file selected, optionally intermixed with keywords, such as TOTAL,
+     BREAK, and NO-DUPLICATES.
+
+     A "sort-phrase", which is a list of field names, optionally
+     prefixed by sort phrase keywords such as DESCENDING.  The sort-
+     phrase is optional.
+.page
+[LIST command overview, continued]
+
+     A "select-phrase", which a list of expressions that define the
+     conditions each record must meet in order to be placed on the
+     report.  Expressions take the form of relations between fields or
+     between fields and constants.  Examples of expressions include
+     YTD.SLS>0, SLM.NAME="JOHN SMITH", CURRENT_BALANCE+100>CREDIT_LIMIT,
+     and so on.  Multiple expressions can be connected with the keywords
+     AND and OR.
+
+LIST commands also support header and footer sub-phrases, which exist
+inside the field-phrase.  These sub-phrases are used to custom define
+report- and group-headers and footers.
+\\GEN4LIST\FIELD PICK
+Use the cursor movement keys to move around the list of fields.  Once
+the field you want is highlighted, press Enter to place that field on
+the LIST command.  If you are in "insert" mode, the field will be
+inserted in the command at the current cursor position in the LIST
+command; otherwise, it will replace the word at the current cursor
+position.
+
+Moving the cursor to the right will move to the keyword selection
+window.
+
+Pressing the <delete character> keystroke (typically Ctrl-X) will undo 
+selections in the reverse order as made.
+
+Choose Related Files to access data in files which General knows to be
+related to the one currently selected.
+\\GEN4LIST\SELECT FILE
+Enter the filename of the file you want to work with.  The file entered
+needs to have been defined in the Dictionary.  If you are unsure of the
+file, you can enter a wildcard, such as AR.C*, or press the List Files
+key, and General will present a file selection window.
+
+Once selected, the file's dictionary will be loaded, and you will be
+able to build a LIST command by selecting fields and keywords with the
+cursor motion keys.
+\\GEN4LIST\AVERAGE
+The AVERAGE keyword will cause the calculation of a column average, both
+at sub-total and grand-total levels, unless a particular footer has been
+customized with a footer sub-phrase.  AVERAGE must be followed by either
+a numeric field, a numeric calculation, or another aggregate keyword,
+such as TOTAL.
+\\GEN4LIST\COUNT
+The COUNT keyword will cause the calculation of a column count, both at
+sub-total and grand-total levels, except when a footer has been
+customized.  COUNT must be followed by a data field, data calculation,
+or another aggregate keyword, such as TOTAL.
+\\GEN4LIST\TOTAL
+The TOTAL keyword will cause the calculation of a column total, both at
+sub-total and grand-total levels, unless a footer has been customized. 
+TOTAL must be followed by a numeric field, a numeric calculation, or
+another aggregate keyword, such as MAXIMUM.
+\\GEN4LIST\MINIMUM
+The MINIMUM keyword will cause the calculation of minimum value in
+column, both at sub-total and grand-total levels, unless a footer has
+been customized.  MINIMUM must be followed by a numeric or date field, a
+numeric or date calculation, or another aggregate keyword, such as
+MAXIMUM.
+\\GEN4LIST\MAXIMUM
+The MAXIMUM keyword will cause the calculation of maximum value in
+column, both at sub-total and grand-total levels, unless a footer has
+been customized.  It must be followed by a numeric or date field, a
+numeric or date calculation, or another aggregate keyword, such as
+AVERAGE.
+\\GEN4LIST\PCT-TOTAL
+The PCT-TOTAL keyword will cause the calculation of a percent of grand-
+total for each line in a column.  Sub-total levels will also be
+calculated as a percent of the grand total.  The sub-total and grand-
+total values appear in default footers generated by General, but may not
+appear in custom footers.  This keyword must be followed by a numeric
+data field or numeric calculation.
+\\GEN4LIST\BREAK
+The BREAK keyword will cause a line break, with sub-totals if aggregate
+keywords such as TOTAL are used, anytime the value of the next report
+element changes.  Normally, a break field will coincide with the order
+defined in a SORT phrase or an ALTSORT definition, but this is not
+required.
+
+BREAK must be followed by a non-numeric field.  When used with a date
+field, the date may be prefixed by one of the date conversion operators
+MMYY, MMYYYY, MMMYY, MMMYYY, YY, or YYYY in order to perform a break
+only when the month or year changes.
+\\GEN4LIST\BREAK-PG
+The BREAK-PG keyword will cause a page break, with sub-totals if
+aggregate keywords such as TOTAL are used, anytime the value of the next
+report element changes.  Normally, a break field will coincide with the
+order defined in a SORT phrase or an ALTSORT definition, but this is not
+required.
+
+BREAK-PG must be followed by a non-numeric field.  When used with a date
+field, the date may be prefixed by one of the date conversion operators
+MMYY, MMYYYY, MMMYY, MMMYYY, YY, or YYYY in order to perform a break
+only when the month or year changes.
+\\GEN4LIST\SBREAK
+The SBREAK keyword will cause a line break, with sub-totals if aggregate
+keywords such as TOTAL are used, anytime the value of the next report
+element changes.  Normally, a break field will coincide with the order
+defined in a SORT phrase or an ALTSORT definition, but this is not
+required.
+
+SBREAK differs from BREAK in that it suppresses the printing of the
+break point value as a column on the report.
+\\GEN4LIST\SBREAK-PG
+The SBREAK-PG keyword will cause a page break, with sub-totals if
+aggregate keywords such as TOTAL are used, anytime the value of the next
+report element changes.  Normally, a break field will coincide with the
+order defined in a SORT phrase or an ALTSORT definition, but this is not
+required.
+
+SBREAK-PG differs from BREAK-PG in that it suppress the printing of the
+break point value as a column on the report.
+\\GEN4LIST\SORT
+The SORT keyword is used to denote the start of a sort phrase.  The sort
+phrase will be in effect until:
+
+     a SELECT keyword is found, or
+     a field phrase keyword is found, or
+     the end of the command is found.
+
+Sort phrases define the sort order for the report, overriding any
+default sort and also any ALTSORT, ALTFILE, or ALTKEY sort criteria. 
+The sort is defined by the order in which data fields and calculations
+are named in the sort-phrase.  Each element can optionally be prefixed
+by the keywords DESCENDING, which causes that element to be sorted in
+descending sequence, and FULLCASE, which causes text fields to be sorted
+with in a case-sensitive manner (normally, text sorts are NOT case
+sensitive).
+\\GEN4LIST\DESCENDING
+The DESCENDING keyword indicates that the next field should be sorted in
+descending order.  This keyword is only allowed in a sort phrase.
+\\GEN4LIST\FULLCASE
+The FULLCASE keyword is used to force the next field to be sorted in a
+manner that is case-sensitive.  For example, "ABRAMS" and "Abrams" would
+not be considered identical.
+\\GEN4LIST\SELECT
+The SELECT keyword indicates the beginning of a select phrase.  The
+select phrase is used to create exception reports, by selecting out only
+records that meet specified criteria.
+
+The SELECT keyword must be followed by one or more relational
+expressions, which themselves are made up of a field or calculation, an
+operator, and another field, calculation, or constant.  Individual
+expressions can be combined with AND and OR to make complex expressions.
+
+The select phrase ends when a SORT or field phrase keyword is found, or
+at the end of the command.
+\\GEN4LIST\FIELD
+The FIELD keyword can be used to designate that start of a field phrase. 
+This can be necessary if a sort- or select-phrase is used, and
+additional field phrase data is desired.  Note that most field-phrase
+keywords will also designate that start of a field phrase also.
+\\GEN4LIST\@CALC
+Report calculations can be defined with the @CALC function.  The syntax
+of the function is:
+
+     @CALCname("type-codes","heading",expression)
+
+Each parameter is defined just like in dictionary maintenance.  Once a
+calculation has been defined in this manner, it may be referenced
+elsewhere in the report by its name, @CALCname.
+
+Some examples of calculations include:
+
+     @CALC_SHORTNAME("T,L15","Name",MID(FULLNAME,1,15))
+     @CALC_AGE("N,L5,JR","Inv Age",@DATE-INV_DATE)
+     @CALC_DUE("D,L10","DUE DATE",INV_DATE+@CALC_DAYS_ALLOWED)
+\\GEN4LIST\[[ PROMPT ]]
+This feature causes a report to prompt the user for a value at run-time. 
+Within double square brackets, General will look for prompting
+information in one of two formats.
+
+The simplist format is to simply place text between the brackets, such
+as \[\[Enter starting value\]\].  The will cause General to place
+exactly what is typed in the command at the point the bracket prompt was
+found.
+
+The second format allows more control over the type of information that
+is prompted for, and for conversion of the operator entry to a specific
+data type.  The format is:  \[\["prompt-text","type","default"\]\].  The
+type can be T, N, or D, for text, numeric, or date.  The default is what
+General will present as a default value to the user.
+\\GEN4LIST\TAB
+The TAB keyword is used to control placement of the next data element on
+the report.  Tab requires a parameter in one of two forms:
+
+     TAB x will place the next field at column x in the current line,
+     TAB x.y will place the next field at column x, row y.
+\\GEN4LIST\SPACE
+The SPACE keyword is used to change the spacing to the next data field
+to some value other than the default of 1.  SPACE must be followed by a
+number between 1 and the width of the report less the current column.
+\\GEN4LIST\NEWLINE
+The NEWLINE keyword (or LF) is used to force the next default data field
+position to be column 1 of the next line.
+\\GEN4LIST\WIDTH
+The WIDTH keyword is used to override the default number of columns for
+a report.  The default number of columns is 80 for reports to the
+screen, and 132 for any others.
+\\GEN4LIST\LENGTH
+The LENGTH keyword is used to override the default number of printed
+lines per page.  The default value is 20 for screen reports, and 60 for
+others.
+\\GEN4LIST\DOUBLE-SPC
+The DOUBLE-SPC keyword is used to force an extra line between report
+lines.  This keyword is sometimes used in conjunction with the NO-BLANK
+keyword to eliminate extraneous blank lines within a record, but still
+place a blank line between records.
+\\GEN4LIST\LBREAK
+The LBREAK keyword is used to force a blank line between even sets of
+records.  For instance, LBREAK 5 would put a blank line after every 5
+records.
+\\GEN4LIST\NO-BLANK
+The NO-BLANK keyword is used to suppress the printing of blank lines.
+\\GEN4LIST\NO-HEAD
+The NO-HEAD keyword is used to suppress the printing of column headings. 
+The report title section will still be printed.
+\\GEN4LIST\NO-PAGE
+The NO-PAGE keyword is used to suppress all pagination on a report. 
+There are no page headings, column headings, or page ejects.  This is
+useful when printing continuous form labels, or when printing fixed
+record formats to a file.
+\\GEN4LIST\NO-DUPLICATES
+The NO-DUPLICATES keyword is used to cause the next data element to be
+printed only when it's value changes.
+\\GEN4LIST\PROPER
+PROPER is used to convert the next data element to mixed case.  For
+example, the name "JOHN SMITH" would become "John Smith".  There must be
+a text data field or calculation following the keyword.
+\\GEN4LIST\UPPER
+UPPER forces the next data element to print in upper case.
+\\GEN4LIST\LOWER
+LOWER forces the next data element to print in lower case.
+\\GEN4LIST\MMYY
+MMYY is used to convert a date data element to just MM/YY format.
+\\GEN4LIST\MMYYYY
+MMYYYY is used to convert a date field or calculation to MM/YYYY format.
+\\GEN4LIST\MMMYY
+MMMYY is used to convert a date field or calculation to MMM YY format,
+where MMM is a short name for the month.
+\\GEN4LIST\MMMYYYY
+MMMYYYY is used to convert a data field or calculation to MMM YYYY
+format, where MMM is a short name for the month.
+\\GEN4LIST\YY
+YY is used to print just the year of a date data element, in YY format.
+\\GEN4LIST\YYYY
+YYYY is used to print just the year of a date data element, in YYYY
+format.
+\\GEN4LIST\=
+Relational expression operator: each value must be equal, except for
+trailing spaces.
+\\GEN4LIST\>
+Relational expression operator: the left value must be greater than the
+right value.
+\\GEN4LIST\<
+Relational expression operator: the left value must be less than the
+right value.
+\\GEN4LIST\>=
+Relational expression operator: the left value must be greater than or
+equal to the right value.
+\\GEN4LIST\<=
+Relational expression operator: the left value must be less than or
+equal to the right value.
+\\GEN4LIST\<>
+Relational expression operator: the left value must not equal the right
+value, ignoring trailing spaces.
+\\GEN4LIST\==
+Relational expression operator: the left value must contain the right
+value.  This is valid only in expressions testing text data elements.
+\\GEN4LIST\+=
+Relational expression operator: the left value must start with the right
+value.  This is valid only in expressions testing text data elements.
+\\GEN4LIST\-=
+Relational expression operator: the left value must NOT contain the
+right value.  This is valid only in expressions testing text data
+elements.
+\\GEN4LIST\~=
+Relational expression operator: the right value is a regular expression
+which the left value must match.  Regular expressions provide extensive
+pattern matching capabilities.  This is valid only in expressions
+testing text data elements.
+\\GEN4LIST\ON
+The ON keyword is used to direct the report output to a printer or a
+data file.  ON LP will send output to the printer "LP".  ON
+"/usr/john/outfile" will print to the file indicated.  ON PRINTER will
+invoke General's standard printer selection window.
+\\GEN4LIST\EXPORT
+The EXPORT keyword is used to select an export format, such as Delimited
+ASCII, or DIF.  Normally, the ON keyword would also be used to send the
+export-formatted data to a file.
+\\GEN4LIST\DELIMITER
+The DELIMITER keyword is used to change the delimiter used by the
+delimited ASCII export format.  The default delimiter is a comma.
+\\GEN4LIST\NO-QUOTE
+NO-QUOTE is used in conjunction with a delimited export, to disable the
+automatic quoting of text data.
+\\GEN4LIST\PREFIX
+The PREFIX keyword is used to append text to the front of an export
+record format when using the delimited ASCII export option.
+\\GEN4LIST\SUFFIX
+The SUFFIX keyword is used to append text to the end of an export record
+format when using the delimited ASCII export option.
+\\GEN4LIST\ALTFILE
+ALTFILE is used to instruct General to access the primary file of a
+report through an alternate file.  Normally this will result in a
+different sort order, or can allow for a different key range selection.
+
+ALTFILE requires two parameters: a file name, and a key expression.
+\\GEN4LIST\ALTKEY
+ALTKEY is used to instruct General to access the report's primary file
+using an alternate key chain.  ALTKEY 1 would use the first alternate
+key chain, ALTKEY 3, the third, and so on.
+\\GEN4LIST\ALTSORT
+ALTSORT is used to specify the use of a dictionary level sort
+specification.  These sorts are defined as names and replacement ALTFILE
+or ALTKEY keywords.  ALTSORT name will select the name specified. 
+ALTSORT ? will cause General to provide a selection window of all the
+sorts defined in the dictionary of the primary file.
+\\GEN4LIST\HEADING
+The HEADING keyword is used to override the default column headings of a
+report.
+
+An alternate form of HEADING, HEADINGn, is used to define a custom
+header for the break level n, or the report heading if n is 0.  Any
+fields, literals, and field positioning elements after the HEADINGn
+keyword and before the OFF keyword will be placed in the heading for the
+break level specified.
+\\GEN4LIST\TITLE
+The TITLE keyword is used to specify the title of the report.  To split
+a title onto multiple lines, separate the lines with the character
+sequence "^L" or a vertical bar (|).
+\\GEN4LIST\PAGE-HDR
+PAGE-HDR is used to specify a page heading definition.  Another method
+of doing this is the HEADER0 keyword, which turns on a header sub-phrase
+for the page heading.
+\\GEN4LIST\VERT-TOTAL
+VERT-TOTAL is used to change the standard column oriented sub-total and
+total lines to vertical, descriptive lines.
+\\GEN4LIST\LINK
+LINK is used to define run-time links between files.  Normally, links
+are defined in the dictionary, but may be overridden or added to here. 
+Links are used by General when parsing data field references in the form
+"file:field", or nested references "file1:file2:file3:field".  Note that
+in order for General to resolve the link between two files, a link
+definition must be present before the data field references are
+encountered.
+\\GEN4LIST\\NO-QUOTE
+The NO-QUOTE keyword is used to disable the automatic quoting of text
+and date data elements in a delimited export.
+\\GEN4LIST\BEGIN
+The BEGIN keyword is used to indicate a starting point for the report. 
+The starting point relates to either the primary key to the LIST file,
+or if an ALTKEY, ALTFILE, or ALTSORT keyword is used, the starting point
+applies to the sort generated by that keyword.  BEGIN is often used in
+conjunction with the END keyword to define a report range.
+\\GEN4LIST\END
+The END keyword is used to indicate the ending point for a report.  The
+ending point relates to either the primary key of the LIST file, or to
+an ALTKEY, ALTFILE, or ALTSORT keyword, if one is used.  When used in
+conjunction with the BEGIN keyword, a report range can be defined.
+\\GEN4LIST\HEADERn
+This keyword denotes a heading sub-phrase.  Until an OFF keyword is
+found, all fields, literals, and tab placements apply to the heading
+associated with break level "n".  HEADER0 applies to the report heading,
+which appears on the top of every page.
+\\GEN4LIST\FOOTERn
+This keyword denotes a footer sub-phrase.  Until an OFF keyword is
+found, all fields, literals, and tab placements apply to the footer
+associated with break level "n", or to the report footer if FOOTER0 is
+used.
+
+General creates default footers for any report that has break points or
+column calculations, such as TOTAL or MAXIMUM.  There is a default
+footer for each break point and at the bottom of the report.  Using the
+FOOTERn keyword will override that default for any given level, but will
+not change any other levels.
+\\GEN4LIST\EVEN
+The EVEN keyword is used to generate a numeric break point on an even
+value.  The fragment BREAK EVEN 1000 YTD.SLS illustrates a break point
+in even 1,000 increments of the YTD.SLS field.
+\\GEN4LIST\1ST
+The 1ST keyword is used to generate a break on just the first n
+characters of a text field.  The fragment BREAK 1ST 1 NAME illustrates a
+break point based on the first character of the NAME field.
+\\GEN4LIST\ACROSS
+The ACROSS keyword is used to specify the number of records to print
+across the page.  If the value is greater than 1, then the WIDTH keyword
+should also be used to specify the width for each record.  For example,
+ACROSS 3 WIDTH 40 would allocate 120 columns for the report.
+
+ACROSS is useful for label printing.  See also the HEIGHT and TESTPRINT
+keywords.
+\\GEN4LIST\TESTPRINT
+The TESTPRINT will cause GENERAL to print a specified number of
+"pattern" records before printing live data.  This is useful when
+printing mailing labels or filling in pre-printed forms.
+\\GEN4LIST\HEIGHT
+The HEIGHT keyword is used to specify a fixed number of rows that each
+record will occupy.  This is useful when printing mailing labels,
+especially in combination with the NO-BLANK keyword, to suppress blank
+lines, yet still occupy the correct number of lines per label.
+\\GEN4LIST\OFF
+The OFF keyword is used to turn off a custom header or footer phrase, or
+to turn off a command line link specification (see the LINK keyword).
+\\GEN4LIST\NO-DETAIL
+The NO-DETAIL keyword, if present, will cause GENERAL to print only
+break point footers and the report footer.  The lines associated with
+individual records are suppressed.
+\\GEN4DICT\FILE NAME
+Enter the name of the file whose dictionary you want to maintain.  If
+the name has not been previously defined, General will ask if you wish
+to create it.
+
+Note that names entered here are just names used to identify a disk
+file.  The name or pathname of the disk file is unrelated to this name,
+and the two need not be identical.
+
+If you do not know the name of the file, press the List Files key to
+choose the file from a selection window.
+\\GEN4DICT\FILE DESCRIPTION
+Enter a description of the file.  This will appear in file selection
+windows throughout General.
+\\GEN4DICT\ACCESS LEVEL
+Enter the access level for this file.  The access level can be either a
+number from 0 to 9.  If a user's access level is a number less than this
+number, then access to this file will be denied.
+\\GEN4DICT\DISK FILE
+Enter the disk file or pathname associated with this file definition. 
+If necessary, the name can include a run-time replacement or prompt,
+such as "[[@COMPANY]]".
+
+[Chaining files:] If several files of identical structure can be
+combined into a single logical database, then you can chain them
+together with a semi-colon delimiter.  At run-time, General will open
+all files and process them as if they were a single file.  For example,
+"AROPEN;ARHIST" would combine the disk files AROPEN and ARHIST as if
+they were a single large file.
+\\GEN4DICT\SKIP KEYS
+Enter any key values that General should ignore when producing reports
+from this file.  The key values should be delimited both front and back
+with a separator, such as "\~".  Note that these key values are not
+wildcards or variables, but literals.  An entry of \~01\~02\~03\~ would
+skip the keys 01, 02, and 03.
+\\GEN4DICT\AUTO SELECT
+Enter a select phrase fragment (one or more relational expressions)
+which General should always use when reporting from this file.  This can
+be used to separate specific record types from a file containing
+multiple record types.
+\\GEN4DICT\AUTO BEGIN
+Enter a value that General will always use as the starting point in this
+file.  This may contain a run-time replacement or prompt.  For example,
+to always process the file beginning with a specific company code, enter
+a prompt such as [[Enter company code]].
+
+If the user also enters a BEGIN keyword value on a report, that value
+will be added to this value to form the beginning key value for the
+report.
+\\GEN4DICT\AUTO END
+Enter a value that General will always use as the ending point in this
+file.  If a user also enters an END keyword value in a report, then the
+user's value will be added to this value to form the ending point of the
+range.
+\\GEN4DICT\OPTION
+Yes       {Save the dictionary header as shown.}
+
+No        {Maintain the dictionary header.}
+
+Fields    {Maintain data field definitions and calculations.}
+
+Sorts     {Maintain ALTSORT definitions (alternate keys and files).}
+
+Links     {Maintain link definitions, which describe how this file is
+          related to other files in the dictionary.}
+
+Delete    {Delete this dictionary definitions, including fields, sorts,
+          and links.}
+
+Print     {Print a hardcopy of this dictionary definition.}
+\\GEN4DICT\OKAY
+Yes  {Save the definition as displayed.}
+No   {Maintain the definition.}
+\\GEN4DICT\ABORT?
+No   {You do NOT want to lose your changes.}
+Yes  {Your changes will not be saved.}
+\\GEN4DICT\FIELD NAME
+Enter the field name you wish to define or maintain, or press the List
+Fields key to choose the field from a selection list.  Field names may
+be up to 20 characters long, and must be composed of letters, numbers,
+underscores (_), and periods (.).  Underscores and periods cannot occur
+in pairs (FIRST__NAME is invalid, PATIENT_FIRST_NAME is valid).
+
+Press the F2-list fields key to choose the field from a list of
+previously defined fields, or press the up- and down-arrow keys to
+browse through the field definitions.
+
+To see the physical data in the file, and optionally to see the field
+definitions associated with them, press the F3-show data key.
+\\GEN4DICT\FIELD DESC
+Enter a description of this field.  General uses this description in
+field selection lists.
+\\GEN4DICT\FIELD TYPE
+Enter the field type code and length, plus any optional parameters. 
+Type codes define for General what type of data this field contains, and
+also how to present that data on reports.  To have GENERAL guess the
+definition from physical data, press the F2-guess key.
+
+The basic type codes are T, N, and D, which indicate text, numeric, and
+date data, respectively.  Following that there must be a length code,
+Ln, where n is the number of columns this field will occupy on a report. 
+
+T,L25 would define a text field of 25 columns.
+N,L12 would define a numeric field of 12 columns.
+D,L10 would define a date field of 10 columns.
+
+Additional parameters are separated by spaces, and are dependent on the
+base field type.  More detail follows.
+.page
+[Text type codes]
+
+JR or JL       Forces right or left justication.  Normally, General will
+               left justify, but will not trim any leading spaces from
+               the data.
+
+n              The field will occupy n lines.  This allows the splitting
+               of long data across several lines.
+
+Additional type codes can be added to the base type and length type
+codes by separating each with a comma.  For example, T,L30,3 would
+define a 30 column by 3 line (90 characters total).
+.page
+[Numeric type codes]
+
+JL or JR       Forces left or right justification.  Normally numeric
+               fields are right justified.
+
+n              Print field with n decimal precision.
+
+P              Print the field punctuated (with thousands separators).
+
+-,CR,(), or $  Use trailing minus sign, trailing CR, or enclosing
+               parenthesis for negative numbers, or use currency
+               formatting as defined in the system configuration.  The
+               default is a leading minus sign.
+
+Sn             Scale the number by a factor of n.  Scaling is used for
+               data containing an implied decimal.
+.page
+[Date type codes]
+
+JR or JL       Force left or right justification of the data.
+
+T              This is a date and time field, where time is stored in
+               the data as a fraction of a day.
+\\GEN4DICT\FIELD HEAD
+Enter the text to use by default as a column heading.  To split a column
+heading across several lines, use the vertical bar (|) where the split
+should occur.  CUSTOMER NAME|AND ADDRESS would produce a two line
+heading.
+\\GEN4DICT\FIELD EXPRESSION
+Enter an expression that General will use to derive the data for this
+field definition.  Expressions can be a simple as a physical field
+reference or can include multiple statements with embedded Basic and
+General functions, IF .. THEN .. ELSE logic, and so on.
+
+[Data references]
+
+Data can be referenced in the expression in four ways: 
+
+     as a physical field (from 1 to 255) by using the name @PFn, where n
+     is the physical field number,
+
+     as a data record, using the name @REC,
+
+     as the primary key, using the name @KEY,
+
+     or as another field in this file, by using its name.
+.page
+[Syntax examples]
+
+@PF3 {simple field reference, text or implied numeric}
+
+&DATE_CONVERT(MID(@PF3,7,6)) {user defined function, MID function}
+
+NUM(@PF4)+NUM(@PF5)+NUM(@PF6)  {combined numeric fields}
+
+@REC(11,30) {record substring reference}
+
+IF YTD.SLS>0 THEN @FLD=100*(YTD.SLS-YTD.COST)/YTD.SLS ELSE @FLD=0;
+@FLD=MAX(99.99,@FLD) {compound, conditional, field name references}
+.page
+[Functions]
+
+General allows the use of both intrinsic Basic functions as well as
+several pre-defined functions that perform more complex precedures and
+return value.  Nearly all Basic functions can be entered in the
+expression just as in standard Basic syntax.  General functions include:
+
+     &x(), &x$(), user-defined function named x
+     @BREAKn, the break value for break level n
+     @DATE, today's date in julian
+     @DAY, today's date in MM/DD/YY format
+     @DTM, today's date and time in julian
+     @FLD, shorthand reference for this field
+     @PI, the value of pi - 3.14159...
+     @TEMPx, a temporary numeric variable
+.page
+[Functions continued]
+
+     @TEMPx$, a temporary text variable
+     @TTY, this terminals tty number
+     @USER, this user ID
+     @VDT, this video code
+     @YMD, today's date in YYMMDD format
+     ADPRDB(), accumulated declining balance
+     ADPRSL(), accumulated straight line depreciation
+     ADPRSY(), accumulated sum of years digits
+     AGE(), days between dates
+     AGEHR(), hours between dates/times
+     AGEM(), months between dates
+     AGEMN(), minutes between dates/times
+     AGEY(), years between dates
+.page
+[Functions continued]
+
+     AREF(), average external data, partial key
+     AVG(), average list of values
+     BLOCK(), blocks text on word-wrap boundary
+     CDATE(), converts mapped text to julian
+     CNT(), count list of values
+     CNUM(), converts puncuated text to number
+     CONTAINS(), same as POS function
+     CREF(), count external data, partial key
+     DAY(), converts julian date to text
+     DAYTM(), converts julian date-time to text
+     DD(), DDD(), day portion of date
+     DEL(), deletes portion of text
+     DIVIDE(), divides two numbers, by 0 okay
+.page
+[Functions continued]
+
+     DPRDB(), declining balance depreciation
+     DPRSL(), straight line depreciation
+     DPRSY(), sum of years digits depreciation
+     DT(), converts text date to julian
+     DTM(), converts text date-time to julian
+     EXPAND(), code-to-description conversion
+     FV(), the future value of an annuity
+     GAVG(), RAVG(), group/report average
+     GCNT(), RCNT(), group/report count
+     GMAX(), RMAX(), group/report maximum
+     GMIN(), RMIN(), group/report minimum
+     GSUM(), RSUM(), group/report total
+     IFF(), choose values based on condition
+     ISNOTNUM(), true if not numeric
+     ISNUM(), true if numeric
+.page
+[Functions continued]
+
+     LEFT(), pads, left justifies text
+     LENGTH(), the length of a trimmed field
+     LOWER(), forces lower case
+     MATCH(), same as MASK function
+     MID(), pads, substrings text
+     MM(), MMM(), month portion of date
+     MREF(), lookup external data, partial key
+     PMT(), the payment amount of an annuity
+     PROPER(), forces proper case
+     PV(), the present value of an annuity
+     RATE(), the rate of an annuity
+     RIGHT(), pads, right justifies text
+     ROUND(), a rounded number
+     STD(), standard deviation of list of values
+     SUM(), total list of values
+.page
+[Functions continued]
+
+     TERM(), the length of an annuity
+     TIME(), converts julian date-time to time
+     TREF(), sum external data, partial key
+     TRIM(), trims spaces
+     UNBLOCK(), unblocks text from boundary
+     UPPER(), forces upper case
+     VAR(), variance of list of values
+     XREF(), lookup external data, exact key
+     YY(), YYYY(), year portion of date
+.page
+[Conditional Logic]
+
+Normally, an expression will simply represent a fragment of a full Basic
+LET statement, but if the expression begins with IF, then it is treated
+as a complete statement.  Conditional expressions must take the form of:
+
+IF relational-expression THEN assignment
+
+                      or
+
+IF expression THEN assignment-1 ELSE assignment-2
+
+Examples:
+
+IF CODE>"" THEN @FLD=EXPAND(CODE,"Y,N","YES,NO") ELSE @FLD="NEITHER"
+.page
+[Compound expressions]
+
+Multiple statements may be separated by semi-colons, in which case
+General will execute each statement in turn.  This execution is not
+based on a prior condition, as in standard Basic syntax.  If such
+compound expressions need to be logically grouped together, then the
+group operators \{\} can be used.
+
+A simple compound expression example:
+NUM(@PF2)*100; IF @FLD<0 THEN @FLD=ABS(@FLD)
+
+An example of group operator usage:
+IF @REC(1,2)="99" THEN \{ YTD.SLS=0; YTD.COST=0 \}; 
+@FLD=YTD.SLS-YTD.COST
+\\GEN4DICT\PASTE OPTION
+Choose a option to select from a list.  When an element is selected from
+one of the lists generated, it will be pasted back into the expression.
+\\GEN4DICT\VERIFY FIELD
+Yes       {Save the field definition as displayed}
+No        {Modify the field definition}
+Delete    {Delete the field definition}
+
+Pressing the Exit key will abort this definition without saving it.
+\\GEN4DICT\NEW FIELD?
+Verify that this is a new field definition.
+
+No        {This is NOT a new field.}
+Yes       {This IS a new field, and you wish to create the definition.}
+Copy      {Copy this field from another}
+\\GEN4DICT\ALTSORT NAME
+Enter the name that identifies this ALTSORT definition.
+\\GEN4DICT\ALTSORT DESC
+Enter a description of this definition.  General will use this when
+displaying selection lists of ALTSORT definitions.
+\\GEN4DICT\ALTSORT EXP
+Enter a replacement ALTFILE or ALTKEY expression for General to use when
+this ALTSORT name is selected in a report.  The syntax for these
+expressions is:
+
+     ALTKEY n, where n is the key chain number to use
+
+     ALTFILE file-name "key-exp", where file-name is a General file name
+     that references the sort file, and key-exp is an expression, using
+     K$ as a variable to represent the key of the alternate file, that
+     produces the key of the primary file.  Examples of key expressions
+     might be K$(21,5), or K$(1,2)+"A"+K$(12,10).  The key expression
+     should be enclosed in quotes if it contains any spaces or
+     operators.  If it contains quotes, then use single quotes around
+     the expression.
+\\GEN4DICT\LINK FILE
+Enter the name of the file to link to.  This file must be related to the
+current file by a primary key or a sort definition.  Press the List
+Files key to choose from a selection list.  If the file is related via a
+sort definition, enter the file name, a @ symbol, and the sort name,
+such as INVOICES@SLSP.
+\\GEN4DICT\LINK TYPE
+1    {There is a one-to-one relationship between the files, and the key
+     expression supplied is a full key to the target file.}
+
+2    {There is a one-to-many relationship, and the key supplied is a
+     partial key used to scan 0 or more records in the target file.}
+\\GEN4DICT\LINK EXPRESSION
+Enter an expression that produces the key required for the full or
+partial lookup.  The key produced should coincide with the value
+required based on the target file's primary key or on the sort name
+selected.
+\\GEN4DICT\INVALID NAME
+General file and field names can contain only letters, digits,
+underscores, and periods.  They cannot contain embedded spaces, and
+cannot exceed 20 characters.
+\\GEN4DICT\NEW DESIGN?
+Verify that this is a new file definition.
+\\GEN4DICT\CAN'T ACCESS
+The file name selected is unavailable.  Probably another user is
+maintaining it's dictionary definition.
+\\GEN4DICT\DELETE?
+Verify that you want to delete this file definition.
+\\GEN4DICT\ABORT?
+Verify that you want to lose the changes made to the definition header.
+\\GEN4DICT\INVALID TYPE
+The type codes must begin with T, N, or D, and must be followed with a
+length (Ln) code, and any optional valid type codes for the base type
+selected.
+\\GEN4DICT\SYNTAX ERROR
+There is an error in the expression entered.  General cannot use this
+field on a report if there is an error in the expression.
+\\GEN4STCK\SELECT
+Move the highlight to the desired command, using the cursor motion keys. 
+Once the proper command is highlighted, 
+
+     press Enter to execute the command,
+     press the Edit key to modify the command, or
+     press the Save key to save this command permanently.
+
+If the command is too long to fit entirely in the selection window, it
+will end in "...", and once selected to execute, General will display
+the full command for verification.
+\\GEN4STCK\CORRECT COMMAND
+Verify that the command displayed is the correct one.
+\\GEN4MAIN\MENU SELECTION
+[To choose an option:]
+
+Move the highlight to the menu option you want to execute.  To move the
+highlight, use the cursor motion keys, or press the letter of the
+desired option.  Press Enter once the desired selection is highlighted.
+
+[Option overviews:]
+
+PROMPT         {Provides an interactive report generation method. 
+               General prompts the user through the creation of a
+               report.}
+
+STACK          {Provides access to previously executed report commands,
+               so that they may be re-executed, edited, or stored for
+               permanent access by the RUN command.  The command history
+               stack holds the last 18 report commands issued.}
+.page
+[Option overviews, continued:]
+
+RUN            {Used to re-execute or maintain previously stored report
+               commands.}
+
+LIST           {Enters LIST command mode.  LIST is General's english-
+               like report writing language.}
+
+QUIT           {Exits General, returning to your application or to the
+               operating system.}
+.page
+If you are an administrative user, you also have the following options:
+
+DICTIONARY     {Provides access to General's data dictionary maintance
+               module.  Dictionary maintenance involves associating a
+               file name with a disk file, defining fields and
+               calculations, links to other files, and pre-structured
+               sort files or alternate keys General can use.}
+
+CONFIG         {Used to maintain General configuration elements,
+               including display options, terminal options, printer
+               drivers, and user-defined functions and variables.}
+\\GEN4-KWP\PROMPT TEXT
+Enter the text General should present to the user when prompting for
+this value.
+\\GEN4-KWP\PROMPT TYPE
+Enter the data type General should prompt for.
+
+T    {Text data, such as code numbers or key ranges.}
+Nd   {Numeric data, of decimal precision d.}
+D    {Date data, internally converted to a julian number.}
+\\GEN4-KWP\PROMPT DEFAULT
+Enter a default value for the prompt.  This will be what General
+presents to the user as a suggested value when the prompt is issued.
+\\GEN4-KWP\CALC NAME
+Enter a name to identify this calculation.  The name can include
+letters, numbers, and single underscores.  If you need to refer to this
+calculation later in the LIST command, you can simply call it by its
+name.
+\\GEN4-KWP\TAB POS
+Enter the column and row position of the next field or literal element,
+in the format:
+
+          col       column position in current row
+          col.row   column and row position
+\GEN4-KWP\SPACES
+Enter the number of spaces to put between the prior field or literal and
+the next field or literal.  General defaults to one space.
+\\GEN4-KWP\WIDTH
+Enter the number of columns for the report.  If a printer is designated,
+it must be capable of printing this many columns.
+\\GEN4-KWP\LINES
+Enter the number of printed lines per page.  Note that this is NOT the
+total number of lines on a page.  When entering a number here, be sure
+to allow for top and bottom margins.
+\\GEN4-KWP\LBREAK
+Enter the number of lines between groupings.  General will place a blank
+line on the report each time this many lines have been printed.
+\\GEN4-KWP\ALTFILE
+Enter the name of the file to use as an alternate sort to the primary
+file.  If you aren't sure of the name, use the List Files key.
+\\GEN4-KWP\ALTFILE KEY
+Enter an expression to be used by General to derive the primary file's
+key from the alternate file's key.  The expression should use the dummy
+variable K$ to represent the alternate file key.  For example, derive a
+primary file's key from two segments and a literal, the entry might look
+like this: [K$(1,2)+K$(23,5)+"A00"].
+\\GEN4-KWP\KEY NUMBER
+Select the key chain number to use from this list.  The primary file in
+the LIST command will be processed using this key, which can be used to
+derive a sorting order and/or a key range.
+\\GEN4-KWP\EXPORT TYPE
+Choose the export type from this list.  Spreadsheets typically can
+import a delimited or DIF format, word processors a fixed format. 
+WordPerfect merge is specifically used to generate a file to be used a a
+secondary merge file in a WordPerfect merge operation.
+\\GEN4-KWP\DELIMITER
+Enter a delimiter to be used in a delimited export format.  Normally
+this will be a comma, but you can specify any value here.  If you need
+to enter a non-printable value, such as a tab character, enter it in
+General ASCII notation (\~009, for a tab character).
+\\GEN4-KWP\LINK FROM
+Enter the file name from.  This defaults to the name of the primary file
+for the LIST command.  Link definitions placed on the command line
+override and/or add to those placed in the dictionary, so that any field
+references later in the LIST command can utilize this link.
+
+If you are unsure of the file name, press the List Files key.
+\\GEN4-KWP\LINK TO
+Enter the name of the "link to" file.  This is the target file of the
+link definition.  If you are unsure of the file name, use the List Files
+key.  If this link uses an alternate sort definition, enter the file, an
+"@" symbol, and the sort name.
+\\GEN4-KWP\LINK FULL/PART
+Enter the type of link this is.  A "full" type uses the full key to
+access a record in the target file.  A "part" link uses the key as a
+partial key, and scans all records in the target file which start with
+the key value specified.
+\\GEN4-KWP\LINK KEY
+Enter the expression used to generate the key or partial key for this
+link.  The expression can contain fields from the "from file"
+dictionary, physical field and record references in the form of @PFn or
+@REC, intrinsic and General functions, and literals.  For example:
+
+     CUST_NO+INVOICE_NO
+     FIRM+"A  "+TERMS_CODE
+     "A"+CHR(2)+LEFT(CODE,5)
+\\GEN4-KWP\ALTSORT
+Choose the alternate sort desired from this list.  The primary file will
+be processed in the order defined by the sort definition in the
+dictionary, and any BEGIN or END key range specifiers apply to this
+definition also.
+\\GEN4-KWP\PREFIX
+Enter a value for General to place before each record in an export.  If,
+for example, an export needs to start with an asterisk, enter "*" here. 
+If a non-printable character is required, use General's ASCII notation,
+such as \~009 for a tab character.
+\\GEN4-KWP\SUFFIX
+Enter a value for General to place after each record in an export.  If,
+for example, an export needs to end each line with "<EOR>", enter that
+character string here.  If a non-printable character is required, use
+General's ASCII notation, such as \~009 for a tab character.
+\\GEN4-KWP\BEGIN
+Enter a value used to indicate a starting point for the report.  The
+starting point relates to either the primary key to the LIST file, or if
+an ALTKEY, ALTFILE, or ALTSORT keyword is used, the starting point
+applies to the sort generated by that keyword.  BEGIN is often used in
+conjunction with the END keyword to define a report range.
+\\GEN4-KWP\END
+Enter a value to indicate the ending point for a report.  The ending
+point relates to either the primary key of the LIST file, or to an
+ALTKEY, ALTFILE, or ALTSORT keyword, if one is used.  When used in
+conjunction with the BEGIN keyword, a report range can be defined.
+\\GEN4-KWP\HEADERN
+Enter the break level number to associate the header sub-phrase with.  A
+level of 0 indicates the report page header.
+\\GEN4-KWP\FOOTERN
+Enter the break level number to associate the footer sub-phrase with.  A
+level of 0 indicates the report footer.
+\\GEN4-KWP\NOT MKEYED
+The primary file for this report isn't a multi-keyed file, so no ALTKEY
+definitions exist.
+\\GEN4-KWP\ACROSS
+Enter the number of records to print across each report line. 
+Typically, this is used when printing labels, but any report can be
+printed in this fashion.
+
+GENERAL calculates the total report line length by multiplying the WIDTH
+times the ACROSS values, so it is important to also specify a shortened
+WIDTH value when ACROSS is used.
+\\GEN4-KWP\TESTPRINT
+Enter the number of records to print as test patterns before the first
+data record is printed.  The test pattern will consist of a format
+matching the first record printed, filled with asterisks.  This is
+useful when printing on labels or pre-printed forms.
+\\GEN4-KWP\HEIGHT
+Enter a fixed hight, in lines, for each record to occupy.  This setting
+can be used to fix the number of rows on a label report, even if the NO-
+BLANK keyword is used to suppress blank lines.  Note that if data is
+positioned on lines below this value, it will not print.
+\\GEN4-HLP\MORE HELP
+Select the option desired:
+
+Page           {Display the next page (same as page down)}
+Keyboard       {Display keyboard usage}
+More Topics    {Select generic help topics}
+Done           {Exit help system}
+\\SYSTEM\KEYS
+Presented below is a table of standard and alternate keystrokes.  The
+alternate keystrokes shown are the control-key defaults provided by
+Filix.  Your alternate keystrokes may differ, as they may be loaded from
+an alternate key map file with the "-k" command line switch.  To see
+what those keystrokes are, print out that file. 
+
+Standard            Alternate           Data Entry purpose 
+                                        {<Long Text purpose>} 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+Left                Backspace           Move cursor left 
+Right               ^L                  Move cursor right 
+Up                  ^K                  Move cursor up 
+Down                ^J                  Move cursor down 
+Home                ^A                  Beginning of field 
+                                        {<Beginning of line, then 
+                                        top of page, then top 
+                                        of text>} 
+.page
+Standard            Alternate           Data Entry purpose 
+                                        {<Long Text purpose>} 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+End                 ^Z                  End of field 
+                                        {<End of line, then end of 
+                                        page, then end of text>} 
+Page Up             ^U                  One screen full up, in 
+                                        multi-page situations 
+Page Down           ^Y                  One screen full down 
+Insert              ^T                  Toggles insert/replace 
+Delete              ^X                  Deletes a character 
+Tab                 ^I                  Tab right 
+                    ^B                  Tab left (backtab) 
+Backspace           ^H                  Move left, erasing prior 
+                                        character if at end of field 
+.page
+Standard            Alternate           Data Entry purpose 
+                                        {<Long Text purpose>} 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+                    ^N                  Insert a new (blank) line 
+                    ^D                  Deletes to end of line, or whole
+                                        line if no text to right of
+                                        cursor
+                    ^C                  Calculator/Calendar
+                    ^R                  Refresh screen
+                    ^O                  Restore to original data
+                    ^W                  {<Clears to end of line>}
+                    ^F                  {<Word left>}
+                    ^G                  {<Word right>}
+.page
+Standard            Alternate           Data Entry purpose 
+Function Key                            {<Long Text purpose>} 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+ 
+F1                  Escape-1            Help 
+F2                  Escape-2            varies
+F3                  Escape-3            varies
+F4                  Escape-4            varies
+F5                  Escape-5            varies
+F6                  Escape-6            varies
+F7                  Escape-7            varies
+F8                  Escape-8            varies
+F9                  Escape-9            Done 
+F10                 Escape-0            Exit/Done
+\\GEN4USER\CODE
+Enter the user login code.  If the actual login information for a user
+is supplied from outside of General, then enter the login name here so
+that an access level and optional password can be defined for the user.
+
+User codes can be up to 20 characters long, without spaces.  Any
+characters are valid.
+
+If you are unsure of a code, press the List key to select from a list of
+existing General user login codes.
+\\GEN4USER\NAME
+Enter the name of the user associated with this user login code.  This
+information is used when presenting user lists for the code entry above.
+\\GEN4USER\ACL
+Enter this user's access level.  An access level is a number between 0
+and 9.  Higher access levels allow greater access to files defined in
+General's dictionary.  In order to produce a report from a file, a
+user's access level must be at least as high as that defined for the
+file.
+
+Level 9 users are considered "administrative" users.  These users have
+access to the dictionary, configuration, and user definition programs
+within General, and also have access to all files when running reports.
+\\GEN4USER\PASSWORD
+Enter a password for this user code.  The password will be required at
+login time, if entered here.
+
+Passwords are optional, and are encrypted, so General has no way of
+knowing what the last password was.  If a user needs to retain their
+same password, press the Exit key here.  Anything entered here, if
+followed by a <Enter> key, will create a new password for the user.
+
+To not require a password for this user, this entry should be blank.
+\\GEN4USER\NEW ENTRY
+Verify that this is a new user login code.
+\\GEN4USER\VERIFY
+Yes       {File the information as displayed.}
+
+No        {Change the information.}
+
+Delete    {Delete this user login code.}
+
+Pressing the Exit key will abort this definition without filing it.
+\\GEN4-DMP\RECORD
+[To paste a data element to the expression:]
+
+Move the cursor to the physical field element desired.  Press <Enter> to
+paste just "@PFn" or @REC to the expression.  If you want to paste a
+sub-string of the data, use the F3-mark substring key to view the full
+field, in ASCII and hexadecimal, for marking of a sub-string.
+
+[To move to another record:]  Press the F2-next record key.  General
+will prompt you for a new record key, or a motion option to move through
+the file.
+
+[To see fields] that reference this and other physical fields, press the
+F4-fields key.
+\\GEN4-DMP\NEXT KEY
+Choose the key of the next record to view.  You can enter a key
+directly, or press a cursor key:
+
+Up        {Move to the previous record}
+Down/F2   {Move to the next record}
+Home      {Move to the first record}
+End       {Move to the last record}
+\\GEN4-DMP\FIELD
+Use the cursor motion keys to view additional portions of the record,
+and to move the cursor to the starting point of a sub-string.  To anchor
+the substring, press the F2-set anchor key.  Furthur cursor motion will
+display the positioning of the sub-string.
+
+When the correct sub-string is identified by the anchor point and the
+current cursor position, press <Enter> to paste the data reference into
+the expression.
+
+To view the dictionary elements that have been defined for this and
+other physical fields, press the F4-fields key.
+\\GEN4INT1\REPORT NAME
+Enter the name for the report.  This name is used to identify the report
+definition, so that it can be later accessed and modified.  If you
+aren't sure of the name, use the F2-list reports key to choose from a
+list.
+
+To return to the main menu, press the F10-exit key.
+\\GEN4INT1\TITLE
+Enter a report title.  To split the title on multiple lines at report
+time, use vertical bars, such as "REPORT TITLE|COMPANY X".  This title
+also becomes the description of the report design, and is used in
+selection lists when displayed.
+\\GEN4INT1\FILE NAME
+Enter the name of the file to be used to generate the report.  The file
+must have a dictionary specified, or be defined in a supported external
+dictionary.  To choose a file from a selection list, press the F2-list
+files key, or enter a wildcard instead of a valid name.
+\\GEN4INT1\REPORT TYPE
+Enter the type code for this report.  This code determines how GENERAL
+will format the report at run-time.
+
+1    {Tabular (row and column) report}
+2    {Delimited ASCII export}
+3    {Fixed position ASCII export}
+4    {DIF export}
+5    {WordPerfect merge}
+6    {Gateway for Windows}
+\\GEN4INT1\GATEWAY TYPE
+Choose the Gateway for Windows format.  Choose the target application
+that is running on your workstation.
+\\GEN4INT1\WIDTH
+Enter the width for the report, in columns.  GENERAL will only allow
+this report to be printed on devices capable of supporting this width. 
+Normally, this will be 80 or 132, but it can be any number from 30 to
+255.
+\\GEN4INT1\LENGTH
+Enter the number of printed lines per page, making an allowance for 
+top and bottom margins.  Normally, GENERAL will calculate this value
+automatically, based on the printer device.  If this entry is left blank,
+then the report will be based on that calculated value.
+
+It may sometimes be necessary to override this number, however, such
+as when a PREVIEW device is chosen, and the default 66-line page is wrong.
+\\GEN4INT1\HEIGHT
+If the report requires that each record occupy a fixed number of rows
+(labels, for example), then enter that number of rows here.  GENERAL
+will force output to this height even of the Print Blanks is set to No.
+
+Normally, the number of rows required is calculated from the data
+printed and the Double Space setting.  Note that entering a height
+parameter will truncate any data printing below the specified lines.
+\\GEN4INT1\ACROSS
+Enter the number of records to print across a line.  Normally, this
+would be 1, but in some cases (particularly mailing labels), it is
+desirable to print more than one record across the page.  This number
+may be any value from 1 to 9.
+\\GEN4INT1\OUTPUT
+Enter the name of the regular printer to be used for this report, or
+leave this blank to print to the video.  If desired, two special printer
+names are offered: 
+
+     PRINTER   will prompt at run-time for a printer, video, or file.
+
+     FILE      will prompt at run-time for a file name.
+
+     PREVIEW   will print to a file, display the report, and allow a
+               hardcopy option from that point.
+
+You may also enter a path name here that will be used as an output file
+for the report every time it is printed.  If the path name doesn't
+contain slashes, it must be enclosed in quotes (if it does contain
+slashes, GENERAL will quote it automatically).
+\\GEN4INT1\TESTRECS
+Enter the number of test records to print before actual data begins
+printing.  The test records are formed by making an image of the first
+record printed, and printing it this many times, before continuing with
+the report.  This can be very useful when running labels or pre-printed
+forms with GENERAL.
+
+To have General prompt after each row of test records has printed, allowing
+for more test records or for the report to start, then enter -1.
+\\GEN4INT1\ALTSORT
+If the file selected for this report has alternate sorts defined, then
+you can select one of those here.  When the report is executed, the
+records will be processed in the order defined by the alternate sort
+selected.
+
+When an alternate sort is selected, the "Start with:" and "End with:"
+fields apply to the alternate sort order.
+
+You can also define sorting for a report with the Sort option, available
+from the report verification prompt.
+\\GEN4INT1\START WITH
+Enter the beginning point to start the report, based on either the
+default sort order for the file selected, or the alternate sort, if
+selected.  If this is left blank, the report will begin with the first
+record on file.
+\\GEN4INT1\END WITH
+Enter the ending point to stop the report, based on either the default
+sort order for the file selected, or the alternate sort, if selected. 
+If this is left blank, the report will end at the end of the file.
+\\GEN4INT1\LINE BREAK
+If you want the report to skip a line every n-th line, enter the number
+of lines to print before each skip.
+\\GEN4INT1\STOP
+If you want the report to stop printing after a certain number records
+have been output, enter the number of records.
+\\GEN4INT1\DOUBLE SPACE
+To double space the report, choose Yes.  A blank line will be printed
+between each record.
+\\GEN4INT1\VERT TOTAL
+Set this item to Yes to force sub-totals and grand-totals to print in
+table fashion, instead of below the columns.  Any customized footers
+will override this setting.  Note that in cases where column formatting
+is impossible, GENERAL will automatically switch to vertical formatting.
+\\GEN4INT1\BLANK LINES
+Choose No to suppress the printing of blank lines on the report, except
+for double-space lines.
+\\GEN4INT1\PAGINATE
+Choose No to suppress page formatting, with page ejects and page
+headers.  This is common when sending the report to a file for inclusion
+in another application.
+\\GEN4INT1\RECAP
+Choose No to suppress printing of the recap page at the end of the
+report.
+\\GEN4INT1\DETAIL
+Choose No to suppress printing of detail records, forcing a "totals-
+only" report instead.
+\\GEN4INT1\HEADING
+Choose No to suppress printing of column headings in a default page
+header.  The title portion of the header still prints.
+\\GEN4INT1\TABULATE
+Choose Yes to force a cross-tabulation or summary report, rather than
+a normal columnar report.  Cross-tabulation reports create a summary
+table display based on one or two break points, and column calculations.
+
+A summary table uses one break point, and up to six column calculations;
+a cross tabulation uses two break points and one column calculation.  See
+PLOT in the manual for more detail.
+\\GEN4INT1\COPIES
+Enter the number of copies of this report to print.  The default is 1,
+and any higher value will print that many copies of any report sent to
+a file or printer.  Multiple copies are ignored for reports sent to the
+video or PREVIEW device.
+\\GEN4INT1\OPTION
+Select the option desired.  The options do the following:
+
+Yes       {Files the report definition header, as displayed.}
+No        {Maintains the header elements.}
+Field     {Opens the field definition window for the report definition.}
+Break     {Opens the break point specification window.}
+Sort      {Opens the sort specification window.}
+Criteria  {Opens the record selection criteria specification window.}
+Hdr/Ftr   {Allows maintenance of customized headers and footers.}
+Run       {Runs the report.}
+Delete    {Removes this report definition, after verification.}
+Print     {Prints a hardcopy of the report definition.}
+.page
+The various specification windows are used to maintain different aspects
+of the report.
+
+The field portion is used to specify what data fields or calculations
+are to be placed on the report, their positions, and any column
+calculations or format specifications.
+
+The break portion is used to specify field on which to force sub-total
+break points.
+
+The sort section is used to specify a sort order, based on one or more
+fields or calculations, if the default order for the file isn't what is
+desired.
+.page
+[Specifications, continued]
+
+The criteria section is used to specify selection criteria that each
+record must pass before inclusion on the report.
+
+The header/footer section allows "painting" of custom headers and
+footers for the report and for each break level.  Normally, default
+footers and a default page header are provided automatically.
+\\GEN4INT2\FIELD NAME
+Enter the name of the field you want to place on the report.  To choose
+the field from a list of fields in the dictionary, press the F2-list
+fields key.
+
+If you want to define a calculation, press the F6-calc key.  GENERAL
+will issue the prompts to define the calculation.
+
+If you want to specify a field in a related (linked) file, press the F5-
+link key.  GENERAL will prompt for the related file and field to produce
+the link.
+
+If you want to specify a literal text element, press the F7-text key.
+
+F3-insert inserts a blank line.
+F4-delete deletes the current line, after verification.
+F9- or F10-done exits the definition window.
+\\GEN4INT2\FIELD COLUMN
+Enter the column, if you want to specify an exact placement, or press
+<Enter> to let GENERAL calculate positions for you automatically.  If
+you just press <Enter>, then future insertions will update the position
+of this field, avoiding any positioning conflicts.  If GENERAL
+calculates the positions, then the field is called a "floating" field.
+
+If the column position has been previously fixed, press the F2-float key
+to return it to a floating position.
+\\GEN4INT2\FIELD ROW
+Enter the row, if you want to specify exact placement, or press <Enter>
+to let GENERAL calculate the position automatically.
+\\GEN4INT2\FIELD CASE
+For text fields, you can specify that GENERAL should perform a case
+conversion at report time.
+
+1    {No conversion takes place (data is printed as stored).}
+2    {Convert text to upper case.}
+3    {Convert text to lower case.}
+4    {Convert text to proper case (initial caps).}
+\\GEN4INT2\FIELD NO DUP
+If the value of this field will be duplicated going down the column, for
+example, a customer name being repeated for many invoices, then the
+duplicate values can be suppressed by choosing 2 - suppress.
+\\GEN4INT2\FIELD TOTAL
+Enter 2 to produce a column total calculation on this field.
+\\GEN4INT2\FIELD AVERAGE
+Enter 2 to produce a column average calculation on this field.
+\\GEN4INT2\FIELD MAX
+Enter 2 to produce a column maximum calculation on this field.
+\\GEN4INT2\FIELD MIN
+Enter 2 to produce a column minimum calculation on this field.
+\\GEN4INT2\FIELD PCT
+Enter 2 to produce a percent-of-total calculation on this field.
+\\GEN4INT2\FIELD COUNT
+Enter 2 to produce a record count calculation on this field.
+\\GEN4INT2\FIELD DTF
+Choose a date qualifier, or leave blank to print the full date.  The
+date qualifier adjusts the date format to print just the month and year
+or just the year.  Here are format examples for a date of January 2,
+1993:
+
+Blank (0) {01/02/1992  (based on system date format definition)}
+1         {Jan/1992}
+2         {01/1992}
+3         {01/92}
+4         {Jan/92}
+5         {1992}
+6         {1992/01}
+7         {92/01}
+\\GEN4INT2\VERIFY FIELD
+Verify that the field specification is correct.
+
+Yes       {File the information as displayed.}
+No        {Maintain the specification.}
+Visual    {Enter the screen painter mode to maintain the report data.}
+\\GEN4INT2\VISUAL
+The "visual mode" for data specification is a simple screen painter,
+which allows you to move around the screen, typing text, moving fields,
+and defining or modifying data specifications.
+
+To enter fixed text to place within the data portion of a report, simply
+type it at the column and row you want.
+
+To place a data field on the report, move to the position you want it,
+and press the F2-data key.  A data specification window will be opened
+for detail to be filled in.  Likewise, to modify an existing data field
+specification, place the cursor on the field and press the F2-data key.
+
+Data positions can be identified by the digit-letter code, followed by
+tildes to fill out the length of the field.
+.page
+[More on visual options:]
+
+To move a data field or any other "word", move the cursor to the field
+and press the F3-move key.  The field will be "blanked out" with plus
+signs (+), and the "move-to" option will be presented.  Move the cursor
+to the new point and press the F3-move to key.
+
+To delete a data field, use the F2-data key, and choose the Delete
+option from the data definition window.  This is preferred over simply
+deleting the text from the screen painter.
+\\GEN4INT2\VISUAL MOVE
+Press F3-move to to update the placement of the field being moved.
+\\GEN4INT2\DATA WINDOW CORRECT
+Verify that the data definition is correct.
+
+Yes       {Saves the data field as displayed.}
+No        {Maintain the specification.}
+Delete    {Delete the field from the data specification.}
+\\GEN4INT2\VISUAL CORRECT
+Verify that the visual image of the report line is correct.
+
+Yes       {Saves the specification as shown.  Any field postions become
+          fixed, and the specification table is updated and re-
+          displayed.}
+
+No        {Re-enter screen painting.}
+
+Press F10-exit to restore the original data specification, of changes
+made in the screen painter mode should be discarded.
+\\GEN4INT2\LINK ID
+Enter the name by which this link will be identified.  The name can be
+from 1 to 14 letters or digits, and can contain underscores, if desired.
+
+"@LINK" will be added automatically to the name.
+\\GEN4INT2\LINK FILE
+Choose the file from which to get the link data field.
+\\GEN4-LFD\FIELD
+Use the cursor keys to choose the field desired.  You can also select
+fields by the first letter of their name.
+
+Pressing F2-list toggle will switch the list format to a wide screen,
+name-only list that displays up to 45 fields per page.
+\\GEN4INT1\BREAK ITEM
+Enter the name of the data field to base this break level on.  If a
+calculation is required, it must be defined in the data specification
+section, and can be referenced by name here.
+
+F3-insert will insert a blank line in the table.
+F4-delete will delete the current line from the table.
+F9- or F10-done will exit maintenance.
+\\GEN4INT2\TEXT ID
+Enter the name of the text element.  Names can be from 1 to 14 letters
+or digits, and can contain underscores.  "@TEXT" is automatically added
+to the name by GENERAL.
+\\GEN4INT2\TEXT
+Enter the literal text you want placed on the report.
+\\GEN4INT1\BREAK SPECIAL
+Enter special break control information, if desired.
+
+For text fields, enter the number of characters to base the break on, if
+not the full field.
+
+For numeric fields, enter an "even" break amount to base the break on,
+such as 10000 to break on even increments of 10,000.
+
+For date fields, choose the format specifier option from the display.
+\\GEN4INT1\BREAK TYPE
+Choose the type of break to perform:
+
+1    {Line break, which skips a line before the next group.}
+2    {Page break, which starts the next group on the next page.}
+\\GEN4INT1\BREAK CORRECT
+Verify that the break specification is correct.
+\\GEN4INT1\SORT ITEM
+Enter the name of the data field to base this sort level on.  If a
+calculation is required, it must be defined in the data specification
+section, and can be referenced by name here.
+
+To choose the field from a selection list, press F2-list fields.
+
+
+F3-insert will insert a blank line in the table.
+F4-delete will delete the current line from the table.
+F9- or F10-done will exit maintenance.
+\\GEN4INT1\SORT ORDER
+Enter the ordering choice for this segment of the sort specification.
+
+1    {Ascending order}
+2    {Descending order}
+\\GEN4INT1\SORT CORRECT
+Verify that the sort specification is correct.
+\\GEN4INT3\VERIFY
+Verify that the criteria specification is correct.
+\\GEN4INT3\FIELD NAME
+Enter the name of a field on which to base selection criteria.  The
+name, combined with an operator and a comparison expression, make up a
+"relational expression", which is tested at report time as each record
+is processed.  If a calculation is required, it must be defined in the
+Data specification, and can be referenced by name here.
+
+To choose the field from a selection list, press the F2-list fields key.
+
+F3-insert will insert a blank line in the table.
+
+F4-delete will delete the current line from the table.
+
+Each individual selection criteria can be connected to the next by AND
+or OR connectors, in order to apply multiple criteria to the selection
+of records.  In addition, groups of expressions can be linked together,
+and connected to other groups by "group AND" or "group OR" connectors. 
+To place a group connector, press F5-group AND or F6-group OR.
+
+F9- or F10-done will exit maintenance.
+\\GEN4INT3\OPERATOR
+Enter the relational operator to use when comparing the name defined on
+the left with the name or expression entered on the right.  The
+operators allowed are:
+
+     =    equal to
+     >    greater than
+     >=   greater than or equal to
+     <    less than
+     <=   less than or equal to
+     <>   not equal to
+.page
+[Relational operators, continued:]
+
+For text fields, four additional operators can be used:
+
+     ==   contains (the right side exists in the left side)
+     +=   contains at position 1
+     -=   does not contain
+     \~=  matches the regular expression on the right (may be a wildcard
+          on some implementations, rather than a regular expression).
+
+To choose from a list of valid operators, press F2-list operators.
+\\GEN4INT3\COMPARE TO
+Enter a field, literal, or simple expression to compare the field to.  
+
+To choose a field from a selection list, press the F2-list fields key.
+
+Simple expressions, containing fields, constants, and arithmatic
+operators +,-,*,/, and ^ are supported.  The operators perform addition,
+subtraction, multiplication, division, and exponentiation, respectively. 
+Note that expressions are NOT tested for syntax errors at entry time.
+
+Use \[\[prompt-text\]\] to have GENERAL issue a run-time prompt.  If the
+prompt text is enclosed in quotes, a data type can also be included. 
+See More topics for more information about run-time replacements.
+.page
+When comparing a text field to an unquoted literal value, GENERAL will
+add quotes automatically.  However, if the value is the same as a field
+name, or it contains a "+", GENERAL will not assume that it must be
+quoted, and it will have to be manually quoted.
+
+When comparing a date field to a literal date, you should use either the
+CND keyword with a date in quoted 6- or 8-digit date entry format, or
+use a quoted, delimited date value.  In either case, the order of the
+month, day, and year depends on the system configuration for the date
+entry convention.
+\\GEN4INT3\CONNECTOR
+Choose the connector, if required, to connect this expression with the
+next.  If you don't select a connector, but one is required due to
+another expression following this one, GENERAL will default to OR.
+
+1    {AND connector, meaning that both this line and the next line must
+     be true for the record to be printed.}
+
+2    {OR connector, meaning that either this line or the next line may
+     be true for the record to be printed.}
+\\GEN4INT4\SELECT HDR/FTR
+Choose the header or footer to customize.  The report level header and
+footer refer to the page header and report footer, respectively.  Each
+break level also provides a header and footer specification.
+
+GENERAL will provide a default page header and default break-level and
+report footers automatically.  Only customized headers or footers should
+be defined here.
+\\GEN4INT4\VISUAL
+Enter the header or footer text, where desired.  Several special text
+elements can be added that will be replaced by values at report time:
+
+     @DATE, @DTM, @TIME will be replaced by the date, the date and time,
+     or the time, respectively.
+
+     @USER, @TTY, @VDT will be replaced by the user login name, the
+     terminal device name, or the terminal alias, respectively.
+
+     @PAGE, @PAGEDSC will be replaced by the page number or "Page #",
+     respectively.
+
+In addition, you can place report data elements or calculations on the
+header or footer, by pressing the F2-data key.  The calculations can
+include functions, such as RSUM() or GSUM() to calculate report- or
+group-summary totals and place them in the header or footer.
+.page
+[Header/Footer paint options, continued:]
+
+To move any element, press the F3-move key.  The element will be
+highlighted and the cursor can be moved to the new position, and the F3-
+move to key pressed to place the data or word in the new position.
+
+To copy the header or footer from defaults, press the F5-copy from
+default key.  GENERAL will place the standard header or footer, complete
+with any sub-total calculations, in the screen painter.  It can then be
+further modified, as desired.  Optionally, to set a header back to
+defaults, you can delete all the text.  Blank definitions are set to
+default values by GENERAL at run-time.
+
+To force a blank line to appear in a header or footer, place a period
+(.) or the word @LINE by itself on the line, at the left margin.
+.page
+[Header/Footer paint options, continued:]
+
+To restore a custom header to the default, so that GENERAL will print
+a standard header or footer, simply delete all the text in the custom
+header or footer design.  This is most easily accomplished by using the
+"delete line" key (usually control-D) until all the text is gone.
+\\GEN4INT4\VERIFY
+Verify that the above header or footer image is correct.
+\\GEN4INT4\VISUAL MOVE
+Move the cursor to the point desired, and press F3-move to.  The field
+or word selected will be moved to the new position.
+\\GEN4INT4\TYPE CODES
+Enter the type codes to specify the data to be placed in the header or
+footer.  Type codes are made up of a base type and a length, plus
+optional, comma separated codes to control additional formatting.
+
+     T,L20     indicates a 20-character text field.
+     N,L14     indicates a 14-character numeric field.
+     D,L10     indicates a 10-character date field.
+.page
+Other formatting codes allowed are described below:
+
+Text fields:   n         The number of lines to allocate, if over 1.
+               JL,JR     Left or right justification
+
+Numeric:       n         Decimal precision
+               JL,JR     Left or right justification
+               P         Punctuate (thousands separators)
+               -,CR,()   Negative indicators
+
+Date:          T         Time printed with date
+               JL,JR     Left or right justification
+\\GEN4INT4\TYPE EXPRESSION
+Enter the calculation expression or field name to place in the header or
+footer.  Calculations can include fields, literal values, and group
+summary or report summary functions.
+
+For example, a numeric calculation might be 100*DIVIDE( GSUM(YTD.SLS,1),
+RSUM(YTD.SLS) ) to calculate a percent-of-total of the group total, at
+break level 1, of the YTD.SLS field.
+
+@BREAKn will place the value of the break point for the specified level
+in a text field.
+\\GEN4INT4\DATA WINDOW CORRECT
+Verify that the data specification is correct.
+
+Yes       {Saves the data specification.}
+No        {Maintains the specificition.}
+Delete    {Removes the data from the header or footer.}
+\\GEN4INT6\FILE NAME
+Enter the file name on which to impose detail selection criteria.  Detail
+criteria applies to files linked to the primary file for this report that
+supply multiple records for each primary file record (a one-to-many 
+relationship, or 'partial key', relationship).  These detail records
+cannot be referenced in the standard Criteria window logic, but can be
+referenced here.
+
+To see a list of known linked files, use the 'linked files' list.  To 
+see a complete list of all files, use the 'all files' list, or enter a
+wildcard (such as AR*) to see a limited list of all files.
+
+For more information, see the 4.1 supplement guide.
+\\GEN4INT6\NO DETAIL LINK
+No links (of one-to-many type) were found in the dictionary.
+\\GEN4INT6\CRITERIA
+Enter the selection criteria to impose on records coming from the file
+specified for this entry.  This criteria should take the form of an
+IF expression fragment, such as AMOUNT > 0, or DATE < @DATE - 30.  When
+the report is executed, a SELECT FROM <file> <criteria> will be added to
+the report command.
+
+Note that to impose criteria on records coming from the primary file
+for this report, or from any file that is in a one-to-one relation
+to the primary file, you should use the Criteria window rather than
+this one.
+\\GEN4INT6\INVALID SYNTAX
+The criteria entered is invalid for this file.
+\\GEN4INT6\VERIFY
+Verify that the detail criteria shown is valid.
+
+Yes indicates it is correct.
+No allows you to make changes.
+Exiting with F10 (or Escape-0) will discard any changes made.
+\\GEN4INT6\DELETE CRITERIA
+Are you sure you want to delete this line in the window?
+\\GEN4INT6\ABORT?
+Changes have been made to the information shown.  Are you sure you want
+to lose them?
+\\GEN4-PRP\PRINTER
+Enter the printer to print the report design hardcopy to.  Press F2-list
+printers to choose the printer from a selection list.
+\\GENV4\Data Type Codes
+Type codes define for General what type of data a field or calculation
+contains, and also how to present that data on reports.
+
+The basic type codes are T, N, and D, which indicate text, numeric, and
+date data, respectively.  Following that there must be a length code,
+Ln, where n is the number of columns this field will occupy on a report. 
+
+T,L25 would define a text field of 25 columns.
+N,L12 would define a numeric field of 12 columns.
+D,L10 would define a date field of 10 columns.
+
+Additional parameters are separated by spaces, and are dependent on the
+base field type.  More detail follows.
+.page
+[Text type codes]
+
+JR or JL       Forces right or left justication.  Normally, General will
+               left justify, but will not trim any leading spaces from
+               the data.
+
+n              The field will occupy n lines.  This allows the splitting
+               of long data across several lines.
+
+Additional type codes can be added to the base type and length type
+codes by separating each with a comma.  For example, T,L30,3,G2 would
+define a 30 column by 3 line (90 characters total), assigned to prompt
+group 2.
+.page
+[Numeric type codes]
+
+JL or JR       Forces left or right justification.  Normally numeric
+               fields are right justified.
+
+n              Print field with n decimal precision.
+
+P              Print the field punctuated (with thousands separators).
+
+-,CR,(), or $  Use trailing minus sign, trailing CR, or enclosing
+               parenthesis for negative numbers, or use currency
+               formatting as defined in the system configuration.  The
+               default is a leading minus sign.
+
+Sn             Scale the number by a factor of n.  Scaling is used for
+               data containing an implied decimal.
+.page
+[Date type codes]
+
+JR or JL       Force left or right justification of the data.
+
+T              This is a date and time field, where time is stored in
+               the data as a fraction of a day.
+\\GENV4\New Since Version 3
+Version 4 of General provides many substantial enhancements over Version
+3 and 3X.n releases.  There are also some changes in commonly used
+syntax, which the user needs to be aware of.
+
+Run-time Replacements         {Run-time replacements in Version 3 were
+                              delimited by single square brackets.  In
+                              Version 4, they are delimited by double
+                              square brackets.
+
+                              \[Enter a value\] becomes
+                              \[\[Enter a value\]\].  There are also
+                              additional enhancements allowing type
+                              definition and default values available.}
+.page
+[Version 4 changes, continued]
+
+LIST command execution        {Version 3 allowed typing/editing of a
+                              command up until a <Enter> key was
+                              pressed.  Version 4 is more flexible in
+                              command editing, allowing you to move up
+                              and down though a scrolling command entry
+                              screen.  The <Enter> key is used to move
+                              to the next line.  To begin execution of
+                              the command, press the Execute key.}
+
+Menu access                   {Version 3 allowed command mode [or] menu
+                              mode.  To move from command mode to the
+                              menu, a MENU command was issued.  Version
+                              4 [always] provides a menu, which has an
+                              option to enter command mode.  When
+                              exiting command mode, the menu returns.}
+.page
+[Version 4 changes, continued]
+
+Dictionary                    {The former FILE, FIELD, and DUMP commands
+                              have been consolidated into the DICTIONARY
+                              module.  File headers are defined first,
+                              followed by subsidiary information such as
+                              field definitions, sorts, and external
+                              file relations (links).
+
+                              Fields are now defined using data type
+                              codes (T=text, N=number, D=date) and
+                              optional parameters, a heading, and an
+                              expression.}
+.page
+[Version 4 changes, continued]
+
+Command line calculations     {Version 4 allows for the definition of
+                              calculations on the command line.  The
+                              basic syntax follows that of field
+                              definitions in the dictionary, within the
+                              context of a parenthesized function.
+
+                              @CALC_CSZ("T,L40", "CITY, STATE ZIP",
+                              TRIM(CITY)+", "+STATE+"  "+ZIP) would
+                              define a 40 character text field, column
+                              heading "CITY, STATE ZIP", and provide the
+                              expression to perform.}
+.page
+[Version 4 changes, continued]
+
+Assist mode                   {When in command entry, a new Assist mode
+                              is provided which presents a point-and-
+                              shoot approach to creating a report. 
+                              Assist supports file linkages, provides
+                              prompts when required for keyword
+                              parameters, and allows direct entry when
+                              desired.  There is also a good deal of on-
+                              line help for keyword topics while in
+                              Assist.}
+.page
+Prompt mode                   {Prompt mode has been greatly enhanced to
+                              provide support for more LIST command
+                              features, and to provide users with two
+                              often requested interfaces: table-driven
+                              and visual.  The table interface allows
+                              users to simply fill out a table of
+                              information to produce the report.  The
+                              visual interface allows a report to be
+                              "painted" on screen.  Both modes can be
+                              toggled, so the user can move freely from
+                              one mode to the other.}
+\\GENV4\Calculation Expressions
+Expressions are used in fields and calculations to instruct GENERAL how
+to calculate a value.  Expressions can be a simple as a physical field
+reference or can include multiple statements with embedded Basic and
+General functions, IF .. THEN .. ELSE logic, and so on.
+
+[Data references]
+Data can be referenced in the expression in four ways: 
+
+                              as a physical field (from 1 to 255) by
+                              using the name @PFn, where n is the
+                              physical field number,
+
+                              as a data record, using the name @REC,
+
+                              as the primary key, using the name @KEY,
+
+                              or as another field in this file, by using
+                              its name.
+.page
+[Syntax examples]
+
+@PF3                          {simple field reference, text or implied
+                              numeric}
+
+&DATE_CONVERT(MID(@PF3,7,6))  {user defined function, MID function}
+
+NUM(@PF4)+NUM(@PF5)+NUM(@PF6) {combined numeric fields}
+
+@REC(11,30)                   {record substring reference}
+
+IF YTD.SLS>0 THEN @FLD=100*(YTD.SLS-YTD.COST)/YTD.SLS ELSE @FLD=0;
+@FLD=MAX(99.99,@FLD)          {compound, conditional, field name
+                              references}
+.page
+[Functions]
+
+General allows the use of both intrinsic Basic functions as well as
+several pre-defined functions that perform more complex precedures and
+return value.  Nearly all Basic functions can be entered in the
+expression just as in standard Basic syntax.  General functions include:
+
+                              &x(), &x$(), user-defined function named x
+                              @BREAKn, the break value for break level n
+                              @DATE, today's date in julian
+                              @DAY, today's date in MM/DD/YY format
+                              @DTM, today's date and time in julian
+                              @FLD, shorthand reference for this field
+                              @PI, the value of pi - 3.14159...
+                              @TEMPx, a temporary numeric variable
+.page
+[Functions continued]
+
+                              @TEMPx$, a temporary text variable
+                              @TTY, this terminals tty number
+                              @USER, this user ID
+                              @VDT, this video code
+                              @YMD, today's date in YYMMDD format
+                              ADPRDB(), accumulated declining balance
+                              ADPRSL(), accumulated straight line
+depreciation
+                              ADPRSY(), accumulated sum of years digits
+                              AGE(), days between dates
+                              AGEHR(), hours between dates/times
+                              AGEM(), months between dates
+                              AGEMN(), minutes between dates/times
+                              AGEY(), years between dates
+.page
+[Functions continued]
+
+                              AREF(), average external data, partial key
+                              AVG(), average list of values
+                              BLOCK(), blocks text on word-wrap boundary
+                              CDATE(), converts mapped text to julian
+                              CNT(), count list of values
+                              CNUM(), converts puncuated text to number
+                              CONTAINS(), same as POS function
+                              CREF(), count external data, partial key
+                              DAY(), converts julian date to text
+                              DAYTM(), converts julian date-time to text
+                              DD(), DDD(), day portion of date
+                              DEL(), deletes portion of text
+                              DIVIDE(), divides two numbers, by 0 okay
+.page
+[Functions continued]
+
+                              DPRDB(), declining balance depreciation
+                              DPRSL(), straight line depreciation
+                              DPRSY(), sum of years digits depreciation
+                              DT(), converts text date to julian
+                              DTM(), converts text date-time to julian
+                              EXPAND(), code-to-description conversion
+                              FV(), the future value of an annuity
+                              GAVG(), RAVG(), group/report average
+                              GCNT(), RCNT(), group/report count
+                              GMAX(), RMAX(), group/report maximum
+                              GMIN(), RMIN(), group/report minimum
+                              GSUM(), RSUM(), group/report total
+                              IFF(), choose values based on condition
+                              ISNOTNUM(), true if not numeric
+                              ISNUM(), true if numeric
+.page
+[Functions continued]
+
+                              LEFT(), pads, left justifies text
+                              LENGTH(), the length of a trimmed field
+                              LOWER(), forces lower case
+                              MATCH(), same as MASK function
+                              MID(), pads, substrings text
+                              MM(), MMM(), month portion of date
+                              MREF(), lookup external data, partial key
+                              PMT(), the payment amount of an annuity
+                              PROPER(), forces proper case
+                              PV(), the present value of an annuity
+                              RATE(), the rate of an annuity
+                              RIGHT(), pads, right justifies text
+                              ROUND(), a rounded number
+                              STD(), standard deviation of list of
+values
+                              SUM(), total list of values
+.page
+[Functions continued]
+
+                              TERM(), the length of an annuity
+                              TIME(), converts julian date-time to time
+                              TREF(), sum external data, partial key
+                              TRIM(), trims spaces
+                              UNBLOCK(), unblocks text from boundary
+                              UPPER(), forces upper case
+                              VAR(), variance of list of values
+                              XREF(), lookup external data, exact key
+                              YY(), YYYY(), year portion of date
+.page
+[Conditional Logic]
+
+Normally, an expression will simply represent a fragment of a full Basic
+LET statement, but if the expression begins with IF, then it is treated
+as a complete statement.  Conditional expressions must take the form of:
+
+IF relational-expression THEN assignment
+
+                      or
+
+IF expression THEN assignment-1 ELSE assignment-2
+
+Examples:
+
+IF CODE>"" THEN @FLD=EXPAND(CODE,"Y,N","YES,NO") ELSE @FLD="NEITHER"
+.page
+[Compound expressions]
+
+Multiple statements may be separated by semi-colons, in which case
+General will execute each statement in turn.  This execution is not
+based on a prior condition, as in standard Basic syntax.  If such
+compound expressions need to be logically grouped together, then the
+group operators \{\} can be used.
+
+A simple compound expression example:
+NUM(@PF2)*100; IF @FLD<0 THEN @FLD=ABS(@FLD)
+
+An example of group operator usage:
+IF @REC(1,2)="99" THEN \{ YTD.SLS=0; YTD.COST=0 \}; 
+@FLD=YTD.SLS-YTD.COST
+\\GEN4DICT\DUPLICATE LINK
+Only one link definition per target file name is valid.  If there are
+multiple links possible to the same physical disk file, that file should
+probably have multiple GENERAL file definitions.
+\\GEN4TEMP\CONTINUE
+Choose the desired report continuation option:
+
+Y    {Continue to the next page, or exit the report if at the end.}
+N    {Exit the report.}
+
+Pressing the F10-exit key will also exit the report immediately.
+
+If the video report is being buffered, which will normally be the case,
+then several other options are available from function keys, described
+on the next page.
+.page
+[Video display options:]
+
+F2   {Displays the the first page of the report.}
+
+F3   {Displays the last page (buffering to the last page may take a
+     while, and can be interrupted with the <Interrupt> key).}
+
+F4   {Prompts for search text, then begins searching for a page
+     containing that text.  The search begins on the next page, and can
+     be interrupted witn the <Interrupt> key.}
+\\GENV4\Printing Labels
+[Printing Mailing Labels with GENERAL]
+
+GENERAL provides several keywords that can assist in the production of
+labels from a file.  The dimensions for the labels can be specified with
+the following keywords:
+
+     WIDTH     Specifies the number of characters per label.
+     HEIGHT    Specifies the number of rows per label.
+     ACROSS    Specifies the number of labels per line.
+
+To print 3-up labels, for example, a LIST command could contain the
+keywords {WIDTH 35 HEIGHT 6 ACROSS 3}.
+.page
+[Field placement on labels:]
+
+Use the TAB keyword to place fields on the label at any point desired,
+using substringing if required to truncate any field longer than the
+label width:
+
+     {TAB 2.2 NAME TAB 2.3 ADDR1 TAB 2.4 ADDR2 TAB 2.5
+     CITY_ST_ZIP(1,30)}
+.page
+[Controlling overall page format:]
+
+Labels normally are continuous, so that no page ejects or headers are
+desired.  GENERAL makes this "non-formatting" easy.  Just include the
+NO-PAGE keyword and all such formatting is suppressed.
+
+If the labels are to be printed on a laser printer, page formatting is
+trickier.  On a laser printer, page ejects may be necessary, so the NO-
+PAGE keyword shouldn't be used.  Instead, use the HEADER0 keyword to
+specify the correct number of blank lines at the top of each label
+sheet, and the LENGTH keyword to specify the total number of lines to
+print per page (overriding any default margins GENERAL uses).
+
+{LIST ... HEADER0 TAB 1.2 "" OFF LENGTH 64}, for example, would indicate
+a blank 2-line heading, and 64 lines per page (including the 2 line
+heading).
+\\GEN4INT2\ABORT?
+Verify that you don't want to save any changes made to the field
+specifications.
+\\GEN4INT1\BREAK ABANDON
+Verify that you don't want to save any changes made to the break
+specification.
+\\GEN4INT1\SORT ABANDON
+Verify that you don't want to save any changes made to the sort
+specification.
+\\GEN4INT3\ABORT?
+Verify that you don't want to save any changes made to the criteria
+specification.
+\\GEN4INT4\ABORT?
+Verify that you don't want to save any changes made to the header or
+footer specification.
+\\GEN4INT1\DELETE?
+Verify that you want to delete this report definition.  Once deleted, it
+can no longer be used.
+\\GEN4INT1\EXECUTE OPTION
+Choose the desired option for report execution.
+
+Run       {Run the report.}
+
+Edit      {Edit the LIST command that the report produces, before
+          executing the report.  Editing the LIST command will not
+          modify the report definition.  The effect will only be for
+          this execution of the report.}
+
+Save      {The LIST command (edited, if the Edit option has been used),
+          is saved as a RUN command.  GENERAL will prompt for a name,
+          description, and security option.}
+\\GEN4STCK\SAVE NAME
+Enter the same to save the LIST command under.  Once saved, it will be
+available as a command by this name, or can be accessed through the RUN
+command facility under this name.
+\\GEN4STCK\SAVE DESC
+Enter a description for this command.  This is used in the RUN command
+facility to help identify commands.
+\\GEN4STCK\SAVE OPEN/PRIV
+Choose the security option you desire for this report.
+
+1    {Open - the command can be executed by any user.}
+
+2    {Private - the command can only be executed by your GENERAL login
+     user code.}
+\\GEN4STCK\NO SAVE?
+Verify that you don't want to save the command for the RUN facility.
+\\GEN4SCOM\NAME
+Enter the name of the saved command you wish to work with.  If you are
+unsure of the name, press the F2-list key to choose the command from a
+selection window.
+
+Press the F10-exit key to return to the main menu.
+\\GEN4SCOM\VERIFY
+Choose the desired action.
+
+Yes       {Files the saved command and returns to name entry.}
+No        {Edit the saved command information.}
+Run       {Run the LIST command to produce a report.}
+
+Delete    {Delete the saved command.  It will no longer be available as
+          a command, or in the RUN command facility.}
+
+Print     {Print a hardcopy of the saved command information.}
+Edit      {Edit the command shown using the full screen editor that
+          supports assist mode.}
+\\GEN4-PCM\PRINTER
+Enter the printer desired for the hardcopy, or press F2-list printers to
+choose from a list.
+\\GEN4-PCM\CONTINUE
+Press <Enter> to continue the report, or enter N or press F10-exit to
+exit the report.
+\\GEN4SCOM\DELETE?
+Verify that you want to delete this saved command.
+\\GEN4SCOM\DESC
+Enter a description for this saved command.  This is used to assist in
+identifying the report in selection lists.
+\\GEN4SCOM\EDIT
+Use standard text editing features to edit the LIST command.  See the
+Keyboard help option for assistance with keystrokes used by the text
+editor.
+\\GEN4LIST\ABORT
+Verify that you don't want to execute or save the command.
+\\GEN4DICT\DELETE FIELD
+Verify that you want to delete the field definition from the dictionary.
+\\GEN4-PDC\OKAY
+Yes  {Print the dictionary(ies) specified.}
+No   {Change the printing specifications.}
+
+Press the F10-exit key to return to dictionary maintenance.
+\\GEN4-PDC\FIRST FILE
+Enter the name of the first file to print.  Press F2-list files to
+choose the file from a list.
+\\GEN4-PDC\LIST FILE
+Enter the name of the last file to print.  Press F2-list files to choose
+the file from a list.
+\\GEN4-PDC\OPTION
+Each option can be turned on by entering 2 (or Y), or turned off by
+entering 1 (or N).
+
+Fields{, if turned on, will print the fields for each file.}
+
+Expressions{, if turned on, will print the expressions for each field,
+in addition to the field information.}
+
+Errors{ will verify the syntax of each expression.  Note that if this
+option is turned on, the printing will take much longer.}
+
+Links{ will print the link specifications for each file.}
+
+Sorts{ will print the sort specifications for each file.}
+\\GEN4-PDC\PRINTER
+Enter the printer to print the listing to, or press F2-list printers to
+select the printer from a list.
+\\GEN4-LPF\CHOOSE FIELD
+This window displays each physical field and sub-field referenced by the
+current dictionary.  The field names used in the references are in the
+right column.  If a field references more than one physical field in its
+expression, that field will be listed in this window more than once.

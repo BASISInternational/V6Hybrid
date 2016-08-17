@@ -1,0 +1,279 @@
+0010 REM "SYS - ADD+ON Advantage/V System Startup"
+0020 REM "Program SYS.ZA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0060 BEGIN
+0070 ENDTRACE
+0080 SETERR 9000
+0090 SETESC 9900
+0095 SETOPTS $08$
+0100 REM " --- Open/Lock Files"
+0110 LET FILES=4
+0120 DIM FILES$[FILES],OPTIONS$[FILES],CHANNELS[FILES]
+0130 LET FILES$[1]="SYS-01",FILES$[2]="SYM-02"
+0140 LET FILES$[3]="SYM-01",FILES$[4]="SYM-04"
+0150 LET OPTIONS$[1]="R",OPTIONS$[2]="R",OPTIONS$[3]="R",OPTIONS$[4]="F"
+0200 REM " --- IOLIST's"
+0210 SYM04A: IOLIST A0$(1),A1$(1)
+0220 SYM02A: IOLIST B0$(1),B1$(1),B[ALL]
+0230 SYS01T: IOLIST TERMINAL$,C0$(1),C1$,C2$,C3$,C4$,C5$,C6$,C7$
+0240 SYM01A: IOLIST D0$(1),D1$(1),D2$(1)
+0250 SYS01S: IOLIST S0$,S1$,S2$,S3$,S4$,S5$,S6$
+0400 REM " --- Save BBx Standard !EDIT Parameters"
+0410 IF FID(0)="IO" THEN GOTO 9600
+0415 LET USERS=1,X$=INFO(2,0),USERS=DEC(X$,ERR=0420)
+0420 LET X$=STBL("!SEDIT",ERR=0450),X$=STBL("!STERMS",ERR=0450)
+0430 GOTO 0500
+0450 LET X$=STBL("!EDIT",ERR=0460)
+0460 LET X$=STBL("!SEDIT",X$,ERR=0470)
+0470 LET X$=STBL("!TERMS",ERR=0480)
+0480 LET X$=STBL("!STERMS",X$,ERR=0490)
+0490 LET X$=STBL("!CLEAR","!GUI",ERR=0500)
+0500 REM " --- Initializations"
+0510 DIM A0$(2),A1$(64),B0$(3),B1$(128),B[4],C0$(25),D0$(8),D1$(64)
+0520 DIM SCREEN$(32),ADD$[7],PLUS$[7],ON$[7],BAR$(72),COLOR$(160)
+0530 DIM D0$(6),D1$(35),D2$(16)
+0550 LET BAR$(2)="ADD+ON Software",VERSION$="6.0.0",TERMINAL$="T"+FID(0)
+0560 LET AO$="ADD+ON Software Version ",AOV$=AO$+VERSION$,GUI=0
+0565 LET ANYKEY$="Press any key to begin ",LICENSE$="Single User License"
+0570 LET X$=INFO(6,0,ERR=0600)
+0580 IF FNP$(X$)="" THEN GOTO 0600
+0585 LET GUI=1,X$=STBL("!GUI",X$)
+0590 LET TITLE$="ADD+ON Software Advantage/V For Windows ("+FID(0)+")"
+0600 REM " --- Initialize copyright"
+0605 LET ADD$[1]="      =       ========    ========"
+0610 LET ADD$[2]="     ===      =========   ========="
+0615 LET ADD$[3]="    =====     ===    ===  ===    ==="
+0620 LET ADD$[4]="   === ===    ===     === ===     ==="
+0625 LET ADD$[5]="  =========   ===    ===  ===    ==="
+0630 LET ADD$[6]=" ===     ===  =========   ========="
+0635 LET ADD$[7]="===       === ========    ========"
+0640 LET PLUS$[1]="   =====    ",ON$[1]="   ======    =====   ==="
+0645 LET PLUS$[2]="   =====    ",ON$[2]="  ========   === === ==="
+0650 LET PLUS$[3]="============",ON$[3]=" ===    ===  === === ==="
+0655 LET PLUS$[4]="============",ON$[4]="===      === === === ==="
+0660 LET PLUS$[5]="============",ON$[5]=" ===    ===  === === ==="
+0665 LET PLUS$[6]="   =====    ",ON$[6]="  ========   === === ==="
+0670 LET PLUS$[7]="   =====    ",ON$[7]="   ======    ===   ====="
+0700 REM " --- Display ADD+ON Logo and copyright"
+0705 IF GUI THEN PRINT (0,ERR=0710)'TITLE'(TITLE$),
+0710 CALL "SYC.WK",ERR=0720,"CLEAR"
+0720 FOR X=1 TO 7
+0725 PRINT @(2,X),'RED',ADD$[X],@(40,X),'WHITE',PLUS$[X],@(53,X),'RED',ON$[X],
+0730 NEXT X
+0735 PRINT 'WHITE',
+0740 CALL "SYC.WC",0,0,51,6,14,9,0
+0745 PRINT @(28,9)," A d v a n t a g e / V ",@(16,11),"The Complete Accounting
+0745: Based Business Solution",@(24,12),"for Manufacturing and Distribution",
+0770 PRINT @(4,16),'BR',BAR$,'ER',
+0775 CALL "SYC.WC",0,0,74,4,3,18,1
+0780 PRINT @(5,19),'BLUE',"Copyright (c) 1996 Open Systems Holdings Corp. All 
+0780:rights reserved.",
+0785 PRINT @(5,20),"For Terms And Conditions Of Use Refer To "+$22$+"Software 
+0785:License Agreement"+$22$+".",'WHITE',
+0790 PRINT @(28,22),"One moment please...",
+0800 REM " --- Open Files"
+0810 CALL "SYC.DA",1,1,FILES,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STA
+0810:TUS
+0820 IF STATUS THEN GOTO 4900
+0830 LET SYS01_DEV=CHANNELS[1],SYM02_DEV=CHANNELS[2]
+0840 LET SYM01_DEV=CHANNELS[3],SYM04_DEV=CHANNELS[4]
+0900 REM " --- Upgrading from v5.2?"
+0905 LET SYS60_DEV=UNT
+0910 OPEN (SYS60_DEV,ERR=0925)"SYS-60"; REM "Demo data v6.0 file
+0915 CLOSE (SYS60_DEV,ERR=0920)
+0920 GOTO 0950; REM "It's a demo system
+0925 LET SYXVN_DEV=UNT
+0930 OPEN (SYXVN_DEV,ERR=0950)"SYX.VN"; REM "Admin upgrade trigger program
+0935 CLOSE (SYXVN_DEV,ERR=0940)
+0940 GOTO 4800; REM "It's a upgrade
+0950 REM " --- Not Upgrading"
+0955 IF SYM04_DEV THEN GOTO 1000
+0960 LET OPTIONS$[4]="R"
+0970 CALL "SYC.DA",1,4,4,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STATUS
+0980 IF STATUS THEN GOTO 9900
+0990 LET SYM04_DEV=CHANNELS[4]
+1000 REM " --- Establish version"
+1010 FIND (SYM04_DEV,KEY="SY",DOM=1100)IOL=SYM04A
+1020 LET X$=FNP$(A1$(40,5))
+1030 IF X$="" THEN GOTO 1100
+1040 IF LEN(X$)<>5 THEN GOTO 1100
+1050 IF NUM(X$(1,3),ERR=1100)<6 THEN GOTO 1100; REM "Current Version 6.0.0
+1060 LET VERSION$=X$,X$=STBL("!VERSION",VERSION$),AOV$=AO$+VERSION$
+1200 REM " --- Determine user license"
+1210 LET USERS$="Single"
+1220 IF USERS>1 THEN LET USERS$=STR(USERS)
+1230 LET LICENSE$=USERS$+" User License"
+1400 REM " --- Display version & license"
+1410 GOSUB 5000
+1600 REM " --- Clear terminal record"
+1610 FIND (SYS01_DEV,KEY=TERMINAL$,DOM=1620)IOL=SYS01T
+1620 LET C0$(4,3)="",C0$(10,3)="",C2$="",C3$=""
+1640 IF C0$(13,2)="  " THEN LET C0$(13,2)="PF",C0$(25,1)=" "
+1650 LET X$=DATE(0:"%Mz%Dz%Yz"),C0$(7,3)=FND$(X$),C0$(18,6)=FNYY_YY21$(FNM$(X$
+1650:))
+1690 WRITE (SYS01_DEV,KEY=TERMINAL$)IOL=SYS01T
+1800 REM " --- Add selected public programs to memory"
+1810 CALL "SYC.PP","D","",STATUS
+1820 CALL "SYC.PP","A",PGM(-2),STATUS
+2000 REM " --- Proceed to login"
+2010 PRINT @(0,22),'CL',@(28,22),ANYKEY$,
+2020 INPUT (0,SIZ=1,ERR=2000)'CURSOR'("OFF"),@(56,22),V$,@(0,22),'CL',
+2050 CALL "SYC.WA",0,37,3,21,20,"",NAME$
+2100 REM " --- Initializations for login"
+2110 LET ATTEMPTS=0,V1=29,V2=0
+2200 REM " --- Login"
+2210 SETESC 2200
+2220 LET ATTEMPTS=ATTEMPTS+1
+2230 IF ATTEMPTS>3 THEN GOTO 2400
+2240 PRINT @(0,V2),'CL','SF',"  Please Enter Your User ID ",'CURSOR'("ON"),
+2250 INPUT (0,SIZ=4,ERR=2250)'CI','RB',@(V1-1,V2),'SB',"[   ]",@(V1,V2),'SF',"
+2250:XXX",@(V1,V2),'EE',V$,'BE',@(0,V2),'CL','CURSOR'("OFF"),
+2260 IF CTL=4 THEN GOTO 9900
+2270 IF V$="" THEN GOTO 2200
+2290 GOTO 2600
+2400 REM " --- Too many attempts at entering ID"
+2410 PRINT @(0,V2),'CL',"  Do you want to exit (Y/N)? ",
+2420 INPUT (0,SIZ=1,ERR=2420)'CI','CURSOR'("ON"),'RB','SB',@(V1-1,0),"[ ]",'SF
+2420:',@(V1,V2),V$,@(0,V2),'CL','CURSOR'("OFF"),
+2450 IF CTL=4 THEN GOTO 9900
+2460 ON POS(FNU$(V$)="NY") GOTO 2400,2100,9900,2400
+2600 REM " --- Check login ID"
+2610 LET V$=V$+"   ",V$=V$(1,3)
+2620 FIND (SYM02_DEV,KEY=V$,DOM=2640)IOL=SYM02A
+2630 GOTO 2700
+2640 FIND (SYM02_DEV,KEY=FNU$(V$),DOM=2200)IOL=SYM02A
+2700 REM " --- Password?"
+2710 IF B1$(27,1)<>"Y" THEN GOTO 3000
+2720 IF FNP$(B1$(28,6))="" THEN GOTO 3000
+2800 REM " --- Enter password"
+2810 SETESC 2100
+2820 PRINT @(0,0),'CL','SF',"Please Enter Your Password ",'CURSOR'("ON"),
+2830 INPUT (0,SIZ=6,ERR=2830)'CI','RB',@(27,0),'SB',"[      ]",@(28,0),'SF',"X
+2830:XXXXX",@(28,0),'EE',V$,'BE',@(0,0),'CL','CURSOR'("OFF"),
+2840 IF CTL=4 THEN GOTO 9900
+2850 IF V$=FNP$(B1$(28,6)) THEN GOTO 3000
+2860 LET ATTEMPTS=ATTEMPTS+1
+2870 IF ATTEMPTS<3 THEN GOTO 2800
+2890 GOTO 2100
+3000 REM " --- Remove login/password window"
+3010 SETESC 9900
+3020 CALL "SYC.WD",NAME$
+3200 REM " --- Update terminal record"
+3210 LET C0$(4,3)=B0$,C2$="SYS",C0$(15,1)=B1$(25,1)
+3220 IF FNP$(B1$(104,6))="" THEN GOTO 3290
+3230 LET D0$(1)=B1$(104,6)
+3240 FIND (SYM01_DEV,KEY=D0$,DOM=3290)IOL=SYM01A
+3250 IF FNP$(D2$(10,1))<>"" THEN IF D2$(10,1)>B1$(25,1) THEN GOTO 3290
+3280 LET C2$=B1$(104,6)
+3290 WRITE (SYS01_DEV,KEY=TERMINAL$)IOL=SYS01T
+3400 REM " --- Create !SCREEN"
+3410 FIND (SYS01_DEV,KEY="S",DOM=3420)IOL=SYS01S
+3420 LET SCREEN$(1,8)=S1$,SCREEN$(9,1)="N",SCREEN$(10)=B1$(26)
+3430 LET SCREEN$(25,1)="N",X$=STBL("!SCREEN",SCREEN$)
+3600 REM " --- Create !COLOR"
+3610 LET COLOR$(1)=B1$(41,60),COLOR$(81)=B1$(41,60)
+3620 FOR X=1 TO 51 STEP 10
+3630 LET C$=COLOR$(X,10),M$=""
+3640 IF C$="BLACK     " THEN LET M$='BLACK'
+3650 IF C$="BLUE      " THEN LET M$='BLUE'
+3660 IF C$="CYAN      " THEN LET M$='CYAN'
+3670 IF C$="GREEN     " THEN LET M$='GREEN'
+3680 IF C$="MAGENTA   " THEN LET M$='MAGENTA'
+3690 IF C$="RED       " THEN LET M$='RED'
+3700 IF C$="WHITE     " THEN LET M$='WHITE'
+3710 IF C$="YELLOW    " THEN LET M$='YELLOW'
+3720 LET COLOR$(X,10)=M$
+3780 NEXT X
+3790 LET COLOR$=STBL("!COLOR",COLOR$)
+4000 REM " --- Proceed to menu"
+4010 PRINT 'BT',
+4090 RUN "SYS.AA"
+4800 REM " --- Proceed to upgrade Administrator from v5.2 to v6.0"
+4810 GOSUB 5000
+4820 CALL "SYC.WC",ERR=4830,0,0,51,5,14,10,0
+4830 PRINT @(0,22),'CL',@(15,11),FILL(49),@(15,12),FILL(49),@(15,13),FILL(49),
+4830:@(18,11),"Ready to upgrade Version 5.2 Administrator",@(23,12),"to ",AOV$
+4830:,@(20,13),ANYKEY$,"or <F4> to exit",'RB','RB','RB',
+4840 INPUT (0,SIZ=1,ERR=4840)'CURSOR'("OFF"),@(60,12),V$,
+4850 IF CTL=4 THEN GOTO 9900
+4890 RUN "SYX.VN",ERR=9900
+4900 REM " --- Proceed to installation"
+4910 GOSUB 5000
+4920 CALL "SYC.WC",ERR=4930,0,0,51,4,14,10,0
+4930 PRINT @(0,22),'CL',@(15,11),FILL(49),@(15,12),FILL(49),@(16,11),"Ready to
+4930: install ",AOV$,@(28,12),ANYKEY$,'RB','RB','RB',
+4940 INPUT (0,SIZ=1,ERR=4940)'CURSOR'("OFF"),@(52,12),V$,
+4950 IF CTL=4 THEN GOTO 9900
+4990 RUN "SYS.IA",ERR=9800
+5000 REM " --- Display version & license"
+5010 LET BAR$(2)=AOV$,BAR$(LEN(BAR$)-LEN(LICENSE$))=LICENSE$
+5020 PRINT @(4,16),'BR',BAR$,'ER',
+5090 RETURN
+8000 REM " --- Functions"
+8040 DEF FND$(Q$)=CHR(FNYY_YEAR(Q$(5,2))+32)+CHR(NUM(Q$(1,2))+32)+CHR(NUM(Q$(3
+8040:,2))+32)
+8060 DEF FNM$(Q$)=Q$(5,2)+Q$(1,4)
+8070 DEF FNU$(Q$)=CVS(Q$,4)
+8090 DEF FNP$(Q$)=CVS(Q$,2)
+8120 REM " --- FNYY_YY21$ Convert 2-Char Year to 21st Century 2-Char Year"
+8125 DEF FNYY_YY21$(Q1$)
+8130 LET Q3$=" ABCDE56789ABCDEFGHIJ",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABC
+8130:DEFGHIJ"))
+8135 RETURN Q1$
+8140 FNEND
+8145 REM " --- FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+8150 DEF FNYY21_YY$(Q1$)
+8155 LET Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABC
+8155:DEFGHIJ"))
+8160 RETURN Q1$
+8165 FNEND
+8170 REM " --- FNYY_YEAR Convert 2-Char Year to 21st Century Numeric Year"
+8175 DEF FNYY_YEAR(Q1$)
+8180 LET Q=NUM(FNYY21_YY$(Q1$)); IF Q<50 THEN LET Q=Q+100
+8185 RETURN Q
+8190 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9600 REM " --- Missing alias"
+9605 SETERR 9950
+9610 SETESC 9950
+9615 PRINT ""
+9620 PRINT "Your terminal is not configured correctly!"
+9630 PRINT "This is usually caused by a missing "+$22$+"alias"+$22$+" entry in
+9630: the "+$22$+"config.aon"+$22$+" file."
+9640 PRINT ""
+9650 PRINT "Check your terminal type, and add the appropriate 'alias' entry."
+9660 PRINT "Refer to your BBx (r) Operating System Supplement documentation."
+9670 PRINT ""
+9680 INPUT "Press <Enter> to continue: ",*,
+9690 GOTO 9950
+9800 REM " --- Installation error"
+9810 PRINT @(0,21),"Unable to locate/run ADD+ON Software installation program 
+9810:SYS.IA"
+9820 PRINT @(0,22),"Reloading the Administrator software may be necessary."
+9890 GOTO 9950
+9900 REM " --- Exit to system"
+9910 CALL "SYC.WK",ERR=9911,"CLEAR"
+9920 PRINT 'CS',@(0,0),"Exiting ADD+ON Advantage/V...",'CURSOR'("ON")
+9950 RELEASE
+9999 END

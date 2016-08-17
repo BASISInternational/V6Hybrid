@@ -1,0 +1,80 @@
+0010 REM "GLM - G/L Financial Heading Maintenance"
+0020 REM "Program GLM.KB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0085 SETESC 9000
+0090 SETERR 9000
+0100 REM " --- Open/Lock Files"
+0170 CALL "SYC.GA",7,1,"","",STATUS
+0175 IF STATUS THEN GOTO 9900
+0500 REM " --- Initializations"
+0510 LET H0=132,H=0,HEADINGS=3,WHEN$=F0$(7,3),CLOCK$=""
+0520 DIM HEADINGS$[HEADINGS]
+0560 LET HEADINGS$[0]=N1$,HEADINGS$[1]=N4$+" Listing"
+0570 LET HEADINGS$[2]="Company "+N0$+" - Heading Number "+A0$(3,2)
+1000 REM " --- Print report heading"
+1010 GOSUB 5000
+1100 REM " --- Print ruler heading"
+1110 FOR X=0 TO 1
+1120 PRINT (7)RULER$[X]
+1130 NEXT X
+1140 PRINT (7)""
+1200 REM " --- Print G/L Report Heading(s)"
+1210 FOR L=1 TO LINES
+1220 LET P=(L-1)*(WIDTH+FILLER)+1
+1230 LET B$=HEADLINES$[L](1,WIDTH),X$=HEADLINES$[L](WIDTH,FILLER)
+1700 REM " --- Print heading text"
+1710 FOR X=1 TO NUMBER
+1720 PRINT (7)B$
+1790 NEXT X
+1900 REM " --- Next line"
+1990 NEXT L
+2000 REM " --- Print ruler footing"
+2010 PRINT (7)""
+2020 FOR X=1 TO 0 STEP -1
+2030 PRINT (7)RULER$[X]
+2040 NEXT X
+4000 REM " --- All done"
+4010 CLOSE (7,ERR=4020)
+4090 RUN "GLM.KA"
+5000 REM " --- Report heading"
+5010 LET L=HEADINGS+1
+5020 CALL "SYC.HA",7,HEADINGS$[ALL],HEADINGS,H,H0,WHEN$,CLOCK$,STATUS
+5030 IF STATUS>0 THEN EXITTO 9900
+5090 RETURN
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 SETERR 9000
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END

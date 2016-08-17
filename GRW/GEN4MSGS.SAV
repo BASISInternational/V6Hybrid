@@ -1,0 +1,1435 @@
+# Master english text file for General
+# Leave all ## NAME's as is, as they are identifiers for the software.
+# Blank lines are ignored.  Comments lines begin with "#".
+
+# To translate, all message numbers must have an equivalent.
+# Be sure to leave all @XXX names as is.  They get replaced at run time.
+
+## GLOBAL
+# These are standard text items used often in the package.
+
+# Month abbreviations - <= 3 characters
+# Note: in BBx, these values will update stbl(!DATE).
+1 JAN
+2 FEB
+3 MAR
+4 APR
+5 MAY
+6 JUN
+7 JUL
+8 AUG
+9 SEP
+10 OCT
+11 NOV
+12 DEC
+
+# Colors
+13 BLACK
+14 BLUE
+15 GREEN
+16 CYAN
+17 RED
+18 MAGENTA
+19 YELLOW
+20 WHITE
+
+# Function key actions.  These should be kept as short as possible.
+21 help
+22 exit
+23 done
+24 insert
+25 delete
+26 list
+27 list files
+28 list fields
+29 list printers
+
+# Other words.
+30 Yes
+31 No
+32 Copy
+33 Delete
+# 34 and 35 should be 1 character Yes/No responses
+34 Y
+35 N
+36 And
+37 Or
+38 Page
+39 fields
+40 files
+41 List Of @FILE
+
+# Common prompts and other messages
+42 Is the above information correct?
+43 Are you sure you want to delete the definition?
+44 Changes have been made.  Abort anyway?
+# the (Y/N) in 45 relate to 34 and 35, above.
+45 Do you want to continue the list? (Y/N):
+46 Is this a new definition?
+47 Evaluation period expires in @DAYS days.
+48 Printing...
+49 Please wait...
+50 Printer:
+# 51 is a ring menu selection, like Yes, No, Copy, etc.
+51 Print
+
+# Days of week - <= 3 characters
+# Note: in BBx, these values will update stbl(!DATE) on startup
+52 SUN
+53 MON
+54 TUE
+55 WED
+56 THU
+57 FRI
+58 SAT
+
+# Additional messages
+59 Interrupt detected.
+60 Abort
+61 Continue
+
+# 62-64 are for ring menus
+62 Exit without selection
+63 Selection:
+64 Continue
+
+# Another function key action
+65 jump
+
+## GEN4
+1 Ctrl-Break
+2 Escape
+3 Interrupt key
+4 Can't open file GEN4MST or GEN4MAIN.
+5 Minimum START size is 255 (more recommended, if possible)
+6 Too many tasks in GENERAL.  Try again later.
+7 Report Writing and Query System
+8 Version:
+9 Published under license by:
+10 Copyright (C) 1992 by:
+11 User code:
+12 Password:
+13 Users:
+14 Serial Number:
+15 Key map file @MAP can't be opened.  Using defaults.
+16 File @MAP contains missing or duplicate assignments.  Using defaults.
+17 The activiation key has expired, or this product was never properly activated.
+18 Serial Number Activation
+19 Serial Number:
+20 Activation Key:
+21 Enter your GENERAL serial number.
+22 Enter your activation key.
+23 Enter your user code.
+24 Enter your password.
+25 Can't create work file directory @DIR.
+# 26 is the name for the Delete key
+26 Delete
+27 All rights reserved.
+28 Not enough unused characters for editing (!CTYPE too full).
+29 The GEN4PARM.FIL function key mapping is invalid.  Using defaults.
+30 GENERAL can't be CALLed under Thoroughbred Basic.
+
+## GEN4-ACC
+1 Password Required
+2 File:
+3 Description:
+4 Password:
+5 Too many attempts.  Access denied.
+
+## GEN4-CAL
+1 Calculator/Calendar Window
+2 Calculator
+# msgs 3,4, and 5 should start with different letters
+3 Clear
+4 Sub-total
+5 Total
+6 Add
+7 Subtract
+8 Multiply
+9 Divide
+10 Result/Total
+11 Up
+12 Precision
+13 Down
+14 Precision
+15 Overflow
+16 Calendar
+17 Segment
+18 Cursor keys change segment value
+
+## GEN4-CLC
+1 @FIELD name invalid.  Letters, digits, underscore, period allowed after CALC.
+2 @FIELD type code parameter is invalid.
+3 Duplicate CALC names defined (@FIELD)
+
+## GEN4-CRS
+1 File @FILE isn't in the dictionary.
+2 Access to file @FILE is restricted.
+3 Can't open disk file for @FILE.  Error code is @ERROR.
+4 Sort reference @FILE-SORT is invalid.
+5 Chained links can contain only one PARTial link type.
+6 Multi-file ALTFILE not allowed in M/T/A/CREF() target file.
+
+## GEN4-CND
+1 Can't convert date in BEGIN/END CND clause.
+2 BEGIN/END BIN clause isn't an integer number.
+
+## GEN4-DMP
+1 next record
+2 mark substring
+3 set anchor
+4 File name not defined.
+5 File "@FILE" is not accessible.
+6 The selected record is inaccessible.
+7 End of file reached.
+8 Physical Fields in "@FILE".
+9 FLD #
+10 SIZE
+11 DATA VALUES
+12 @FIELD Data
+13 Ascii
+14 Hexadecimal
+15 Press <Enter> to accept sub-string.
+16 Display more data?
+17 Next key to display
+18 Next key (@F2=next in file)
+
+## GEN4-EDT
+1 Text too long for memory.
+2 Text modified.  Do you really want to restore?
+3 Col:
+4 Row:
+5 of:
+6 Ins:
+
+## GEN4-ERR
+1 Error Message  (Version: @VERSION, Serial Number: @SN)
+2 Message:
+3 Program:
+4 Error No:
+5 Line No:
+6 Note:
+7 An error @ERROR occurred at @LINE in @PROGRAM.
+8 A locked record, file, or device occurred.
+9 Invalid record size occurred.
+10 Unexpected end of file occurred.
+11 A disk or device corruption error occurred.
+12 A missing or duplicate record error occurred.
+13 A missing or unavailable file error occurred.
+14 A permissions or other file access error occurred.
+15 A disk full error occurred.
+16 Internal table or directory full.
+17 An invalid syntax error occurred.
+18 An invalid function reference occurred.
+19 String/Numeric mismatch error.
+20 Corrupted program.
+21 Out of memory.
+22 Number overflow, probably division by zero.
+23 Invalid number in function.
+24 Format mask overflow.
+25 Invalid string in function.
+26 Invalid sub-string reference.
+27 Escape
+28 Retry to correct?
+29 Dump Files for Error Analysis
+30 PGM File:
+31 DUMP File:
+32 Write down file names for support.  Continue?
+33 Press <Enter>.
+34 Dump
+35 Do you want to try the next record?
+
+## GEN4-EXP
+1 Quotes are mismatched. (@NAME)
+2 Grouping braces {} are mismatched. (@NAME)
+3 Expression invalid for this field type. (@NAME)
+4 Invalid syntax for expression (error @ERROR). (@NAME)
+5 Invalid field (@PF) reference in lookup function. (@NAME)
+6 Missing IF for THEN. (@NAME)
+7 Missing THEN for ELSE. (@NAME)
+8 @FIELD is an invalid field name in file @FILE (@NAME)
+9 Report group summary function missing valid level. (@NAME)
+10 @FIELD is invalid as a group/report summary value. (@NAME)
+11 Field number (@PFn) is less than 1 or greater than 255. (@NAME)
+12 Field @FIELD has no expression defined. (@NAME)
+13 Calculation error in @FIELD.
+14 REF functions require literal filename parameter. (@NAME)
+15 REF function filename @FILE is invalid or unavailable. (@NAME)
+16 User function @FUNCTION is invalid. (@NAME)
+17 Expression can't be blank. (@NAME)
+18 UNBLOCK() function requires a valid field name argument. (@NAME)
+19 Link expression @LINKVAL is invalid. (@NAME)
+
+## GEN4-FRP
+1 Can't open system control file (@ERROR)
+2 USER DEFINED FUNCTION MAINTENANCE
+3 USER DEFINED RUN-TIME REPLACEMENTS
+4 Name:
+5 Description:
+6 Function:
+7 Value:
+8 Enter name of function (like GPPCT or TRIM$)
+9 Enter name of run-time replacment (embed @VDT for video-specific).
+10 Enter function in format: (Xn$,Xn,..)=definition
+11 Enter replacement value
+12 The function name and value are invalid.  Error number is @ERROR.
+
+## GEN4-FST
+# 1 should be < 15 characters
+1 Key number
+
+## GEN4-FTR
+# 1 should be < 20 characters
+1 *Report* 
+
+## GEN4-HLP
+1 Field Help
+2 Need more help? (This is page @PAGE of @MAXPAGE)
+3 Keyboard
+# 4 is menu option, 5 is window title
+4 More_Topics
+5 More Topics
+6 No help text for @SUBJECT.
+7 Select action below.
+
+## GEN4-KWP
+1 Prompt text:
+2 Type:
+3 Default:
+4 Enter text for user prompting
+5 T=text, Nd=numeric (d=0-9 decimal), D=date
+6 Enter default value for prompt
+7 Calc name:
+8 Type code(s):
+9 Heading:
+10 Expression:
+11 Enter a name for the calculation.
+12 Enter type code(s), such as "T,L20".
+13 Enter column heading for the calculation.
+14 Enter calculation expression.
+15 Tab position:
+16 Enter tab position (col or col.row).
+17 Spaces:
+18 Even Values:
+19 Characters:
+20 Enter number of spaces to next field.
+21 Break on this numeric threshhold.
+22 Break on this many characters.
+23 Columns:
+24 Enter number of columns for this report (10-1000).
+25 Records per Line:
+26 Enter number of records per line (from 2 to 9).
+27 Test Patterns:
+28 Enter number of test records to print before report.
+29 Fixed Height:
+30 Enter the number lines each record will occupy.
+31 Lines:
+32 Enter lines to print per page.
+33 Break lines:
+34 Enter number of lines per group.
+35 File to use:
+36 Key expression:
+37 Enter the file to use as the ALTFILE.
+38 Enter expression for primary key, using K$ as working key.
+39 The file selected isn't a multi-keyed file.
+40 Export Format
+41 Delimited ASCII file
+42 Fixed length ASCII file
+43 Data Interchange Format (DIF)
+44 WordPerfect merge
+45 Delimiter:
+46 Enter delimiter for export file.
+47 From file:
+48 To file:
+49 Full/Part:
+50 Key Expression:
+51 Full
+52 Part
+53 Enter source file of link definition.
+54 Enter target file(,sort) of link definition.
+55 1 - full key match, 2 - partial key match.
+56 Enter key expression for link
+57 ALTSORT selection
+58 Prefix:
+59 Enter record prefix for export file.
+60 Suffix:
+61 Enter record suffix for export file.
+62 ALTKEY select
+63 Start with:
+64 Enter starting primary or alternate sort value.
+65 End with:
+66 Enter ending primary or alternate sort value.
+67 Break level:
+68 Enter custom header level (associated BREAK keyword).
+69 Enter custom footer level (associated BREAK keyword).
+70 PRINTER (choose at run-time)
+71 VDT (video only)
+72 FILE (choose file at run-time)
+73 Select printer now
+74 Output Selection
+75 PREVIEW (view on VDT, then print)
+76 link expression
+77 Gateway Excel
+78 Gateway 123
+
+
+## GEN4-LFD
+1 FIELD NAME
+2 DESCRIPTION
+3 TYPE CODES
+4 Field Selection
+5 list toggle
+6 Fields List
+7 Use cursor or letters for selection
+8 Searching...
+9 File List
+10 Listing all files may take time.
+11 all files
+12 File Name/Wildcard  
+13 Enter filename wildcard.
+# msg 14 added for 4.11
+14 Out of memory.  Try using a wildcard to shorten the list.
+
+## GEN4-LNK
+1 @FIELD is an invalid field name.
+2 No link between @FILE1 and @FILE2.
+3 Link qualifier inconsistent with link type in @FIELD.
+4 Link field not found in target file in @FIELD.
+5 Link qualifier requires a numeric target field in @FIELD.
+6 Chained links can contain only one PARTial link type.
+
+## GEN4-LPF
+1 @PF/@REC
+2 FIELD
+3 ---Undefined
+4 Physical fields used
+
+## GEN4-PCM
+1 Saved Command Print
+2 Save Command Print for @NAME.
+3 Description:
+4 Last run by/on:
+5 Command Text:
+
+## GEN4-PDC
+1 Dictionary Printing
+2 Starting File:
+3 Ending File:
+4 Fields:
+5 Expressions:
+6 Errors:
+7 Links:
+8 Sorts:
+
+# Part (9) and Full (17) relate to link definitions
+9 Part
+10 Additional Detail
+11 First file
+12 Last file
+13 Enter first file of range (blank=first on file)
+14 Enter last file of range (blank=last on file)
+15 1 - Yes, print option, 2 - No, don't print
+16 Printing File:
+17 Full
+18 General Dictionary Listing
+19 FILE NAME
+20 DESCRIPTION
+21 DISK NAME
+22 ACL
+23 ERROR?
+24 Expression:
+25 LINK DEFINITIONS
+26 TARGET FILE(@SORT)
+27 TYPE
+28 KEY EXPRESSION
+29 SORT NAME
+30 DESCRIPTION
+31 ALTFILE/ALTKEY EXPRESSION
+32 FIELD DEFINITIONS
+33 FIELD NAME
+34 DESCRIPTION
+35 TYPE CODES
+36 HEADING
+37 ERROR?
+38 SORT DEFINITIONS
+39 Skip Keys:
+40 Select:
+41 Begin:
+42 End:
+
+## GEN4-PHD
+1 PAGE-HDR definition is invalid.
+
+## GEN4-PLK
+1 Error during dictionary load.
+2 No links defined in dictionary.
+3 Link to file
+4 next link
+5 No fields in selected file's dictionary.
+6 Link to field
+
+
+## GEN4-PRP
+1 Report Design Listing
+2 SAMPLE REPORT FORMAT
+3 Report Name:
+4 Title/Description:
+5 File:
+6 Report/Export:
+7 Width:
+8 Output:
+9 Alternate Sort:
+10 Start with:
+11 End with:
+12 Line Break:
+13 Stop:
+14 Double Space:
+15 Print Blanks:
+16 Paginate:
+17 Recap Page:
+18 Print Detail:
+19 Col Heading:
+20 Vertical Totals:
+21 Type codes:
+22 Heading:
+23 Expression:
+24 Link Spec:
+25 Text:
+26 Report Design Listing for @NAME
+27 <unused>
+28 DATA DEFINITION
+29 FIELD NAME
+30 DESCRIPTION
+31 TYPE
+# These column headings should be no more than 6 characters long (32-42)
+32 COL
+33 ROW
+34 TOT
+35 AVG
+36 MAX
+37 MIN
+38 %-TOT
+39 COUNT
+40 CASE
+41 DATE
+42 NO DUP
+43 BREAK DEFINITION
+44 FIELD NAME
+45 CONTROL
+46 LINE/PAGE
+47 <unused>
+48 <unused>
+49 SORT DEFINITION
+50 FIELD NAME
+51 DIRECTION
+52 CRITERIA DEFINITION
+53 FIELD NAME
+54 OPERATOR
+55 COMPARE TO
+56 AND/OR
+57 HEADER/FOOTER DATA
+58 HDR/FTR
+59 LEVEL
+60 COL
+61 ROW
+62 TYPE CODES
+63 EXPRESSION
+64 Hdr
+65 Ftr
+
+## GEN4-PS1
+1 @CALC__x names are invalid (no double underscores).
+
+## GEN4-PTR
+1 View on this video
+2 Print to a file
+3 Standard
+4 Output Selection
+5 Can't open printer @PRINTER.
+6 Can't initialize printer @PRINTER.  Retry?
+7 The printer selected can't support this report.
+8 Can't lock file @FILE.  Retry?
+9 Enter output file path name.
+10 The file @FILE already exists.  Overwrite?
+11 Mode
+12 Columns
+13 Rows
+14 Printer @PRINTER Modes
+15 The printer/file name @PRINTER is invalid.
+16 The file @FILE can't be created.
+17 Output file name is longer than 40 characters.
+18 No devices can support this report.
+19 Printer
+
+## GEN4-PVW
+1 first page
+2 last page
+3 print
+4 Page:
+5 Cols:
+6 Rows:
+7 End of file!  Continue?
+8 Reading page
+
+## GEN4-RFN
+1 Invalid user function reference (no parameters included).
+2 The function @NAME isn't defined.
+3 The function @NAME is defined incorrectly.
+
+## GEN4-RRP
+1 The prompt format for a run-time replacement is invalid.
+2 Run time Replacements
+3 Enter value for prompt shown.
+4 abort
+5 The user replacement @NAME can't be found.
+
+## GEN4-SEL
+1 Selection Entry
+2 exit without selection
+
+## GEN4-SUB
+1 Two pass report BREAK exceeds key size limit of @MAXKEY.
+
+## GEN4-UPD.UTL
+1 Can't access file definition.  Error is @ERROR.
+2 This file appears to be undefined.
+3 The last file didn't get updated (use 'close' option).
+4 Invalid action code.
+5 Can't open file GEN4MST.
+6 No data to update (try 'open' first, or check arguments in CALL).
+7 Invalid field name.
+8 Type codes can't be blank.
+9 Type codes are invalid.
+
+## GEN4BULD
+1 Compiling...
+
+## GEN4CDSP
+# 1 and 2 are column/row titles generated by GENERAL
+1 <ALL>
+2 OTHER
+3 Total
+4 Avg
+5 Count
+6 Max
+7 Min
+# 8-12 are function key descriptions
+8 sort cols
+9 rows
+10 compress     
+11 reload
+12 print
+13 Use cursor keys to shift display, or press function desired.
+14 Can't open work file.
+15 Work file has an invalid header.
+16 Sort by Column
+17 Compress Rows/Columns
+18 Delete Row
+19 Delete Column
+20 Compress Type
+21 Compress Table
+22 How many rows:
+23 How many columns:
+24 Compress to how many rows? (1-@MAXROWS)
+25 Compress to how many columns? (1-@MAXCOLS)
+26 Delete Row
+27 Delete Column
+28 Are you sure you want to exit?
+29 Can't reset/re-create work file (error @ERROR)
+
+## GEN4CPRT
+1 Print Table
+2 Format Options
+3 Bar Chart
+4 Stacked Bar Chart
+5 Line Chart
+6 Pie Chart
+7 Enter plotter id.
+8 Printer/Plotter Selection
+9 Plotter:
+10 Area Chart
+11 Plotter Definitions
+12 When plotting to the video, press <Return> when the plot is complete.
+13 Can't open plotter device @PLOTTER.
+# 14 is for pie charts.
+14 Which column?
+15 Build aborted!
+#  16-48 relate to Grafsman controls
+16 Can't create file "@FILE".
+17 The plotter type @TYPE is invalid.
+18 The graph description file @FILE is invalid.
+19 list plotters
+20 Chart Options/Plotter Selection
+21 Perspective:
+22 Size:
+23 Position:
+24 Orientation:
+25 Plotter:
+26 Border:
+27 Legend:
+28 2D
+29 3D
+30 Full
+31 Half
+32 Qtr
+33 Upper Left
+34 Upper Right
+35 Lower Left
+36 Lower Right
+37 Center
+38 Vertical
+39 Horizontal
+40 None
+41 Right
+42 Bottom
+43 2 - two dimensional, 3 - three dimensional
+44 1 - full page, 2 - half, 3 - quarter
+45 1-top left, 2-top right, 3-bot left, 4-bot right, 5-ctr
+46 1 - vertical, 2 - horizontal
+47 1-no legend, 2-right side, 3-bottom
+48 1 - no border, 2 - border
+
+## GEN4DICT
+1 Blocked
+2 Delimited
+3 DICTIONARY MAINTENANCE
+4 File Name:
+5 Description:
+6 Access Level:
+7 Disk File:
+8 Auto Select:
+9 Auto Begin:
+10 Auto End:
+11 Skip Keys:
+12 Type:
+13 Block Size:
+14 Delimiter:
+15 Names can contain letters, digits, and individual periods or underscores.
+16 Keys for LIST to skip, delimited as in ~key1~key2~.
+17 Enter file name to add or modify.
+18 Enter a description for this file definition.
+19 Enter the disk file associated with this file name.
+20 User access level must be at least this value for access.
+21 SELECT phrase fragment to always be invoked for this file.
+22 BEGIN (key range) to automatically start with.
+23 END (key range) to automatically end with.
+24 1 - Blocked (no record delimiters), 2 - Delimited Text
+25 Enter fixed block size for each record.
+26 Enter field delimiter character (~nnn for ASCII).
+27 print file(s)
+28 Can't access this file definition.
+29 Fields
+30 Sorts
+31 Links
+32 A file can't be found (@FILE).  Continue anyway?
+33 File List
+34 Copy from File
+35 Can't access file's dictionary.
+36 Field Specification for @FILE
+37 Field Name
+38 Description
+39 Type Code(s)
+40 Column Heading
+41 Expression
+42 Enter field name, or use arrow keys to browse.
+43 Enter description for this field.
+44 Enter type code(s) for this field, separated by commas.
+45 The type codes can't be blank.
+46 The type codes entered aren't valid.
+47 @ERRORMSG.  Re-enter?
+48 Enter column heading for this field.
+49 Enter data expression, or use data assist.
+50 paste options
+51 data assist
+52 expand
+53 guess from data
+54 show data
+55 Fields from this file
+56 Other files
+57 Fields from other files
+58 User-defined Functions
+59 Paste Options
+60 Long Expression Entry
+61 Link expression
+62 System record locked.  Retry? (No loses field changes)
+63 Link Specification for @FILE
+64 TARGET FILE(@SORT)
+65 TYPE
+66 KEY EXPRESSION
+67 File name unavailable
+68 Full
+69 Part
+70 Enter file to establish link to.
+71 1 - full key match, 2 - partial key match (multiple records).
+72 Enter key expression (examples 'FIRM+ID', or '@PF2(3,6)+"A"').
+73 Duplicate link file name.
+74 ALTSORT specification for @FILE
+75 NAME
+76 DESCRIPTION
+77 ALTFILE OR ALTKEY EXPRESSION
+78 Enter ALTSORT identifying name.
+79 Enter description for this ALTSORT.
+80 Enter ALTFILE file-name "key-exp" or ALTKEY key-num.
+81 Duplicate or invalid ALTSORT name.
+
+## GEN4INT1
+1 list reports
+2 list alternate sorts
+3 Report
+4 Delimited
+5 Fixed
+6 DIF
+7 WordPerfect
+8 Text
+9 Num
+10 Date
+11 Uppr
+12 Lowr
+13 Prop
+14 Length
+15 Even
+# Break type 16=line, 103=page
+16 Line
+17 Ascending
+18 Descending
+19 Lines
+20 Any
+21 REPORT DESIGN
+22 Report Name:
+23 Title/Description:
+24 File:
+25 Report/Export:
+26 Width:
+# length is down at number 74
+27 Output:
+28 Alternate Sort:
+29 Begin with:
+30 End with:
+31 Line Break:
+32 Stop:
+33 Double Space:
+34 Print Blanks:
+35 Paginate:
+36 Recap Page:
+37 Print Detail:
+38 Col Heading:
+39 Vertical Totals:
+40 Height:
+41 Across:
+42 Test Patterns:
+43 Names can contain letters, digits, individual periods or underscores.
+44 Enter report name to add or modify.
+45 Enter a title for this report.
+46 Titles can't contain quotes.
+47 1-report 2-delim text 3-fixed text 4-DIF 5-WordPerfect 6-Gateway
+48 Enter a file name or wildcard for this report.
+49 Access to the file is restricted.
+50 Enter width (number of columns) for report.
+51 Enter fixed rows for each record, or blank any height.
+52 Enter records per line (often used for labels).
+53 Printer/File name (PRINTER=ask, FILE=ask, blank=VDT).
+54 Enter alternate sort name (blank=sort table or default sort).
+55 Start with (blank=first value, prompt format=[[text]]).
+56 End with (blank=last value, prompt format=[[text]]).
+57 Extra line each time this many lines print (0=continuous).
+58 Stop after this many records (0=full report).
+59 Enter number of test records to print (-1 for one at a time).
+60 1 - No, single spacing, 2 - double spacing.
+61 1 - No, standard totals, 2 - Yes, force vertical totals.
+62 1 - No, suppress blank lines, 2 - Yes, print all lines.
+63 1 - No, suppress page format, 2 - Yes, format pages.
+64 1 - no recap page, 2 - print recap page.
+65 1 - No, break points only, 2 - Yes, print detail.
+66 1 - No, suppress column headings, 2 - Yes, print headings.
+67 Can't access this report definition.
+68 Fields
+69 Break
+70 Sort
+71 Criteria
+72 Hdr/Ftr
+73 Run
+74 Length:
+75 Enter number of printed lines per page (blank=page length - 6)
+76 LinkSel
+77 Copy from Report
+78 Tabulate/Plot:
+79 1 - No, print data, 2 - Yes, tabulate data
+80 Break Points for @REPORT
+81 FIELD/@CALC
+82 DESCRIPTION
+83 CONTROL
+84 TYPE
+85 Enter field or @CALC name (calcs defined in Data section).
+86 Enter number of characters for break (blank=full field).
+87 Enter even value for numeric break.
+88 blank=day 1=MMMYYYY 2=MMYYYY 3=MMYY 4=MMMYY 5=YYYY 6=YYYYMM 7=YYMM.
+89 1 - line break, 2 - page break.
+90 Copies: 
+91 Alternate Sorts
+92 Report Definitions
+93 Sort Order for @REPORT
+94 FIELD/@CALC
+95 DESCRIPTION
+96 ORDER
+97 1 - Ascending order, 2 - Descending
+98 Copies to print (1-9).
+99 <unused>
+100 Run report
+101 Edit LIST command generated
+102 Execute Options
+103 Page
+104 Save LIST command to RUN menu
+105 Gateway
+106 Gateway Formats
+107 Excel
+108 Lotus 123
+
+
+## GEN4INT2
+# 1-7 should be <=4 characters
+1 Text
+2 Num
+3 Date
+4 None
+5 Uppr
+6 Lowr
+7 Prop
+8 Field Specification for @REPORT
+9 Field/@CALC
+10 Statistics
+11 Convert
+# 12-23 should be <=4 characters
+12 Type
+13 Col
+14 Row
+15 Tot
+16 Avg
+17 Max
+18 Min
+19 Cnt
+20 Case
+21 Date
+22 NDP
+23 Pct
+# 24-27 are function key labels
+24 link
+25 calc
+26 text
+27 float position
+28 There are no fields defined for the file.
+29 Enter field name, or use calc or link options.
+30 Enter fixed column, or <Enter> to retain default.
+31 Enter new column, or 0 to reset to floating column.
+32 Enter row, or <Enter> to retain default.
+33 1 - No total, 2 - Yes, total column.
+34 1 - No average, 2 - Yes, average column.
+35 1 - No maximum, 2 - Yes, calc maximum.
+36 1 - No minimum, 2 - Yes, calc minimum.
+37 1 - No percent, 2 - Yes, calc percent of total.
+38 1 - No count, 2 - Yes, calc count.
+39 1-no conversion, 2-Upper, 3-Lower, 4-Proper.
+40 0-full date 1-MMMYYYY 2-MMYYYY 3-MMYY 4-MMMYY 5-YYYY 6-YYYYMM 7-YYMM.
+41 1 - display all, 2 - suppress duplicates values.
+42 Enter type code(s) for this field, seperated by commas.
+43 The type codes can't be blank.
+44 The type codes entered aren't valid.
+45 @ERRORMSG.  Re-enter?
+46 Enter column heading for this field.
+47 Enter data expression, or use data assist.
+48 data assist
+49 expand
+50 Long Expression Entry
+51 Visual
+52 Delete this field from the report?
+53 <unused>
+54 System record locked.  Retry? (No loses field changes)
+55 Text Element
+56 Name:
+57 Text:
+58 Enter a name for this text item.
+59 Enter the text desired for this text element.
+# 60-64 are function key labels for visual mode
+60 data
+61 move
+62 re-display
+63 move to
+64 abort move
+65 There are position conflicts in the data.
+66 Move conflicts with other data or crosses a line boundary.
+# 67-select title, 68-71 are type of multi-rec link.
+67 Link-to File
+68 Display
+69 Total
+70 Average
+71 Count
+72 Data Entry
+73 No more data fields allowed.
+74 No links defined for this file.
+75 Link Element
+76 Link Name:
+77 Enter a name for this link item.
+78 The link definition is invalid.
+
+## GEN4INT3
+1 Text
+2 Num
+3 Date
+4 Equal to
+5 Greater than
+6 Greater than or Equal to
+7 Less than
+8 Less than or Equal to
+9 Not equal to
+10 Contains
+11 Does not contain
+12 Starts with
+13 Matches expression
+14 Criteria Specification for @REPORT
+15 FIELD/@CALC
+16 OPER
+17 EXPRESSIONS
+# 18-20 are function key labels
+18 group AND
+19 group OR
+20 list operators
+21 There are no fields defined for the file.
+22 Enter field name, or use group AND/OR for new group.
+23 Enter comparison operator.
+24 Enter expression to compare @FIELD with.
+25 1 - AND the next row, 2 - OR the next row (blank=skip/OR).
+26 Delete this criteria from the report?
+
+## GEN4INT4
+1 No data specification has been defined.
+# 2-7, 22 are function key labels.
+2 data
+3 move
+4 re-display
+5 default
+6 move to
+7 abort move
+8 Conflict with other data or crosses a line boundary.
+9 Data Value Entry
+10 Type codes:
+11 Expression:
+12 No more data fields allowed.
+13 Are you sure you want to delete this data?
+14 Enter type codes for data (e.g. T,L10 or N,2,L14,JR).
+15 Data expression (e.g. @BREAK1 or GSUM(YTD.SALES,1).
+16 Do you want to replace the existing definition?
+17 Header for Report
+18 Footer for Report
+19 Header for @LEVEL
+20 Footer for @LEVEL
+21 Select Header/Footer
+22 copy from
+
+## GEN4INT5
+1 Updating @REPORT
+
+## GEN4INT6
+1 FILE
+2 CRITERIA
+3 Enter file to impose detail criteria on.
+4 Enter criteria for this file (example: AMOUNT > 0).
+5 No links found with one-to-many detail.
+6 Link Detail Selection Criteria for @REPORT
+7 Delete this file's detail selection criteria?
+8 Linked File
+9 Description
+10 Detail Link File Listing
+11 linked files
+12 all files
+
+
+
+## GEN4LIST
+# 1-9 are function key labels
+1 assist
+2 history
+3 execute
+4 return to menu
+5 save/done
+6 abort
+7 toggle window
+8 related files
+9 quit assist
+10 Syntax: LIST file-name field-phrase [SORT phrase [SELECT phrase]]
+11 Command has been modified.  Are you sure you want to exit?
+12 Data Fields
+13 Keywords
+14 File Selection
+15 Enter file name, @F2, or wildcard.
+16 Can't access related file information.
+# 17-20 are multi-record link operations
+17 Display
+18 Total
+19 Average
+20 Count
+
+## GEN4MAIN
+1 GENERAL Report Writer Options
+2 Name
+3 Description
+4 Create a report interactively
+5 Review/Use command history
+6 Run previously stored reports
+7 Enter LIST (command) mode
+8 Maintain file/field definitions
+9 Maintain user definitions
+10 Maintain configuration
+11 Exit GENERAL
+# 12 is a function key label
+12 exit GENERAL
+13 Compiling report...
+
+## GEN4MRGD.UTL
+1 Can't open main dictionary file GEN4MST.
+2 IMPORT FROM SECONDARY DICTIONARY
+3 Second dictionary:
+4 Overwrite fields:
+5 Enter secondary dictionary to merge from.
+6 "Y" to overwrite existing fields (N just adds new ones).
+7 The file entered isn't equivalent to GEN4MST.
+
+## GEN4EXPD.UTL
+1 Secondary Dictionary:
+2 Are you sure you want to clear this file?
+3 Prompt
+4 Run
+5 Dictionary
+6 list
+7 Copying to secondary file...
+8 Deleting from secondary file...
+9 EXPORT TO SECONDARY DICTIONARY
+10 Which type of information should be exported (or cleared)?
+11 Clear
+12 Do you want to create this file?
+13 Item has been removed from the secondary dictionary.
+
+
+## GEN4PARS
+1 LIST OF @FILE
+2 TABULATE
+3 Building
+4 Loading
+5 Mis-matched quotes in command.
+6 File @FILE not available.
+7 Access to file @FILE is restricted.
+8 Can't open disk file for @FILE.
+9 Field @FIELD isn't in dictionary.
+10 Invalid TAB position setting (must be column[.row]).
+11 Invalid SPACE setting (must be numeric, between 1 and 999).
+12 Invalid WIDTH setting (must be numeric, from 10 to 1000).
+13 Invalid LINES setting (must be numeric, at least 5).
+14 Invalid EXPORT setting (DELIMITED, FIXED, DIF, WORDPERFECT required).
+15 Invalid LBREAK setting (must be at least 1).
+16 Invalid STOP lines setting (must be at least 1).
+17 Date format options (such as MMYYYY) are only valid on date fields.
+18 Case format options (such as PROPER) are only valid on text fields.
+19 CONVERT-DATE option is only valid on text fields.
+20 Expression error in @FIELD (@MESSAGE).
+21 ALTFILE file name can't be accessed in dictionary.
+22 ALTFILE disk file can't be opened.
+23 ALTFILE key parameter needs to be quoted.
+24 ALTFILE key parameter is invalid.
+25 Field @FIELD1 contains invalid field reference @FIELD2.
+26 SELECT phrase syntax is invalid.
+27 SELECT phrase type mismatch.
+28 ALTKEY parameter must be a number from 0 to 16.
+29 ALTKEY and ALTFILE can't be used together.
+30 TITLE keyword requires quoted parameter.
+31 A CONVERT-DATE (CND) text parameter is invalid.
+32 Invalid date format @TEXT.
+33 Too many BREAK levels.
+34 Two pass report with break field too large for work file.
+35 Invalid keyword in custom header @LEVEL.
+36 Invalid keyword in custom footer @LEVEL.
+37 FILL parameter must be a single quoted character.
+38 LINK file @FROMFILE is invalid.
+39 LINK file @TOFILE is invalid.
+40 LINK key expression @EXPR is invalid.
+41 LINK requires TO file, PARTKEY or FULLKEY, and a key-expression.
+42 ALTSORT name @NAME is invalid.
+43 EVEN amount @VALUE is invalid.
+44 CUT value @VALUE is invalid.
+45 ACROSS value @VALUE is invalid (must be between 1 and 9).
+46 HEIGHT value @VALUE is invalid.
+47 TESTPRINT value @VALUE is invalid.
+48 PLOT/CROSSTAB requires at least 1 break and at least 1 total field.
+49 <unused>
+50 File @FILE not found in dictionary.
+51 There were no fields found to LIST.  There must be a field phrase.
+52 The select phrase can't reference group or report summary values.
+53 The select phrase can't reference MREF (one-to-many display) values.
+54 Invalid Gateway type (EXCEL, 123).
+55 Gateway not initialized for this terminal.  Run VIP first.
+
+## GEN4SCOM
+1 Command @NAME is invalid.
+2 The name entered is invalid, or is private to another user.
+3 Command @NAME is unavailable.  Probably under maintenance by another user.
+4 Saved Commands
+5 Copy from command
+6 SAVED COMMAND MAINTENANCE
+7 Name:
+8 Description:
+9 Last run by/on:
+10 Command text:
+11 Enter name of stored command.
+12 Enter command description.
+13 Enter or maintain command text.
+14 Run
+15 Edit
+
+
+## GEN4STCK
+1 Select Command from History
+2 COMMAND TEXT
+3 exit, no selection
+4 edit
+5 save
+6 Move to the desired selection, then press <Enter> to execute.
+7 Edit
+8 Is this the correct command?
+9 Save Command Information
+10 Name:
+11 Description:
+12 Private/Open:
+13 Open
+14 Private
+15 Enter name to save command under.
+16 Enter description of this command.
+17 1 - Open to any user, 2 - Private to just your user code.
+18 Are you sure you don't want to save the command?
+19 Name already used!  Do you want to overwrite?
+20 Name already used and private to another user.
+# 21-23 are 1-character codes for Edit, Save, and Run from stack.
+21 E
+22 S
+23 R
+24 COMMAND VERIFICATION
+
+## GEN4SYSO
+1 Language code default for system.
+2 Combine M,D, and Y for month, day, and year position.
+3 MM=Month #, MMM=Name, DD=Day #, DDD=Name, YY and YYYY=Year.
+4 HH=Hour, MM=Minutes, PM=optional 12 hour time.
+5 Default century for 2 digit year entries.
+6 Decimal character for number displays.
+7 Thousands separator character.
+8 "-" for trailing minus, or "(" for parentheses.
+9 Currency symbol; optional underscore indicates space fill.
+10 Currency symbol on: L=left, R=right of number.
+11 Decimal precision for currency amounts.
+12 Character used in reports to indicate line draw positions.
+13 0=Text only, 1=Underline, 2=Reverse, 3=Both
+14 Color pairs: 1=black 2=blue 3=green 4=cyan 5=red 6=magenta 7=yellow 8=white
+15 NO FORMFEED
+16 BEFORE ONLY
+17 AFTER ONLY
+18 BEFORE/AFTER
+19 DOS Console
+20 DOS Plotter
+21 Unshared DOS Console
+22 Display formats
+23 Terminal attributes
+24 Printer definitions
+25 Report heading defaults
+26 VDT options (this video)
+27 User function definitions
+28 User replacement definitions
+29 Import secondary dictionary
+30 Language code:
+31 Date entry convention:
+32 Date display format:
+33 Time display format:
+34 Default century:
+35 Decimal character:
+36 Thousands separator:
+37 Negative indicator:
+38 Currency symbol:
+39 Right or Left side:
+40 Currency precision:
+41 Line Draw Character:
+42 Exit Program:
+43 Parameter
+44 Format Example
+45 System option record locked.
+46 SYSTEM OPTIONS
+47 TEXT ONLY
+48 UNDERLINE
+49 REVERSE
+50 UND & REV
+51 Background display:
+52 Data display:
+53 Data Entry:
+54 Base color:
+55 Selection menus:
+56 Help displays:
+57 Messages:
+58 Prompts:
+59 Attributes
+60 Colors
+61 list definitions
+62 Printer Driver Definitions
+63 Printer:
+64 Description:
+65 Alias:
+66 Width:
+67 Length:
+68 Form Feed:
+69 Initialization:
+70 Reset:
+# bold on is msg 151
+71 Bold Off:
+72 Underline On:
+73 Underline Off:
+74 No printer devices set up in the configuration file.
+75 Enter definition ID, up/down to browse.
+76 Enter printer device name.
+77 Number of columns this definition supports.
+78 Number of lines per page this definition supports.
+79 0-no formfeeds, 1-before print job, 2-after, 3-before & after.
+80 Printer initialization, using $hex or text values.
+81 Printer reset, using $hex or text values.
+82 Bold ON (if supported), using $hex or text values.
+83 Bold OFF (if supported), using $hex or text values.
+84 Underline ON (if supported), using $hex or text values.
+85 Underline OFF (if supported), using $hex or text values.
+86 Can't access this definition.
+# 87 used for Tbred printer descriptions
+87 Printer 
+88 Export secondary dictionary
+89 Modes
+90 <unused>
+91 Line Draw Definition
+92 Line draw ON:
+93 Line draw OFF:
+94 Horizontal line:
+95 Vertical line:
+96 Upper left corner:
+97 Upper right:
+98 Lower left:
+99 Lower right:
+100 Connect right:
+101 Left:
+102 Top:
+103 Bottom:
+104 Center:
+105 standard IBM PC set
+106 $hex or text value for line draw character set.
+107 $hex or text value for normal character set.
+108 @F2 assigns IBM line draw characters.
+109 Printer Modes for @PRINTER
+110 NAME
+111 COLS
+112 ROWS
+113 INITIALIZATION
+114 Enter mode name, such as "COMPRESSED".
+115 Number of printable columns in this mode.
+116 Number of lines per page in this mode.
+117 Enter initialization codes to setup this mode.
+118 1 - Yes, pause after plot, 2 - No pause
+119 Initialization codes are invalid.
+120 <unused>
+121 Definition List
+122 Copy From
+123 No graphics devices defined in the configuration file.
+124 Definition can't be used without alias specification.
+125 Plotter Definition
+126 Plotter:
+127 Description:
+128 Alias:
+129 Pause:
+130 Report Heading Defaults
+131 Line
+132 Position
+133 <unused>
+134 Report Title
+135 Run time system date
+136 System time
+137 System date and time
+138 Report page number
+139 Name of user running report
+140 Terminal alias in configuration
+141 Terminal tty device name
+142 Text 1
+143 Text 2
+144 Left
+145 Center
+146 Right
+147 Enter text you want to appear report headings, such as your company name.
+148 Enter the line number (1-3) for this item, or blank to suppress it.
+149 1-Left margin, 2-Center, 3-Right margin.
+150 Program to return to when exiting General.
+151 Bold On:
+
+## GEN4TEMP
+1 first page
+2 last page
+3 search
+4 An error @ERROR occurred trying to execute line @LINE.
+5 The device @PRINTER isn't a printer or text file.
+6 Search Entry
+7 Search forward for first page containing above text.
+8 Text not found or no more occurrences!
+9 Press @INTERRUPT to stop.
+10 Finding last page...
+11 Searching for @SEARCH...
+12 No-Detail Report: next page may take a while...
+13 Press @INTERRUPT to interrupt.
+14 Sort/Select
+# 15 and 16 should be less than 12 characters.
+15 Recs Read
+16 Selected
+17 The file type being LISTed isn't supported.
+18 An error occurred defining the sort work file.  The error code was  @ERROR.
+19 An error occurred opening the sort work file.  The error code was @ERROR.
+20 An error occurred attempting to use secondary key @KEY.
+21 Building page 1 of report...
+22 Printing
+23 Of
+24 Max
+25 Command:
+26 Start time:
+27 End time:
+28 Replacements:
+29 Errors:
+30 Records Processed:
+31 Records Printed:
+32 RECAP PAGE
+# 33-36 relate to interrupted reports
+33 Continue
+34 Start_Report
+35 Abort
+36 Interrupt detected.
+37 Can't create summary work file.
+38 SUMMARY REPORT
+39 Null break point.  Crosstabulation (PLOT) can't be generated.
+40 Can't print to printer (error @ERROR).  Retry?
+41 Printing to @PRINTER
+42 Out of workspace memory (error 31).
+43 Out of system memory (error 33).
+44 Errors occurred during selecting, sorting, and/or printing.
+45 Print another test pattern?
+
+## GEN4USER
+1 <unused>
+2 User List
+3 Copy from user
+4 USER MAINTENANCE
+5 Code:
+6 Name:
+7 Access Level:
+8 Password:
+9 Enter user code for login.
+10 Enter user's name.
+11 Enter user's access level (0-9).
+12 Enter optional password (blank=no password required).
+
+## GEN4VDTO
+1 OPTIONS FOR THIS VDT
+2 Display formats
+3 Terminal attributes
+4 Restore system defaults

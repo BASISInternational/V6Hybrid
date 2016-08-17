@@ -1,0 +1,116 @@
+# GENERAL Version 4 parameters
+# FF=0,1,2, or 3 for page eject on config.bbx printers
+#    0=no ejects, 1=before, 2=after, 3=before & after
+ff=2
+
+# LOW_MEMORY=Y addr's fewer modules into memory.  HI_MEMORY keeps
+# addr's in memory on exit.
+low_memory=n
+hi_memory=y
+
+# PROTECT=/directory
+#    There may be several of these.  GENERAL will not allow files to
+#    be created that start with these names.  / (root) means just the
+#    root directory, not all directories.
+protect=/
+protect=/usr/spool
+
+# OVERWRITE=N will prompt for ON FILE overwrites, Y will not.
+overwrite=y
+
+# TAOSDATE=date initial string
+#    There may be several of these.  Any Taos dictionary EXPAND element
+#    that starts with one of these will be interpreted internally as a
+#    julian date.  The expand function won't be used.  Instead, GENERAL
+#    will use its own date formatting, using the numeric value returned
+#    by the file's template as a julian value.  If the numbers aren't
+#    true julian numbers, but are offsets, assign the TAOSDATEOFS to a
+#    value to add to the "julian" number defined by the template.
+taosdate=date(
+taosdateofs=0
+
+# SOAFIXCOMP=fixed MAS90 company code?
+#    If users should be prompted for a MAS90 company code, this should
+#    be N.  If GENERAL should always get the company code from the SY0CTL
+#    file, and if the terminal isn't in the file, no access is allowed.
+soafixcomp=n
+
+# PUNCTUATE=punctuate numbers from external dictionaries
+#    When GENERAL uses an external dictionary, it may or may not add
+#    thousands separators to number formats.  The default is to add
+#    the punctuation, but it can be turned off by setting this flag
+#    to N.
+punctuate=y
+
+# OLDLOCK=establish and use old locks in BBx SETOPTS
+#    If GENERAL is running under BBx4, but needs to access files that
+#    are maintained under BBx2 or BBx3, then the old locks flag must be
+#    set, or BBx4 will think that files that are merely opened are
+#    locked by the BBx2 or BBx3 application.  An example of this is
+#    a MAS90 file, maintained in BBx2.  Unless this is set to Y, GENERAL
+#    will get an error 0 on any open to the MAS90 file that is also
+#    opened at the same time in MAS90.
+oldlock=y
+
+# DEF_LANG=default language
+#    If GENERAL does not have the terminal parameter at the time
+#    a message is required, then it will use this value as a default
+#    language for the message.  A file GEN4MSGS.xxx must be available,
+#    or the language will default back to ENG.
+def_lang=ENG
+
+# P_WIDTH, P_LINES are default width and lines for ON PREVIEW reports.
+P_WIDTH=132
+P_LINES=60
+
+# DO_COMMA=y or n
+#    If a site requires that the decimal point and thousands separator
+#    be modified from "." and ",", and the host language itself doesn't
+#    support this internally, then GENERAL can be told to fix the format
+#    itself.  This costs a bit in performance, but allows the installation
+#    to properly format the numerics.
+do_comma=n
+
+# Fn=Fn series for n = 1 through 10
+#    If remapping of what function key is used for what task is desired,
+#    they may be remapped here.  There *must* be a complete mapping of
+#    all ten keys.  No key may be mapped twice.  For example, to change
+#    the exit key from F10 to F4, change line F10=F10 to F10=F4.  Then
+#    F4 must be remapped to another keystroke, such as F10, by changing
+#    F4=F4 to F4=F10.
+#    Normal keys: F1=help, F2=list modes, F3..F8 vary, F9=done, F10=exit
+F1=F1
+F2=F2
+F3=F3
+F4=F4
+F5=F5
+F6=F6
+F7=F7
+F8=F8
+F9=F9
+F10=F10
+
+# OLDFTR=y or n
+# Version 3 default footers didn't print any description of the break point.
+# Version 4 footers do, and that sometimes causes position conflicts, which
+# force a vertical footer format.  While the new footer style is normally
+# preferred, it sometimes causes converted reports to format differently.
+# Setting this flag to 'y' will correct this in most cases.
+oldftr=n
+
+# taosprec=y or n
+# General, by default, adds the numeric precision to the length of a
+# taos numeric field.  If the length specification incorporates the full
+# precision, set this field to n.
+taosprec=y
+
+# displaymod=number - update screen every <number> records during reports.
+displaymod=25
+
+# ndp_reset=Y to reset no-duplicate tracking at all break points.
+ndp_reset=y
+
+# maxstack sets the number of STACK commands to retain.
+maxstack=18
+
+

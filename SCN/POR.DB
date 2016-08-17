@@ -1,0 +1,273 @@
+0010 REM "POR - Purchase Order Receipt Register (Stock Receipts Overlay)"
+0020 REM "Program POR.DB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.5 - 01Dec98 |"
+0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0031 REM "29Oct96 WGH: Items are reported as Received Complete when they aren'
+0031:t (6620)"
+0032 REM "30Sep97 WGH: Use unit-of-purchase to display inventory cost and exte
+0032:nsion (1420,1520)"
+0033 REM "19May98 JWK: Correct print position of Non-Stock PO Cost (2620)
+0040 REM 
+0080 SETERR 9000
+0090 SETESC 9000
+0200 REM " --- IOLIST's"
+0210 POE04A: IOLIST A0$(1),A1$(1),A2$,A3$,A[ALL]
+0230 IVM01A: IOLIST C0$(1),C1$(1)
+0240 IVM02A: IOLIST D0$(1),D1$(1),D2$,D[ALL]
+0310 POE14A: IOLIST W0$(1),W1$(1),W2$(1),W3$(1),W4$(1),W5$,W6$,W[ALL]
+0320 IVM10C: IOLIST X0$(1)
+0330 POM02A: IOLIST Y0$(1),Y1$(1)
+0500 REM " --- Initializations"
+0505 PRECISION I[1]
+0510 DIM X0$(32)
+0550 LET HEADINGS=3,HEADINGS$[2]="Stock Inventory Receipts"
+0560 LET AVAIL=WIDTH-70,X=2,M=MAX(M0,6),NONSTOCK=0
+0600 REM " --- Report initializations and print positions"
+0610 GOSUB 6700
+0650 LET O[0]=0,O[12]=WIDTH-5,O[11]=O[12]-12,O[10]=O[11]-8,O[9]=O[10]-M-1
+0660 LET O[8]=O[9]-11,O[7]=O[8]-M1,O[6]=O[7]-M3,O[5]=O[6]-M1,O[4]=O[5]-M3
+0670 LET O[3]=O[4]-M2,O[2]=O[3]-3,O[1]=O[2]-5
+0700 REM " --- Background"
+0710 PRINT @(40,5),"Stock Inventory Receipts",'CL',@(COLUMN,11),FILL(BW),
+0900 REM " --- Position files"
+0990 READ (POW04_DEV,KEY=N0$,DOM=1000)
+1000 REM " --- Get next sort record"
+1010 LET K$=KEY(POW04_DEV,END=2000)
+1020 IF POS(N0$=K$)<>1 THEN GOTO 2000
+1030 READ (POW04_DEV)
+1040 PRINT @(COLUMN,11),K$(3,2)," ",FNB6$(K$(5,6))," ",K$(11,I[0]),
+1100 REM " --- Level breaks?"
+1110 IF T0$<>K$(3,2) THEN GOSUB 6000
+1120 IF T1$<>K$(5,6) THEN GOSUB 6200
+1130 IF SUBHEAD$<>"" THEN GOSUB 5400
+1200 REM " --- Read receipt header and detail"
+1210 LET A0$(1)=K$(1,2)+K$(31),W0$(1)=K$(1,2)+K$(31)
+1220 GOSUB 6400
+1230 IF STATUS THEN GOTO 1900
+1400 REM " --- Calculate extension"
+1410 PRECISION 2
+1420 LET PO_EXTENSION=W[1]*W[7],IV_EXTENSION=D[11]*W[7]*W[0]
+1430 PRECISION I[1]
+1500 REM " --- Print detail line"
+1510 IF L+2>L9 THEN GOSUB 5000
+1520 PRINT (7)@(O[0]),W3$(3,I[0]),@(O[1]),CODE$,@(O[2]),W1$(22,2),@(O[3]),W[7]
+1520::M2$,@(O[4]),D[11]*W[0]:M3$,@(O[5]),IV_EXTENSION:M1$,@(O[6]),W[1]:M3$,@(O
+1520:[7]),PO_EXTENSION:M1$,@(O[8]),W1$(24,10),@(O[9]),FNF$(A0$(3,VENDLEN),M0$)
+1520:,@(O[10]),A0$(9,7),@(O[11]),W0$(16,7),"-",W0$(23,3),@(O[12]),COMPLETE$
+1530 PRINT (7)@(O[0]+3),DESCRIPTION$
+1540 LET L=L+2
+1800 REM " --- Accumulate totals"
+1810 LET RECEIPT[0]=RECEIPT[0]+IV_EXTENSION,RECEIPT[1]=RECEIPT[1]+PO_EXTENSION
+1820 LET WHSE[0]=WHSE[0]+IV_EXTENSION,WHSE[1]=WHSE[1]+PO_EXTENSION
+1830 LET REPORT[0]=REPORT[0]+IV_EXTENSION,REPORT[1]=REPORT[1]+PO_EXTENSION
+1840 LET NUMBER=NUMBER+1
+1900 REM " --- Loop back for next sort record"
+1990 GOTO 1000
+2000 REM " --- Done with stock receipts"
+2010 LET DONE=1
+2020 IF NUMBER=0 THEN GOTO 2500
+2030 GOSUB 6000
+2040 LET TOTALS$="Total For Register",TOTALS[ALL]=REPORT[ALL]
+2050 GOSUB 6900
+2500 REM " --- Non-stock receipt initializations"
+2510 LET AVAIL=WIDTH-91,X=1
+2520 GOSUB 6700
+2530 LET NONSTOCK=1,HEADINGS$[2]="Non-Stock Inventory And Other Receipts"
+2600 REM " --- Print positions"
+2610 LET O[10]=WIDTH-11,O[9]=O[10]-6,O[8]=O[9]-12,O[7]=O[8]-9,O[6]=O[7]-M-1
+2620 LET O[5]=O[6]-11,O[4]=O[5]-M1,O[3]=O[4]-M3,O[2]=O[3]-M2,O[1]=O[2]-3
+2900 REM " --- Position files"
+2910 PRINT @(40,5),"Non-Stock Inventory Receipts",'CL',@(COLUMN,11),FILL(BW),
+2990 READ (POW05_DEV,KEY=N0$,DOM=3000)
+3000 REM " --- Get next sort record"
+3010 LET K$=KEY(POW05_DEV,END=4000)
+3020 IF POS(N0$=K$)<>1 THEN GOTO 4000
+3030 READ (POW05_DEV)
+3040 PRINT @(COLUMN,11),K$(3,2)," ",FNB6$(K$(5,6))," ",K$(11,20),
+3100 REM " --- Level breaks?"
+3110 IF T0$<>K$(3,2) THEN GOSUB 6000
+3120 IF T1$<>K$(5,6) THEN GOSUB 6200
+3130 IF SUBHEAD$<>"" THEN GOSUB 5400
+3200 REM " --- Read receipt header, detail and line code"
+3210 LET A0$(1)=K$(1,2)+K$(71),W0$(1)=K$(1,2)+K$(71)
+3220 GOSUB 6400
+3230 IF STATUS THEN GOTO 3900
+3300 REM " --- Set remaining fields"
+3310 LET WO$=""
+3320 IF FNP$(W2$(1,7))="" THEN GOTO 3400
+3330 LET WO$=W2$(1,7)
+3340 IF FNP$(W2$(8,3))<>"" THEN LET WO$=WO$+"-"+W2$(8,3)
+3400 REM " --- Calculate extensions"
+3410 LET QTY=W[7]
+3420 IF Y1$(21,1)="O" THEN LET QTY=1
+3430 PRECISION 2
+3440 LET PO_EXTENSION=W[1]*QTY
+3450 PRECISION I[1]
+3500 REM " --- Print non-stock detail line"
+3510 IF L+2>L9 THEN GOSUB 5000
+3520 IF Y1$(21,1)<>"N" THEN GOTO 3600
+3530 PRINT (7)@(O[0]),W3$(3,I[0]),@(O[1]),W1$(22,2),@(O[2]),W[7]:M2$,@(O[3]),W
+3530:[1]:M3$,@(O[4]),PO_EXTENSION:M1$,@(O[5]),W1$(24,10),@(O[6]),FNF$(A0$(3,VE
+3530:NDLEN),M0$),@(O[7]),A0$(9,7),@(O[8]),W0$(16,7),"-",W0$(23,3),@(O[9]),COMP
+3530:LETE$,@(O[10]),WO$
+3590 GOTO 3700
+3600 REM " --- Print other charge detail line"
+3610 PRINT (7)@(O[3]),W[1]:M3$,@(O[4]),PO_EXTENSION:M1$,@(O[5]),W1$(24,10),@(O
+3610:[6]),FNF$(A0$(3,VENDLEN),M0$),@(O[7]),A0$(9,7),@(O[8]),W0$(16,7),"-",W0$(
+3610:23,3),@(O[9]),COMPLETE$
+3700 REM " --- Print non-stock/other charge description"
+3710 PRINT (7)@(O[0]+3),W4$
+3720 LET L=L+2
+3800 REM " --- Accumulate totals"
+3810 LET RECEIPT[1]=RECEIPT[1]+PO_EXTENSION,NUMBER=NUMBER+1
+3820 LET WHSE[1]=WHSE[1]+PO_EXTENSION
+3830 LET REPORT[1]=REPORT[1]+PO_EXTENSION
+3900 REM " --- Loop back for next sort record"
+3990 GOTO 3000
+4000 REM " --- All done"
+4010 LET DONE=1
+4020 IF NUMBER=0 THEN GOTO 4900
+4030 GOSUB 6000
+4040 LET TOTALS$="Total For Register",TOTALS[ALL]=REPORT[ALL]
+4050 GOSUB 6900
+4900 REM " --- Run next overlay"
+4990 RUN "POR.DC"
+5000 REM " --- Report Heading"
+5010 LET L=HEADINGS+3
+5020 CALL "SYC.HA",7,HEADINGS$[ALL],HEADINGS,PAGE,WIDTH,WHEN$,CLOCK$,STATUS
+5030 IF STATUS THEN EXITTO 9900
+5090 IF NONSTOCK THEN GOTO 5200
+5100 REM " --- Heading for stock receipts"
+5110 PRINT (7)@(O[1]),"Dist",@(O[3]+M2-9),"Quantity",@(O[4]+M3-5),COST$,@(O[5]
+5110:+M1-10),COST$,@(O[6]+M3-5),"PO",@(O[7]+M1-10),"PO",@(O[8]),"Receiving",@(
+5110:O[12]),"Rec'd"
+5120 PRINT (7)@(O[0]),"Item",@(O[1]),"Code",@(O[2]),"UM",@(O[3]+M2-9),"Receive
+5120:d",@(O[4]+M3-5),"Cost",@(O[5]+M1-10),"Extension",@(O[6]+M3-5),"Cost",@(O[
+5120:7]+M1-10),"Extension",@(O[8]),"Location",@(O[9]),"Vendor",@(O[10]),"Rec #
+5120:",@(O[11]),"PO Number",@(O[12]),"Comp?"
+5190 RETURN
+5200 REM " --- Heading for non-stock receipts"
+5210 PRINT (7)@(O[2]+M2-9),"Quantity",@(O[3]+M3-5),"PO",@(O[4]+M1-10),"PO",@(O
+5210:[5]),"Receiving",@(O[9]),"Rec'd"
+5220 PRINT (7)@(O[0]),"Item",@(O[1]),"UM",@(O[2]+M2-9),"Received",@(O[3]+M3-5)
+5220:,"Cost",@(O[4]+M1-10),"Extension",@(O[5]),"Location",@(O[6]),"Vendor",@(O
+5220:[7]),"Rec #",@(O[8]),"PO Number",@(O[9]),"Comp?",@(O[10]),"Work Order"
+5290 RETURN
+5400 REM " --- Subheading"
+5410 IF L+4>L9 THEN GOSUB 5000
+5420 PRINT (7)""
+5430 PRINT (7)SUBHEAD$
+5440 PRINT (7)""
+5450 LET L=L+3,SUBHEAD$=""
+5490 RETURN
+6000 REM " --- Warehouse break"
+6010 IF T0$="" THEN GOTO 6100
+6020 GOSUB 6200
+6030 LET TOTALS$="Total For Warehouse "+FNP$(WHSE$),TOTALS[ALL]=WHSE[ALL]
+6040 GOSUB 6900
+6100 IF DONE THEN GOTO 6190
+6110 DIM WHSE[1]
+6120 LET T0$=K$(3,2),X0$(1)=N0$+"C"+T0$+NF$
+6130 FIND (IVM10_DEV,KEY=X0$(1,5),DOM=6140)IOL=IVM10C
+6140 LET WHSE$=X0$(4,2)+" "+X0$(6,24)
+6150 IF T1$="" THEN GOSUB 6200
+6160 LET SUBHEAD$="Warehouse "+FNP$(WHSE$)+" - Receipt Date "+FNB6$(T1$)
+6190 RETURN
+6200 REM " --- Receipt date break"
+6210 IF T1$="" THEN GOTO 6300
+6220 LET TOTALS$="Total For "+FNB6$(T1$),TOTALS[ALL]=RECEIPT[ALL]
+6230 GOSUB 6900
+6300 IF DONE THEN GOTO 6390
+6310 DIM RECEIPT[1]
+6320 LET T1$=K$(5,6)
+6330 LET SUBHEAD$="Warehouse "+FNP$(WHSE$)+" - Receipt Date "+FNB6$(T1$)
+6390 RETURN
+6400 REM " --- Read receipt header and detail"
+6410 LET STATUS=11
+6420 FIND (POE04_DEV,KEY=A0$,DOM=6690)IOL=POE04A
+6430 FIND (POE14_DEV,KEY=W0$,DOM=6690)IOL=POE14A
+6440 IF Y0$(1,4)=N0$+W1$(1,2) THEN GOTO 6500
+6450 LET Y0$(1)=N0$+W1$(1,2)
+6460 FIND (POM02_DEV,KEY=Y0$,DOM=6690)IOL=POM02A
+6500 REM " --- Retrieve inventory item and warehouse"
+6510 LET C0$(1)=N0$+W3$(3),C1$(1)="",DESCRIPTION$(1)=W4$
+6520 LET D0$(1)=N0$+W3$,D1$(1)="",D[11]=0,CODE$=""
+6530 IF Y1$(21,1)<>"S" THEN GOTO 6600
+6540 FIND (IVM01_DEV,KEY=C0$,DOM=6690)IOL=IVM01A
+6550 FIND (IVM02_DEV,KEY=D0$,DOM=6690)IOL=IVM02A
+6560 LET DESCRIPTION$(1)=FNITEM$(C1$,I[3],I[4],I[5]),CODE$=D1$(13,2)
+6600 REM " --- Format detail line fields"
+6620 LET X=W[3]-W[4]-W[7],COMPLETE$="No",STATUS=0
+6630 IF A1$(134,1)="Y" THEN LET COMPLETE$="Yes"
+6640 IF X<=0 THEN LET COMPLETE$="Yes"
+6690 RETURN
+6700 REM " --- Report Initializations"
+6710 DIM RECEIPT[1],WHSE[1],REPORT[1],TOTALS[1]
+6720 LET M1$=I6$,M2$=I7$,M3$=I8$,M1=LEN(M1$),M2=LEN(M2$),M3=LEN(M3$),DONE=0
+6730 LET NUMBER=0,MAXM1=15,MAXM2=12,MAXM3=12,L=L9+1,SUBHEAD$="",T0$="",T1$=""
+6800 REM " --- Print positions"
+6810 IF M+(M1*X)+M2+(M3*X)<AVAIL THEN GOTO 6890
+6820 LET MAXM1=MAXM1-1,MAXM2=MAXM2-1,MAXM3=MAXM3-1
+6830 CALL "SYC.RM",M1$,M1,11,MAXM1
+6840 CALL "SYC.RM",M2$,M2,9,MAXM2
+6850 CALL "SYC.RM",M3$,M3,6,MAXM3
+6860 GOTO 6800
+6890 RETURN
+6900 REM " --- Print totals"
+6910 IF L+1>L9 THEN GOSUB 5000
+6920 IF NONSTOCK THEN GOTO 6950
+6930 PRINT (7)@(O[5]-LEN(TOTALS$)),TOTALS$,@(O[5]),TOTALS[0]:M1$,@(O[7]),TOTAL
+6930:S[1]:M1$
+6940 GOTO 6980
+6950 PRINT (7)@(O[4]-LEN(TOTALS$)),TOTALS$,@(O[4]),TOTALS[1]:M1$
+6980 LET L=L+1
+6990 RETURN
+8000 REM " --- Functions"
+8025 DEF FNB6$(Q$)=Q$(3,2)+"/"+Q$(5,2)+"/"+FNYY21_YY$(Q$(1,2))
+8080 DEF FNP$(Q$)=CVS(Q$,2)
+8090 DEF FNITEM$(Q$,Q1,Q2,Q3)=CVS(Q$(1,Q1)+" "+Q$(Q1+1,Q2)+" "+Q$(Q1+Q2+1,Q3),
+8090:32)
+8145 REM " --- FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+8150 DEF FNYY21_YY$(Q1$)
+8155 LET Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABC
+8155:DEFGHIJ"))
+8160 RETURN Q1$
+8165 FNEND
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF:
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9800 REM " --- Display Parameter record error"
+9810 LET LINE_ERR$=LST(PGM(TCB(5)))
+9820 CALL "SYC.YA",LINE_ERR$,N2$,ERR
+9900 RUN "SYS.AA"
+9999 END

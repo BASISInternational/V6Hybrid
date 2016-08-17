@@ -1,0 +1,221 @@
+0010 REM "WOS - Closed WO Detail Report                               "
+0020 REM "Program WOR.EB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0045 SETERR 9000
+0050 SETESC 9000
+0055 PRECISION IVS01_PRECISION
+0060 ON O9 GOTO 0090,2000
+0200 REM " --- IOLISTs"
+0210 WOE01A: IOLIST A0$(1),A1$(1),A[ALL]
+0220 IVM01A: IOLIST B0$,B1$(1)
+0230 WOM10A: IOLIST Y0$,Y1$(1)
+0250 ARM01A: IOLIST *,C1$
+0260 IVM01A2: IOLIST *,*,*,*,*,*,B9$,*,*,*,B[4]
+0270 IVM02A: IOLIST *,B9$
+0290 ARM10D: IOLIST *,B9$
+0500 REM " --- Init Data"
+0520 DIM Y9$(21*6)
+0530 LET Y9$(1)="Work in Process",Y9$(22)="Close to Account",Y9$(43)="Direct V
+0530:ariance",Y9$(64)="Overhead Variance",Y9$(85)="Material Variance",Y9$(106)
+0530:="Subcontract Variance"
+0600 REM " --- Additional File Opens "
+0610 CALL "SYC.GA",7,1,"","",STATUS
+0620 IF STATUS THEN GOTO 9900
+0700 REM " --- Background"
+0720 CALL "SYC.NB","Printing:",8,COLUMN
+1000 REM " --- Init Read"
+1020 LET K$=N0$+"  "+"B"+P4$
+1040 READ (WOE04_DEV,KEY=N0$+"  "+"B"+P4$,DOM=1100)
+1060 GOTO 1200
+1100 REM " --- Main Read"
+1120 LET K$=KEY(WOE04_DEV,END=4000)
+1140 IF K$(1,5)<>N0$+"  "+"B" THEN GOTO 4000
+1160 READ (WOE04_DEV)
+1200 REM " --- Breaks"
+1300 PRINT @(COLUMN,11),K$(6,7),
+1400 REM " --- Additional Reads
+1420 READ (WOE01_DEV,KEY=K$(1,4)+K$(6,7),DOM=1120)IOL=WOE01A
+1440 IF P3$(2,1)<>"Y" THEN GOTO 1500
+1460 DIM C1$(30); LET C1$(1)="*** Not On File ***"
+1470 READ (ARM01_DEV,KEY=N0$+A0$(34,6),DOM=1480)IOL=ARM01A
+1500 REM " --- Set Flags...
+1510 LET O9=1
+1520 LET Z0$="Y",Z0=2
+1530 LET Z1$="Y",Z1=3,Z2=5,Z3=8
+1540 LET Z2$="Y",Z3$="",Z4$="",Z5$="MOS",Z6$="Y"
+1900 LET O9$="WOR.EB",O9=1
+1920 RUN "WOR.XA"
+2000 REM " --- Print The Closed Part
+2020 DIM B[9],C[5]
+2040 LET B[0]=A[0],B[1]=A[2],B[2]=A[4],B[5]=U[0],B[6]=U[1],B[7]=A[3],B[8]=B[6]
+2040:-B[7],B[9]=A[4]*A[5]
+2050 IF A1$(94,1)<>"Y" THEN LET B[3]=B[0]-(B[1]+B[2])
+2060 IF A0$(14,1)<>"I" THEN GOTO 2100
+2065 FIND (IVM01_DEV,KEY=N0$+A0$(56,20),DOM=2100)IOL=IVM01A2
+2070 IF R9$<>"Y" THEN LET Y2$=B9$(1,10); GOTO 2100
+2080 FIND (IVM02_DEV,KEY=N0$+A0$(54,22),DOM=2100)IOL=IVM02A
+2085 LET B9$=B9$(13,2)
+2090 FIND (ARM10_DEV,KEY=N0$+"D"+B9$,DOM=2100)IOL=ARM10D
+2095 LET Y2$=B9$(61,10); REM "Set the closed to account...
+2100 DIM Y0$(40),Y1$(100,"0")
+2110 LET Y0$(6,20)="*** Not On File ***"
+2120 FIND (WOM10_DEV,KEY=N0$+"A"+A0$(12,2),DOM=2140)IOL=WOM10A
+2140 IF A0$(14,1)="I" THEN LET Y1$(11,10)=Y2$
+2200 IF L+11+SGN(B[3]-1)*2+POS(Y0$(27,1)="A")*3>0 THEN GOSUB 5000
+2220 PRINT (7)'LF',"**** Closed Detail ****",@(29),"Closed Date: ",FNB$(A1$(91
+2220:,3)),@(55),"WO Type: ",Y0$(6,20),
+2230 IF A0$(28,3)>A1$(91,3) THEN PRINT (7)@(89),"***Warning Last Activity Was 
+2230:",FNB$(A0$(28,3)),"***",
+2240 PRINT (7)'LF','LF',@(0),"Current",@(12),"Prior",@(22),"This",@(30),"Balan
+2240:ce",@(44),"Comp",@(50),"Inventory",@(63),"WO Cost",@(72),"Close @",@(84),
+2240:"WO Cost",@(98),"Prior",@(110),"Current",@(122),"Current"
+2260 PRINT (7)@(0),"Prod Qty",@(11),"Closed",@(22),"Close",@(30),"Still Open",
+2260:@(44),"lete?",@(50),"Unit Cost",@(64),"@ Std",@(72),"Std/Actual",@(85),"@
+2260: Act",@(97),"Closed",@(109),"WIP Value",@(120),"Close Value",'LF'
+2280 PRINT (7)@(10-M2),B[0]:M2$,@(18-M2),B[1]:M2$,@(29-M2),B[2]:M2$,@(38-M2),B
+2280:[3]:M2$,@(45),A1$(94,1),@(60-M1),B[4]:M1$,@(73-M1),B[5]:M1$,@(75),Y0$(27,
+2280:1),@(91-M1),B[6]:M1$,@(105-M1),B[7]:M1$,@(119-M1),B[8]:M1$,@(132-M1),B[9]
+2280::M1$
+2300 IF B[2]=0 OR B[2]=1 THEN GOTO 2400
+2310 LET B0=B[4]
+2320 IF B[0]<>0 THEN LET B1=B[5]/B[0] ELSE LET B1=0
+2330 IF B[0]<>0 THEN LET B2=B[6]/B[0] ELSE LET B2=0
+2340 IF B[1]<>0 THEN LET B3=B[7]/B[1] ELSE LET B3=0
+2350 IF B[2]+B[3]<>0 THEN LET B4=B[8]/(B[2]+B[3]) ELSE LET B4=0
+2360 IF B[2]<>0 THEN LET B5=B[9]/B[2] ELSE LET B5=0
+2390 PRINT (7)@(36),"Per Unit:",@(60-M3),B0:M3$,@(73-M3),B1:M3$,@(75),Y0$(27,1
+2390:),@(91-M3),B2:M3$,@(105-M3),B3:M3$,@(119-M3),B4:M3$,@(132-M3),B5:M3$,
+2400 REM " --- Calculate Postings
+2420 LET C[0]=-B[8],C[1]=A[4]*A[5]
+2430 IF A1$(94,1)<>"Y" THEN LET C[0]=-C[1]; GOTO 2700
+2440 IF Y0$(27,1)="A" THEN LET C[1]=B[8]; GOTO 2700
+2500 REM " --- Calculate Variance Postings
+2520 IF A0$(14,1)<>"I" AND (A[0]=A[2]+A[4] OR U[0]=0 OR A1$(95,1)="N") THEN LE
+2520:T PRORTE=A[4]*A[5]+A[3]; GOTO 2660
+2600 REM " --- Prorate Standards If Needed
+2610 IF A0$(14,1)<>"I" THEN IF A[0]<>0 THEN LET PRORTE=U[0]*(A[2]+A[4])/A[0] E
+2610:LSE LET PRORTE=0 ELSE LET PRORTE=A[4]*A[5]+A[3]
+2620 IF PRORTE=U[0] THEN GOTO 2660
+2625 IF U[0]=0 THEN LET U[3]=0,U[4]=0,U[6]=0; GOTO 2650
+2630 LET U[3]=U[3]*PRORTE/U[0]
+2635 LET U[4]=U[4]*PRORTE/U[0]
+2640 LET U[6]=U[6]*PRORTE/U[0]
+2650 LET U[9]=PRORTE-(U[3]+U[4]+U[6])
+2660 REM " --- Now Calculate Variances
+2665 PRECISION 2
+2670 LET C[2]=(U[2]-U[3])*1,C[4]=(U[5]-U[4])*1,C[5]=(U[7]-U[6])*1
+2680 LET C[3]=(B[6]-PRORTE-(C[2]+C[4]+C[5]))*1
+2690 LET C[0]=C[0]*1,C[1]=C[1]*1
+2700 REM " --- Print G/L Postings
+2710 PRECISION IVS01_PRECISION
+2715 IF GL$<>"Y" THEN GOTO 2950
+2720 PRINT (7)'LF',"Account Summary: ",@(44+M1),"Debit",@(46+M1*2),"Credit",
+2730 IF A[4]<>0 AND A[4]<>1 THEN PRINT (7)@(60+M1*2),"Per Unit Totals",'LF' EL
+2730:SE PRINT (7)'LF'
+2740 LET T0=0,T1=0
+2750 FOR X=0 TO 5
+2760 IF C[X]=0 THEN GOTO 2840
+2770 DIM G1$(35),D[2]; LET G1$(1)="*** Not On File ***"
+2775 IF X<2 THEN LET G9$=Y1$(X*10+1,10) ELSE LET G9$=Y1$(X*10+31,10)
+2780 FIND (GLM01_DEV,KEY=N0$+G9$,DOM=2790)*,G1$(1)
+2790 PRINT (7)FNF$(G9$(1,G3),G3$),"  ",G1$,
+2800 IF C[X]>0 THEN PRINT (7)@(50),C[X]:M1$,; LET T0=T0+C[X] ELSE PRINT (7)@(5
+2800:3+M1),C[X]:M1$,; LET T1=T1+C[X]
+2810 IF A[4]<>0 AND A[4]<>1 THEN IF C[X]>0 THEN PRINT (7)@(56+M1*2),C[X]/A[4]:
+2810:M3$, ELSE PRINT (7)@(59+M1*2+M3),C[X]/A[4]:M3$,
+2820 PRINT (7)@(110),Y9$(X*21+1,21)
+2840 NEXT X
+2900 PRINT (7)@(50),J$(1,M1),@(53+M1),J$(1,M1),
+2910 IF A[4]<>0 AND A[4]<>1 THEN PRINT (7)@(56+M1*2),J$(1,M3),@(59+M1*2+M3),J$
+2910:(1,M3),
+2920 PRINT (7)'LF',@(40),"Total: ",@(50),T0:M1$,@(53+M1),T1:M1$,
+2930 IF A[4]<>0 AND A[4]<>1 THEN PRINT (7)@(56+M1*2),T0/A[4]:M3$,@(59+M1*2+M3)
+2930:,T1/A[4]:M3$,
+2940 PRINT (7)""
+3000 GOTO 1100
+4000 REM " --- End"
+4100 GOTO 9900
+5000 REM " --- Heading"
+5010 LET L=0
+5020 CALL "SYC.HA",7,HEADINGS$[ALL],HEADINGS,H,H0,WHEN$,CLOCK$,STATUS
+5030 IF STATUS>0 THEN EXITTO 9900
+5040 IF A0$(14,1)<>"I" THEN GOTO 5100
+5050 DIM B1$(60)
+5060 FIND (IVM01_DEV,KEY=N0$+A0$(56,20),DOM=5100)IOL=IVM01A
+5100 PRINT (7)"WO #: ",A0$(5,7),@(56),"Type: ",A0$(12,2),@(68),"Status: ",A0$(
+5100:15,1),@(86),"Date Opened: ",FNB$(A0$(16,3))," Last Close: ",FNB$(A0$(22,3
+5100:)),
+5110 IF A0$(14,1)="I" THEN PRINT (7)@(17),"Bill: ",@(24),A0$(56) ELSE PRINT (7
+5110:)""
+5120 IF A0$(14,1)<>"I" THEN PRINT (7)@(10),"Description:",@(24),A1$(1,30),'LF'
+5120:,@(24),A1$(31,30),@(56),"Category: ",A0$(14,1),
+5125 IF A0$(14,1)="I" THEN PRINT (7)@(10),"Description:",@(24),B1$(1,DESC[1]),
+5125:'LF',@(24),B1$(DESC[1]+1,MIN(DESC[2],30)),@(56),"Category: ",A0$(14,1),
+5130 IF P3$(2,1)="Y" AND POS(" "<>A0$(34,6))>0 THEN PRINT (7)@(80),"Customer: 
+5130:",FNF$(A0$(34,P8),P8$),"  ",C1$(1,30) ELSE PRINT (7)""
+5140 PRINT (7)@(0),"Drawing #: ",@(24),A1$(61,25),@(37),"Rev: ",A1$(86,5)
+5150 IF P3$(2,1)="Y" AND NUM(A0$(40,10))>0 THEN PRINT (7)@(80),"Sales Order: "
+5150:,A0$(40,7),"  Line: ",A0$(47,3) ELSE PRINT (7)""
+5160 IF POS(A0$(14,1)="IN")>0 THEN PRINT (7)@(17),"UM: ",A0$(50,2),
+5170 PRINT (7)"Warehouse: ",A0$(54,2),@(56),"Prod Qty: ",A[0]:M2$,"  Completed
+5170:: ",A[2]:M2$,@(105),"Last Activity: ",FNB$(A0$(28,3))
+5180 IF A[4]>0 THEN PRINT (7)'LF',@(1),"****This Close Date: ",FNB$(A1$(91,3))
+5180:,"     Complete? ",A1$(94,1),@(56),"This Close Amount: ",A[4]:M2$,"  Unit
+5180: Cost: ",A[5]:M1$,"****"; LET L=L+2
+5190 PRINT (7)J2$
+5200 RETURN
+8000 REM " --- Functions"
+8010 DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+8020 DEF FNB$(Q1$)=FNA$(Q1$(2),Q1$)+"/"+FNA$(Q1$(3),Q1$)+"/"+FNA$(Q1$(1),Q1$)
+8030 DEF FNC$(Q1$)=FNA$(Q1$(2),Q1$)+FNA$(Q1$(3),Q1$)+FNA$(Q1$(1),Q1$)
+8040 DEF FND$(Q$)=CHR(FNYY_YEAR(Q$(5,2))+32)+CHR(NUM(Q$(1,2))+32)+CHR(NUM(Q$(3
+8040:,2))+32)
+8070 DEF FNG$(Q$)=STR((ASC(Q$)-32)*POS(" "<>Q$):"000")
+8145 REM " --- FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+8150 DEF FNYY21_YY$(Q1$)
+8155 LET Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABC
+8155:DEFGHIJ"))
+8160 RETURN Q1$
+8165 FNEND
+8170 REM " --- FNYY_YEAR Convert 2-Char Year to 21st Century Numeric Year"
+8175 DEF FNYY_YEAR(Q1$)
+8180 LET Q=NUM(FNYY21_YY$(Q1$)); IF Q<50 THEN LET Q=Q+100
+8185 RETURN Q
+8190 FNEND
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF:
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END

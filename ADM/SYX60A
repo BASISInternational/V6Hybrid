@@ -1,0 +1,252 @@
+0010 REM "SYX - v6.0 Administrator Upgrade (Lead Overlay)"
+0020 REM "Program SYX60A
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0070 BEGIN
+0080 SETERR 9000
+0090 SETESC 9900
+0100 REM " --- Open/Lock Files"
+0110 LET FILES=4
+0120 DIM FILES$[FILES],OPTIONS$[FILES],CHANNELS[FILES]
+0130 LET FILES$[1]="SYS-01"; REM "At this point SYS-01 is still v5.2
+0140 LET FILES$[2]="SYM-02"; REM "At this point SYM-02 is still v5.2
+0150 LET FILES$[3]="ZFILES",FILES$[4]="_FILES"
+0160 LET OPTIONS$[1]="R",OPTIONS$[2]="R",OPTIONS$[3]="R",OPTIONS$[4]="R"
+0200 REM " --- IOLIST's"
+0210 SYS01A: IOLIST A0$(1),A1$(1),A2$,A3$(1),A[ALL]
+0220 SYM02A: IOLIST B0$(1),B1$,B2$(1),B3$(1)
+0400 REM " --- Set Function Keys"
+0410 CALL "SYC.FK",ERR=0420,STATUS
+0500 REM " --- Initialization"
+0510 DIM A0$(6),A1$(64),A3$(100),A[2],B0$(30),B2$(24),B3$(70)
+0550 LET F5$="Version 6.0.0 Administrator Upgrade"
+0700 REM " --- Background"
+0705 PRINT 'CS',
+0710 CALL "SYC.WC",ERR=9800,0,0,47,3,0,0,0
+0715 CALL "SYC.WC",ERR=9800,0,0,33,3,47,0,0
+0720 PRINT 'SB',@(49,0)," ADD+ON Software v6.0.0 ",@(3,1),PGM(-2),@(10),F5$,@(
+0720:49),DAY,@(58),FNE$(Q$),@(67),FID(0),'ER','SF',
+0800 REM " --- Warn the user about what's going to happen"
+0810 CALL "SYC.WC",ERR=9800,0,0,59,4,11,4,0
+0815 PRINT @(13,5),"  The system has determined that you are running the"
+0820 PRINT @(13,6),"version 6.0 Administrator with version 5.2 data files."
+0825 PRINT @(7,9),"Your Administrator must be upgraded to version 6.0 before y
+0825:ou can"
+0830 PRINT @(7,10),"continue upgrading any other installed applications. This 
+0830:process"
+0835 PRINT @(7,11),"will:"
+0840 PRINT @(7,13),"1) Verify that all required files exist and that the Admin
+0840:istrator"
+0845 PRINT @(7,14),"   data path has been correctly defined."
+0850 PRINT @(7,15),"2) Verify that all registers and updates have been run."
+0855 PRINT @(7,16),"3) Convert your existing version 5.2 Administrator data fi
+0855:les to"
+0860 PRINT @(7,17),"   version 6.0."
+0865 PRINT @(7,18),"4) Create new menu, parameter and control information nece
+0865:ssary"
+0870 PRINT @(7,19),"   to use the version 6.0 Administrator."
+0890 GOSUB 6900
+0900 REM " --- Attempt to open v5.2 SYS-01 and SYM-02"
+0910 CALL "SYC.DA",1,1,2,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STATUS
+0920 IF STATUS THEN GOTO 9750
+0930 LET SYS01_DEV=CHANNELS[1],SYM02_DEV=CHANNELS[2]
+0940 FIND (SYS01_DEV,KEY="00SY00",DOM=9600)IOL=SYS01A
+0950 REM " --- Verify Version of existing Administrator is at least 5.2"
+0955 IF A1$(40,3)>="5.2" THEN GOTO 1000
+0960 PRINT @(0,9),'CE',@(7,9),"                    ***** Warning *****"
+0965 PRINT @(7,10),"The 'SY' System Description Maintenance record indicates t
+0965:he"
+0970 PRINT @(7,11),"existing Administrator data files are not version 5.2. Thi
+0970:s"
+0975 PRINT @(7,12),"upgrade process is only designed to convert version 5.2"
+0980 PRINT @(7,13),"Administrator data files to version 6.0. Attempting to upg
+0980:rade"
+0985 PRINT @(7,14),"earlier versions is likely to produce unexpected behavior"
+0990 PRINT @(7,15),"and unacceptable results."
+0995 GOSUB 6900
+1000 REM " --- Prepare for user login"
+1010 PRINT @(0,9),'CE',
+1020 PRINT @(7,9),"This upgrade process may only be run by a valid ADD+ON user
+1020: with"
+1030 PRINT @(7,10),"a security level of 9."
+1040 LET ATTEMPTS=0,V1=39,V2=0
+1090 CALL "SYC.WA",ERR=9800,0,45,3,17,20,"",NAME$
+1100 REM " --- Login"
+1110 SETESC 1100
+1120 LET ATTEMPTS=ATTEMPTS+1
+1130 IF ATTEMPTS>3 THEN GOTO 1200
+1140 PRINT @(0,V2),'CL','SF',"Please Enter Your Identification Code ",'CURSOR'
+1140:("ON"),
+1150 INPUT (0,SIZ=4,ERR=1150)'CI','RB',@(V1-1,V2),'SB',"[   ]",@(V1,V2),'SF',"
+1150:XXX",@(V1,V2),'EE',V$,'BE',@(0,V2),'CL','CURSOR'("OFF"),
+1160 IF CTL=4 THEN GOTO 9900
+1190 GOTO 1300
+1200 REM " --- Too many attempts at entering ID"
+1210 PRINT @(0,V2),'CL',@(6,V2),"Do you want to exit (Y/N)? ",
+1220 INPUT (0,SIZ=1,ERR=1220)'CI','CURSOR'("ON"),'RB','SB',@(V1-7,0),"[ ]",'SF
+1220:',@(V1-6,0),V$,@(0,V2),'CL','CURSOR'("OFF"),
+1250 IF CTL=4 THEN GOTO 9900
+1260 ON POS(V$="NnYy") GOTO 1200,1280,1280,9900,9900,1200
+1280 LET ATTEMPTS=0
+1290 GOTO 1100
+1300 REM " --- Check login ID"
+1310 IF V$="" THEN GOTO 1130
+1320 LET V$=V$+"   ",V$=V$(1,3)
+1330 FIND (SYM02_DEV,KEY="A"+V$,DOM=1350)IOL=SYM02A
+1340 GOTO 1350
+1350 FIND (SYM02_DEV,KEY="A"+FNU$(V$),DOM=1100)IOL=SYM02A
+1360 SETESC 9900
+1400 REM " --- Password initializations"
+1410 IF B2$(11,1)<>"Y" THEN GOTO 1600
+1420 IF FNP$(B2$(12,6))="" THEN GOTO 1600
+1430 LET ATTEMPTS=0
+1500 REM " --- Password verification"
+1510 SETESC 1500
+1520 PRINT @(0,0),'CL',@(0,0),'SF',"Please Enter Your Password ",'CURSOR'("ON"
+1520:),
+1530 INPUT (0,SIZ=6,ERR=1530)'CI','RB',@(27,0),'SB',"[      ]",@(28,0),'SF',"X
+1530:XXXXX",@(28,0),'EE',V$,'BE',@(0,0),'CL','CURSOR'("OFF"),
+1540 IF CTL=4 THEN GOTO 9900
+1550 IF V$=FNP$(B2$(12,6)) THEN GOTO 1600
+1560 LET ATTEMPTS=ATTEMPTS+1
+1570 IF ATTEMPTS<3 THEN GOTO 1500
+1580 LET ATTEMPTS=0
+1590 GOTO 1100
+1600 REM " --- Remove login/password window"
+1610 SETESC 9900
+1620 CALL "SYC.WD",NAME$
+2000 REM " --- Verify Administrator data path"
+2010 PRINT @(0,9),'CE',
+2020 PRINT @(7,9),"The data path for the Administrator module must be correct 
+2020:in order"
+2030 PRINT @(7,10),"to successfully upgrade your system."
+2100 REM " --- Attempt to retrieve the v5.2 Administrator system record"
+2110 FIND (SYS01_DEV,KEY="00SY00",DOM=9600)IOL=SYS01A
+2120 LET PATHNAME$=FNP$(A3$(1,50))
+2200 REM " --- Verify pathname"
+2210 PRINT @(0,12),'CE',
+2220 LET CHANNEL=UNT,STATUS=0,V2=12
+2230 OPEN (CHANNEL,ERR=2300)PATHNAME$
+2240 CLOSE (CHANNEL,ERR=2250)
+2250 IF POS(PATHNAME$=PFX) THEN GOTO 2400
+2300 REM " --- Invalid pathname"
+2310 PRINT @(7,12),"The data path specified on the Administrator System Descri
+2310:ption"
+2320 PRINT @(7,13),"cannot be accessed or is not part of the prefix contained 
+2320:in the"
+2330 PRINT @(7,14),"BBx configuration file."
+2340 LET STATUS=11,V2=16
+2400 REM " --- Get user to approve pathname"
+2410 PRINT @(4,V2),'SB',"Current Data Path:",'SF',
+2420 LET V4$="Enter A Different Data Path Or Press <Enter> To Use This One"
+2430 LET V0$="S",V1$="CF",V2$=PATHNAME$,V3$="",V0=50,V1=24
+2440 IF STATUS THEN LET V4$="Enter A New Data Path For The Upgrade Process"
+2450 GOSUB 7000
+2460 ON V3 GOTO 2470,2400,2400,2400,9900
+2470 IF STATUS=0 THEN IF V$=PATHNAME$ THEN GOTO 2500
+2480 LET PATHNAME$=V$
+2490 GOTO 2200
+2500 REM " --- Update system record if necessary"
+2510 IF V$=PATHNAME$ THEN GOTO 3000
+2520 LET A3$(1,50)=V$
+2530 WRITE (SYS01_DEV,KEY=A0$)IOL=SYS01A
+3000 REM " --- Check for distribution files"
+3010 CALL "SYC.DA",1,3,4,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STATUS
+3020 IF STATUS THEN GOTO 9700
+3030 LET ZFILES_DEV=CHANNELS[3],FILES_DEV=CHANNELS[4]
+4000 REM " --- OK to continue?"
+4010 PRINT @(0,9),'CE',
+4020 PRINT @(7,9),"Ready to proceed with verification that all registers and u
+4020:pdates"
+4030 PRINT @(7,10),"have been run."
+4040 GOSUB 6900
+4100 REM " --- Close opened files"
+4110 CLOSE (SYS01_DEV,ERR=4120)
+4120 CLOSE (SYM02_DEV,ERR=4130)
+4130 CLOSE (ZFILES_DEV,ERR=4140)
+4140 CLOSE (FILES_DEV,ERR=4150)
+4900 REM " --- Run entry file verification program"
+4910 PRINT @(0,3),'CE',
+4920 LET O0=1,O0$="SYX60B"
+4990 RUN "SYX.FA"
+6900 REM " --- Proceed or quit?"
+6910 PRINT @(0,22),'CL',@(14,22),"Press <Enter> to continue or <F4> to exit:",
+6910:'CI',
+6920 LET V0$="S",V1$="CF",V2$="",V3$="",V4$="",V0=1,V1=57,V2=22
+6930 GOSUB 7000
+6940 ON V3 GOTO 6950,6900,6900,6900,9900
+6990 RETURN
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions"
+8050 DEF FNE$(Q$)=DATE(0:"%hz:%mz %p")
+8070 DEF FNU$(Q$)=CVS(Q$,4)
+8080 DEF FNP$(Q$)=CVS(Q$,2)
+8090 DEF FNV(Q$)=42+INT(LEN(Q$)/2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9800
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9400 REM " --- Missing SYS.ZA"
+9410 PRINT @(0,3),'CE',@(0,4),"ERROR: Unable to locate and/or run the ADD+ON C
+9410:opyright Program (SYS.ZA)"
+9490 GOTO 9800
+9500 REM " --- Rename problem"
+9510 PRINT @(0,3),'CE',@(0,4),"ERROR: Unable to rename ","Z"+FILENAME$," to ",
+9510:FILENAME$
+9590 GOTO 9800
+9600 REM " --- Missing Administrator Module"
+9610 PRINT @(0,3),'CE',@(1,4),"ERROR: The ADD+ON Administrator Module (Version
+9610: 5.2.0 or greater) is required"
+9620 PRINT @(1,5),"       to run these applications."
+9690 GOTO 9800
+9700 REM " --- Missing distribution file(s)"
+9710 PRINT @(0,3),'CE',@(1,4),"ERROR: Unable to locate or open installation da
+9710:ta file (ZFILES or _FILES)"
+9740 GOTO 9800
+9750 REM " --- Missing SYS-01"
+9760 PRINT @(0,3),'CE',@(1,4),"ERROR: Unable to locate or open the ADD+ON Syst
+9760:em Control File (SYS-01)"
+9770 PRINT @(1,5),"       or the ADD+ON User Master File (SYM-02)."
+9800 REM " --- Distribution installation and/or rename problem"
+9810 PRINT @(0,11),'CE',
+9820 CALL "SYC.WC",ERR=9830,0,0,80,8,0,11,0
+9830 PRINT @(2,12),"If you are upgrading to ADD+ON Software Version 6.0:"
+9840 PRINT @(2,14),"Reload the Administrator media and try the installation pr
+9840:ocedure again."
+9850 PRINT @(2,16),"If problems persist:"
+9860 PRINT @(2,17),"Call ADD+ON Software Support at (800) 275-6350"
+9870 LET V4$="Press <Enter> to continue:"
+9880 LET V0$="S",V1$="CF",V2$="",V3$="",V0=1,V1=FNV(V4$),V2=22
+9890 GOSUB 7000
+9900 REM " --- Abort installation"
+9910 PRINT @(1,20),'CE','SF',"ADD+ON Software Installation Terminated."
+9950 RELEASE
+9999 END

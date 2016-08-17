@@ -1,0 +1,177 @@
+0010 REM "IVC - Process Lot/Serial Inventory Transaction Display Window"
+0020 REM "Program IVC.TB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0041 REM "ACTION$        : Action (input)"
+0042 REM "CHANNELS[n]    : Channel Numbers (input)"
+0043 REM "                  [0] = IVM-01"
+0044 REM "                  [1] = IVM-10"
+0045 REM "                  [2] = ARM-01 (if installed)"
+0046 REM "                  [3] = APM-01 (if installed)"
+0047 REM "                  [4] = GLM-01 (if installed)"
+0048 REM "                  [5] = IVT-02/IVT-03"
+0049 REM "                  [6] = IVT-01"
+0050 REM "PARAMS[n]      : Numeric parameters (input)"
+0051 REM "                  [0] = Item number length"
+0052 REM "                  [1] = Customer number length (if installed)"
+0053 REM "                  [2] = Vendor number length (if installed)"
+0054 REM "                  [3] = GL account number length (if installed)"
+0055 REM "                  [4] = Item description segment 1 length"
+0056 REM "                  [5] = Item description segment 2 length"
+0057 REM "                  [6] = Item description segment 3 length"
+0058 REM "                  [7] = Lightbar display mode"
+0059 REM "                  [8] = Maximum display row"
+0060 REM "                  [9] = Window width"
+0061 REM "                 [10] = Window height"
+0062 REM "                 [11] = Reserved"
+0063 REM "                 [12] = Inventory precision"
+0064 REM "                 [13] = Reserved"
+0065 REM "PARAMS$[n]     : String parameters (input)
+0066 REM "                  [0] = Firm ID"
+0067 REM "                  [1] = Customer mask (if installed)"
+0068 REM "                  [2] = Vendor mask (if installed)"
+0069 REM "                  [3] = GL account mask (if installed)"
+0070 REM "                  [4] = Beginning key value (firm/whse/item/lot #)"
+0071 REM "                  [5] = Beginning date (YMD)"
+0072 REM "                  [6] = Ending date (YMD)"
+0073 REM "                  [7] = Window name"
+0074 REM "                  [8] = Bottom line prompt"
+0075 REM "                  [9] = Extension mask (M1$)"
+0076 REM "                 [10] = Quantity mask (M2$)"
+0077 REM "                 [11] = Cost mask (M3$)"
+0078 REM "SELECTION$     : User selection (returned)"
+0079 REM "FKEY           : Function key value (returned)"
+0080 REM 
+0083 SETERR 9000
+0085 SETESC 9000
+0090 ENTER ACTION$,CHANNELS[ALL],PARAMS[ALL],PARAMS$[ALL],SELECTION$,FKEY
+0200 REM " --- IOLIST's"
+0210 IVM01A: IOLIST A0$(1),A1$(1)
+0220 IVT01A: IOLIST B0$(1),B1$(1),B2$(1),B3$,B[ALL]
+0400 REM " --- Parameters"
+0405 DIM P[5]
+0410 LET PAGES=MIN(INT((DSZ-5000)/4000),20)
+0420 IF PAGES<3 THEN GOTO 9900
+0430 LET ACTION=PARAMS[7],MAXROW=PARAMS[8],WIDTH=PARAMS[9],HEIGHT=PARAMS[10]
+0440 LET KEYVAL$=PARAMS$[4],CUSTOMER$=PARAMS$[12],PRODUCT$=PARAMS$[13]
+0450 LET BEGDATE$=PARAMS$[5],ENDDATE$=PARAMS$[6],NAME$=PARAMS$[7]
+0460 LET M4$=PARAMS$[9],M2$=PARAMS$[10],M3$=PARAMS$[11],LOTSER$=PARAMS$[14]
+0470 LET M4=LEN(M4$),M2=LEN(M2$),M3=LEN(M3$),IVT02_DEV=CHANNELS[5]
+0480 LET IVT01_DEV=CHANNELS[6],ITEM$=PARAMS$[15],P[0]=PARAMS[0]
+0490 LET P[1]=PARAMS[12],P[2]=PARAMS[11],P[3]=PARAMS[4],P[4]=PARAMS[5]
+0495 LET P[5]=PARAMS[6],N0$=PARAMS$[0],IVM01_DEV=CHANNELS[0]
+0500 REM " --- Initializations"
+0505 PRECISION PARAMS[12]
+0510 DIM X0$(61),B0$(52),B1$(96),B2$(16),B[4],O[2],VALUES[6],MASKS$[6]
+0520 DIM LLIST$[PAGES,MAXROW,5],MORE$[PAGES,MAXROW,1],A0$(22),A1$(60)
+0530 DIM BUF$(WIDTH-2)
+0550 LET L=1,X0=0,X1=1,PAGE=1,SELECTION$="",H0=WIDTH-1,P=5+MAX(P[2],15)
+0580 LET O[2]=H0-M4,O[1]=O[2]-M3,O[0]=O[1]-M2,DW=((H0-M2-M3-M4)-16)+1
+0800 REM " --- Options"
+0810 FOR X=0 TO 6
+0830 LET VALUES[X]=PARAMS[X],MASKS$[X]=PARAMS$[X]
+0840 NEXT X
+0900 REM " --- Position file"
+0970 LET KEYVAL$=N0$+CUSTOMER$,X0$(1)=KEYVAL$
+0980 IF PRODUCT$<>"" THEN LET X0$(9)=PRODUCT$+LOTSER$
+0990 READ (IVT02_DEV,KEY=X0$,DOM=1000)
+1000 REM " --- Read next IVT-02 xref"
+1010 LET K$=KEY(IVT02_DEV,END=2000)
+1020 READ (IVT02_DEV)
+1030 IF POS(KEYVAL$=K$)<>1 THEN GOTO 2000
+1040 IF PRODUCT$<>"" THEN IF K$(9,3)<>PRODUCT$ THEN GOTO 2000
+1050 IF ENDDATE$<>"" THEN IF K$(32,3)>ENDDATE$ THEN READ (IVT02_DEV,KEY=K$(1,3
+1050:1)+$FF$,DOM=1900)
+1060 IF BEGDATE$<>"" THEN IF K$(32,3)<BEGDATE$ THEN READ (IVT02_DEV,KEY=K$(1,3
+1060:1)+BEGDATE$,DOM=1900)
+1070 IF LOTSER$<>"" THEN IF K$(12,P[2])<>LOTSER$ THEN READ (IVT02_DEV,KEY=K$(1
+1070:,31)+$FF$,DOM=1900)
+1080 IF ITEM$<>"" THEN IF K$(37,P[0])<>ITEM$(1,P[0]) THEN READ (IVT02_DEV,KEY=
+1080:K$(1,56)+$FF$,DOM=1900)
+1100 REM " --- Level break?"
+1110 IF K$(9,23)+K$(35,22)=T0$ THEN GOTO 1200
+1120 LET A0$(1)=N0$+K$(37),T0$=K$(9,23)+K$(35,22)
+1130 FIND (IVM01_DEV,KEY=A0$,DOM=1140)IOL=IVM01A
+1140 LET BUF$(2)=K$(9,3)+" "+K$(12,P[2])
+1150 LET BUF$(P)=K$(35,2)+" "+K$(37,P[0])+" "+FNITEM$(A1$,P[3],P[4],P[5])
+1200 REM " --- Read IVT-01 record"
+1210 DIM B0$(52),B1$(96),B2$(16),B[4]
+1220 LET B0$(1)=K$(1,2)+K$(35,22)+K$(12,20)+K$(32,3)+K$(57,5)
+1230 FIND (IVT01_DEV,KEY=B0$,DOM=1900)IOL=IVT01A
+1300 REM " --- Format detail fields"
+1310 DIM DESCRIPTION$[2]
+1320 CALL "IVC.TD",B1$,CHANNELS[ALL],VALUES[ALL],MASKS$[ALL],TYPE$,DESCRIPTION
+1320:$[ALL]
+1330 LET NEEDED=1
+1340 IF FNP$(DESCRIPTION$[1])<>"" THEN LET NEEDED=NEEDED+1
+1350 IF FNP$(BUF$)<>"" THEN LET NEEDED=NEEDED+1
+1400 REM " --- Display page?"
+1410 IF L+NEEDED<=MAXROW THEN GOTO 1500
+1420 GOSUB 5400
+1430 IF FKEY=1 THEN GOTO 4000
+1440 IF FKEY=4 THEN GOTO 4000
+1450 IF SELECTION$<>"" THEN GOTO 4000
+1490 LET L=1,X1=1
+1500 REM " --- Store heading"
+1510 IF FNP$(BUF$)="" THEN GOTO 1600
+1520 LET LLIST$[PAGE,X1,1]=BUF$,X1=X1+1,X0=X0+1,L=L+1,BUF$(1)=""
+1600 REM " --- Store detail line"
+1610 DIM G1$(WIDTH-2)
+1620 LET G1$(2)=FNB$(B0$(45,3))+" "+TYPE$,G1$(16,DW)=DESCRIPTION$[0]
+1630 LET G1$(O[0])=STR(B[0]:M2$),G1$(O[1])=STR(B[1]:M3$)
+1650 LET G1$(O[2])=STR(B[2]:M4$),LLIST$[PAGE,X1,1]=G1$,X1=X1+1,X0=X0+1,L=L+1
+1660 IF DESCRIPTION$[1]="" THEN GOTO 1700
+1670 LET G1$(1)="",G1$(16,DW)=DESCRIPTION$[1]
+1680 LET LLIST$[PAGE,X1,1]=G1$,X1=X1+1,L=L+1
+1900 REM " --- Loop back for next record"
+1990 GOTO 1000
+2000 REM " --- No more transactions"
+2010 IF X0>0 THEN GOTO 3000
+2020 DIM MESSAGE$[1]
+2030 LET MESSAGE$[0]="No transactions found (<Enter>=Continue)"
+2040 CALL "SYC.XA",3,MESSAGE$[ALL],0,-1,-1,V$,V3
+2090 GOTO 4000
+3000 REM " --- Display last page"
+3010 LET SELECTION$="|EOF"
+3020 GOSUB 5400
+4000 REM " --- All done"
+4010 IF SELECTION$="END" THEN LET FKEY=4,SELECTION$=""
+4090 GOTO 9900
+5400 REM " --- Window processing"
+5410 LET MODE=ACTION
+5420 CALL "SYC.SA",MODE,LLIST$[ALL],MORE$[ALL],SELECTION$,PAGE,MAXROW,NAME$,HE
+5420:IGHT,WIDTH,FKEY
+5480 IF FKEY=-16 OR SELECTION$="" THEN LET PAGE=PAGE+1
+5485 IF PAGE>PAGES-1 THEN CALL "SYC.RB",LLIST$[ALL],MORE$[ALL],PAGES,PAGE,MAXR
+5485:OW,5,1
+5490 RETURN
+8000 REM " --- Functions"
+8010 DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+8020 DEF FNB$(Q1$)=FNA$(Q1$(2),Q1$)+"/"+FNA$(Q1$(3),Q1$)+"/"+FNA$(Q1$(1),Q1$)
+8080 DEF FNP$(Q$)=CVS(Q$,2)
+8090 DEF FNITEM$(Q$,Q1,Q2,Q3)=CVS(Q$(1,Q1)+" "+Q$(Q1+1,Q2)+" "+Q$(Q1+Q2+1,Q3),
+8090:32)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to menu"
+9950 EXIT
+9999 END

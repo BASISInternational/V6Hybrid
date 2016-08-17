@@ -1,0 +1,160 @@
+0010 REM "IVR - EOQ, Order Point & Safety Stock Report (Report Overlay)"
+0020 REM "Program IVR.OB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.2 - 01Jan96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0031 REM "20May96 JJD: No output when choosing BY WHSE with selected whse (910
+0031:)"
+0032 REM "04Oct96 JAL: Prevent Error 40 when carrying or unit cost is zero (54
+0032:5,565-575,650,660,1510,2510,5530-5580)"
+0040 REM 
+0080 SETERR 9000
+0090 SETESC 9000
+0200 REM " --- IOLIST's"
+0210 IVW11A: IOLIST D0$(1),D1$(1),D2$(1),D[ALL]
+0220 IVW21A: IOLIST D0$(1),D1$(1),D2$(1),D[ALL]
+0230 IVM10A: IOLIST X0$(1)
+0240 IVM10C: IOLIST X0$(1)
+0500 REM " --- Initializations"
+0505 PRECISION P[1]
+0510 DIM D0$(27),D1$(60),D[9],X0$(32),HEADINGS$[5],O[6]
+0545 LET HEADINGS$[0]=F4$,WHEN$=F0$(7,3),CLOCK$="",M2=LEN(M2$),M4$="##0.00%"
+0550 LET HEADINGS=5,WIDTH=132,PAGE=0,L9=59,L=L9+1,H8$=" For All Item Types"
+0560 IF TYPE$<>"" THEN LET H8$=" For Item Type "+TYPE$
+0565 LET M3=LEN(M3$),M4=LEN(M4$)
+0570 IF M3>M4 THEN LET M4$=FILL(M3-M4)+M4$
+0575 IF M4>M3 THEN LET M3$=FILL(M4-M3)+M3$
+0600 REM " --- Print positions"
+0610 CALL "SYC.RM",M2$,M2,6,12
+0620 LET O[6]=WIDTH-M2-2,O[5]=O[6]-M2-2,O[4]=O[5]-M2-6,O[3]=O[4]-M2-11
+0630 LET O[3]=O[4]-M2-11,O[2]=O[3]-M2-11,O[1]=O[2]-16,O[0]=O[1]-M2-7
+0640 LET UWIDTH=O[4]-O[2],SETUP$="   Setup Cost "+STR(SETUP:M3$)
+0650 LET CARRY=CARRY*100,CARRY$="Carrying Cost "+STR(CARRY:M4$)
+0660 LET ZEROCOST1$=FILL(M2-4)+"Zero",ZEROCOST2$=FILL(M2-4)+"Cost"
+0700 REM " --- Background"
+0710 PRINT @(COLUMN-11,11),FILL(15+P[0]),@(COLUMN-9,11),'SB',"Printing",'SF',
+0800 REM " --- Initialize HEADINGS$"
+0805 DIM H1$(WIDTH),H2$(WIDTH),USAGE$(UWIDTH,"-")
+0810 LET X1$="First",X2$="First",X2=5
+0815 IF BEGITEM$<>"" THEN LET X1$=BEGITEM$
+0820 IF BEGPROD$<>"" THEN LET X2$=BEGPROD$,X2=3
+0825 IF ENDPROD$="" THEN IF X2=3 THEN LET X2=4
+0830 LET H1$(1)="From Item: "+X1$,H1$(FNC(SETUP$,WIDTH))=SETUP$
+0835 LET H1$(WIDTH-X2-13)="From Product: "+X2$,X1$="Last",X2$="Last"
+0840 IF ENDITEM$<>"" THEN LET X1$=ENDITEM$
+0845 IF ENDPROD$<>"" THEN LET X2$=ENDPROD$
+0850 LET H2$(1)="  To Item: "+X1$,H2$(FNC(CARRY$,WIDTH))=CARRY$
+0855 LET H2$(WIDTH-X2-13)="  To Product: "+X2$,X1$=" Actual & Estimated Usage"
+0860 LET HEADINGS$[3]=H1$,HEADINGS$[4]=H2$
+0865 LET USAGE$(FNC(X1$,UWIDTH),LEN(X1$))=X1$
+0900 REM " --- Position file"
+0910 IF LEVEL$="W" THEN GOTO 1900
+0920 LET HEADINGS$[1]=F5$+" By Item"+H8$
+0990 READ (IVW11_DEV,KEY=N0$,DOM=1000)
+1000 REM " --- Read next IVW-11 record"
+1010 LET K$=KEY(IVW11_DEV,END=1900)
+1020 IF POS(N0$=K$)<>1 THEN GOTO 1900
+1030 PRINT @(COLUMN,11),K$(5,3)," ",K$(8,P[0]),
+1040 READ (IVW11_DEV)IOL=IVW11A
+1200 REM " --- Level break?"
+1210 IF K$(5,3)<>T1$ THEN GOSUB 6200
+1500 REM " --- Print detail line for record"
+1510 LET COST$="",UNITCOST=D[9]
+1520 IF D2$(5,1)="I" THEN GOSUB 5400
+1800 REM " --- Loop back for next record"
+1890 GOTO 1000
+1900 REM " --- Item report completed"
+1910 IF LEVEL$="I" THEN GOTO 4000
+1920 LET HEADINGS$[1]=F5$+" By Warehouse",L=L9+1,T0$="",T1$=""
+1930 PRINT @(COLUMN,11),FILL(4+P[0]),
+1940 LET FIRST$=N0$+BEGWHSE$
+1990 READ (IVW21_DEV,KEY=FIRST$,DOM=2000)
+2000 REM " --- Read next IVW-21 record"
+2010 LET K$=KEY(IVW21_DEV,END=4000)
+2020 IF POS(N0$=K$)<>1 THEN GOTO 4000
+2040 IF BEGWHSE$<>"" AND K$(3,2)>ENDWHSE$ THEN GOTO 4000
+2070 PRINT @(COLUMN,11),K$(3,2)," ",K$(5,3)," ",K$(8,P[0]),
+2080 READ (IVW21_DEV)IOL=IVW21A
+2200 REM " --- Level break?"
+2210 IF K$(3,2)<>T0$ THEN GOSUB 6000
+2220 IF K$(5,3)<>T1$ THEN GOSUB 6200
+2500 REM " --- Process work file record"
+2510 LET COST$="Cost "+STR(D[9]:M3$),UNITCOST=D[9]
+2520 IF D2$(5,1)="W" THEN GOSUB 5400
+2900 REM " --- Loop back for next record"
+2990 GOTO 2000
+4000 REM " --- All done"
+4080 CLOSE (7,ERR=4090)
+4090 RUN "IVU.OA"
+5000 REM " --- Report Heading"
+5010 LET L=HEADINGS+3
+5020 CALL "SYC.HA",7,HEADINGS$[ALL],HEADINGS,PAGE,WIDTH,WHEN$,CLOCK$,STATUS
+5030 IF STATUS>0 THEN EXITTO 9900
+5040 PRINT (7)@((O[4]+4+M2)-7),"Safety",@(O[5]+M2-6),"Order"
+5050 PRINT (7)"Item/Description",@(O[2]),USAGE$,@((O[4]+4+M2)-7),"Stock",@(O[5
+5050:]+M2-6),"Point",@(O[6]+M2-4),"EOQ"
+5090 RETURN
+5400 REM " --- Print product subheading"
+5410 IF H9$="" THEN GOTO 5500
+5420 IF L+6>L9 THEN GOSUB 5000
+5430 PRINT (7)""
+5440 PRINT (7)H9$
+5460 LET L=L+2,H9$=""
+5500 REM " --- Print detail line"
+5510 IF L+4>L9 THEN GOSUB 5000
+5520 LET L=L+4,AVERAGE=D[1]/G[0],WEIGHTED=D[2]/G[0]
+5530 LET OLDEOQ$=STR(D[7]:M2$)+" "+D2$(2,1),NEWEOQ$=STR(D[8]:M2$)
+5540 IF CARRY=0 OR UNITCOST=0 THEN LET OLDEOQ$=ZEROCOST1$,NEWEOQ$=ZEROCOST2$
+5550 PRINT (7)""
+5560 PRINT (7)D0$(8,P[0])," ",D1$
+5570 PRINT (7)@(O[1])," ABC Code ",D2$(1,1),@(O[2]),"Avg Period ",AVERAGE:M2$,
+5570:@(O[3]),"Wgt Period ",WEIGHTED:M2$,@(O[4]),"Old ",D[3]:M2$," ",D2$(4,1),@
+5570:(O[5]),D[5]:M2$," ",D2$(3,1),@(O[6]),OLDEOQ$
+5580 PRINT (7)@(O[0]),COST$,@(O[1]),"Lead Time ",STR(INT(D[0])),@(O[2]),"Act A
+5580:nnual ",D[1]:M2$,@(O[3]),"Est Annual ",D[2]:M2$,@(O[4]),"New ",D[4]:M2$,@
+5580:(O[5]),D[6]:M2$,@(O[6]),NEWEOQ$
+5590 RETURN
+6000 REM " --- Warehouse Break"
+6010 GOSUB 6200
+6020 DIM X0$(32)
+6030 LET T0$=K$(3,2),X0$(6,24)="(Not On File)",L=L9+1
+6040 FIND (IVM10_DEV,KEY=N0$+"C"+T0$,DOM=6050)IOL=IVM10C
+6050 LET HEADINGS$[1]=F5$+" For Warehouse "+T0$+" "+FNP$(X0$(6,24))+H8$
+6090 RETURN
+6200 REM " --- Product Break"
+6210 DIM X0$(32)
+6220 LET T1$=K$(5,3),X0$(7,20)="(Not On File)"
+6230 FIND (IVM10_DEV,KEY=N0$+"A"+T1$,DOM=6240)IOL=IVM10A
+6240 LET H9$="Product "+T1$+" "+X0$(7,20)
+6290 RETURN
+8000 REM " --- Functions"
+8010 DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+8020 DEF FNB$(Q1$)=FNA$(Q1$(2),Q1$)+"/"+FNA$(Q1$(3),Q1$)+"/"+FNA$(Q1$(1),Q1$)
+8025 DEF FNC(Q$,Q)=INT((Q-LEN(Q$))/2)
+8080 DEF FNP$(Q$)=CVS(Q$,2)
+8090 DEF FNITEM$(Q$,Q1,Q2,Q3)=CVS(Q$(1,Q1)+" "+Q$(Q1+1,Q2)+" "+Q$(Q1+Q2+1,Q3),
+8090:32)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9800 REM " --- Display Parameter record error"
+9810 LET LINE_ERR$=LST(PGM(TCB(5)))
+9820 CALL "SYC.YA",LINE_ERR$,N2$,ERR
+9900 RUN "SYS.AA"
+9999 END

@@ -1,0 +1,154 @@
+0010 REM "GLR - G/L Account Totals Report Overlay"
+0020 REM "Program GLR.XB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0045 REM "This report overlay prints standard G/L Account Totals"
+0050 REM 
+0055 REM "Input Arguments:"
+0057 REM 
+0060 REM "PAGE        : Current report page number (H)"
+0062 REM "WIDTH       : Report width in characters (H0)"
+0064 REM "HEADINGS    : Maximum element number in heading array"
+0066 REM "HEADINGS$[*]: Standard report headings array"
+0068 REM "RETAIN$     : Retain full report heading array if not NULL"
+0070 REM "WHEN$       : Standard report heading date"
+0072 REM "CLOCK$      : Standard report heading time"
+0074 REM "COLUMN      : Column for displaying milestone"
+0076 REM "GLM01_DEV   : GLM-01 channel number"
+0078 REM "GLW04_DEV   : GLW-04 channel number"
+0080 REM "SYS01_DEV   : SYS-01 channel number"
+0083 REM 
+0085 SETESC 9000
+0090 SETERR 9000
+0200 REM " --- IOLIST's"
+0210 GLM01A: IOLIST A0$(1),A1$(1)
+0220 GLW04A: IOLIST B0$(1),B[0]
+0260 GLS01A: IOLIST X$,P1$,P2$,P3$(1),P4$(1),M0$,M1$,M2$,M3$
+0400 REM " --- Parameters"
+0410 DIM P[4],P3$(325),P4$(32)
+0420 FIND (SYS01_DEV,KEY=N0$+"GL00",DOM=9800)IOL=GLS01A
+0430 FOR X=0 TO 4
+0440 LET P[X]=NUM(P2$(X*2+1,2),ERR=0450)
+0450 NEXT X
+0460 LET P[2]=FNYY_YEAR(P2$(5,2))
+0500 REM " --- Initializations"
+0510 DIM A0$(2+P[4]),A1$(35),B0$(2+P[4]),B[1],T[1],O[3]
+0550 LET M0=LEN(M0$),M1=LEN(M1$),M=MAX(M0,8),L9=59,L=L9+1
+0560 DIM J$(M1,"-")
+0600 REM " --- Initialize Print Positions"
+0610 LET O[0]=0,O[1]=M+1,O[2]=O[1]+35,O[3]=O[2]+M1
+0620 IF O[3]+M1>WIDTH THEN LET O[3]=WIDTH-M1,O[2]=O[3]-M1
+0800 REM " --- Report Headings"
+0805 IF RETAIN$="" THEN LET HEADINGS=3 ELSE LET HEADINGS=HEADINGS+1
+0810 DIM WORK$[HEADINGS]
+0815 FOR X=0 TO HEADINGS-2
+0820 LET WORK$[X]=HEADINGS$[X]
+0825 NEXT X
+0830 DIM HEADINGS$[HEADINGS]
+0835 FOR X=0 TO HEADINGS-2
+0840 LET HEADINGS$[X]=WORK$[X]
+0845 NEXT X
+0850 LET HEADINGS$[HEADINGS-1]="General Ledger Account Totals"
+0900 REM " --- Position File"
+0950 LET B0$(1)=N0$
+0990 READ (GLW04_DEV,KEY=B0$,DOM=1000,ERR=4000)
+1000 REM " --- Get next GLW-04 key"
+1010 LET K$=KEY(GLW04_DEV,END=4000)
+1020 IF POS(N0$=K$)=0 THEN GOTO 4000
+1200 REM " --- Read next GLW-04 record"
+1210 READ (GLW04_DEV,KEY=K$)IOL=GLW04A
+1300 REM " --- Display account being processed"
+1310 PRINT @(COLUMN,11),FNF$(B0$(3,P[3]),M0$),
+1500 REM " --- Retrieve account description"
+1510 DIM A0$(2+P[4]),A1$(35)
+1520 LET A0$(1)=B0$,A1$(1)="Unknown G/L Account Number"
+1530 FIND (GLM01_DEV,KEY=A0$,DOM=1540)IOL=GLM01A
+2000 REM " --- Format detail line fields"
+2010 LET ACCOUNT$=FNF$(B0$(3,P[3]),M0$),DESCRIPTION$=A1$
+2020 LET DEBIT$="",CREDIT$=""
+2030 IF B[0]>0 THEN LET T[0]=T[0]+B[0],DEBIT$=STR(B[0]:M1$)
+2040 IF B[0]<0 THEN LET T[1]=T[1]+B[0],CREDIT$=STR(ABS(B[0]):M1$)
+2100 REM " --- Print detail line"
+2110 IF L+1>L9 THEN GOSUB 5000
+2120 PRINT (7)@(O[0]),ACCOUNT$,@(O[1]),DESCRIPTION$,@(O[2]),DEBIT$,@(O[3]),CRE
+2120:DIT$
+2130 LET L=L+1
+3900 REM " --- Loop back for next GLW-04 record"
+3990 GOTO 1000
+4000 REM " --- All Done"
+4010 LET TOTAL$="Total For Report",BALANCE=T[0]+T[1]
+4020 LET DEBIT$=STR(T[0]:M1$),CREDIT$=STR(T[1]:M1$)
+4040 GOSUB 6800
+4050 IF BALANCE=0 THEN GOTO 9900
+4055 LET TOTAL$="Balance",DEBIT$="",CREDIT$=""
+4060 IF BALANCE>0 THEN LET DEBIT$=STR(BALANCE:M1$)
+4065 IF BALANCE<0 THEN LET CREDIT$=STR(ABS(BALANCE):M1$)
+4080 GOSUB 6800
+4090 GOTO 9900
+5000 REM " --- Report Heading"
+5010 LET L=HEADINGS+1
+5020 CALL "SYC.HA",7,HEADINGS$[ALL],HEADINGS,PAGE,WIDTH,WHEN$,CLOCK$,STATUS
+5030 IF STATUS>0 THEN EXITTO 9900
+5040 PRINT (7)@(O[0]),"Account",@(O[1]),"Description",@(O[2]+M1-6),"Debit",@(O
+5040:[3]+M1-7),"Credit"
+5050 PRINT (7)""
+5060 LET L=L+2
+5090 RETURN
+6800 REM " --- Print total/subtotal"
+6810 IF L+2>L9 THEN GOSUB 5000
+6820 PRINT (7)@(O[2]),J$,@(O[3]),J$
+6830 PRINT (7)@(O[1]),TOTAL$,@(O[2]),DEBIT$,@(O[3]),CREDIT$
+6840 LET L=L+2
+6890 RETURN
+8000 REM " --- Functions"
+8145 REM " --- FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+8150 DEF FNYY21_YY$(Q1$)
+8155 LET Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABC
+8155:DEFGHIJ"))
+8160 RETURN Q1$
+8165 FNEND
+8170 REM " --- FNYY_YEAR Convert 2-Char Year to 21st Century Numeric Year"
+8175 DEF FNYY_YEAR(Q1$)
+8180 LET Q=NUM(FNYY21_YY$(Q1$)); IF Q<50 THEN LET Q=Q+100
+8185 RETURN Q
+8190 FNEND
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF:
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9800 REM " --- Display Parameter record error"
+9810 LET LINE_ERR$=LST(PGM(TCB(5)))
+9820 CALL "SYC.YA",LINE_ERR$,N2$,ERR
+9900 REM " --- Return To Menu"
+9950 RUN "SYS.AA"
+9999 END

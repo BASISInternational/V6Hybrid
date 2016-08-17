@@ -1,0 +1,172 @@
+0010 REM "POP - Parameter Maintenance"
+0020 REM "Program POP.AB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.4 - 15Dec97 |"
+0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0031 REM "27Oct97 WGH: Allow retaining message line and vendor part line Recei
+0031:pt History (710,1220-1230,1430,3400-3690,3960,5010)"
+0040 REM 
+0080 SETERR 9000
+0090 SETESC 9000
+0200 REM " --- IOLIST's"
+0210 POS01A: IOLIST A0$,A1$,A2$,A3$(1),A4$
+0500 REM " --- Initializations"
+0510 DIM A3$(128)
+0590 LET A0$=N0$+N2$+"00"
+0700 REM " --- Background"
+0710 PRINT @(0,3),'CE','SB',@(6,4),"Plain Paper Purchase Order Forms:",@(20,5)
+0710:,"Landed Cost Method:",@(15,6),"Display Vendor Comments:",@(16,7),"Beginn
+0710:ing Comment Line:",@(19,8),"Ending Comment Line:",@(14,9),"Print Vendor I
+0710:tem Number:",@(4,10),"Update With Unreleased Work Orders:",@(11,11),"Reta
+0710:in Message Line History:",@(7,12),"Retain Vendor Part Line History:",'SF'
+0710:,
+1200 REM " --- Retrieve record"
+1210 FIND (SYS01_DEV,KEY=A0$,DOM=1400)IOL=POS01A
+1220 IF A3$(72,1)=" " THEN LET A3$(72,1)="N"
+1230 IF A3$(73,1)=" " THEN LET A3$(73,1)="N"
+1300 REM " --- Display"
+1310 GOSUB 5000
+1390 GOTO 4000
+1400 REM " --- New record"
+1410 DIM A3$(128)
+1420 LET A1$="",A2$="",A3$(1)="NY",A3$(48,1)="N",A3$(55,1)="C",A4$="",A3$(58,1
+1420:)="N"
+1430 LET A3$(59,2)="01",A3$(61,2)="10",A3$(69,1)="Y",A3$(72,2)="NN"
+1440 IF SF$="N" THEN LET A3$(69,1)="N"
+1490 GOSUB 5000
+2000 REM " --- Plain Paper Forms?"
+2010 LET V4$="Are You Using Plain Paper Purchase Order Forms (Y/N)?"
+2020 LET V0$="Y",V1$="RC",V2$=A3$(1,1),V3$="",V0=1,V1=40,V2=4,I0=0
+2030 GOSUB 7000
+2040 ON V3 GOTO 2050,2000,2000,2000,3900
+2050 LET A3$(1,1)=V$
+2090 GOTO 3900
+2200 REM " --- Landed Cost Method"
+2210 LET V4$="Select The Method To Use For Landed Cost Allocation (Q=Quantity/
+2210:C=Cost/N=None)"
+2220 LET V0$="S",V1$="RC",V2$=A3$(55,1),V3$="QCN",V0=1,V1=40,V2=5
+2230 GOSUB 7000
+2240 ON V3 GOTO 2250,2200,3900,2200,3900
+2250 IF POS(V$="QCN")=0 THEN GOTO 2200
+2260 LET A3$(55,1)=V$
+2290 GOTO 3900
+2400 REM " --- Display comments?"
+2410 LET V4$="Display Vendor Comments During Requisition And PO Entry (Y/N)?"
+2420 LET V0$="Y",V1$="RC",V2$=A3$(2,1),V3$="",V0=1,V1=40,V2=6
+2430 GOSUB 7000
+2440 ON V3 GOTO 2450,2400,3900,2400,3900
+2450 LET A3$(2,1)=V$
+2490 GOTO 3900
+2600 REM " --- Beginning comment line"
+2610 LET V4$="Enter The Beginning Comment Line To Display (01 Through 99)"
+2620 LET V0$="Z",V1$="C",V2$=A3$(59,2),V3$="",V0=2,V1=40,V2=7,V$=A3$(59,2)
+2625 IF A3$(2,1)<>"Y" THEN GOTO 2660
+2630 GOSUB 7000
+2640 ON V3 GOTO 2650,2600,3900,2600,3900
+2650 IF V=0 THEN GOTO 2600
+2660 LET A3$(59,2)=V$
+2690 GOTO 3900
+2800 REM " --- Ending comment line"
+2810 LET V4$="Enter The Ending Comment Line To Display ("+A3$(59,2)+" Through 
+2810:99)"
+2820 LET V0$="Z",V1$="C",V2$=A3$(61,2),V3$="",V0=2,V1=40,V2=8,V$=A3$(61,2)
+2825 IF A3$(2,1)<>"Y" THEN GOTO 2870
+2830 GOSUB 7000
+2840 ON V3 GOTO 2850,2800,3900,2800,3900
+2850 IF V=0 THEN GOTO 2800
+2860 IF V<NUM(A3$(59,2),ERR=2800) THEN GOTO 2800
+2870 LET A3$(61,2)=V$
+2890 GOTO 3900
+3000 REM " --- Print vendor item number on requisitions and PO's?"
+3010 LET V4$="Print Vendor Item Number On Requisitions And Purchase Orders (Y/
+3010:N)?"
+3020 LET V0$="Y",V1$="RC",V2$=A3$(58,1),V3$="",V0=1,V1=40,V2=9
+3030 GOSUB 7000
+3040 ON V3 GOTO 3050,3000,3900,3000,3900
+3050 LET A3$(58,1)=V$
+3090 GOTO 3900
+3200 REM " --- Update with unreleased work orders?"
+3205 IF SF$="N" THEN GOTO 3900
+3210 LET V4$="Update PO Receipt Register With Unreleased Work Orders (Y/N)?"
+3220 LET V0$="Y",V1$="RC",V2$=A3$(69,1),V3$="",V0=1,V1=40,V2=10
+3230 GOSUB 7000
+3240 ON V3 GOTO 3250,3200,3900,3200,3900
+3250 LET A3$(69,1)=V$
+3290 GOTO 3900
+3400 REM " --- Retain Message Lines In History?"
+3410 LET V4$="Retain Message Lines In PO Receipt History (Y/N)?"
+3420 LET V0$="Y",V1$="RC",V2$=A3$(72,1),V3$="",V0=1,V1=40,V2=11
+3430 GOSUB 7000
+3440 ON V3 GOTO 3450,3400,3900,3400,3900
+3450 LET A3$(72,1)=V$
+3490 GOTO 3900
+3600 REM " --- Retain Vendor Part Lines In History?"
+3610 LET V4$="Retain Vendor Part Lines In PO Receipt History (Y/N)?"
+3620 LET V0$="Y",V1$="RC",V2$=A3$(73,1),V3$="",V0=1,V1=40,V2=12
+3630 GOSUB 7000
+3640 ON V3 GOTO 3650,3600,3900,3600,3900
+3650 LET A3$(73,1)=V$
+3690 GOTO 3900
+3900 REM " --- Next Field"
+3910 IF V3=4 THEN GOTO 4000
+3920 IF V3<>2 THEN GOTO 3950
+3930 IF I0>0 THEN LET I0=I0-1
+3940 GOTO 3960
+3950 LET I0=I0+1
+3960 ON I0 GOTO 2000,2200,2400,2600,2800,3000,3200,3400,3600,3990
+3990 GOSUB 5000
+4000 REM " --- Correct?"
+4010 LET V0$="S",V4$="Is The Above Information Correct (Y/N)?"
+4020 LET V1$="KC",V2$="Y",V3$="",V0=6,V1=42+INT(LEN(V4$)/2),V2=22
+4030 GOSUB 7000
+4040 ON V3 GOTO 4050,4000,4000,4000,4900
+4050 IF V$="DELETE" THEN GOTO 4200
+4090 ON POS(V$="YN") GOTO 4000,4100,2000
+4100 REM " --- Write record"
+4110 WRITE (SYS01_DEV,KEY=A0$)IOL=POS01A
+4190 GOTO 4900
+4200 REM " --- Remove records"
+4210 REMOVE (SYS01_DEV,KEY=A0$,DOM=4220)
+4220 REMOVE (POS10_DEV,KEY=N0$+"N",DOM=4250)
+4290 GOTO 9900
+4900 REM " --- Run menu overlay"
+4910 IF O0>1 THEN RUN "POP.AC"
+4990 RUN "POP.AA"
+5000 REM " --- Display"
+5010 PRINT @(40,4),A3$(1,1),@(40,5),A3$(55,1),@(40,6),A3$(2,1),@(40,7),A3$(59,
+5010:2),@(40,8),A3$(61,2),@(40,9),A3$(58,1),@(40,10),A3$(69,1),@(40,11),A3$(72
+5010:,1),@(40,12),A3$(73,1),
+5090 RETURN
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END

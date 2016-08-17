@@ -1,0 +1,4 @@
+V6Demoyear log started: 2016-08-05@14:08:20
+Starting demo fiscal year: 96
+Increment fiscal year by: 1
+

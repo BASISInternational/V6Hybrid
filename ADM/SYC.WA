@@ -1,0 +1,67 @@
+0010 REM "SYC - Window Create"
+0020 REM "Program SYC.WA
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0042 REM "XMODE    : Window mode (input)"
+0044 REM "          0=Bordered with optional title"
+0046 REM "          1=Borderless"
+0048 REM "WIDTH   : Window width (input)"
+0056 REM "HEIGHT  : Window height (input)"
+0058 REM "WIN_X   : Column location (input)"
+0060 REM "WIN_Y   : Row location (input)"
+0062 REM "HEADING$: Optional title (input)"
+0064 REM "NAME$   : Window name (returned)"
+0070 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER XMODE,WIDTH,HEIGHT,WIN_X,WIN_Y,HEADING$,NAME$
+0500 REM " --- Initializations"
+0550 LET TITLE$=HEADING$,FG$="",BG$=""
+0560 IF LEN(TITLE$)=0 OR LEN(TITLE$)+4>=WIDTH THEN GOTO 0800
+0570 IF TITLE$(1,1)<>" " THEN LET TITLE$=" "+TITLE$
+0580 IF TITLE$(LEN(TITLE$),1)<>" " THEN LET TITLE$=TITLE$+" "
+0600 REM " --- Window Colors"
+0610 LET X$=STBL("!COLOR",ERR=0700),COLORS$=X$(21,20)
+0620 IF X$(61,20)=COLORS$ THEN LET COLORS$=X$(41,20)
+0630 LET X$(61,20)=COLORS$,X$=STBL("!COLOR",X$)
+0640 LET BG$=FNP$(COLORS$(1,10)),FG$=FNP$(COLORS$(11,10))
+0800 REM " --- Options"
+0805 PRINT 'SB',
+0810 IF XMODE>0 THEN GOTO 1100
+1000 REM " --- XMODE=0 Bordered window with optional title"
+1010 PRINT 'WRAP'("OFF"),'WINDOW'(WIN_X,WIN_Y,WIDTH,HEIGHT,TITLE$,'BACKGR'+BG$
+1010:+FG$+'DEFAULT'+'CS'),
+1090 GOTO 4000
+1100 REM " --- XMODE=1 Window with no border or title"
+1120 PRINT 'WRAP'("OFF"),'WINDOW'(WIN_X,WIN_Y,WIDTH,HEIGHT),'BACKGR'+BG$+FG$+'
+1120:DEFAULT'+'CS',
+4000 REM " --- All done"
+4010 LET FIN$=FIN(0),NAME$=FIN$(10,1)
+4090 GOTO 9900
+8000 REM " --- Functions"
+8090 DEF FNP$(Q$)=CVS(Q$,2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9910 PRINT 'SF',
+9950 EXIT
+9999 END

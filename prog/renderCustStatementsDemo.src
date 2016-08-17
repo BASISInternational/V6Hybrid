@@ -1,0 +1,108 @@
+REM ========================================================================
+REM Render Customer Statements via JasperReports - renderCustStatements.src
+REM ========================================================================
+
+REM ========================================================================
+REM USE and Declares
+REM ========================================================================
+
+    use ::C:/bbj/utils/reporting/bbjasper/bbjasper.bbj::BBJasperReport
+    use ::C:/bbj/utils/reporting/bbjasper/bbjasper.bbj::BBJasperViewerWindow
+    
+    use ::./sys/prog/bao_utilities.bbj::BarUtils
+
+    declare BBJasperReport BBjReport!
+    declare BBJasperViewerWindow BBjReportWindow!
+
+REM ========================================================================
+REM Enter the data
+REM ========================================================================
+
+    enter firm$, statement_date$, message$, aging_period$, age_on_date$, minimum_balance, print_serial_number_detail, option$, sequence$, start_cust$, statements_produced
+    
+    rem ' firm$ is the firm_id$ - either 01 or 02
+    
+    rem ' statement_date$ is the statement date in the form of YYYYMMDD
+    
+    rem ' is the message to be included on the statement
+    
+    rem ' aging_period$ A=All  1=30-Days  2=60-Days  3=90-Days  4=120-Days
+    rem ' initially age_period$ is only supported in All mode 'A'
+    
+    rem ' age_on_date$ = I for Invoice or D for Due Date
+    rem ' initially only I for Invoice Date is supported
+    
+    rem ' minimum_balance has no impact
+    
+    rem ' print_serial_number_detail is always false (0) for now
+    
+    rem ' option$ = R for restart, S for single, empty of all
+    
+    rem ' sequence$ = N for numeric, A for alpha
+    rem ' initially only N is supported
+    
+    rem ' start_cust$ = the single customer to produce, or the starting customer for the reprint
+    
+    rem ' ensure that start_cust$ if not empty is 6 bytes long
+    if len(start_cust$) = 0 then
+        start_cust = 0
+    else
+        start_cust = 1
+        while len(start_cust$) < 6
+            start_cust$ = "0" + start_cust$
+        wend
+    fi
+    
+    current_cust$=start_cust$
+    
+REM ========================================================================
+REM Initialize
+REM ========================================================================
+rem 'CAH
+goto CAH_end;rem to enable trace
+    tfl$="C:/temp_downloads/renderStmts.txt"
+    erase tfl$,err=*next
+    string tfl$
+    tchan=unt
+    open(tchan)tfl$
+    settrace (tchan,MODE="UNTIMED")
+    print (tchan)"In render stmts program..."
+CAH_end:
+    pdfLocation$ = stbl("+V6_DIR_PDF")
+
+rem ' ****************************************************
+rem ' * invoke jasper for given customer
+rem ' ****************************************************
+    
+    reportName$ = "../apps/V6Hybrid/reports/custStatement.jasper"
+    
+    BBjReport! = BarUtils.getBBJasperReport(reportName$)
+
+    BBjReport!.putParam("P_FIRM_ID",firm$)
+    BBjReport!.putParam("P_CUSTOMER",current_cust$)
+    BBjReport!.putParam("P_STATEMENT_DATE",statement_date$(7,2)+statement_date$(1,2)+statement_date$(4,2))
+    BBjReport!.putParam("P_LOGO_FILE",stbl("V6HYBRID_IMAGE")+"basislogo.jpg")
+    BBjReport!.putParam("P_BARISTA_WD",dir(""))
+
+    BBjReport!.fill()
+  
+    statementfile$ = pdfLocation$ + current_cust$ + "_statement_" + statement_date$(7,2)+statement_date$(1,2)+statement_date$(4,2) + str(int(tim*100))+".pdf"
+ 
+    BBjReport!.exportToPDF(BBjAPI().FALSE, statementfile$)
+
+    rem ' to see the statement in a viewer window un-rem the statements below
+    BBjReportWindow! = new BBJasperViewerWindow(BBjReport!, 0, 0, 920, 700,"BASIS International, Ltd.", $93$)
+    BBjReportWindow!.center()
+    BBjReportWindow!.show(1)
+
+    BBjReportWindow!.destroy()
+    
+    BBjReport!.destroy()
+
+    statements_produced = statements_produced + 1
+    
+    rem erase statementfile$
+
+exit
+
+end	

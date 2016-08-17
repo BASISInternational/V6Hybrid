@@ -1,0 +1,77 @@
+0010 REM "SHC - ADD+ON Sales Order Update (Freight, Ship Via & Date)"
+0020 REM "Program SHC.OB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.4 - 15Dec97 |"
+0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0031 REM "13May97 JAL: Error 47/Line 1020 (1010,1020)"
+0032 REM "04Jun97 JWK: Error 1/Line 1010 (510)
+0033 REM "04Aug97 WGH: Ship date written incorrectly to ARE-03 (2020,8070)"
+0040 REM 
+0045 REM "SHE01_DEV: SHE-01 channel number (input)"
+0050 REM "SHE02_DEV: SHE-02 channel number (input)"
+0055 REM "ARE03_DEV: ARE-03 channel number (input)"
+0060 REM "A0$      : SHE-01 key (input)"
+0070 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER SHE01_DEV,SHE02_DEV,ARE03_DEV,A0$
+0200 REM " --- IOLIST's"
+0210 SHE01A: IOLIST A0$,A1$,A2$,A[ALL]
+0220 SHE02A: IOLIST W0$,W1$
+0230 ARE03A: IOLIST S0$,S[ALL]
+0500 REM " --- Initializations"
+0510 DIM A[8],S[10]
+1000 REM " --- Retrieve order"
+1010 FIND (SHE01_DEV,KEY=A0$,DOM=4000)IOL=SHE01A
+1020 LET S0$=A0$(1,2)+"  "+A1$(1,6)+A0$(3,7)+"000"
+1030 FIND (ARE03_DEV,KEY=S0$,DOM=4000)IOL=ARE03A
+1090 READ (SHE02_DEV,KEY=A0$,DOM=1100)
+1100 REM " --- Get ship via from first package"
+1110 LET K$=KEY(SHE02_DEV,END=1300)
+1120 IF POS(A0$(1,17)=K$)<>1 THEN GOTO 1300
+1130 FIND (SHE02_DEV,KEY=K$)IOL=SHE02A
+2000 REM " --- Update order"
+2010 LET S[1]=A[0]+A[1]
+2020 IF A2$<>"" THEN LET S0$(27,3)=FND$(FNN$(A2$(1,6)))
+2040 IF W1$<>"" THEN LET S0$(32,10)=W1$(4,7)
+3000 REM " --- Write order"
+3010 WRITE (ARE03_DEV,KEY=S0$(1,20))IOL=ARE03A
+4000 REM " --- All done"
+4090 GOTO 9900
+8000 REM " --- Function Definitions"
+8040 DEF FND$(Q$)=CHR(FNYY_YEAR(Q$(5,2))+32)+CHR(NUM(Q$(1,2))+32)+CHR(NUM(Q$(3
+8040:,2))+32)
+8070 DEF FNN$(Q$)=Q$(3,4)+Q$(1,2)
+8145 REM " --- FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+8150 DEF FNYY21_YY$(Q1$)
+8155 LET Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABC
+8155:DEFGHIJ"))
+8160 RETURN Q1$
+8165 FNEND
+8170 REM " --- FNYY_YEAR Convert 2-Char Year to 21st Century Numeric Year"
+8175 DEF FNYY_YEAR(Q1$)
+8180 LET Q=NUM(FNYY21_YY$(Q1$)); IF Q<50 THEN LET Q=Q+100
+8185 RETURN Q
+8190 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9998 EXIT
+9999 END

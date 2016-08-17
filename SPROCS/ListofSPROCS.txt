@@ -1,0 +1,20 @@
+SPROC List
+
+ARCMPSLS_BAR.prc	sales by month compare this year to last year
+SAREPTOT_SBR_60.prc	current year Sales Analysis totals for salesreps
+			(stacked bar chart)
+SATOPCST_BAR_60.prc	current year Sales Analysis totals for top 5 
+			customers (bar chart)
+SATOPCST_SBR_60.prc	current year Sales Analysis totals for top 5 
+			customers (stacked bar chart)
+SATOPREP_LIN_60.prc	period's Sales Analysis totals by Salesrep for 
+			a given year (line)
+SATOPREP_PIE_60.prc	current year Sales Analysis totals for salesreps 
+			for top x reps (pie)
+SATOPREP_SAR_60.prc	period's Sales Analysis totals by Salesrep for a 
+			given year for the top n salesreps (stacked area 
+			chart)
+SATOPREP_SBR_60.prc	current year Sales Analysis totals for products 
+			by salesrep TOP x reps (stacked bar chart)
+
+

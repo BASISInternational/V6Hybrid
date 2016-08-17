@@ -1,0 +1,253 @@
+0010 REM "PRS - Print Mag Media File Before Creation
+0020 REM "Program:  PRW.DA
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0050 BEGIN
+0085 SETESC 9000
+0090 SETERR 9000
+0100 REM " --- Open/Lock Files
+0110 LET FILES=2
+0120 DIM FILES$[FILES],OPTIONS$[FILES],CHANNELS[FILES]
+0125 LET FILES$[1]="W2REPORT",FILES$[2]="SYS-01"
+0150 LET OPTIONS$[1]="F"
+0160 CALL "SYC.DA",1,1,2,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STATUS
+0170 IF STATUS>0 THEN GOTO 9900
+0180 LET W2REPORT_DEV=CHANNELS[1],SYS01_DEV=CHANNELS[2]
+0190 IF W2REPORT_DEV=0 THEN GOTO NEEDREPORT
+0200 REM " --- IOLists
+0230 W2REPORT: IOLIST X$
+0300 SYS01T: IOLIST X$,F0$,X$,X$,X$,F4$,F5$
+0320 PRS01A: IOLIST P0$,P1$,P2$,P3$,P4$,M0$,M1$,M2$,M3$
+0400 REM " --- Parameters
+0410 FIND (SYS01_DEV,KEY="T"+FID(0),DOM=9800)IOL=SYS01T
+0420 LET N0$=F0$(16,2),N1$=F4$,N2$="PR",N3$=F5$
+0430 FIND (SYS01_DEV,KEY=N0$+N2$+"00",DOM=9800)IOL=PRS01A
+0450 DIM P[2],G[4]
+0490 LET P[0]=NUM(P2$(1,2)),P[1]=NUM(P4$(1,2)),P[2]=FNYY_YEAR(P4$(3,2))
+0500 REM " --- Init Data
+0510 LET WIDTH=132,PAGE=0,H1$=N1$,H2$=N3$,H8$=FID(0),H8$=H8$(1,1)
+0520 LET L9=59,L=L9+1,HEADINGS=2,WHEN$=F0$(7,3),CLOCK$=""
+0530 DIM HEADINGS$[HEADINGS]
+0540 DIM DASHES$(132,"-")
+0550 DIM A[1],U[1]
+0590 LET M0=LEN(M0$),M1=LEN(M1$),M2=LEN(M2$),M3=LEN(M3$),G5=LEN(G5$)
+0600 REM " --- Open printer
+0610 CALL "SYC.GA",7,1,"","",STATUS
+0620 IF STATUS=1 THEN GOTO 9900
+0680 LET H8$="N",X$=FID(0),X$=X$(1,1)
+0690 IF X$="T" THEN IF POS(F0$(13,1)="LP")<>0 THEN LET H8$="Y"
+0700 REM " --- Background
+0760 CALL "SYC.NB","Printing: ",15,COLUMN
+0790 PRINT 'SF',
+1100 REM " --- Main Read
+1110 DIM A0$(128)
+1120 READ (W2REPORT_DEV,SIZ=128,END=4000)IOL=W2REPORT
+1130 LET A0$(1)=X$
+1140 IF A0$(1,2)<"  " THEN GOTO 1120
+1160 LET C=C+1
+1180 PRINT @(COLUMN,11),"Record #: ",C
+1200 REM " --- Breaks
+1210 LET B2$=""
+1220 ON INT(POS(A0$(1,2)="1A2A1B2B1E2E1W2W3W1I2I1T2T1F1S2S",2)/2) GOTO 1400,16
+1220:00,1800,2000,2200,2400,2600,2800,2500,3000,3200,3400,3600,3900,2850,2900,
+1220:4000
+1400 REM " --- 1A Here
+1420 LET B0$="1A "+"Yr: "+A0$(3,4)+" Employer ID: "+A0$(7,9)+"  Name: "+A0$(25
+1420:,30)+"  Addr: "+A0$(75,24)
+1490 GOTO 5200
+1600 REM " --- 2A Here
+1620 LET B0$="2A "+"      City: "+A0$(3,25)+"  State: "+A0$(28,2)+" Zip: "+A0$
+1620:(43,5)
+1690 GOTO 5200
+1800 REM " --- 1B Here
+1820 LET B0$="1B "+"Yr: "+A0$(3,4)+" Employer ID: "+A0$(7,9)+"  Computer: "+A0
+1820:$(16,8)
+1890 GOTO 5200
+2000 REM " --- 2B Here
+2020 LET B0$="2B "+"Return To: "+A0$(17,44)+" City: "+A0$(96,10)+" ST: "+A0$(1
+2020:16,2)+" Zip: "+A0$(123,5)
+2090 GOTO 5200
+2200 REM " --- 1E Here
+2220 LET B0$="1E "+"Yr: "+A0$(3,4)+" Employer ID: "+A0$(7,9)
+2290 GOTO 5200
+2400 REM " --- 2E Here
+2420 LET B0$="2E "+"City: "+A0$(3,25)+" State: "+A0$(28,10)+" Zip: "+A0$(43,5)
+2420:+" Name Code: "+A0$(48,1)+" Type: "+A0$(49,1)
+2490 GOTO 5200
+2500 REM " --- 3W Here
+2520 LET B0$="3W "+" Medicare Wages: "+FNW$(A0$(3,9))+"   Medicare Tax WH: "+F
+2520:NW$(A0$(12,7)),B1$="",B2$=""
+2590 GOTO 5200
+2600 REM " --- 1W Here
+2610 DIM B0$(132,"."); PRINT (7)B0$; LET L=L+1
+2620 LET B0$="1W "+"SSN: "+A0$(3,9)+" Name: "+A0$(12,27)+" Addr: "+A0$(39,40),
+2620:B1$="    ...."+" City: "+A0$(79,25)+" ST: "+A0$(104,2)+" Zip: "+A0$(119,5
+2620:)
+2690 GOTO 5200
+2800 REM " --- 2W Here
+2820 LET B0$="2W "+" SS Wages: "+FNW$(A0$(3,7))+"   Tips: "+FNW$(A0$(11,7))+" 
+2820:FE Wages: "+FNW$(A0$(19,9))+" SS Tax: "+FNW$(A0$(29,6))+"  Fed Tax: "+FNW
+2820:$(A0$(35,9)),B1$="    ...."+" Grp Ins:"+FNW$(A0$(70,7))+" EIC: "+FNW$(A0$
+2820:(84,7))+" Fringe: "+FNW$(A0$(98,9))+" Def'd Inc: "+FNW$(A0$(112,9))+"  De
+2820:pnd: "+FNW$(A0$(122,7))
+2840 GOTO 5200
+2850 REM " --- 1S Here
+2860 LET B0$="1S "+"SSN: "+A0$(3,9)+" Name: "+A0$(12,27)+" Addr: "+A0$(39,40),
+2860:B1$="    ...."+" City: "+A0$(79,25)+" ST: "+A0$(104,2)+" Zip: "+A0$(119,5
+2860:)+" ST Cd: "+A0$(125,2)
+2890 GOTO 5200
+2900 REM " --- 2S Here
+2920 LET B0$="2S "+"ST A/C: "+A0$(3,12)+" Per: "+A0$(15,4)+" Cd: "+A0$(52,2)+"
+2920: ST Wage: "+FNW$(A0$(54,9))+"ST Tax: "+FNW$(A0$(63,8))+" CASDI: "+FNW$(A0
+2920:$(76,5)),B1$="   ..."+" Local Wage:"+FNW$(A0$(87,9))+" Local Tax:"+FNW$(A
+2920:0$(96,7))
+2940 LET B2$=""
+2990 GOTO 5200
+3000 REM " --- 1I Here
+3010 PRINT (7)DASHES$; LET L=L+1
+3030 LET B0$="1I **S/T: "+"SS Wages: "+FNW$(A0$(3,10))+" Tips: "+FNW$(A0$(14,1
+3030:0))+"  FE Wages: "+FNW$(A0$(25,10))+" Def'd Inc: "+FNW$(A0$(116,10)),B1$=
+3030:"    ...."+"  SS Tax: "+FNW$(A0$(36,10))+"  Fed Tax: "+FNW$(A0$(47,10))+"
+3030:  Group Ins: "+FNW$(A0$(64,10))+"  EIC: "+FNW$(A0$(84,11))+" Fringe: "+FN
+3030:W$(A0$(105,10)),B2$="     ......"+" Def'd Inc: "+FNW$(A0$(116,10)),B2$=""
+3040 GOTO 5200
+3200 REM " --- 2I Here
+3220 LET B0$="2I **S/T #2: "+"Med Wages: "+FNW$(A0$(36,11))+" Med Tax: "+FNW$(
+3220:A0$(48,10))+" Depnd: "+FNW$(A0$(3,10))+"  Non-Qual: "+FNW$(A0$(25,10)),B1
+3220:$="",B2$=""
+3290 GOTO 5200
+3400 REM " --- 1T Here
+3420 PRINT (7)DASHES$; LET L=L+1
+3440 LET B0$="1T  Total: "+" # Emps: "+STR(NUM(A0$(3,7)):"##,##0")+"  SS Wages
+3440:: "+FNW$(A0$(10,13))+" Tips: "+FNW$(A0$(24,12))+"  FE Wages: "+FNW$(A0$(3
+3440:6,13)),B1$="    ...."+"  SS Tax: "+FNW$(A0$(50,12))+"  FE Tax: "+FNW$(A0$
+3440:(63,12))+"  Group Ins: "+FNW$(A0$(75,12))+"  EIC: "+FNW$(A0$(99,12))
+3490 GOTO 5200
+3600 REM " --- 2T Here
+3620 LET B0$="2T  Total: "+" Med Wages: "+FNW$(A0$(71,13))+" Med Tax: "+FNW$(A
+3620:0$(85,12))+" Fringe: "+FNW$(A0$(3,12))+" Def'd Inc: "+FNW$(A0$(16,13))+" 
+3620:Depnd: "+FNW$(A0$(30,12)),B1$="",B2$=""
+3690 GOTO 5200
+3900 REM " --- 1F Here
+3910 PRINT (7)DASHES$; LET L=L+1
+3920 LET B0$="1F Completed: "+A0$(3,7)+" Employees.. SS Wages: "+FNW$(A0$(12,1
+3920:4))+" SS Tips: "+FNW$(A0$(29,14))+"  Wages: "+FNW$(A0$(46,14))
+3930 LET B1$="    ..... SS Tax: "+FNW$(A0$(63,14))+"Fed Tax: "+FNW$(A0$(80,14)
+3930:)+" EIC: "+FNW$(A0$(97,14)),B2$=""
+3990 GOTO 5200
+4000 REM " --- End
+4100 GOTO 9900
+5000 REM " --- Heading
+5020 LET L=HEADINGS+1
+5030 CALL "SYC.HA",7,HEADINGS$[ALL],HEADINGS,PAGE,WIDTH,WHEN$,CLOCK$,STATUS
+5040 IF STATUS<>0 THEN EXITTO 9900
+5190 RETURN
+5200 REM " --- Print it Here
+5210 IF L+2>L9 THEN GOSUB 5000
+5215 PRINT (7)B0$
+5250 LET L=L+1
+5260 IF B1$<>"" THEN PRINT (7)B1$; LET L=L+1
+5280 IF B2$<>"" THEN PRINT (7)B2$; LET L=L+1
+5290 GOTO 1100
+6000 REM " --- First sub total
+6010 IF T0$="" THEN GOTO 6100
+6020 IF T9$="" THEN LET T9$="T"
+6030 GOSUB 6200
+6040 IF T9$="T" THEN LET T9$="",T1$="",T2$=""
+6080 PRINT (7)"Print Subtotals: ",T[X]
+6100 IF T9$<>"" THEN RETURN
+6120 DIM T[1]
+6140 LET T0$=A0$(3,2)
+6190 RETURN
+6200 REM " --- Second sub total
+6210 IF T1$="" THEN GOTO 6300
+6220 IF T9$="" THEN LET T9$="S"
+6230 GOSUB 6400
+6240 IF T9$="S" THEN LET T9$="",T2$=""
+6250 IF L1<=1 THEN GOTO 6290
+6260 PRINT (7)"Print Second Subtotals: ",S[X]
+6270 LET L=L+2
+6290 LET L1=0,L2=0
+6300 IF T9$<>"" THEN RETURN
+6320 DIM S[1]
+6340 LET T1$=A0$(5,6)
+6360 GOSUB 5200
+6390 RETURN
+6400 REM " --- Third Sub total
+6410 IF T2$="" THEN GOTO 6500
+6420 IF L2<=1 THEN GOTO 6470
+6440 PRINT (7)"Print Third Subtotals: ",R[X]
+6460 LET L=L+2
+6470 LET L1=L1+1,L2=0
+6500 IF T9$<>"" THEN RETURN
+6510 IF L2<=1 THEN GOTO 6520
+6512 PRINT (7)""
+6514 LET L=L+1
+6520 DIM R[1]
+6530 LET T2$=A0$(11,11)
+6680 GOSUB 5200
+6700 IF L>L9 THEN GOSUB 5200
+6720 PRINT (7)@(32),H5$,
+6790 RETURN
+6800 REM " --- User needs to create W2REPORT
+6805 NEEDREPORT:
+6810 DIM MESSAGE$[1]
+6820 LET MESSAGE$[0]="File, W2REPORT, does not exist.  Run Magnetic Media"
+6830 LET MESSAGE$[1]="Calculation to create this file.  <Enter>:"
+6840 CALL "SYC.XA",0,MESSAGE$[ALL],1,22,-1,V$,V3
+6890 GOTO 9900
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions
+8010 DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+8020 DEF FNB$(Q1$)=FNA$(Q1$(2),Q1$)+"/"+FNA$(Q1$(3),Q1$)+"/"+FNA$(Q1$(1),Q1$)
+8060 DEF FNW$(Q$)=STR(NUM(Q$)*0.01:M1$)
+8145 REM " --- FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+8150 DEF FNYY21_YY$(Q1$)
+8155 LET Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABC
+8155:DEFGHIJ"))
+8160 RETURN Q1$
+8165 FNEND
+8170 REM " --- FNYY_YEAR Convert 2-Char Year to 21st Century Numeric Year"
+8175 DEF FNYY_YEAR(Q1$)
+8180 LET Q=NUM(FNYY21_YY$(Q1$)); IF Q<50 THEN LET Q=Q+100
+8185 RETURN Q
+8190 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9205 SETESC 9000
+9210 SETERR 9000
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9800 REM " --- Display Parameter record error"
+9810 LET LINE_ERR$=LST(PGM(TCB(5)))
+9820 CALL "SYC.YA",LINE_ERR$,N2$,ERR
+9900 RUN "SYS.AA"
+9999 END

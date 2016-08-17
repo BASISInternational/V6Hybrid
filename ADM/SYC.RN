@@ -1,0 +1,110 @@
+0010 REM "SYC - ReName File"
+0020 REM "Program SYC.RN
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0060 REM "SOURCE$[*]: Name of existing file (input)"
+0062 REM "TARGET$[*]: New file name (input)"
+0064 REM "ERASE$[*] :   = Erase target file to extinction (input)" 
+0066 REM "          : N = Do NOT erase to extinction, overwrite only (input)" 
+0068 REM "NUMBER    : Number of files to rename (input)"
+0070 REM "STATUS    : Zero=No Error/Non-Zero=Error (returned)"
+0075 REM 
+0080 SETESC 9000
+0085 SETERR 9000
+0090 ENTER SOURCE$[ALL],TARGET$[ALL],ERASE$[ALL],NUMBER,STATUS
+1000 REM " --- Process Files"
+1020 FOR N=0 TO NUMBER
+1040 IF FNP$(SOURCE$[N])="" THEN GOTO 1600
+1100 REM " --- Locate Source File"
+1120 LET P$=""
+1140 CALL "SYC.UA",SOURCE$[N],P$
+1160 IF P$="" THEN GOTO 1600
+1180 IF TARGET$[N]=P$(POS("/"=P$,-1)+1) THEN LET STATUS=12; EXITTO 4720; REM "
+1180:Renaming to itself
+1200 REM " --- Erase Target File"
+1220 IF ERASE$[N]="N" THEN GOTO 1300
+1240 ERASE TARGET$[N],ERR=1280
+1260 GOTO 1240
+1280 IF ERR<>12 THEN EXITTO 4600
+1290 GOTO 1400
+1300 REM " --- Overwrite Target File"
+1320 IF POS("/"=P$)>0 THEN LET Q$=P$(1,POS("/"=P$,-1)) ELSE LET Q$=DSK("")+DIR
+1320:("")
+1340 ERASE Q$+TARGET$[N],ERR=1380
+1360 GOTO 1400
+1380 IF ERR<>12 THEN EXITTO 4600
+1400 REM " --- Rename Source To Target"
+1420 RENAME P$ TO TARGET$[N],ERR=4700
+1500 REM " --- Erase Source File"
+1520 IF ERASE$[N]="N" THEN GOTO 1600
+1540 ERASE SOURCE$[N],ERR=1580
+1560 GOTO 1540
+1580 IF ERR<>12 THEN EXITTO 4800
+1600 REM " --- Next File"
+1610 NEXT N
+4000 REM " --- Done"
+4020 LET STATUS=0
+4090 GOTO 9900
+4500 REM " --- Open Source File Error"
+4510 LET STATUS=998
+4520 DIM MESSAGE$[1]
+4530 LET MESSAGE$[0]="Rename Error: Not able to OPEN source file "+SOURCE$[N]
+4540 LET MESSAGE$[1]="               (<Enter>=Continue)"
+4550 CALL "SYC.XA",2,MESSAGE$[ALL],1,22,-1,V$,V3
+4590 GOTO 9900
+4600 REM " --- Erase Target File Error"
+4610 LET STATUS=ERR
+4615 IF STATUS=0 THEN LET STATUS=997
+4620 DIM MESSAGE$[1]
+4630 LET MESSAGE$[0]="Rename Error: Not able to ERASE target file "+TARGET$[N]
+4640 LET MESSAGE$[1]="               (<Enter>=Continue)"
+4650 CALL "SYC.XA",2,MESSAGE$[ALL],1,22,-1,V$,V3
+4690 GOTO 9900
+4700 REM " --- Rename Error"
+4705 EXITTO 4710; REM "Leave FOR...NEXT loop
+4710 LET STATUS=ERR
+4715 IF STATUS=0 THEN LET STATUS=996
+4720 DIM MESSAGE$[1]
+4730 LET MESSAGE$[0]="Rename Error: Not able to RENAME file "+SOURCE$[N]+" to 
+4730:"+TARGET$[N]
+4740 IF TCB(10)<0 THEN LET MESSAGE$[1]="Last Host Error was "+STR(TCB(10))+". 
+4740: " ELSE LET MESSAGE$[1]="                  "
+4750 LET MESSAGE$[1]=MESSAGE$[1]+"(<Enter>=Continue)"
+4760 CALL "SYC.XA",2,MESSAGE$[ALL],1,22,-1,V$,V3
+4790 GOTO 9900
+4800 REM " --- Erase Source File Error"
+4810 LET STATUS=ERR
+4815 IF STATUS=0 THEN LET STATUS=995
+4820 DIM MESSAGE$[1]
+4830 LET MESSAGE$[0]="Rename Error: Not able to ERASE source file "+SOURCE$[N]
+4840 LET MESSAGE$[1]="               (<Enter>=Continue)"
+4850 CALL "SYC.XA",2,MESSAGE$[ALL],1,22,-1,V$,V3
+4890 GOTO 9900
+8000 REM " --- Functions"
+8080 DEF FNP$(Q$)=CVS(Q$,2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9220 LET STATUS=ERR
+9240 IF STATUS=0 THEN LET STATUS=999
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9950 EXIT
+9999 END

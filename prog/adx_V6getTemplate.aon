@@ -1,0 +1,128 @@
+rem --- adx_V6getTemplate.aon
+rem --- get V6 template for specified file
+rem --- can be used to add file to BASIS Dictionary
+
+rem --- Dictionary file templates
+
+    dim ddm01$:"data_name:c(12*),description:c(30),lstrev:c(6),data_type:c(1),reserved_str:c(68*),fld_length:n(3*),display_len:n(3*),reserved_num:n(1*)"
+    dim ddm03$:"file_name:c(6),record_id:c(1*),description:c(30),reserved_str:c(33*),reserved_num:n(3*)"
+    dim ddm04$:"file_name:c(6),record_id:c(1),layout_seq:c(3*),data_name:c(12),reserved_str1:c(41),fld_sep:c(1),reserved_str2:c(68*),reserved_num:n(1*),fld_repeats:n(3*),fld_occurs:n(3)"
+
+    element_map_key$="file_name:c(6),record_id:c(1),layout_seq:n(3)"
+    element_map_element$="data_name:c(12),description:c(30),data_type:c(1),element_len:n(4)"
+
+rem --- Open V6 dictionary files
+
+    ddm01=unt
+    open (ddm01)source_folder$+"DDM-01"
+    ddm03=unt
+    open (ddm03)source_folder$+"DDM-03"
+    ddm04=unt
+    open (ddm04)source_folder$+"DDM-04"
+
+input "Enter table name + record id (e.g., APM-01A): ",flnm$
+escape;rem watch
+gosub create_template
+escape
+
+create_template:rem create template for V6 file
+
+    v6_gen_table_tpl$=""
+    v6_gen_key_tpl$=""
+    data_seq_str$=""
+    fields=0
+    date_format$ = $$
+
+    read(ddm04,key=flnm$,dom=*next)
+
+    while 1
+
+        readrecord(ddm04,end=*break)ddm04$
+        if ddm04.file_name$+ddm04.record_id$<>flnm$ then break
+
+        findrecord(ddm01,key=ddm04.data_name$,dom=*continue)ddm01$
+        rd_col_length=ddm01.fld_length
+        if ddm04.fld_repeats>1 then
+            rd_col_length=ddm01.fld_length*ddm04.fld_repeats
+        endif
+        rd_col_occurs_sfx$=""
+        rd_col_occurs$=""
+        rd_col_occurs=1
+        if ddm04.fld_occurs>1 then
+            rd_col_occurs$="YES"
+            rd_col_occurs=ddm04.fld_occurs
+        endif
+
+        data_seq_pos=pos(pad(ddm04.data_name$,16)=data_seq_str$,20)
+        if data_seq_pos<>0 then
+            rd_occur_adj=num(data_seq_str$(data_seq_pos+17,2))
+        else
+            rd_occur_adj=0
+            data_seq_str$=data_seq_str$+pad(ddm04.data_name$,16)+"-00;"
+        endif
+
+        for rd_curr_occur=1 to rd_col_occurs
+            data_seq_pos=pos(pad(ddm04.data_name$,16)=data_seq_str$,20)
+            data_seq_str$(data_seq_pos+17,2)=str(num(data_seq_str$(data_seq_pos+17,2))+1:"00")
+            if rd_col_occurs$="YES" or rd_occur_adj>0 then
+                rd_col_occurs_sfx$="_"+str(rd_curr_occur+rd_occur_adj:"00")
+            endif
+
+            rem --- Remove slashes from data name
+            data_name$ = ddm04.data_name$
+            s_pos = pos("/" = data_name$)
+
+            while s_pos
+                data_name$ = data_name$(1, s_pos-1) + data_name$(s_pos+1)
+                s_pos = pos("/" = data_name$)
+            wend
+
+            rem ' field names can only contain [A-Z0-9_]
+            data_name$=tbl(cvs(data_name$,7),tbl=az_09)
+            rd_temp_seg$=cvs(data_name$,3)+rd_col_occurs_sfx$+":"
+            datatype$=iff(ddm01.data_type$="N","N","C")
+            rd_temp_seg$=rd_temp_seg$+datatype$+"("+str(rd_col_length)
+            if rd_col_occurs$<>"YES"
+                if ddm04.fld_sep$="X" or ddm04.fld_sep$="Y" or ddm04.fld_sep$="E" then
+                    rd_temp_seg$=rd_temp_seg$+"*"
+                endif
+            endif    
+            if rd_col_occurs$="YES" or rd_occur_adj>0
+                if rd_curr_occur+rd_occur_adj=rd_col_occurs and datatype$="C" or datatype$<>"C"
+                    if ddm04.fld_sep$="X" or ddm04.fld_sep$="Y" or ddm04.fld_sep$="E"
+                        if rd_temp_seg$(len(rd_temp_seg$),1)<>"*"
+                            rd_temp_seg$=rd_temp_seg$+"*"
+                        endif
+                    endif
+                endif
+            endif  
+            rd_temp_seg$=rd_temp_seg$+")"
+            fields = fields + 1
+            if len(v6_gen_table_tpl$) then
+                v6_gen_table_tpl$=v6_gen_table_tpl$+","
+            endif
+            v6_gen_table_tpl$=v6_gen_table_tpl$+rd_temp_seg$
+            if pos(ddm04.fld_sep$="KX")
+                if len(v6_gen_key_tpl$) then
+                    v6_gen_key_tpl$=v6_gen_key_tpl$+","
+               endif
+               v6_gen_key_tpl$=v6_gen_key_tpl$+rd_temp_seg$
+               if v6_gen_key_tpl$(len(v6_gen_key_tpl$)-1,1)="*" then v6_gen_key_tpl$=v6_gen_key_tpl$(1,len(v6_gen_key_tpl$)-2)+")";rem strip delim at end of key template
+            endif
+            rem ' Date formats
+            if ddm01.data_type$="D" then
+                date_format$ = date_format$ + chr(rd_col_length)
+            else
+                if ddm01.data_type$="A" and rd_col_length=2 then
+                    date_format$ = date_format$ + chr(255)
+                else
+                    date_format$ = date_format$ + chr(0)
+                endif
+            endif
+        next rd_curr_occur
+
+    wend
+
+    return
+
+az_09: table 7f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 30 31 32 33 34 35 36 37 38 39 5f 5f 5f 5f 5f 5f 5f 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e 4f 50 51 52 53 54 55 56 57 58 59 5a 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f

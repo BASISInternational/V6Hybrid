@@ -1,0 +1,121 @@
+0010 REM "IVM - Item Maintenance (General Ledger Accounts)"
+0020 REM "Program IVM.MY"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0070 SETERR 9000
+0080 SETESC 9000
+0090 PRECISION P[1]
+0200 REM " --- IOLIST's"
+0210 IVM01A: IOLIST A0$(1),A1$(1),A2$(1),A3$(1),A4$(1),A5$,A6$(1),A[ALL]
+0230 GLM01A: IOLIST C0$,C1$(1)
+0400 REM " --- GL Installed and not Distribute By Item?"
+0410 IF DI$<>"N" THEN GOTO 4900
+0420 IF GL$<>"Y" THEN GOTO 4900
+0500 REM " --- Initializations"
+0510 DIM GLV4$[6]
+0555 LET GW=MIN(35,80-(25+G5))
+0560 LET GLV4$[1]="Inventory",GLV4$[2]="Cost Of Goods Sold"
+0565 LET GLV4$[5]=GLV4$[1]+" Adjustment",GLV4$[6]=GLV4$[2]+" Adjustment"
+0570 LET GLV4$[3]="Purchases",GLV4$[4]="Purchase Price Variance"
+0700 REM " --- Background"
+0710 PRINT 'SB',@(14,6),"Inventory:",@(5,7),"Cost Of Goods Sold:",@(14,8),"Pur
+0710:chases:",@(0,9),"Purchase Price Variance:",@(3,10),"Inventory Adjustment:
+0710:",@(8,11),"COGS Adjustment:",'SF',
+1200 REM " --- Retrieve record"
+1210 FIND (IVM01_DEV,KEY=A0$,DOM=4900)IOL=IVM01A
+1300 REM " --- Display record"
+1310 GOSUB 5000
+1320 LET I0=0
+1390 ON O0 GOTO 4000,4000,1600
+1600 REM " --- GL Accounts"
+1610 LET V4$="Enter A Valid GL "+GLV4$[I0+1]+" Account (<F3>=Lookup)"
+1620 LET P=(I0*G[4])+1,V0$="M",V1$="C",V2$=A6$(P,G[3]),V3$=G1$
+1630 LET V0=G[4],V1=25,V2=6+I0
+1640 GOSUB 7000
+1650 ON V3 GOTO 1700,1600,3900,1660,3900
+1660 CALL "SYC.LG",V$
+1700 REM 
+1710 DIM C0$(2+G[4]),C1$(GW)
+1720 LET C0$(1)=N0$+V$
+1730 FIND (GLM01_DEV,KEY=C0$,DOM=1600)IOL=GLM01A
+1740 PRINT @(V1,V2),FNF$(C0$(3,G[3]),G5$)," ",C1$,'CL',
+1750 LET A6$(P,G[4])=C0$(3)
+1790 GOTO 3900
+3900 REM " --- Next field"
+3905 IF V3=4 THEN GOTO 3990
+3910 IF V3<>2 THEN GOTO 3940
+3920 IF I0>0 THEN LET I0=I0-1
+3930 GOTO 3950
+3940 LET I0=I0+1
+3960 ON I0 GOTO 1600,1600,1600,1600,1600,1600,3980
+3990 GOSUB 5000
+4000 REM " --- Correct?"
+4010 LET V4$="Is The Above Information Correct",I0=0
+4020 CALL "SYC.YN",1,V4$,2,V$,V3
+4030 ON V3 GOTO 4040,4000,4000,4000,4900
+4090 ON POS(V$="YN") GOTO 4000,4100,1600
+4100 REM " --- Write item"
+4110 WRITE (IVM01_DEV,KEY=A0$)IOL=IVM01A
+4190 GOTO 4900
+4900 REM " --- Run menu overlay"
+4990 RUN "IVM.MA"
+5000 REM " --- Display record"
+5010 FOR X=1 TO 6
+5020 DIM C0$(2+G[4]),C1$(GW)
+5030 LET P=(X-1)*G[4]+1
+5040 IF FNP$(A6$(P,G[4]))="" THEN GOTO 5080
+5050 LET C0$(1)=N0$+A6$(P,G[4]),C1$(1)="(Not On File)"
+5060 FIND (GLM01_DEV,KEY=C0$,DOM=5070)IOL=GLM01A
+5070 PRINT @(25,X+5),FNF$(C0$(3,G[3]),G5$)," ",C1$,'CL',
+5080 NEXT X
+5090 RETURN
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions"
+8070 DEF FNP$(Q$)=CVS(Q$,2)
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF:
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END

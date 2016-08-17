@@ -1,0 +1,55 @@
+0010 REM "IVC - Return Period Quantity Based On Activity Type"
+0020 REM "Program IVC.PA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0042 REM "SELECTION$  : Activity Type Code (input)"
+0050 REM "Q(n)        : IVM-12/IVM-17 Quantities (input)"
+0055 REM "QUANTITY    : Period Quantity (returned)"
+0065 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER SELECTION$,Q[ALL],QUANTITY
+0500 REM " --- Initializations"
+0550 LET QUANTITY=0
+0800 REM " --- Check arguments"
+0810 LET X=POS(SELECTION$="BEGRECBLTSLDISSADJXFIXFORETENDIN OUTUSEXFROTH",3)
+0820 IF X=0 THEN GOTO 4000
+0830 LET X=INT(X/3),ENDING=Q[0]+Q[1]+Q[2]-Q[3]-Q[4]+Q[5]+Q[6]-Q[7]+Q[8]
+1000 REM " --- Calculation required?"
+1010 IF POS(SELECTION$="ENDIN OUTUSEXFROTH",3)>0 THEN GOTO 1500
+1020 LET QUANTITY=Q[X]
+1090 GOTO 4000
+1500 REM " --- Perform required calculation"
+1510 IF X=9 THEN LET QUANTITY=ENDING
+1520 IF X=10 THEN LET QUANTITY=Q[1]+Q[2]
+1530 IF X=11 THEN LET QUANTITY=Q[3]+Q[4]
+1540 IF X=12 THEN LET QUANTITY=ENDING-Q[0]
+1550 IF X=13 THEN LET QUANTITY=Q[6]-Q[7]
+1560 IF X=14 THEN LET QUANTITY=Q[5]+Q[8]
+4000 REM " --- All done"
+4090 GOTO 9900
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 LET STATUS=999
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to calling program"
+9950 EXIT
+9999 END

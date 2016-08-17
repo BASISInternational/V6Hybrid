@@ -1,0 +1,83 @@
+V6Demoyear log started: 2016-08-12@17:17:02
+Starting demo fiscal year: 1996
+Increment fiscal year by: 20
+
+Processing: !ADDON
+  Date elements: [CURRENT_DATECurrent System Date           D0006]
+   Creating template for !ADDONA
+Finished with: !ADDON.  0 records processed.
+Processing: !GLCON
+  Date elements: [CURRENT_YEARCurrent Year                  D0002, GL_YEAR     Current GL Fiscal Year        D0002, TRNS_DATE   Transaction Date              D0006, YEAR        Year                          D0002, PER_BEG_DATEPeriod Beginning Date         D0006, PER_BEG_DATEPeriod Beginning Date         D0006, PER_BEG_DATEPeriod Beginning Date         D0006, PER_END_DATEPeriod Ending Date            D0006, PER_END_DATEPeriod Ending Date            D0006, PER_END_DATEPeriod Ending Date            D0006, PER_BEG_DATEPeriod Beginning Date         D0006, PER_END_DATEPeriod Ending Date            D0006, PER_BEG_DATEPeriod Beginning Date         D0006, PER_END_DATEPeriod Ending Date            D0006]
+   Creating template for !GLCONA
+Finished with: !GLCON.  0 records processed.
+Processing: !PROCE
+  Date elements: [CURRENT_DATECurrent System Date           D0006]
+   Creating template for !PROCEA
+Finished with: !PROCE.  0 records processed.
+Processing: APE-01
+  Date elements: [INVOICE_DATEInvoice Date                  D0003, ACCTING_DATEAccounting Date               D0003, INV_DUE_DATEInvoice Due Date              D0003, DISC_DATE   Discount Date                 D0003]
+   Creating template for APE-01A
+Finished with: APE-01.  0 records processed.
+Processing: APE-02
+  Date elements: [CHECK_DATE  Check Date                    D0003]
+   Creating template for APE-02A
+Finished with: APE-02.  0 records processed.
+Processing: APE-03
+  Date elements: [INVOICE_DATEInvoice Date                  D0003, ACCTING_DATEAccounting Date               D0003, INV_DUE_DATEInvoice Due Date              D0003, DISC_DATE   Discount Date                 D0003]
+   Creating template for APE-03A
+Finished with: APE-03.  0 records processed.
+Processing: APE-04
+  Date elements: [INVOICE_DATEInvoice Date                  D0003, INV_DUE_DATEInvoice Due Date              D0003, DISC_DATE   Discount Date                 D0003]
+   Creating template for APE-04A
+Finished with: APE-04.  0 records processed.
+Processing: APE-05
+  Date elements: [CHECK_DATE  Check Date                    D0003]
+   Creating template for APE-05A
+Finished with: APE-05.  0 records processed.
+Processing: APE-22
+  Date elements: [INVOICE_DATEInvoice Date                  D0003]
+   Creating template for APE-22A
+Finished with: APE-22.  0 records processed.
+Processing: APM-01
+  Date elements: [OPENED_DATE Date Opened                   D0003]
+   Creating template for APM-01A
+Finished with: APM-01.  0 records processed.
+Processing: APM-02
+  Date elements: [LSTINV_DATE Last Invoice Date             D0003, LSTPAY_DATE Last Payment Date             D0003]
+   Creating template for APM-02A
+Finished with: APM-02.  0 records processed.
+Processing: APM-06
+  Date elements: [PRI_REV_DATEPrior Review Date             D0003, NXT_REV_DATENext Review Date              D0003, LSTREC_DATE Last Receipt Date             D0003]
+   Creating template for APM-06A
+Finished with: APM-06.  0 records processed.
+Processing: APM-11
+  Date elements: [BNK_CHK_DATEBank Check Date               D0006]
+   Creating template for APM-11A
+Finished with: APM-11.  0 records processed.
+Processing: APM-12
+  Date elements: [TRNS_DATE   Transaction Date              D0006]
+   Creating template for APM-12A
+Finished with: APM-12.  0 records processed.
+Processing: APM-13
+  Date elements: [PRI_END_DATEPrior Statement Ending Date   D0006, CURSTM_DATE Current Statement Date        D0006]
+   Creating template for APM-13A
+Finished with: APM-13.  0 records processed.
+Processing: APS-01
+  Date elements: [CURRENT_YEARCurrent Year                  D0002]
+   Creating template for APS-01A
+Finished with: APS-01.  0 records processed.
+Processing: APT-01
+  Date elements: [INVOICE_DATEInvoice Date                  D0003, ACCTING_DATEAccounting Date               D0003, INV_DUE_DATEInvoice Due Date              D0003, DISC_DATE   Discount Date                 D0003]
+   Creating template for APT-01A
+Finished with: APT-01.  0 records processed.
+Processing: APT-02
+  Date elements: [ACCTING_DATEAccounting Date               D0003]
+   Creating template for APT-02A
+Finished with: APT-02.  83 records processed.
+Processing: APT-03
+  Date elements: [INVOICE_DATEInvoice Date                  D0003]
+   Creating template for APT-03A
+Finished with: APT-03.  300 records processed.
+Processing: APT-11
+  Date elements: [TRANS_DATE  Transaction Date              D0003]
+   Creating template for APT-11A

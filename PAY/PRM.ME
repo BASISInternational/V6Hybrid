@@ -1,0 +1,126 @@
+0010 REM "PRM - Employee Maintenance - Pay Codes
+0020 REM "Program PRM.ME"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0080 SETESC 9000
+0085 SETERR 9000
+0090 PRECISION P[3]
+0095 ON O9 GOTO 0200,4000
+0200 REM " --- IOLists
+0240 PRM10A: IOLIST D0$,D[0]
+0250 PRT01A: IOLIST E0$(1),E[ALL],F[ALL]
+0500 REM " --- Init Data
+0520 DIM E0$(14),E[5],F[10],D[0]
+0540 LET E0$(1)=A0$+"A"
+0700 REM " --- Background
+0710 PRINT @(0,L0),'CE'
+0730 FOR X=7 TO 16 STEP 9
+0740 CALL "SYC.WC",1,0,80,0,0,X,0
+0750 NEXT X
+0760 PRINT 'SB',@(15,5),"Pay Code Maintenance",@(5,6),"Pay Code:",@(6+M1,8),"D
+0760:ollars",@(8+M1+M2),"Units",@(0,9),"Month-To-Date:",@(2,10),"1st Quarter:"
+0760:,@(2,11),"2nd Quarter:",@(2,12),"3rd Quarter:",@(2,13),"4th Quarter:",@(1
+0760:,14),"Year-To-Date:",@(3,15),"Next Month:",
+0770 PRINT @(15,16),"Accrual Information",@(4,17),"Last Year:",@(4,18),"This Y
+0770:ear:",@(4,19),"Next Year:",@(1,20),"Accrual Rate:",@(3,21),"Anniv Used:",
+0790 PRINT 'SF',
+0900 REM " --- Init File
+0920 READ (PRT01_DEV,KEY=A0$+"A",DOM=0930)
+1000 REM " --- Key
+1010 PRINT 'CF',
+1020 LET V2$="",V2$=KEY(PRT01_DEV,END=1050)
+1030 IF V2$(1,12)<>A0$+"A" THEN LET V2$=""
+1040 IF V2$<>"" THEN LET V2$=V2$(13,2)
+1050 LET V0$="S",V1$="KCE",V0=2,V1=15,V2=6,O9=0,V4$="Enter Valid Pay Code, <F3
+1050:>=Lookup"
+1060 GOSUB 7000
+1062 IF V3<>3 THEN GOTO 1070
+1064 LET V4=1,V6=4,V7=2,V8=6,V9=16,V5$="A"
+1066 CALL "SYC.LZ",V1,V2,V4,PRM10_DEV,V6,V7,V8,V9,V$,V5$,N0$
+1068 IF V$="" THEN GOTO 1000
+1070 IF V3=4 THEN GOTO 4500
+1080 IF V$="" THEN GOTO 0900
+1090 LET E0$(13)=V$
+1200 REM " --- Find Key
+1240 FIND (PRM10_DEV,KEY=N0$+"A"+E0$(13,2),DOM=1000)IOL=PRM10A
+1250 PRINT @(V1+3,V2),D0$(6,16),
+1260 FIND (PRT01_DEV,KEY=E0$,DOM=1400)IOL=PRT01A
+1300 REM " --- Display
+1320 GOSUB 5000
+1340 GOTO 4000
+1400 REM " --- New Record
+1420 CALL "SYC.YN",1,"Is This A New Record",1,V$,V3
+1440 ON POS(V$="YN") GOTO 1400,1500,1000
+1500 REM " --- Set-up
+1510 DIM E[5],F[10]
+1520 IF D0$(26,1)="Y" THEN LET F[9]=D[0]
+2000 REM " --- Accrual Rate
+2010 LET O9=1
+2020 IF D0$(26,1)="N" THEN GOTO 4000
+2030 LET V0$="N",V1$="",V2$=STR(F[9]),V3$=M3$,V1=15,V2=20
+2040 GOSUB 7000
+2060 LET F[9]=V
+4000 REM " --- Options
+4020 LET V0$="S",V1$="KC",V2$="",V3$="",V4$="Is The Above Information Correct 
+4020:(Y/N/Delete)? ",V0=6,V1=FNV(V4$),V2=22
+4025 GOSUB 7000
+4030 IF V$="DELETE" THEN GOTO 4200
+4040 IF O9=0 THEN IF V$="" OR V$="Y" THEN GOTO 1000
+4060 ON POS(V$="YN") GOTO 4000,4100,2000
+4100 REM " --- Write
+4120 WRITE (PRT01_DEV,KEY=E0$(1,14))IOL=PRT01A
+4190 GOTO 1000
+4200 REM " --- Delete
+4210 IF E[1]+E[2]+E[3]+E[4]+E[5]<>0 THEN GOTO 4000
+4220 REMOVE (PRT01_DEV,KEY=E0$(1,14),DOM=4230)
+4290 GOTO 1000
+4500 REM " --- Overlay
+4510 LET O9=0
+4520 IF O8=0 THEN RUN "PRM.MF"
+4540 RUN "PRM.MA"
+5000 REM " --- Display
+5020 PRINT @(15,9),E[0]:M1$,F[0]:M2$,@(15,10),E[1]:M1$,F[1]:M2$,@(15,11),E[2]:
+5020:M1$,F[2]:M2$,@(15,12),E[3]:M1$,F[3]:M2$,@(15,13),E[4]:M1$,F[4]:M2$,@(15,1
+5020:4),E[1]+E[2]+E[3]+E[4]:M1$,F[1]+F[2]+F[3]+F[4]:M2$,@(15,15),E[5]:M1$,F[5]
+5020::M2$,@(15,17),F[6]:M1$,@(15,18),F[7]:M1$,@(15,19),F[8]:M1$,@(15,20),F[9]:
+5020:M3$,@(15,21),F[10]:M1$,
+5090 RETURN
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions
+8095 DEF FNV(Q$)=42+INT(LEN(Q$)/2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 SETERR 9000
+9220 RUN "PRM.MA"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END

@@ -1,0 +1,168 @@
+0010 REM "APM - BALANCE CHECKBOOK"
+0020 REM "Program APM.ED"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0085 SETESC 9000
+0090 SETERR 9000
+0100 REM " --- Open/Lock Files"
+0200 REM " --- IOLists"
+0230 APM13A: IOLIST C0$,C1$,C[ALL]
+0250 GLT06A: IOLIST D0$,D1$,D2$,D[ALL]
+0280 GLM02A: IOLIST S0$,R[ALL],S[ALL]
+0500 REM " --- Initializations"
+0540 LET CALENDAR$=""
+0550 FOR X=1 TO P[0]
+0570 LET CALENDAR$=CALENDAR$+FNM$(P3$(X*2-1,2))
+0580 NEXT X
+0700 REM " --- Background"
+0750 PRINT @(3,6),"Statement Information:",'SB',@(2,8),"Prior Stmt Ending Date
+0750::",@(37,8),"Prior Stmt Ending Balance:",@(0,10),"Current Stmt Ending Date
+0750::",@(35,10),"Current Stmt Ending Balance:",@(42,12),"Current Book Balance
+0750::",
+1400 REM " --- Find Record"
+1420 LET C0$=A0$(1,2+P[4])
+1430 DIM C1$(25),C[3]
+1440 FIND (APM13_DEV,KEY=C0$,DOM=1500)IOL=APM13A
+1500 GOSUB 5000
+1520 LET I0=2
+1530 IF C1$(7,6)=FILL(6) THEN GOTO 3260
+1540 GOTO 4000
+2000 REM " --- Last Date"
+2010 LET V4$="Enter the Ending Date of the Prior Bank Statement"
+2020 LET V0$="D",V1$="R6N",V2$=C1$(1,6),V0=8,V1=26,V2=8,I0=0
+2030 GOSUB 7000
+2060 LET C1$(1,6)=V$
+2090 GOTO 3200
+2100 REM " --- Last Amount"
+2110 LET V4$="Enter the Ending Balance of the Prior Statement"
+2120 LET V0$="N",V1$="",V2$=STR(C[0]),V3$=M1$,V1=64,V2=8
+2130 GOSUB 7000
+2160 LET C[0]=V
+2190 GOTO 3200
+2200 REM " --- Current Date"
+2210 LET V4$="Enter the Ending Date from the Current Bank Statement"
+2220 LET V0$="D",V1$="R6N",V2$=C1$(7,6),V0=8,V1=26,V2=10,I0=2
+2230 GOSUB 7000
+2260 LET C1$(7,6)=V$
+2290 GOTO 3200
+2300 REM " --- Current Amount"
+2310 LET V4$="Enter the Ending Balance from the Current Bank Statement"
+2320 LET V0$="N",V1$="",V2$=STR(C[1]),V3$=M1$,V1=64,V2=10
+2330 GOSUB 7000
+2360 LET C[1]=V
+2390 GOTO 3200
+2400 REM " --- Check Book Balance"
+2420 LET V0$="N",V1$="",V2$=STR(C[2]),V3$=M1$,V1=64,V2=12,I0=3
+2430 GOSUB 7000
+2460 LET C[2]=V
+2490 GOTO 3200
+3200 REM " --- Seq Control"
+3210 IF V3=4 THEN IF I0>1 THEN GOTO 3300
+3220 IF V3<>2 THEN GOTO 3250
+3230 IF I0>0 THEN LET I0=I0-1
+3240 GOTO 3260
+3250 LET I0=I0+1
+3260 ON I0 GOTO 2000,2100,2200,2300,3390
+3390 GOTO 4000
+4000 REM " --- Options"
+4010 LET V0$="S",V1$="KC",V2$="Y",V3$="",V4$="Is The Above Information Correct
+4010: (Y/N/Recalculate/Book)?",V0=4,V1=FNV(V4$),V2=22
+4020 GOSUB 7000
+4030 IF V3=4 THEN GOTO 4900
+4040 IF V$="R" THEN GOTO 6000
+4050 IF V$="BOOK" THEN GOTO 2400
+4070 ON POS(V$="YN") GOTO 4000,4100,2200
+4100 REM " --- Write Record"
+4120 WRITE (APM13_DEV,KEY=C0$)IOL=APM13A
+4200 PRINT @(0,7),'LD',@(0,8),'LD',@(0,9),'LD',
+4300 RUN "APM.EE"
+4900 LET O0=1
+4920 RUN "APM.EA"
+5000 REM " --- Display"
+5020 PRINT 'SF',@(26,8),FNB6$(C1$(1,6)),@(64,8),C[0]:M1$,@(26,10),FNB6$(C1$(7,
+5020:6)),@(64,10),C[1]:M1$,@(64,12),C[2]:M1$,
+5090 RETURN
+6000 REM " --- Find G/L Record"
+6005 PRINT @(64,12),'CL','SB',@(27,22),"Calculating: ",'SF',
+6010 DIM R[13],S[13],U[3]
+6020 LET R0$=A0$(1,12),S0$=R0$+"0"
+6025 IF P4$(6,1)<>"Y" THEN LET S0$=R0$+"4"
+6030 FIND (GLM02_DEV,KEY=S0$,DOM=6040)IOL=GLM02A
+6040 LET T0$="",T1$="",T2$="",T3$="",X$="",I=POS(C1$(9,4)<=CALENDAR$,4)
+6050 IF I=0 THEN GOTO 6790
+6080 LET I=INT((I+3)/4)
+6100 REM " --- Calculate Balance"
+6110 DIM X[1],D[4]
+6120 FOR X=0 TO I
+6130 LET X[0]=X[0]+R[X],X[1]=X[1]+S[X]
+6140 NEXT X
+6150 CALL "SYC.CA",C1$(7,6),X$,1
+6160 LET Y$=FNYEAR_YY21$(P[2]),P$=STR(I:"00"),D0$=R0$+Y$+P$+X$,AMOUNT=0
+6190 READ (GLT06_DEV,KEY=D0$,DOM=6200)
+6200 REM " --- Accumulate transactions for period after statement date"
+6210 LET K$=KEY(GLT06_DEV,END=6300)
+6220 IF POS(R0$=K$)<>1 THEN GOTO 6300
+6230 IF K$(13,4)<>Y$+P$ THEN GOTO 6300
+6240 READ (GLT06_DEV,KEY=K$)IOL=GLT06A
+6250 LET AMOUNT=AMOUNT+D[0]
+6290 GOTO 6200
+6300 REM " --- Back out transactions for period after statement date"
+6310 LET X[0]=X[0]-AMOUNT
+6700 REM " --- All Done"
+6720 LET C[2]=X[0]
+6740 PRINT @(64,12),C[2]:M1$,
+6790 GOTO 4000
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions"
+8010 DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+8025 DEF FNB6$(Q1$)=Q1$(3,2)+"/"+Q1$(5,2)+"/"+FNYY21_YY$(Q1$(1,2))
+8055 DEF FNM$(Q1$)=FNA$(Q1$(1),"XXX")+FNA$(Q1$(2),"XXX")
+8090 DEF FNV(Q$)=42+INT(LEN(Q$)/2)
+8110 REM " --- FNYEAR_YY21$ Convert Numeric Year to 21st Century 2-Char Year"
+8115 DEF FNYEAR_YY21$(Q)=FNYY_YY21$(STR(MOD(Q,100):"00"))
+8120 REM " --- FNYY_YY21$ Convert 2-Char Year to 21st Century 2-Char Year"
+8125 DEF FNYY_YY21$(Q1$)
+8130 LET Q3$=" ABCDE56789ABCDEFGHIJ",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABC
+8130:DEFGHIJ"))
+8135 RETURN Q1$
+8140 FNEND
+8145 REM " --- FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+8150 DEF FNYY21_YY$(Q1$)
+8155 LET Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABC
+8155:DEFGHIJ"))
+8160 RETURN Q1$
+8165 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END

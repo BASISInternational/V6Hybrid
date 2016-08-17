@@ -1,0 +1,93 @@
+0010 REM "SYC - General Conversion Pre-Processing"
+0020 REM "Program SYC60A"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0050 REM "MODULE$  : Calling Application ID (Input)"
+0060 REM "SYS01_DEV: SYS-01 Channel Number (Input)"
+0070 REM "STATUS   : 0=No Error (Returned)"
+0075 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER MODULE$,SYS01_DEV,STATUS
+0500 REM " --- Initializations"
+0510 DIM MESSAGE$[5],INFO$[20],DESCRIPTIONS$[12]
+0550 LET STATUS=0
+0600 REM " --- Application descriptions"
+0605 LET DESCRIPTIONS$[1]="Accounts Payable"
+0610 LET DESCRIPTIONS$[2]="Accounts Receivable"
+0615 LET DESCRIPTIONS$[3]="Bill Of Materials"
+0620 LET DESCRIPTIONS$[4]="General Ledger"
+0625 LET DESCRIPTIONS$[5]="Inventory"
+0630 LET DESCRIPTIONS$[6]="MRP"
+0635 LET DESCRIPTIONS$[7]="Order Processing"
+0640 LET DESCRIPTIONS$[8]="Payroll"
+0645 LET DESCRIPTIONS$[9]="Purchase Orders"
+0650 LET DESCRIPTIONS$[10]="Sales Analysis"
+0655 LET DESCRIPTIONS$[11]="SpeedShip"
+0660 LET DESCRIPTIONS$[12]="Shop Floor Control"
+0665 LET APPLICATIONS$="APARBMGLIVMPOPPRPOSASHWO"
+0670 LET X=POS(MODULE$=APPLICATIONS$,2),X=(X+1)/2
+0675 LET DESCRIPTION$=DESCRIPTIONS$[X]
+0700 REM " --- Background"
+0710 CALL "SYC.WC",1,0,80,0,0,4,0
+0720 PRINT 'SB',@(29,3),"Converting",'SF',
+1000 REM " --- Have entry files been cleared?"
+1010 FIND (SYS01_DEV,KEY="FOOBAR",DOM=1500)
+1020 LET MESSAGE$[0]="The System Has Determined That There Are Registers And U
+1020:pdates Which"
+1030 LET MESSAGE$[1]="Have Not Been Run. This Conversion Program Can Not Be Ru
+1030:n Until All"
+1040 LET MESSAGE$[2]="Entry Files Are Empty. Use The "+$22$+"Entry And Work Fi
+1040:le Redefinition"+$22$
+1050 LET MESSAGE$[3]="Task On The Upgrade Conversion Menu To Clear These Files
+1050:."
+1060 LET MESSAGE$[5]="                 Press <Enter> To Continue"
+1070 LET LINES=5,STATUS=99
+1090 GOTO 3000
+1500 REM " --- System Installed?"
+1510 CALL "SYC.VA",MODULE$,INFO$[ALL]
+1520 IF INFO$[20]="Y" THEN GOTO 2000
+1530 LET MESSAGE$[0]=DESCRIPTION$+" Is Required To Run This Task (<Enter>=Cont
+1530:inue)"
+1550 LET LINES=0,STATUS=99
+1590 GOTO 3000
+2000 REM " --- Display Warning"
+2010 LET MESSAGE$[0]="This Task Should Be Run Once And ONLY Once. If This Task
+2010: Is Run More"
+2020 LET MESSAGE$[1]="Than Once, Data Integrity May Be Lost (<Enter>=Continue)
+2020:"
+2030 LET LINES=1
+3000 REM " --- Display message"
+3010 CALL "SYC.XA",2,MESSAGE$[ALL],LINES,-1,-1,V$,V3
+3020 IF V3 THEN LET STATUS=99
+4000 REM " --- OK to continue?"
+4010 IF STATUS THEN GOTO 9900
+4020 LET V4$="Do You Wish To Convert "+DESCRIPTION$+" To Version 6.0"
+4030 CALL "SYC.YN",0,V4$,0,V$,V3
+4040 IF V$<>"YES" THEN LET STATUS=99
+4090 GOTO 9900
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 LET STATUS=99
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to Calling Program"
+9950 EXIT
+9999 END

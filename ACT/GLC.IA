@@ -1,0 +1,71 @@
+0010 REM "GLC - Period/Year End File Verification"
+0020 REM "Program GLC.IA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0045 REM "N0$   : Firm for which year is being closed (input)"
+0050 REM "STATUS: 0=No error (returned)"
+0055 REM 
+0080 SETERR 9000
+0085 SETESC 9900
+0090 ENTER N0$,STATUS
+0100 REM " --- Open/Lock Files
+0110 LET FILES=3
+0120 DIM FILES$[FILES],OPTIONS$[FILES],CHANNELS[FILES]
+0130 LET FILES$[1]="GLE-01",FILES$[2]="GLE-03",FILES$[3]="GLT-04"
+0160 CALL "SYC.DA",1,1,3,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STATUS
+0170 IF STATUS THEN GOTO 9900
+0180 LET GLE01_DEV=CHANNELS[1],GLE03_DEV=CHANNELS[2],GLT04_DEV=CHANNELS[3]
+0500 REM " --- Initializations
+0520 DIM DESCRIPTIONS$[FILES]
+0530 LET DESCRIPTIONS$[1]="Journal Entry"
+0540 LET DESCRIPTIONS$[2]="Account Allocation"
+0550 LET DESCRIPTIONS$[3]="Daily Detail"
+1000 REM " --- Make sure each file is empty
+1010 FOR X=1 TO FILES
+1040 LET K$=KEY(CHANNELS[X],END=1900)
+1050 IF POS(N0$=K$)<>1 THEN GOTO 1900
+1100 REM " --- File not empty
+1110 LET V4$=DESCRIPTIONS$[X]+" Update Must Be Run"
+1190 GOTO 1800
+1200 REM " --- File locked?
+1210 IF ERR<>0 THEN GOTO 1900
+1220 LET V4$="The "+DESCRIPTIONS$[X]+" File Is In Use"
+1290 GOTO 1800
+1800 REM " --- Standard Warning/Error
+1810 DIM MESSAGE$[1]
+1820 LET MESSAGE$[0]=V4$+" (<Enter>=Continue)",STATUS=1
+1830 CALL "SYC.XA",2,MESSAGE$[ALL],0,22,-1,V$,V3
+1900 REM " --- Next file
+1980 IF STATUS>0 THEN EXITTO 4000
+1990 NEXT X
+4000 REM " --- All Done
+4090 GOTO 9900
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9205 SETESC 9000
+9210 SETERR 9000
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to Calling Program
+9910 FOR X=1 TO FILES
+9920 CLOSE (CHANNELS[X],ERR=9930)
+9930 NEXT X
+9950 EXIT
+9999 END

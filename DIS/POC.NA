@@ -1,0 +1,59 @@
+0010 REM "POC - Generate Next PO, Requisition Or Receiver Number"
+0020 REM "Program POC.NA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0045 REM "ACTION$   : A=Add/D=Delete (Input)"
+0050 REM "TYPE$     : Record type P=PO/R=Requisition/Q or C=Receiver (input)"
+0055 REM "POS10_DEV : POS-10 channel number (input)"
+0060 REM "N0$       : Firm ID (input)"
+0065 REM "SELECTION$: Next sequence number (returned)"
+0070 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER ACTION$,TYPE$,POS10_DEV,N0$,SELECTION$
+0200 REM " --- IOLIST's"
+0210 POS10N: IOLIST A0$,A[ALL]
+0500 REM " --- Initializations"
+0510 DIM A[3]
+0540 LET NUMBER=0,NUMBER=NUM(SELECTION$,ERR=0550)
+0550 LET SELECTION$="0000000",X=MIN(POS(TYPE$="PRQC")-1,2)
+1000 REM " --- Assign next number"
+1010 IF X<0 THEN GOTO 4000
+1020 LET A0$=N0$+"N",A[0]=1000,A[1]=1000,A[2]=1000,A[3]=10
+1030 EXTRACT (POS10_DEV,KEY=A0$,DOM=1040)IOL=POS10N
+1090 ON POS(ACTION$="AD") GOTO 3500,3100,3200
+3100 REM " --- Assign the next number"
+3110 LET SELECTION$=STR(A[X]:"0000000")
+3120 LET A[X]=A[X]+1
+3130 IF A[X]>9999999 THEN LET A[X]=1000
+3190 GOTO 3500
+3200 REM " --- Restore previous number"
+3210 IF (NUMBER+1)=A[X] THEN LET A[X]=MAX(NUMBER,1)
+3500 REM " --- Update record"
+3510 WRITE (POS10_DEV,KEY=A0$)IOL=POS10N
+4000 REM " --- All done"
+4090 GOTO 9900
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9950 EXIT
+9999 END

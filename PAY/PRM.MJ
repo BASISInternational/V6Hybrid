@@ -1,0 +1,110 @@
+0010 REM "PRM - Employee Maintenance - Terminate/Reactivate
+0020 REM "Program PRM.MJ"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0085 SETESC 9000
+0090 SETERR 9000
+0200 REM " --- IOLists
+0210 PRM01A: IOLIST A0$(1),A1$(1)
+0500 REM " --- Init Data
+0520 LET O9=1
+0700 REM " --- Background
+0710 PRINT @(0,L0),'CE',
+0730 CALL "SYC.WC",1,0,80,0,0,7,0
+0740 PRINT 'SB',@(15,5),"Terminate/Reactivate",
+0750 PRINT @(21,8),"Reactivation Date:",@(22,9),"Termination Date:",@(22,10),"
+0750:Termination Code:",
+0790 PRINT 'SF',
+1000 REM " --- Determine Type
+1010 LET O9=0
+1020 IF A1$(170,3)="   " THEN GOTO 2000
+1040 PRINT @(10,6),"Do You Wish To Reactivate This Employee (Yes/No)? ",
+1042 LET V0$="S",V1$="KE",V2$="",V3$="",V4$="",V0=3,V1=65,V2=6
+1044 GOSUB 7000
+1046 PRINT @(0,6),'CL',
+1050 IF V3=4 THEN GOTO 4100
+1060 IF V$="NO" THEN GOTO 4100
+1080 IF V$<>"YES" THEN GOTO 1000
+1090 PRINT @(40,8),FNB$(A1$(161,3)),
+1200 REM " --- Hire Date
+1220 LET V0$="D",V1$="R",V2$=A1$(161,3),V0=8,V1=40,V2=8
+1230 IF V2$="   " THEN LET V2$=""
+1240 GOSUB 7000
+1260 LET A1$(161,3)=V$
+1270 LET O9=1
+1290 GOTO 4000
+2000 REM " --- Terminate
+2020 PRINT @(10,6),"Do You Wish To Terminate This Employee (Yes/No)? ",'RB',
+2022 LET V0$="S",V1$="KE",V2$="",V3$="",V4$="",V0=3,V1=64,V2=6
+2024 GOSUB 7000
+2026 PRINT @(0,6),'CL',
+2030 IF V3=4 THEN GOTO 4100
+2040 IF V$="NO" THEN GOTO 4100
+2050 IF V$<>"YES" THEN GOTO 2000
+2100 REM " --- Termination Date
+2120 LET V0$="D",V1$="R",V2$=A1$(170,3),V0=8,V1=40,V2=9
+2130 IF V2$="   " THEN LET V2$=""
+2140 GOSUB 7000
+2160 LET A1$(170,3)=V$
+2200 REM " --- Termination Code
+2220 LET V0$="S",V1$="",V2$=A1$(173,3),V4$="Enter Termination Code, 'ddd' If E
+2220:mployee Is Deceased ",V0=3,V1=40,V2=10
+2240 GOSUB 7000
+2260 LET A1$(173,3)=V$
+2265 IF V$="DDD" THEN PRINT @(V1+4,V2),"Deceased",
+2270 IF V3=2 THEN GOTO 2100
+2280 LET O9=2
+2290 GOTO 4000
+4000 REM " --- Options
+4020 LET V0$="S",V1$="KC",V2$="",V3$="",V4$="Is The Above Information Correct 
+4020:(Yes/No)? ",V0=3,V1=FNV(V4$),V2=22
+4025 GOSUB 7000
+4030 IF V$="NO" THEN PRINT 'CF',; IF O9=2 THEN LET A1$(170,6)="      "; GOTO 1
+4030:000 ELSE GOTO 1000
+4040 IF V$<>"YES" THEN GOTO 4000
+4100 REM " --- Write
+4110 IF O9=0 THEN GOTO 4180
+4120 IF O9=1 THEN LET A1$(170,6)="      "
+4140 WRITE (PRM01_DEV,KEY=A0$(1,K9))IOL=PRM01A
+4190 RUN "PRM.MA"
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM "FUNCTIONS"
+8010 DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+8020 DEF FNB$(Q1$)=FNA$(Q1$(2),Q1$)+"/"+FNA$(Q1$(3),Q1$)+"/"+FNA$(Q1$(1),Q1$)
+8095 DEF FNV(Q$)=42+INT(LEN(Q$)/2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 SETERR 9000
+9220 RUN "PRM.MA"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END

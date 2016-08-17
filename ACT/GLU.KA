@@ -1,0 +1,79 @@
+0010 REM "GLU - Update Beginning Balances"
+0020 REM "Program GLU.KA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0085 SETESC 9000
+0090 SETERR 9000
+0100 REM " --- Open/Lock Files"
+0110 LOCK (GLW03_DEV)
+0200 REM " --- IOLIST's"
+0220 GLM02A: IOLIST B0$(1),A[ALL],U[ALL]
+0230 GLW03A: IOLIST C0$(1),C[ALL]
+0500 REM " --- Initializations"
+0510 DIM B0$(3+P[4]),A[MP],U[MP],C0$(2+P[4]),C[1]
+0700 REM " --- Background"
+0710 PRINT @(0,3),'CE',
+0750 CALL "SYC.NB","Updating",M0,COLUMN
+0800 REM " --- Options"
+0810 IF PROMPT$="N" THEN GOTO 0900
+0820 LET V4$="Are You Ready to Update the Account Beginning Balances"
+0830 CALL "SYC.YN",0,V4$,0,V$,V3
+0840 IF V$<>"YES" THEN GOTO 9900
+0940 REM " --- Disallow 'M'enu option in Error Routine
+0950 LET EXIT_CTRL=1
+0970 REM " --- Position File"
+0990 READ (GLW03_DEV,KEY=N0$,DOM=1000)
+1000 REM " --- Read next GLW-03 record"
+1010 READ (GLW03_DEV,END=4000)IOL=GLW03A
+1020 IF POS(N0$=C0$)<>1 THEN GOTO 4000
+1030 PRINT @(COLUMN,11),FNF$(C0$(3,P[3]),M0$),
+1500 REM " --- Retrieve GLM-02 record"
+1510 DIM B0$(3+P[4]),A[MP],U[MP]
+1520 LET B0$(1)=C0$+"4"
+1530 FIND (GLM02_DEV,KEY=B0$,DOM=1540)IOL=GLM02A
+1540 LET A[0]=C[0],U[0]=C[1]
+1550 WRITE (GLM02_DEV,KEY=B0$)IOL=GLM02A
+3900 REM " --- Loop back for next record"
+3990 GOTO 1000
+4000 REM " --- All done"
+4090 RUN PROGRAM$,ERR=9900
+8000 REM " --- Functions"
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF:
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9205 SETESC 9000
+9210 SETERR 9000
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to Menu"
+9950 RUN "SYS.AA"
+9999 END

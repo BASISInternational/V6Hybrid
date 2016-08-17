@@ -1,0 +1,7 @@
+V6Demoyear log started: 2016-08-15@17:35:17
+Starting demo fiscal year: 1996
+Increment fiscal year by: 20
+
+
+V6 demo year processing completed
+End Time: 08/15/2016 05:35:18 

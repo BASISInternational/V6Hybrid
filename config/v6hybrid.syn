@@ -1,0 +1,33 @@
+// Application Synchronization File
+// Barista Application Framework.  Copyright BASIS International Ltd.
+SYSID=V6HYBRID
+SYSDESC=Addon V6 Hybrid
+SYSCOMP=00000000;Default Company
+SYSCOPY=Copyright: Description^
+SYSPAR=
+SYSDIR=../apps/V6Hybrid/
+SYSAPP=V6H;Addon V6 Hybrid;;;V6Hybrid;../apps/V6Hybrid/prop/;ENU
+SYSSTBL=SET V6HYBRID=../apps/V6Hybrid/data/
+SYSSTBL=SET V6HYBRID_IMAGE=../apps/V6Hybrid/image/
+SYSSTBL=SET V6HYBRID_LIB=../apps/V6Hybrid/lib/
+SYSSTBL=SET V6HYBRID_PROG=../apps/V6Hybrid/prog/
+SYSSTBL=SET V6HYBRID_PROP=../apps/V6Hybrid/prop/
+SYSSTBL=SET +V6DATA=../apps/V6Hybrid/ADATA/
+SYSSTBL=SET +V6_DIR_PDF=../apps/V6Hybrid/documents/
+SYSSTBL=SET +V6_DIR_SPROCS=../apps/V6Hybrid/sprocs/
+SYSPFX=../apps/V6Hybrid/prog/
+SYSPFX=../apps/V6Hybrid/ADATA/
+SYSPFX=../apps/V6Hybrid/DLR/
+SYSPFX=../apps/V6Hybrid/SCN/
+SYSPFX=../apps/V6Hybrid/reports
+SYSPFX=../apps/V6Hybrid/SPROCS/
+SYSPFX=../apps/V6Hybrid/ADM/
+SYSPFX=../apps/V6Hybrid/ACT/
+SYSPFX=../apps/V6Hybrid/DIS/
+SYSPFX=../apps/V6Hybrid/MFG/
+SYSPFX=../apps/V6Hybrid/PAY/
+SYSPFX=../apps/V6Hybrid/SHS/
+SYSCFG=+V6DATA=../apps/V6Hybrid/ADATA/
+SYSLANG=ENU
+DEVICE=alias T0 syswindow "" invisible, USERID=admin, LEGACYID=+ON
+

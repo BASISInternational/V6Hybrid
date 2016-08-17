@@ -1,0 +1,155 @@
+0010 REM "POC - Generate PO Invoice General Ledger Postings"
+0020 REM "Program POC.GB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0041 REM "ACTION$    : Action code/D=GL distribution (input)"
+0042 REM "CHANNELS[n]: Channel numbers (input)"
+0043 REM "             [1]=GLM-01     [3]=GLT-05     [5]=ARM-10"
+0044 REM "             [2]=GLT-04     [4]=APM-10"
+0045 REM "PARAMS$[n] : String parameters (input)"
+0046 REM "             [0]=Firm ID                [6]=Vendor name"
+0047 REM "             [1]=AP Distribution Code   [7]=Vendor mask"
+0048 REM "             [2]=AR Distribution Code   [8]=GL 4th parameter string"
+0049 REM "             [3]=Distribute by item?    [9]=Cost method"
+0050 REM "             [4]=GL posting date       [10]=GL account number"
+0051 REM               [5]=Vendor number
+0055 REM "PARAMS[n]  : Numeric parameters (input)"
+0056 REM "             [0]=Item length            [3]=Description 1 length"
+0057 REM "             [1]=Precision              [4]=Description 2 length"
+0058 REM "             [2]=GL length              [5]=Description 3 length"
+0060 REM "ITEM$[n]   : Item information (input)"
+0062 REM "             [0]=Item number            [6]=Item GL Accounts"
+0064 REM "             [1]=Item description
+0066 REM "W$[n]      : POE-25/35 strings (input)"
+0068 REM "Y$[n]      : POM-02 strings (input)"
+0070 REM "VALUES[n]  : Numeric values (input)"
+0072 REM "             [0]=Invoice extension      [2]=PO Receipt Quantity"
+0074 REM "             [1]=PO Receipt extension   [3]=Quantity on hand"
+0076 REM "STATUS     : 0=No error (returned)"
+0078 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER ACTION$,CHANNELS[ALL],PARAMS$[ALL],PARAMS[ALL],ITEM$[ALL],W$[ALL],Y
+0090:$[ALL],VALUES[ALL],STATUS
+0200 REM " --- IOLIST's'
+0210 APM10B: IOLIST A0$(1),A1$(1)
+0220 ARM10D: IOLIST B0$(1),B1$(1)
+0400 REM " --- Parameters"
+0405 DIM G[4],I[5]
+0410 LET GLM01_DEV=CHANNELS[1],GLT04_DEV=CHANNELS[2],GLT05_DEV=CHANNELS[3]
+0415 LET APM10_DEV=CHANNELS[4],ARM10_DEV=CHANNELS[5]
+0420 LET I[0]=PARAMS[0],I[1]=PARAMS[1],G[4]=PARAMS[2]
+0425 LET I[3]=PARAMS[3],I[4]=PARAMS[4],I[5]=PARAMS[5]
+0430 LET N0$=PARAMS$[0],APCODE$=PARAMS$[1],ARCODE$=PARAMS$[2]
+0435 LET DISTCODE$=PARAMS$[3],WHEN$=PARAMS$[4],VENDOR$=PARAMS$[5]
+0440 LET NAME$=PARAMS$[6],M0$=PARAMS$[7],G4$=PARAMS$[8],METHOD$=PARAMS$[9]
+0445 LET METHOD$=PARAMS$[7],G4$=PARAMS$[8],Y0$=Y$[0],Y1$=Y$[1],Y2$=Y$[2]
+0450 LET W0$=W$[0],W1$=W$[1],W2$=W$[2],IVITEM$=ITEM$[0],IVDESC$=ITEM$[1]
+0455 LET IVACCTS$=ITEM$[6],IV_EXTENSION=VALUES[0],PO_EXTENSION=VALUES[1]
+0460 LET QTY=VALUES[2],ONHAND=VALUES[3]
+0500 REM " --- Initializations"
+0510 DIM A0$(32),A1$(4*G[4]),B0$(32),B1$(11*G[4])
+0550 LET REF1$=FNF$(VENDOR$,M0$),REF2$=W0$(11,10)
+0560 LET POACCT$="",APACCT$="",PPVACCT$="",ADJACCT$="",APMEMO$="",IVMEMO$=""
+0570 LET POAMT=0,PPVAMT=0,ADJAMT=0,APAMT=IV_EXTENSION
+0580 LET POQTY=0,PPVQTY=0,ADJQTY=0,APQTY=0
+0590 IF G4$(3,1)="Y" THEN LET APQTY=QTY
+0800 REM " --- Retrieve AP distribution code"
+0810 LET A0$(1)=N0$+"B"+APCODE$
+0820 FIND (APM10_DEV,KEY=A0$(1,5),DOM=0830)IOL=APM10B
+0830 LET APACCT$=A1$(1,G[4]),APMEMO$=NAME$
+0900 REM " --- Branch based on action code/line code"
+0910 IF ACTION$="D" THEN GOTO 3000
+0990 ON POS(Y1$(21,1)="SNVMO") GOTO 4900,1000,2000,4900,4900,2000
+1000 REM " --- Account numbers for Standard Lines"
+1010 LET IVMEMO$=IVITEM$(1,I[0])+" "+FNITEM$(IVDESC$,I[3],I[4],I[5])
+1020 LET REF3$="Line "+W0$(21,3)
+1030 LET POACCT$=IVACCTS$(2*G[4]+1,G[4])
+1040 LET PPVACCT$=IVACCTS$(3*G[4]+1,G[4])
+1050 IF METHOD$="S" THEN GOTO 1200
+1060 LET PPVACCT$=IVACCTS$(5*G[4]+1,G[4])
+1070 LET ADJACCT$=IVACCTS$(6*G[4]+1,G[4])
+1200 REM " --- Retrieve distribution code record"
+1210 IF DISTCODE$<>"Y" THEN GOTO 1400
+1220 LET B0$(1)=N0$+"D"+ARCODE$
+1230 FIND (ARM10_DEV,KEY=B0$(1,5),DOM=1240)IOL=ARM10D
+1240 LET POACCT$=B1$(10*G[4]+1,G[4])
+1250 LET PPVACCT$=B1$(9*G[4]+1,G[4])
+1260 IF METHOD$="S" THEN GOTO 1400
+1270 LET PPVACCT$=B1$(5*G[4]+1,G[4])
+1280 LET ADJACCT$=B1$(8*G[4]+1,G[4])
+1400 REM " --- Prorate postings based on receipt/on hand quantities?"
+1410 LET POAMT=PO_EXTENSION,POQTY=QTY,PPVAMT=IV_EXTENSION-PO_EXTENSION
+1420 IF METHOD$="S" THEN GOTO 4000
+1430 IF PPVAMT=0 THEN GOTO 4000
+1440 IF ONHAND>=QTY THEN GOTO 4000
+1450 LET PERCENT=(ONHAND*100)/QTY,AMOUNT=PPVAMT*(PERCENT/100)
+1460 LET ADJAMT=PPVAMT-AMOUNT,PPVAMT=PPVAMT-AMOUNT
+1490 GOTO 4000
+2000 REM " --- Account numbers for Non-Stock/Other Lines"
+2010 LET POACCT$=Y2$(1,G[4]),PPVACCT$=Y2$(G[4]+1,G[4]),MEMO$=W1$(20,40)
+2020 LET POAMT=PO_EXTENSION,POQTY=QTY,PPVAMT=IV_EXTENSION-PO_EXTENSION
+2030 LET REF3$="Line "+W0$(21,3)
+2090 GOTO 4000
+3000 REM " --- Invoice distribution"
+3010 LET APACCT$=PARAMS$[10],APAMT=IV_EXTENSION,MEMO$=NAME$,REF3$="Misc"
+3020 IF LEN(W0$)>20 THEN LET REF3$="GL Seq "+W0$(21,3)
+4000 REM " --- Generate GL Recap Postings"
+4010 LET ACCOUNT$=APACCT$,MEMO$=APMEMO$,AMOUNT=-APAMT,UNITS=-APQTY
+4020 GOSUB GLPOST
+4040 LET ACCOUNT$=POACCT$,MEMO$=IVMEMO$,AMOUNT=POAMT,UNITS=POQTY
+4050 IF AMOUNT THEN GOSUB GLPOST
+4060 LET ACCOUNT$=PPVACCT$,AMOUNT=PPVAMT,UNITS=PPVQTY
+4070 IF AMOUNT THEN GOSUB GLPOST
+4080 LET ACCOUNT$=ADJACCT$,AMOUNT=ADJAMT,UNITS=ADJQTY
+4090 IF AMOUNT THEN GOSUB GLPOST
+4900 REM " --- All done"
+4910 LET STATUS=0
+4990 GOTO 9900
+6900 REM " --- Standard G/L Posting Routine"
+6910 GLPOST:
+6950 CALL "GLC.AA",GLM01_DEV,GLT04_DEV,GLT05_DEV,ACCOUNT$,WHEN$,REF1$,REF2$,RE
+6950:F3$,MEMO$,AMOUNT,UNITS,STATUS
+6990 RETURN
+8000 REM " --- Function Definitions"
+8080 DEF FNP$(Q$)=CVS(Q$,2)
+8090 DEF FNITEM$(Q$,Q1,Q2,Q3)=CVS(Q$(1,Q1)+" "+Q$(Q1+1,Q2)+" "+Q$(Q1+Q2+1,Q3),
+8090:32)
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF:
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 LET STATUS=999
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9950 EXIT
+9999 END

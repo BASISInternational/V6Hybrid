@@ -1,0 +1,100 @@
+0010 REM "PRM - Tax Code Maintenance Listing"
+0020 REM "Program PRM.CC"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0085 SETESC 9000
+0090 SETERR 9000
+0095 PRECISION P[3]
+0100 REM " --- Open/Lock Files"
+0170 CALL "SYC.GA",7,1,"","",STATUS
+0175 IF STATUS=1 THEN GOTO 9900
+0200 REM " --- IOLISTs"
+0210 PRM10C: IOLIST A0$(1),A[ALL],A1$,A2$
+0500 REM " --- Init Data"
+0510 LET H0=80,H=0,HEADINGS=2,WHEN$=F0$(7,3),CLOCK$=""
+0520 LET L9=59,L=L9+1,T0=0
+0530 DIM HEADINGS$[HEADINGS]
+0540 LET HEADINGS$[0]=N1$,HEADINGS$[1]=N4$+" Listing"
+1000 REM " --- Initial Read"
+1020 READ (PRM10_DEV1,KEY=N0$+"C",DOM=1100)
+1100 REM " --- Main Read"
+1120 LET K$=KEY(PRM10_DEV1,END=4000)
+1130 IF POS(N0$+"C"=K$)<>1 THEN GOTO 4000
+1140 READ (PRM10_DEV1)IOL=PRM10C
+2000 REM " --- Print"
+2010 IF L+2>L9 THEN GOSUB 5000
+2020 PRINT (7)@(0),A0$(4,2),@(5),A0$(6,16),@(22),A0$(22,2),@(25),A0$(24,1),@(2
+2020:7),A0$(25,5),@(33),A0$(30,1),@(35),A0$(31,2),@(40),A0$(33,1),@(45),A[0]:M
+2020:3$,A[1]:M1$,A[2]:M1$
+2030 PRINT (7)@(5),A0$(34,10),@(25),A0$(44,1),@(33),A0$(45,15),@(50),A0$(60,5)
+2030:,@(62),A0$(70,15),
+2040 IF POS(" "<>A0$(70,15))<>0 THEN PRINT (7)""
+2050 LET L=L+2
+2055 IF L+1>L9 THEN GOSUB 5000
+2060 FOR X=0 TO 4
+2070 PRINT (7)@(38+3*M1+X*3),A1$(X*2+1,2),
+2080 NEXT X
+2090 PRINT (7)'LF',
+2100 LET L=L+1
+2105 IF L+2>L9 THEN GOSUB 5000
+2110 FOR X=0 TO 4
+2120 PRINT (7)@(39+3*M1+X*3),A2$(X+1,1),
+2130 NEXT X
+2140 PRINT (7)'LF'
+2150 LET L=L+2,T0=T0+1
+2160 GOTO 1100
+4000 REM " --- End Of File"
+4020 PRINT (7)'LF',@(10),"Total Records:",T0
+4100 GOTO 9900
+5000 REM " --- Heading"
+5020 LET L=HEADINGS+1
+5030 CALL "SYC.HA",7,HEADINGS$[ALL],HEADINGS,H,H0,WHEN$,CLOCK$,STATUS
+5040 IF STATUS<>0 THEN EXITTO 9900
+5090 IF P3$(2,1)="Y" THEN PRINT @(29),"Dist",
+5110 PRINT (7)@(0),"Tax",@(27),"Period",@(34+M1),"Tax",@(33+2*M1),"Min",@(33+3
+5110:*M1),"Max",@(39+3*M1),"Total To/"
+5120 PRINT (7)@(0),"Code",@(5),"Description",@(22),"RC",@(25),"T",@(27),"Taken
+5120:",@(33),"P",@(35),"TC",@(39),"Spl",@(33+M1),"Rate",@(31+2*M1),"Limit",@(3
+5120:1+3*M1),"Limit",@(39+3*M1),"Operator"
+5130 PRINT (7)@(5),"W-2 Name",@(20),"W-2 Type",@(33),"Employer ID #",@(50),"Ca
+5130:lc Seq",@(62),"State ID Code",'LF'
+5140 LET L=L+4
+5190 RETURN
+8000 REM " --- Functions"
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF:
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 SETERR 9000
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END

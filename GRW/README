@@ -1,0 +1,379 @@
+GENERAL Version 4.1
+Copyright (C) 1992-1995 by Allen D. Miglore.  All rights reserved.
+GENERAL is a trademark of Allen D. Miglore
+
+GENERAL is published by Synergetic Data Systems, Inc.
+                        2221 Harriman Court
+                        El Dorado Hills, CA 95762
+                        Phone: (916) 933-0120
+                        Fax:   (916) 933-5793
+
+
+Version 4.0 released April 26, 1993.
+Version 4.01 released May 10, 1993.
+Version 4.02 released May 24, 1993.
+Version 4.03 released June 21, 1993.
+Version 4.04 released January 31, 1994.
+Version 4.1 released May 1, 1995.
+
+
+
+         ****   INSTALLATION GUIDELINES AND PROCEDURES  ****
+
+
+INTRODUCTION
+
+GENERAL Version 4 is a set of files which all begin with the
+letters "GEN".  A basic rule of thumb is that all these files
+must be installed into a single directory which is accessible to
+Business Basic via normal directory searching.  When first
+executed, GENERAL will create a subdirectory "TMP" under the
+directory where it is installed.  This is used for work files
+while reports are being created.  Since GENERAL and the work
+files are in the same directory tree, it is necessary that
+GENERAL be installed on a file system or disk drive with adequate
+space.  As the work files can get quite large, you should
+probably have at least 5MB of space available, and possibly more
+if your files are large or the number of users who will be
+producing reports is high.
+
+MINIMUM PERMISSION REQUIREMENTS
+
+Users who will use GENERAL must have read/write access to the
+main directory, and read/write/execute access to the TMP
+subdirectory.  In addition, users must have read/write access to
+the file GEN4MST, and read access to all other GEN* files.
+
+DICTIONARY MANAGEMENT
+
+GENERAL's dictionary file is called GEN4MST.  It contains not
+only file dictionary definitions, but also stored commands and
+reports, and user command history.  The media that SDSI ships
+contains a basic dictionary file, with definitions for the sample
+files included with the package.  This dictionary file is named
+GEN4MST.SDS.  Upon execution, GENERAL will see this ".SDS" file,
+and will do one of two things:
+
+       If a GEN4MST file exists, the GEN4MST.SDS contents will be
+       merged into the existing GEN4MST file, via a simple
+       READRECORD/WRITERECORD copy, with overwrite protection.  The
+       .SDS file is then erased.
+
+       If no GEN4MST file exists, the GEN4MST.SDS file is renamed
+       to GEN4MST.
+
+If this is an upgrade installation that involves a dictionary
+conversion, then SDSI will have shipped both the converted
+dictionary, as GEN4MST, and the basic dictionary, GEN4MST.SDS. 
+Upon first execution, the sample file dictionaries will be merged
+with the converted dictionary.
+
+INSTALLATION PROCEDURES
+
+1) Before installing, if you are upgrading, make sure you have a
+backup  of the current GENERAL directory, in case something goes
+wrong.  If this is a new installation, then you should determine
+what directory GENERAL will reside in, and if necessary, create
+that directory and establish proper permissions with these
+commands:
+
+       mkdir /general-directory
+       chmod 777 /general-directory   (on Unix only)
+
+2) Make the GENERAL home directory the current directory:
+
+       cd /general-directory
+
+3) If on Unix, make sure that permissions won't be changed
+incorrectly:
+
+       umask 0
+
+4) Download the files.  If more than one media is provided,
+download each of them:
+
+       A) Unix: tar xvf /dev/device-name
+
+       B) DOS:  copy a:*.*
+
+5) Uncompress any files that are in compressed format.  
+
+       A) On Unix, these may be in "compress" format, ending in a
+       ".Z", or "pack" format, ending in ".z".
+
+              uncompress *.Z, or unpack *.z
+
+       B) On DOS, there may be a self-extracting archive, ending in
+       a      .EXE extension.  Just type its name.  If the name is
+       UNPACK.EXE:
+
+              unpack
+
+       On DOS, when the extraction is done, you can delete the .EXE
+       file.
+
+
+6) Execute GENERAL as the only user:
+
+       Start Business Basic, with at least 255 pages.  Make sure
+       that the GENERAL directory is accessible.  RUN "GEN4"
+
+       GENERAL will execute, performing any dictionary merge or
+       rename, as described earlier, and prompt you for a serial
+       number and activation key, which has been provided by SDSI.
+
+       Once activated, users can begin using GENERAL.
+
+                     ****    SUPPLEMENTAL DOCUMENTATION    ****
+
+April 20, 1993
+
+ADDITIONAL SUPPORT FOR EXTERNAL DICTIONARIES
+
+GENERAL Version 4 provides real-time support for dictionaries of
+Filix, TAOS, and MAS90.  In all cases, GENERAL's internal
+dictionary provides enhanced  features that users and developers
+may wish to take advantage of.
+
+According to the manual, the only way to take advantage of the
+GENERAL dictionary features is to create a complete new
+dictionary of the same name in the internal dictionary.  This
+would mean that future changes to the file structure would requre
+updating the GENERAL dictionary as well as the external
+dictionary.
+
+After the manual was printed, however, some enhancements were
+developed that allow incremental additions to be placed in the
+GENERAL dictionary, while retaining the use of the extenal
+dictionary for data definitions.
+
+To establish an incremental dictionary, create a dictionary
+element named with a plus sign (+), followed by the name of the
+file as defined in the external dictionary.  For example, to add
+an incremental dictionary to the MAS90 customer master file, set
+up a dictionary name "+AR.CUST".
+
+When defining an incremental dictionary, GENERAL will allow
+maintenance of fields, links, and alternate sorts.  The fields
+found in the external file are available for use in both the
+field expressions and in link key  expressions, and the related
+search/paste options include those external fields.
+
+There are two disadvantages to using incremental dictionaries
+rather than full internal dictionaries.
+
+       First, GENERAL is optimized for loading its own dictionary,
+       but not external ones.  As both are loaded in sequence,
+       there is a performance penalty in dictionary maintenance and
+       in report parsing (but not in report printing).
+
+       Second, loading both dictionaries requires more memory,
+       since both must exists at one time in memory, before they
+       are merged.  The merging and manipulation of the two
+       dictionaries results in more memory being required.  As this
+       will be a workspace issue, a larger START size would take
+       care of any error 31's that may show up.
+
+
+June 21, 1993 - Version 4.03 release enhancement
+
+
+Version 4.03, in addition to correcting several problems, also includes an
+ability to embed link field definitions in a dictionary expression.  These
+examples will hopefully make it clear how this is done:
+
+In the DEMO.INVOICE file, a field that looks up the customer name:
+
+DEMO.CUST:NAME
+or
+"Customer name: "+DEMO.CUST:NAME+"  Phone: "+DEMO.CUST:PHONE
+
+
+A two level cross reference, to the salesperson file from the invoice file:
+
+DEMO.CUST:DEMO.SLSP:NAME
+
+
+Here is an example of a summary link definition used in the customer's file:
+
+ID+" "+NAME+" "+STR(@SUM:DEMO.INVOICES:AMOUNT:"###,###,###.00-")
+
+
+Note that a colon used in the STR() function isn't interpreted as part of the
+link.  This is because the parsing looks for the text :" (colon immediately
+followed by a quote) and assumes that that isn't part of a link.  This is
+the ONLY case where the colon isn't considered part of a link.  Be sure,[
+therefore, that all colons are immediately followed by quoted literals.  If
+a mask for some reason needs to be a field, like STR(AMOUNT:AMTMASK), then
+use a literal null to get the parsing to work: STR(AMOUNT:""+AMTMASK).
+
+The use of link expressions is functionally no different than using the
+XREF, TREF, and other ?REF() functions, but it is easier to see what you
+are doing, and matches the syntax of the LIST command cross referencing.
+
+
+September 1, 1993  - Version 4.04 enhancments.
+
+Version 4.04 corrected several problems, provided the base version level
+for the port to Thoroughbred 8.1.2 level Basic, and also provided two
+enhancements worthy of noting.
+
+In the dictionary, in prior releases, if a disk file name contained a
+run-time replacement, the "data assist" (record dump) found in the Fields
+maintenance section wouldn't work.  In Version 4.04, the run-time replacement
+is replaced, even if it requires a prompt, then the file is opened for
+viewing.
+
+GENERAL can now be started from the operating system command line, and
+instructed to execute a report under a given user ID.  Earlier releases
+allowed this to occur when GENERAL was run in background (as in from cron),
+but the system variables were not checked when run in foreground.  This
+has been corrected.  If the system variables GEN_GO and GEN_USER are set
+to a report name and login user ID, respectively, then the specified report
+will be executed automatically, then the task will RELEASE back to the
+operating system.  The report name can be a PROMPT report, a saved command,
+or a full LIST command.  Naturally, these variables must be "unset" or
+set to null for GENERAL to execute normally.
+
+Related to this, under MAS90, a third variable may be set: SOA_COMP.  This
+is used when the soafixcomp parameter in GEN4PARM.FIL is set to Y, and is
+useful when running reports from MAS90 in background, and no terminal ID
+is present to load the default company code from.
+
+
+NON-DESTRUCTIVE BACKSPACING
+
+A minor feature, of use to sites with wyse terminals or other terminals 
+that transmit a backspace character when the left arrow is pressed, is 
+the STBL("*GENNDBS").  If this string table is set to "Y", then the
+backspace key is interpreted as a left arrow in all scrollable edit windows.
+This includes LIST command entry, and the visual modes of PROMPT.
+
+Note that the current BBx termcap file remaps the cursor arrow keys on
+wyse 60 terminals, so that this feature likely wouldn't be needed.
+
+
+NON-BBX SYSTEMS
+
+GENERAL 4.04 is designed to be portable to certain other Business Basic
+dialects.  These include Thoroughbred Basic 8.1.2, and Forceb.  There are
+some differences in how these products work, and therefore some differences
+in how GENERAL works when running under them.
+
+Both Thoroughbred and Forceb have fixed keyboard mapping which overrides
+the methods used to allow alternate keyboard maps.  In Forceb, for example,
+there is no way to emulate function keys with Escape-1 through Escape-0.
+GENERAL, under these dialects, therefore doesn't provide alternate control-
+or escape-key sequences.  Instead, the language must completely map the
+keyboard, including F1..F10, the standard cursor motion keys, and the
+delete character, and insert/replace toggle keys.
+
+The way Thoroughbred handles encrypted programs is less flexible than BBx,
+so all serialization and activation must be handled by SDSI.  This means
+that upgrade requests to higher user counts require shipment of media, and
+associated lead-times.  Please bear this in mind when ordering product or
+upgrades.
+
+
+VERSION 3 FOOTER FORMATS
+
+GENERAL Version 4 provides a more descriptive default footer than Version 3
+did.  The footer includes the title of the break point field, the field
+value itself, and an aggregate descriptor, such as SUM or AVG.  Version 3
+provided only the break point value.  The additional informatino that this
+version provides can cause a "vertical" format footer if the fields that
+have column calculations are too close to the left margin, and therefore
+conflict with the break descriptions.  For new sites, this is generally
+preferred, as the report is easier to understand when there is more detail
+presented.  For converted sites, however, this can cause some old reports
+to format differently than they used to.
+
+Version 4.04 has a new flag in the GEN4PARM.FIL parameter file, called
+OLDFTR.  If that parameter is set to "y", then GENERAL will attempt to
+create footers that closely match Version 3 footers. 
+
+Alternately, if the parameter is set to "n", then any individual report
+can be modified to produce Version 3 footers by adding the keyword V3FTR.
+
+Note that if more than one column aggregate is requested in any column,
+then Version 3 footers can't be formatted.  As multiple aggregates weren't
+available until Version 4, this would only affect modified or new reports.
+
+
+VERSION 4.04 SAMPLE FILE NAMES CHANGED
+
+In order to accomodate Thoroughbred 8.x multi-keyed file names, the sample
+files had to be renamed to drop the extension (.1, .2, etc.).  The new
+names are simple GENSMPL1 .. GENSMPL6.  The master dictionary has been
+modified to reflect these new names, but if you have an existing dictionary,
+it will still be using the old names and won't find the file when a report
+is attempted with the sample files.  To fix this, just modify the disk
+file names in the dictionary for all the DEMO.* files, removing the dot
+in the file name (GENSMPL.1 changes to GENSMPL1, for example).
+
+
+FILIX file name requirements
+
+For GENERAL to see Filix files, the Filix home directory must be in the
+BBx PREFIX, and the directory where the Filix files are located should
+also be in the PREFIX, unless you don't care if Filix files are added
+to F2-list files searches.
+
+Since GENERAL searches for dictionaries based on uppercase names, and
+also since the parsing routine is affected by slash characters, it is
+generally a good idea to quote the Filix file names.  Only if the names
+are valid, uppercase, GENERAL dictionary names will it be possible to
+not quote them.  This is the case even in PROMPT mode.
+
+
+Version 4.11 Enhancements
+
+A run-time variable replacement can now reference a STBL (CGV on Thoroughbred).
+If tests for looking up the value in the run-time variable table fail, a last
+check is made for a STBL value.  [[@COMPID]] will look for STBL("COMPID") if
+the variable COMPID isn't found on disk.
+
+
+
+A new method for number field masking is now available, which if used will 
+supercede the precision, punctuate, and negative masking attributes defined
+for a field.  A new type code flag, Mx, causes a check for an stbl named 
+"GENMASKx", which must be defined as a complete numeric mask.
+
+As an example, the following code could be executed outside of General:
+
+A$=STBL("GENMASK1","-###,##0.000")
+
+In a General dictionary definition or run-time calculation, the type code of
+"N,L12,M1" would cause the GENMASK1 value to be used as the numeric mask of the
+variable.
+
+
+Whenever General needs to lookup a run-time replacement variable
+outside of normal report parsing, the current value of the variable
+will be looked up rather than forcing a default value of "1", as
+in prior releases.  If the variable can't be found, then a "1" will
+still be used.  Also, if a run-time prompt (rather than a run-time
+variable) is used, then a "1" is still used by default.
+
+
+A new utility program is available to convert a Basis Taos data dictionary
+into a General dictionary, merging fields, links, and sorts with any already
+defined for a given file definition.  The utility is GEN4-TDC.UTL.  It has
+been designed for dealer customization in some subroutines (lines 7000-8990),
+so that name, type code, headings, or expressions can be modified before
+being updated in GEN4MST.  As supplied, it includes modifications for
+OSAS only.
+
+
+PROVIDEX Language Printers
+
+Since the Providex environment doesn't have a pre-defined printer 
+configuration, there is no way for General to determine available printers
+when a given report specifies the ON PRINTER output device.  To get
+around this, a special file can be defined in the General directory,
+called GENPTRS.PVX.  This is a text file that contains a line for
+each printer.  Each line is simply the printer name, a tab or space,
+and the maximum number of columns the printer supports in compressed
+mode.  A sample file is shipped with "LP 132" and "P1 132" lines.
+

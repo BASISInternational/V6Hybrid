@@ -1,0 +1,118 @@
+0010 REM "GLM - G/L Account Maintenance (Graphic Display)"
+0020 REM "Program GLM.AE"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0085 SETESC 9000
+0090 SETERR 9000
+0500 REM " --- Initializations"
+0510 DIM PROMPTS$[6]
+0550 LET DISPLAY$="A",RECORDS$="NNYYNN"
+0600 REM 
+0610 LET PROMPTS$[1]="Prior Year Actual",PROMPTS$[2]="Prior Year Budget"
+0620 LET PROMPTS$[3]="Current Year Actual",PROMPTS$[4]="Current Year Budget"
+0630 LET PROMPTS$[5]="Next Year Actual",PROMPTS$[6]="Next Year Budget"
+0700 REM " --- Background"
+0710 PRINT @(0,L0),'CE','SB',@(22,L0+1),"Amounts, Units or Amount Per Unit:",@
+0710:(40,L0+3),"Actual  Budget",@(28,L0+4),"Prior Year",@(26,L0+5),"Current Ye
+0710:ar",@(29,L0+6),"Next Year",'SF',
+1300 REM " --- Display defaults"
+1310 GOSUB 5000
+2000 REM " --- Amounts, Units or Amount Per Unit?"
+2010 LET V4$="Select the information to be displayed (A=Amounts/U=Units/P=Amou
+2010:nt Per Unit)"
+2020 LET V0$="S",V1$="C",V2$=DISPLAY$,V3$="AUP",V0=1,V1=57,V2=L0+1,I0=0
+2030 GOSUB 7000
+2040 ON V3 GOTO 2050,2000,2000,2000,3900
+2050 IF POS(V$="AUP")=0 THEN GOTO 2000
+2060 LET DISPLAY$=V$
+2090 GOTO 3900
+2200 REM " --- Prior/Current/Next Year and Actual/Budget Selection"
+2210 LET V0$="Y",V1$="C",V2$=RECORDS$(I0,1),V3$="",V0=1,V1=42,V2=L0+4
+2220 IF MOD(I0,2)=0 THEN LET V1=50
+2230 GOSUB 6000
+2240 LET V2=V2+INT((I0-1)/2),V4$="Display "+PROMPTS$[I0]+" "+TITLE$+" (Y/N)?"
+2250 GOSUB 7000
+2260 ON V3 GOTO 2270,2200,3900,2200,3900
+2270 IF POS(V$="YN")=0 THEN GOTO 2200
+2280 LET RECORDS$(I0,1)=V$
+2290 GOTO 3900
+3900 REM " --- Next field"
+3905 IF V3=4 THEN GOTO 3990
+3910 IF V3<>2 THEN GOTO 3940
+3920 IF I0>0 THEN LET I0=I0-1
+3930 GOTO 3950
+3940 LET I0=I0+1
+3960 ON I0 GOTO 2000,2200,2200,2200,2200,2200,2200,3990
+3990 LET I0=0
+4000 REM " --- Correct?"
+4010 LET V4$="Is The Above Information Correct (Y/N)?"
+4020 LET V0$="Y",V1$="KC",V2$="Y",V3$="",V0=1,V1=FNV(V4$),V2=22
+4030 GOSUB 7000
+4040 ON V3 GOTO 4050,4000,4000,4000,4900
+4090 ON POS(V$="YN") GOTO 4000,4100,4900
+4100 REM " --- Maximum of 4 records can be graphed"
+4110 LET NUMBER=0
+4120 FOR X=1 TO LEN(RECORDS$)
+4130 IF RECORDS$(X,1)="Y" THEN LET NUMBER=NUMBER+1
+4140 NEXT X
+4190 IF NUMBER<5 THEN GOTO 4500
+4200 REM " --- Notify user"
+4210 LET V4$="A maximum of 4 items may be graphed simultaneously (<Enter>=Cont
+4210:inue):"
+4220 LET V0$="S",V1$="C",V2$="",V3$="",V0=1,V1=FNV(V4$),V2=22
+4230 GOSUB 7000
+4240 IF V3=4 THEN GOTO 4900
+4290 GOTO 1000
+4500 REM " --- Run display overlay"
+4510 GOSUB 6000
+4590 RUN "GLM.AF"
+4900 REM " --- Return to submenu"
+4990 RUN MENU$,ERR=9900
+5000 REM " --- Display"
+5010 PRINT @(57,L0+1),DISPLAY$,@(42,L0+4),RECORDS$(1,1),@(50),RECORDS$(2,1),@(
+5010:42,L0+5),RECORDS$(3,1),@(50),RECORDS$(4,1),@(42,L0+6),RECORDS$(5,1),@(50)
+5010:,RECORDS$(6,1),
+5090 RETURN
+6000 REM " --- Title?"
+6010 LET TITLE$="Amounts"
+6020 IF DISPLAY$="U" THEN LET TITLES$="Units"
+6030 IF DISPLAY$="P" THEN LET TITLE$="Amt/Unit"
+6090 RETURN
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions"
+8090 DEF FNV(Q$)=42+INT(LEN(Q$)/2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to menu"
+9950 RUN "SYS.AA"
+9999 END

@@ -1,0 +1,114 @@
+0010 REM "WOM - Work Order Type Maintenance Listing"
+0020 REM "Program:  WOM.AB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0085 SETESC 9000
+0090 SETERR 9000
+0100 REM " --- Open/Lock Files"
+0170 CALL "SYC.GA",7,1,"","",STATUS
+0180 IF STATUS THEN GOTO 9900
+0200 REM " --- IOLISTs"
+0210 WOM10A: IOLIST A0$,A1$(1)
+0500 REM " --- Init Data"
+0510 LET H0=132,H=0,HEADINGS=2,WHEN$=F0$(7,3),CLOCK$=""
+0520 DIM HEADINGS$[HEADINGS]
+0530 LET HEADINGS$[0]=N1$,HEADINGS$[1]=N4$+" Listing"
+0535 LET L9=59,L=L9+1,T0=0,X2=0
+0540 LET G5=LEN(G5$); IF G5<=8 THEN LET G5=G5+2 ELSE LET G5=G5+1
+0550 DIM A1$(100,"0")
+0560 LET X9=132-G5*9
+0570 IF X9>42 THEN LET X9=42
+0900 REM " --- Display Printing Notice "
+0910 CALL "SYC.NB","Printing:",5,COLUMN
+1000 REM " --- Initial Read"
+1020 READ (WOM10_DEV,KEY=N0$+"A",DOM=1030)
+1100 REM " --- Main Read"
+1110 LET K$=KEY(WOM10_DEV,END=4000)
+1120 IF POS(K$(1,3)=N0$+"A")<>1 THEN GOTO 4000
+1125 PRINT @(COLUMN,11),K$
+1130 READ (WOM10_DEV,KEY=K$)IOL=WOM10A
+2000 REM " --- Print"
+2010 IF L+2>L9 THEN GOSUB 5000
+2020 PRINT (7)@(0),A0$(4,2),@(5),A0$(6,20),@(30),A0$(26,1),@(35),A0$(27,1),
+2030 IF GL$="N" THEN GOTO 2620
+2045 IF X9<40 THEN PRINT (7)'LF',; LET L=L+1
+2047 PRINT (7)@(X9-1)," ",
+2050 FOR X=0 TO 8
+2060 PRINT (7)@(X9+X*G5),FNF$(A1$(X*G[4]+1,G[3]),G5$),
+2100 NEXT X
+2620 PRINT (7)'LF'
+2700 LET L=L+2,T0=T0+1
+2790 GOTO 1100
+4000 REM " --- Options"
+4020 PRINT (7)'LF',@(10),"Total Records:",T0
+4100 GOTO 9900
+5000 REM " --- Heading"
+5010 LET L=0
+5020 CALL "SYC.HA",7,HEADINGS$[ALL],HEADINGS,H,H0,WHEN$,CLOCK$,STATUS
+5030 IF STATUS>0 THEN EXITTO 9900
+5040 IF GL$="N" THEN GOTO 5400
+5050 IF G5<9 THEN GOTO 5200
+5080 PRINT (7)@(0),"Work Order Type",@(33),"Std/",
+5090 IF X9<40 THEN PRINT (7)'LF',
+5100 PRINT (7)@(X9+2*G5-10),"Close To",@(X9+3*G5-8),"Direct",@(X9+4*G5-10),"Ov
+5100:erhead",@(X9+5*G5-10),"Purchases",@(X9+6*G5-8),"Direct",@(X9+7*G5-10),"Ov
+5100:erhead",@(X9+8*G5-10),"Material",@(X9+9*G5-9),"Subcont"
+5110 PRINT (7)@(0),"Code",@(5),"Description",@(29),"Cat",@(33),"Actl",
+5115 IF X9+G5-8<38 THEN PRINT (7)'LF',
+5120 PRINT (7)@(X9+G5-8),"W.I.P.",@(X9+2*G5-9),"Account",@(X9+3*G5-7),"Labor",
+5120:@(X9+4*G5-7),"Labor",@(X9+5*G5-9),"Account",@(X9+6*G5-8),"Var'ce",@(X9+7*
+5120:G5-8),"Var'ce",@(X9+8*G5-8),"Var'ce",@(X9+9*G5-8),"Var'ce",'LF'
+5130 LET L=L+5
+5190 RETURN
+5200 REM " --- Heading for small G/L Mask"
+5220 PRINT (7)@(0),"Work Order Type",@(33),"Std/",@(X9+2*G5-7),"Close",@(X9+3*
+5220:G5-7),"Dirct",@(X9+4*G5-7),"Ovrhd",@(X9+5*G5-7),"Purch",@(X9+6*G5-7),"Dir
+5220:ct",@(X9+7*G5-7),"Ovrhd",@(X9+8*G5-7),"Mat'l",@(X9+9*G5-6),"Subs"
+5235 LET L=L+5
+5240 PRINT (7)@(0),"Code",@(5),"Description",@(29),"Cat",@(33),"Actl",@(X9+G5-
+5240:5),"WIP",@(X9+2*G5-6),"Acct",@(X9+3*G5-7),"Labor",@(X9+4*G5-7),"Labor",@(
+5240:X9+5*G5-6),"Acct",@(X9+6*G5-6),"Varc",@(X9+7*G5-6),"Varc",@(X9+8*G5-6),"V
+5240:arc",@(X9+9*G5-6),"Varc",'LF'
+5290 RETURN
+5400 REM " --- Heading for no G/L Installed"
+5420 PRINT (7)@(0),"Work Order Type",@(33),"Std/"
+5440 PRINT (7)@(0),"Code",@(5),"Description",@(29),"Cat",@(33),"Actl",'LF'
+5445 LET L=L+2
+5490 RETURN
+8000 REM " --- Functions"
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF:
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END

@@ -1,0 +1,114 @@
+0010 REM "SYC - Determine Search Method for Lookup"
+0020 REM "Program SYC.SM"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0042 REM "STRINGS$[n]: String information"
+0044 REM "             [0]=Calling program name (input)"
+0046 REM "             [1]=Key mask M0$ (input)"
+0048 REM "             [2]=Search method character (output)"
+0050 REM "             [3]=Starting value for lookup (output)"
+0052 REM "             [4]=Method description (output)"
+0054 REM "             [5]=Input mask, if applicable (output)"
+0060 REM "NUMBERS[n] : Numeric information"
+0062 REM "             [0]=Maximum number of rows (input)"
+0064 REM "             [1]=Window column (input)"
+0066 REM "             [2]=Window row (input)"
+0068 REM "             [3]=Key length P(0) (input)"
+0070 REM "             [4]=Input field length (output)"
+0072 REM "FKEY       : 0=No error / 4=exit or error"
+0075 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER STRINGS$[ALL],NUMBERS[ALL],FKEY
+0400 REM " --- Parameters"
+0410 LET PGM$=STRINGS$[0],MASK$=STRINGS$[1],MAXROW=NUMBERS[0]
+0420 LET WIN_X=NUMBERS[1],WIN_Y=NUMBERS[2],KEYLEN=NUMBERS[3],FKEY=0
+0500 REM " --- Initializations"
+0510 DIM OPTLIST$[2,MAXROW,6],PARAM$[2,MAXROW,3]
+0600 REM " --- Retrieve list of search options and calculate window size"
+0610 CALL "SYC.OL",PGM$,OPTIONS,WIDTH,OPTLIST$[ALL],PARAM$[ALL],TITLE$,MAXROW,
+0610:MASK$,KEYLEN
+0620 IF OPTIONS<1 THEN GOTO 4900
+0630 LET WIDTH=WIDTH+4,HEIGHT=OPTIONS+4,TITLE$="Method"
+0650 IF HEIGHT+WIN_Y>22 THEN LET WIN_Y=23-HEIGHT
+0700 REM " --- Background"
+0710 CALL "SYC.WA",0,WIDTH,HEIGHT,WIN_X,WIN_Y,TITLE$,NAME$
+0720 CALL "SYC.WC",1,0,WIDTH-2,0,0,HEIGHT-4,1
+1000 REM " --- Lightbar selection of search method"
+1010 DIM MORE$[2,MAXROW,1]
+1020 IF OPTIONS<2 THEN GOTO 1500
+1030 LET MAX_ROW=HEIGHT-2,PAGE=1,XMODE=0
+1040 CALL "SYC.SA",XMODE,OPTLIST$[ALL],MORE$[ALL],OPTION$,PAGE,MAX_ROW,NAME$,H
+1040:EIGHT,WIDTH,FKEY
+1050 IF FKEY=4 THEN GOTO 4900
+1060 IF OPTION$="END" THEN GOTO 4900
+1070 IF OPTION$="PRIOR" THEN GOTO 4900
+1090 GOTO 2000
+1500 REM " --- Only one option"
+1510 DIM X$(WIDTH-2)
+1520 LET X$(1)=OPTLIST$[1,1,1],OPTION$=OPTLIST$[1,1,2]
+1530 PRINT @(0,0),'BR',X$,'ER',
+2000 REM " --- Which option was selected?"
+2010 LET METHOD$="",METHOD=0
+2020 FOR X=1 TO OPTIONS
+2030 IF OPTION$<>OPTLIST$[1,X,2] THEN GOTO 2090
+2040 LET METHOD$=FNP$(OPTLIST$[1,X,1]),METHOD=X
+2090 NEXT X
+3000 REM " --- Enter starting value"
+3010 LET V0$=PARAM$[1,METHOD,1],V1$="KCE",V2$="",V4$="",V1=1
+3020 LET V3$=FNP$(PARAM$[1,METHOD,3]),V0=NUM(PARAM$[1,METHOD,2],ERR=1000)
+3030 LET V2=HEIGHT-3,FLDMASK$=V3$,FLDLENGTH=V0
+3040 GOSUB 7000
+3050 IF V3=6 THEN GOTO 4900
+3060 IF V3=5 THEN GOTO 4900
+3070 IF V3<>4 THEN GOTO 3100
+3080 IF OPTIONS>1 THEN GOTO 1000
+3090 GOTO 4900
+3100 REM " --- Set fields to be returned"
+3110 LET STRINGS$[2]=FNP$(OPTION$),STRINGS$[3]=V$,STRINGS$[4]=METHOD$
+3120 LET STRINGS$[5]=FLDMASK$,NUMBERS[4]=FLDLENGTH
+4000 REM " --- All done"
+4090 GOTO 9900
+4900 REM " --- Exit requested"
+4910 LET FKEY=4
+4990 GOTO 9900
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions"
+8070 DEF FNP$(Q$)=CVS(Q$,2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 LET FKEY=4
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return"
+9910 CALL "SYC.WD",NAME$
+9950 EXIT
+9999 END

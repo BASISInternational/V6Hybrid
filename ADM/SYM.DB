@@ -1,0 +1,70 @@
+0010 REM "SYM - System Description Listing"
+0020 REM "Program SYM.DB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0080 SETERR 9000
+0090 SETESC 9000
+0100 REM " --- Open/Lock Files"
+0110 CALL "SYC.GA",7,1,"","",STATUS
+0115 IF STATUS THEN GOTO 9900
+0200 REM " --- IOLIST's"
+0210 SYM04A: IOLIST A0$(1),A1$(1),A2$(1),A3$(1),A[ALL]
+0500 REM " --- Initializations"
+0510 DIM HEADINGS$[2]
+0520 LET L9=50,L=L9+1,WIDTH=80,PAGE=0,HEADINGS=2,WHEN$=F0$(7,3),CLOCK$=""
+0540 LET HEADINGS$[0]=F4$,HEADINGS$[1]=F5$+" Listing"
+0700 REM " --- Background"
+0750 CALL "SYC.NB","Printing",2,COLUMN
+0900 REM " --- Position File"
+0990 READ (SYM04_DEV,KEY="",DOM=1000)
+1000 REM " --- Main Read"
+1010 LET K$=KEY(SYM04_DEV,END=4000)
+1020 READ (SYM04_DEV,END=4000)IOL=SYM04A
+1030 PRINT @(COLUMN,11),A0$,
+2000 REM " --- Print Record"
+2010 IF L+4>L9 THEN GOSUB 5000
+2020 PRINT (7)A0$," ",A1$(1,35),@(40),A1$(39,1),@(48),A1$(36,1),@(53),A1$(37,2
+2020:),@(59),A1$(46,1),@(65),A1$(47,1),@(73),A1$(40,6)
+2030 PRINT (7)"   Program Path: ",A2$
+2040 PRINT (7)"      Data Path: ",A3$
+2050 PRINT (7)""
+2060 LET T0=T0+1,L=L+4
+2090 GOTO 1000
+4000 REM " --- All done"
+4010 IF L+2>L9 THEN GOSUB 5000
+4020 PRINT (7)""
+4030 PRINT (7)T0," System(s)"
+4090 GOTO 9900
+5000 REM " --- Report heading"
+5010 LET L=HEADINGS+4
+5020 CALL "SYC.HA",7,HEADINGS$[ALL],HEADINGS,PAGE,WIDTH,WHEN$,CLOCK$,STATUS
+5030 IF STATUS>0 THEN EXITTO 9900
+5040 PRINT (7)"System",@(46),"Multi Def   G/L  Batch"
+5050 PRINT (7)"ID Description",@(35),"Installed?",@(46),"Firm? Firm Post? Entr
+5050:y?",@(73),"Version"
+5060 PRINT (7)""
+5090 RETURN
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to menu"
+9950 RUN "SYS.AA"
+9999 END

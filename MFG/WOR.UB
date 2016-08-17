@@ -1,0 +1,153 @@
+0010 REM "WOS - Batch Reschedule Work Orders - II"
+0020 REM "Program:  WOR.UB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0085 SETESC 9000
+0090 SETERR 9000
+0095 PRECISION 9
+0100 REM " --- Open/Lock Files"
+0200 REM " --- IOLISTs"
+0210 WOE01A: IOLIST A0$,A1$,A[ALL]
+0500 REM " --- Init Data"
+0510 LET STATUS$="00"
+0550 LET HEADINGS$[2]=H4$
+0560 LET HEADINGS$[3]=H3$
+0600 CALL "SYC.GA",7,1,"","",STATUS
+0610 IF STATUS THEN GOTO 9900
+0700 REM " --- Background"
+0710 CALL "SYC.NB","Updating",7,COLUMN
+1000 REM " --- Init Read"
+1010 LET K$=N0$+"  "+R0$
+1020 READ (WOE01_DEV,KEY=K$,DOM=1021)IOL=WOE01A; GOTO 1150
+1100 REM " --- Main Read"
+1110 LET K$=KEY(WOE01_DEV,END=4000)
+1120 IF POS(N0$=K$)<>1 THEN GOTO 4000
+1130 IF R1$<>"" THEN IF K$(5,7)>R1$ THEN GOTO 4000
+1140 READ (WOE01_DEV,KEY=K$)IOL=WOE01A
+1150 IF A0$(15,1)="C" THEN GOTO 1100
+1160 IF A1$(97,1)>R2$ THEN GOTO 1100
+1170 IF POS(A0$(15,1)=R3$)=0 THEN GOTO 1100
+1200 REM " --- Reschedule"
+1210 PRINT @(COLUMN,11),A0$(5,7),
+1220 IF POS(A1$(98,1)="BF")=0 THEN GOTO 1700
+1230 IF A1$(98,1)="F" THEN LET SDATE$=A0$(19,3) ELSE LET SDATE$=A0$(22,3)
+1240 LET EDATE$="",STATUS$="00"
+1250 CALL "WOC.AA",A0$(5,7),SDATE$,EDATE$,A1$(98,1),2,STATUS$
+1260 IF L+2>L9 THEN GOSUB 5000
+1270 ON NUM(STATUS$(2,1)) GOTO 1300,1400,1500,1600,1700,1800,1900
+1300 REM " --- Successful Schedule"
+1310 IF A1$(98,1)="B" THEN LET A0$(19,6)=EDATE$+SDATE$ ELSE LET A0$(19,6)=SDAT
+1310:E$+EDATE$
+1320 PRINT (7)@(1),A0$(5,7),@(13),A1$(97,1),@(17),A1$(98,1),@(22),A0$(15,1),@(
+1320:25),FNB$(A0$(19,3)),@(34),FNB$(A0$(22,3)),@(45),A0$(14,1)
+1330 LET L=L+1
+1340 WRITE (WOE01_DEV,KEY=K$)IOL=WOE01A
+1390 GOTO 2000
+1400 REM " --- Unscheduled Date in Calendar"
+1410 PRINT (7)@(1),A0$(5,7),@(9),"***",@(13),A1$(97,1),@(17),A1$(98,1),@(22),A
+1410:0$(15,1),@(25),"Unscheduled Date Found In Operations Calendar"
+1420 LET L=L+1
+1490 GOTO 2000
+1500 REM " --- Invalid 'From' Date"
+1510 IF A1$(98,1)="B" THEN LET MESS$="Completion" ELSE LET MESS$="Start"
+1520 PRINT (7)@(1),A0$(5,7),@(9),"***",@(13),A1$(97,1),@(17),A1$(98,1),@(22),A
+1520:0$(15,1),@(25),"Invalid Estimated "+MESS$+" Date"
+1530 LET L=L+1
+1590 GOTO 2000
+1600 REM " --- File Missing"
+1610 PRINT (7)@(10),"A necessary Shop Floor Control file is missing. Make sure
+1610: the"
+1620 PRINT (7)@(10),"Calendar File and Work Orders exist, then rerun this task
+1620:."
+1690 GOTO 4000
+1700 REM " --- Invalid Scheduling Method"
+1710 IF L+1>L9 THEN GOSUB 5000
+1720 IF A1$(98,1)="M" THEN PRINT (7)@(1),A0$(5,7),@(13),A1$(97,1),@(17),A1$(98
+1720:,1),@(22),A0$(15,1),@(25),"Manual Method. No Rescheduling Performed"; GOT
+1720:O 1740
+1730 PRINT (7)@(1),A0$(5,7),@(9),"***",@(13),A1$(97,1),@(17),A1$(98,1),@(22),A
+1730:0$(15,1),@(25),"Invalid Scheduling Method"
+1740 LET L=L+1
+1790 GOTO 2000
+1800 REM " --- Unscheduled Date in Purchase Calendar"
+1810 PRINT (7)@(1),A0$(5,7),@(9),"***",@(13),A1$(97,1),@(17),A1$(98,1),@(22),A
+1810:0$(15,1),@(25),"Unscheduled Date Found In Purchase Order Calendar"
+1820 LET L=L+1
+1890 GOTO 2000
+1900 REM " --- Undetermined error"
+1910 PRINT (7)@(1),A0$(5,7),@(9),"***",@(13),A1$(97,1),@(17),A1$(98,1),@(22),A
+1910:0$(15,1),@(25),"An Undetermined Error Has Occurred"
+1920 LET L=L+1
+2000 REM " --- Check for Subcontract date change"
+2010 IF STATUS$(1,1)="0" THEN GOTO 2100
+2020 PRINT (7)@(15),"A Date Required Changed For A Subcontract For This Work O
+2020:rder"
+2030 LET L=L+1
+2100 REM " --- Loop back"
+2190 GOTO 1100
+4000 REM " --- End"
+4020 IF H=0 THEN GOSUB 5000
+4030 IF L+1>L9 THEN GOSUB 5000
+4100 GOTO 9900
+5000 REM " --- Heading"
+5010 LET L=0
+5020 CALL "SYC.HA",7,HEADINGS$[ALL],HEADINGS,H,H0,WHEN$,CLOCK$,STATUS
+5030 IF STATUS THEN EXITTO 9900
+5050 PRINT (7)"Work Order",@(12),"Pri Mthd Sts",@(27),"Start",@(36),"Cmplt",@(
+5050:44),"Cat",'LF'
+5090 RETURN
+8000 REM " --- Functions"
+8010 DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+8020 DEF FNB$(Q1$)=FNA$(Q1$(2),Q1$)+"/"+FNA$(Q1$(3),Q1$)+"/"+FNA$(Q1$(1),Q1$)
+8030 DEF FNC$(Q1$)=FNA$(Q1$(2),Q1$)+FNA$(Q1$(3),Q1$)+FNA$(Q1$(1),Q1$)
+8040 DEF FND$(Q$)=CHR(FNYY_YEAR(Q$(5,2))+32)+CHR(NUM(Q$(1,2))+32)+CHR(NUM(Q$(3
+8040:,2))+32)
+8070 DEF FNG$(Q$)=STR((ASC(Q$)-32)*POS(" "<>Q$):"000")
+8080 DEF FNH$(Q$)=Q$(1,2)+CHR(32*POS("C"=X9$))+Q$(3)
+8145 REM " --- FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+8150 DEF FNYY21_YY$(Q1$)
+8155 LET Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABC
+8155:DEFGHIJ"))
+8160 RETURN Q1$
+8165 FNEND
+8170 REM " --- FNYY_YEAR Convert 2-Char Year to 21st Century Numeric Year"
+8175 DEF FNYY_YEAR(Q1$)
+8180 LET Q=NUM(FNYY21_YY$(Q1$)); IF Q<50 THEN LET Q=Q+100
+8185 RETURN Q
+8190 FNEND
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF:
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END

@@ -1,0 +1,88 @@
+0010 REM "SYC - File Identification (FID Replacement)"
+0020 REM "Program SYC.JA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0041 REM "F        : Channel number (input)"
+0042 REM "FILENAME$: File name (returned)"
+0043 REM "PATHNAME$: Directory path (returned)"
+0044 REM "FILETYPE$: File Type (returned)"
+0045 REM "           C=CISAM and compatible"
+0046 REM "           K=Keyed (Direct or Sort)"
+0047 REM "           I=Indexed"
+0048 REM "           M=Multi-Keyed"
+0049 REM "           P=Program"
+0050 REM "           T=Text/String or System File"
+0051 REM "           S=Serial"
+0052 REM "KEYLEN   : Key size (returned)"
+0053 REM "RECORDS  : Number of records (returned)"
+0054 REM "RECLEN   : Bytes per record (returned)"
+0055 REM "NUMREC   : Number of records used (returned)"
+0057 REM "STATUS   : 0=No Error (returned)"
+0075 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER F,FILENAME$,PATHNAME$,FILETYPE$,KEYLEN,RECORDS,RECLEN,NUMREC,STATUS
+0500 REM " --- Initializations"
+0550 LET FILENAME$="",PATHNAME$="",FILETYPE$="",TYPES$="ISKTPLM"
+0560 LET SLASH$="/",KEYLEN=0,RECORDS=0,RECLEN=0,NUMREC=0,STATUS=0
+0800 REM " --- Retrieve file information"
+0810 LET F$=FID(F,ERR=0850),FIN$=FIN(F,ERR=0850)
+0820 GOTO 0900
+0850 REM " --- Channel not open"
+0860 IF ERR<>14 THEN GOTO 9000
+0870 LET STATUS=ERR
+0880 GOTO 4000
+1000 REM " --- Device"
+1010 IF LEN(F$)>6 THEN GOTO 1100
+1020 LET FILENAME$=FNP$(F$)
+1090 GOTO 4000
+1100 REM " --- Pathname"
+1110 IF POS(SLASH$=F$(9))=0 THEN GOTO 1200
+1120 LET X$=FNP$(F$(9))
+1130 LET PATHNAME$=PATHNAME$+X$(1,POS(SLASH$=X$))
+1140 LET X$=X$(POS(SLASH$=X$)+1)
+1150 IF POS(SLASH$=X$)<>0 THEN GOTO 1130
+1160 IF PATHNAME$(LEN(PATHNAME$))<>SLASH$ THEN LET PATHNAME$=PATHNAME$+SLASH$
+1200 REM " --- File name"
+1210 LET FILENAME$=FNP$(F$(9))
+1220 IF LEN(PATHNAME$)<>0 THEN LET FILENAME$=FILENAME$(LEN(PATHNAME$)+1)
+1400 REM " --- File type"
+1410 LET X=POS(F$(1,1)=$00010203040506$)
+1420 IF X>0 THEN LET FILETYPE$=TYPES$(X,1)
+1500 REM " --- Number of records, key size and record length"
+1510 LET RECORDS=DEC(F$(3,4)),KEYLEN=ASC(F$(2)),RECLEN=DEC(F$(7,2))
+1520 IF POS(FILETYPE$="STP")>0 THEN LET RECLEN=DEC(FIN$(1,4))
+1800 REM " --- Number of records in use"
+1810 IF POS(FILETYPE$="KM")>0 THEN LET NUMREC=DEC(FIN$(77,4))
+1820 IF FILETYPE$="I" THEN LET NUMREC=RECORDS
+4000 REM " --- All done"
+4090 GOTO 9900
+8000 REM " --- Functions"
+8010 DEF FNP$(Q$)=CVS(Q$,2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9050 IF E1<>1 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9110 RETRY
+9190 RETRY
+9200 REM " --- Return"
+9210 SETERR 9000
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9950 EXIT
+9999 END

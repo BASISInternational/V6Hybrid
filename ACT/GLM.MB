@@ -1,0 +1,116 @@
+0010 REM "GLM - Create Budget Revision (Report Overlay)"
+0020 REM "Program GLM.MB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0085 SETESC 9000
+0090 SETERR 9000
+0100 REM " --- Open/Lock Files"
+0170 CALL "SYC.GA",7,1,"","",STATUS
+0175 IF STATUS THEN GOTO 9900
+0200 REM " --- IOLIST's"
+0280 GLM08A: IOLIST C0$(1),C1$(1),C2$(1),C3$(1),C4$,C5$,C[ALL]
+0500 REM " --- Initializations"
+0510 LET H0=132,CLOCK$="",WHEN$=F0$(7,3),L9=59,L=L9+1,NUMBER=0,HEADINGS=1
+0520 DIM C0$(4),C1$(64),C2$(P[4]),C3$(P[4]),C[8],O[6],HEADINGS$[HEADINGS]
+0570 LET HEADINGS$[0]=N1$,HEADINGS$[1]=N3$,PAGE=0
+0580 LET H1=16,H2=MAX(14,M0+10),H3=MAX(12,M1+10),O[0]=0,O[1]=7,O[2]=10,O[3]=40
+0590 LET O[6]=H0-H3,O[5]=O[6]-H2-2,O[4]=O[5]-H1-3
+0600 REM " --- Section Headings"
+0610 DIM H1$(H1,"-"),H2$(H2,"-"),H3$(H3,"-")
+0620 LET X$=" Dates ",H1$(FNC(X$,H1),LEN(X$))=X$
+0630 LET X$=" G/L Accounts ",H2$(FNC(X$,H2),LEN(X$))=X$
+0640 LET X$=" Other Info ",H3$(FNC(X$,H3),LEN(X$))=X$
+0700 REM " --- Background"
+0750 CALL "SYC.NB","Printing",3,COLUMN
+0900 REM " --- Position File"
+0980 LET C0$(1)=N0$
+0990 READ (GLM08_DEV,KEY=C0$,DOM=1000)
+1000 REM " --- Get next GLM-08 record"
+1010 LET K$=KEY(GLM08_DEV,END=4000)
+1020 IF POS(N0$=K$)<>1 THEN GOTO 4000
+1030 PRINT @(COLUMN,11),K$(3,1)," ",K$(4,1)
+1040 READ (GLM08_DEV,KEY=K$)IOL=GLM08A
+1500 REM " --- Initialize print fields"
+1510 LET SOURCE$="",CREATED$=FNB6$(C1$(46,6)),REVISION$=FNB6$(C1$(52,6))
+1515 IF POS(" "<>C2$)=0 THEN LET BEGACCT$="First" ELSE LET BEGACCT$=FNF$(C2$(1
+1515:,P[3]),M0$)
+1520 IF POS(" "<>C3$)=0 THEN LET ENDACCT$="Last" ELSE LET ENDACCT$=FNF$(C3$(1,
+1520:P[3]),M0$)
+1525 IF POS(" "<>C4$)=0 THEN LET WILDCARD$="None" ELSE LET WILDCARD$=C4$
+1530 IF C1$(59,1)="P" THEN LET AMTPCT$="Percent",MASK$=M4$ ELSE LET AMTPCT$="A
+1530:mount",MASK$=M1$
+1540 IF C1$(60,1)="Y" THEN LET OVERWRITE$="Yes" ELSE LET OVERWRITE$="No"
+1580 CALL "GLC.FA",GLM08_DEV,N0$,C1$(58,1),C0$(4,1),SOURCE$,X$,STATUS
+1590 LET SOURCE$=C1$(58,1)+" "+SOURCE$
+2000 REM " --- Print detail lines"
+2010 IF L+4>L9 THEN GOSUB 5000
+2020 PRINT (7)@(O[0]),C0$(3,1),@(O[1]),C0$(4,1),@(O[2]),C1$(1,30),@(O[3]),SOUR
+2020:CE$,@(O[4])," Created ",CREATED$,@(O[5]),"Beginning ",BEGACCT$,@(O[6])," 
+2020: Amt/Pct ",AMTPCT$
+2030 PRINT (7)@(O[2]),C1$(31,15),@(O[4])," Revised ",REVISION$,@(O[5]),"   End
+2030:ing ",ENDACCT$,@(O[6]),"    Value ",C[0]:MASK$
+2040 PRINT (7)@(O[5])," Wildcard ",WILDCARD$,@(O[6]),"Overwrite ",OVERWRITE$
+2050 PRINT (7)""
+2060 LET L=L+4,NUMBER=NUMBER+1
+3900 REM " --- Loop back for next record"
+3990 GOTO 1000
+4000 REM " --- All Done"
+4010 IF L+1>L9 THEN GOSUB 5000
+4030 PRINT (7)STR(NUMBER)," Budget Revision(s)"
+4090 GOTO 9900
+5000 REM " --- Report Heading"
+5010 LET L=HEADINGS+1
+5020 CALL "SYC.HA",7,HEADINGS$[ALL],HEADINGS,PAGE,H0,WHEN$,CLOCK$,STATUS
+5030 IF STATUS>0 THEN EXITTO 9900
+5040 PRINT (7)""
+5050 PRINT (7)@(O[0]),"Code",@(O[1]-1),"A/U",@(O[2]),"Description/Title",@(O[3
+5050:]),"Source",@(O[4]+1),H1$,@(O[5]),H2$,@(O[6]),H3$
+5060 LET L=L+2
+5090 RETURN
+8000 REM " --- Functions"
+8025 DEF FNB6$(Q1$)=Q1$(3,2)+"/"+Q1$(5,2)+"/"+FNYY21_YY$(Q1$(1,2))
+8035 DEF FNC(Q$,Q)=INT((Q-LEN(Q$))/2)+1
+8070 DEF FNP$(Q$)=CVS(Q$,2)
+8145 REM " --- FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+8150 DEF FNYY21_YY$(Q1$)
+8155 LET Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABC
+8155:DEFGHIJ"))
+8160 RETURN Q1$
+8165 FNEND
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF:
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return To Menu"
+9950 RUN "SYS.AA"
+9999 END

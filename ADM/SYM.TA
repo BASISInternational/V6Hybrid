@@ -1,0 +1,151 @@
+0010 REM "SYM - System Definition Maintenance"
+0020 REM "Program SYM.TA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0060 BEGIN
+0080 SETERR 9000
+0090 SETESC 9000
+0100 REM " --- Open/Lock Files"
+0105 LET FILES=1
+0110 DIM FILES$[FILES],OPTIONS$[FILES],CHANNELS[FILES]
+0120 LET FILES$[1]="SYS-01"
+0150 CALL "SYC.DA",1,1,FILES,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STA
+0150:TUS
+0160 IF STATUS>0 THEN GOTO 9900
+0170 LET SYS01_DEV=CHANNELS[1]
+0200 REM " --- IOLIST's"
+0210 SYS01S: IOLIST A0$,A1$,A2$,A3$,A4$,A5$,A6$
+0500 REM " --- Initializations"
+0510 DIM J0$(20,"0"),J$(80,"-"),J1$(50," "),A0$(6),A1$(10)
+0520 LET A0$="S"
+0700 REM " --- Background"
+0710 PRINT 'SB',@(7,3),"Computer Type:",@(4,4),"Operating System:",@(2,5),"Pat
+0710:hname Separator:",@(3,6),"O/S Shell Command:",@(5,7),"W2 Copy Command:",@
+0710:(0,8),"Source Code Password:",'SF',
+1200 REM " --- Find record"
+1220 FIND (SYS01_DEV,KEY=A0$,DOM=1400)IOL=SYS01S
+1300 REM " --- Display Record"
+1320 GOSUB 5000
+1390 GOTO 4000
+1400 REM " --- New record?"
+1410 CALL "SYC.YN",1,"Is This A New Record",1,V$,V3
+1440 ON V3 GOTO 1460,1400,1400,1400,4500
+1490 ON POS(V$="YN") GOTO 1400,1500,1000
+1500 REM " --- Setup for new record"
+1510 LET A1$="",A2$="",A3$="U",A4$="/",A5$="sh",A6$=""
+1520 GOSUB 5000
+1600 REM " --- Computer Type"
+1610 LET V0$="S",V1$="CE",V2$=A2$,V3$="",V0=8,V1=22,V2=3
+1620 LET V4$="Enter The Type Of Computer System This System Is Being Run On"
+1630 GOSUB 7000
+1640 ON V3 GOTO 1650,1600,3900,1600,3900
+1650 LET A2$=V$
+1660 PRINT @(V1,V2),'CL',A2$,
+1690 GOTO 3900
+1700 REM " --- Operating System"
+1710 LET V0$="S",V1$="C",V2$=A3$,V3$="DU",V0=1,V1=22,V2=4
+1720 LET V4$="Enter The Type Of Operating System In Use (U=UNIX/D=DOS)"
+1730 GOSUB 7000
+1740 ON V3 GOTO 1750,1700,3900,1700,3900
+1750 LET A3$=V$
+1760 PRINT @(V1,V2),'CL',A3$,
+1790 GOTO 3900
+1800 REM " --- Pathname Separator"
+1810 LET V0$="S",V1$="C",V2$=A4$,V3$="/\",V0=1,V1=22,V2=5
+1820 LET V4$="Enter The Path Name Separator Used By The Operating System (UNIX
+1820:='/', DOS='\')"
+1830 GOSUB 7000
+1840 ON V3 GOTO 1850,1800,3900,1800,3900
+1850 LET A4$=V$
+1860 PRINT @(V1,V2),'CL',A4$,
+1890 GOTO 3900
+1900 REM " --- O/S Shell Command"
+1910 LET V0$="S",V1$="CE",V2$=A5$,V3$="",V0=30,V1=22,V2=6
+1920 LET V4$="Enter The Operating System Shell Command To Be Used (e.g. 'sh' F
+1920:or UNIX)"
+1930 GOSUB 7000
+1940 ON V3 GOTO 1950,1900,3900,1900,3900
+1950 LET A5$=V$
+1960 PRINT @(V1,V2),'CL',A5$,
+1990 GOTO 3900
+2000 REM " --- Payroll W2 DOS Copy Command"
+2010 LET V0$="S",V1$="CE",V2$=A6$,V3$="",V0=56,V1=22,V2=7
+2020 LET V4$="Enter The O/S Command To Be Used To Copy The W2 Report To Mag Me
+2020:dia"
+2030 GOSUB 7000
+2040 ON V3 GOTO 2050,2000,3900,2000,3900
+2050 LET A6$=V$
+2060 PRINT @(V1,V2),'CL',A6$,
+2090 GOTO 3900
+2100 REM " --- Source Code Password"
+2110 LET V0$="S",V1$="C",V2$=A1$,V3$="",V0=8,V1=22,V2=8
+2115 LET V4$="Enter The (Optional) Password Required To View Program Source Co
+2115:de"
+2120 GOSUB 7000
+2130 ON V3 GOTO 2140,2100,3900,2100,3900
+2140 LET A1$=V$
+2190 GOTO 3900
+3900 REM " --- Next field"
+3915 IF V3=4 THEN GOTO 4000
+3920 IF V3<>2 THEN GOTO 3950
+3930 IF I0>0 THEN LET I0=I0-1
+3940 GOTO 3960
+3950 LET I0=I0+1
+3960 ON I0 GOTO 1600,1700,1800,1900,2000,2100,3990
+3990 LET I0=0
+4000 REM " --- Correct?"
+4010 LET V4$="Is The Above Information Correct (Y/N/Delete)?"
+4020 LET V0$="S",V1$="CER",V2$="Y",V3$="",V0=6,V2=22,V1=FNV(V4$)
+4030 GOSUB 7000
+4040 ON V3 GOTO 4050,4000,4000,4000,9900
+4060 IF V$="DELETE" THEN GOTO 4200
+4090 ON POS(V$="YN") GOTO 4000,4100,1600
+4100 REM " --- Write record"
+4120 WRITE (SYS01_DEV,KEY=A0$)IOL=SYS01S
+4150 LET X$=STBL("!SCREEN"),X$(1,8)=A1$,X$=STBL("!SCREEN",X$)
+4190 GOTO 9900
+4200 REM " --- Remove record"
+4210 REMOVE (SYS01_DEV,KEY=A0$,DOM=4220)
+4290 GOTO 1500
+5000 REM " --- Display record"
+5020 PRINT @(22,3),A2$,@(22,4),A3$,@(22,5),A4$,@(22,6),A5$,@(22,7),A6$,@(22,8)
+5020:,A1$,
+5090 RETURN
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions"
+8095 DEF FNV(Q$)=42+INT(LEN(Q$)/2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to menu"
+9950 RUN "SYS.AA"
+9999 END

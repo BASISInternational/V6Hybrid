@@ -1,0 +1,1626 @@
+0005  *ERR /0016/01                                                           
+0005:     Page   1
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  ARE.AC
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  10/16/00
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  Update invoice balances correctly when applied amount is
+ *ERR                 changed to zero.
+
+ *ERR     Add Lines:  3630
+
+
+0010  *ERR REM "ARE - Cash Receipts Line Item Entry"
+0020 REM "Program ARE.AC"
+
+3630 IF X[0]=0 AND X[1]=0 THEN REMOVE (ARE31_DEV,KEY=X0$,DOM=3631)
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  ARM.QA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  12/15/00
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  Remove ARE-43 record when deleting order.
+
+ *ERR     Add Lines:  4735
+ *ERR  Modify Lines:  0155 0198 4730
+
+
+0010  *ERR REM "ARM - Credit Manager's Review and Release"
+0020  *ERR REM "Program ARM.QA
+
+0155  *ERR LET FILES$[19]="ARS-10",FILES$[20]="IVM-10",FILES$[21]="ARE-43"
+0198  *ERR LET ARS10_DEV=CHANNELS[19],IVM10_DEV=CHANNELS[20],ARE43_DEV=CHANN
+ *ERR              ELS[21]
+4730 REMOVE (ARE04_DEV,KEY=N0$+"O"+A0$(3,15),DOM=4731)
+4735 REMOVE (ARE43_DEV,KEY=A0$(1,4)+A0$(11,7)+A0$(5,6),DOM=4736)
+
+0005  *ERR /16/01                                                             
+0005:   Page   2
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  ARR.4C
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  05/01/01
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  Correct pagination of grand totals
+
+ *ERR     Add Lines:  5947 5949 6070
+ *ERR  Modify Lines:  4045
+
+
+0010  *ERR REM "ARR - Aging Report"
+0020  *ERR REM "Program ARR.4C"
+
+4045  *ERR IF H=0 OR L>L9 THEN GOSUB 5000
+5947 LET L=L+1
+5949 IF T9$="E" THEN GOTO 5990
+6070 LET L=L+1
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  BMC.QA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  12/15/00
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  Display problem.
+
+ *ERR  Modify Lines:  1410 1940
+
+
+0010  *ERR REM "BMC - Bill of Materials SpeedSearch (Component Availability)
+ *ERR              "
+0020  *ERR REM "Program BMC.QA"
+
+1410  *ERR LET V0$="D",V1$="R",V2$=WHEN$,V3$="",V4$="",V0=3,V1=18,V2=2
+1940  *ERR LET X$=""
+
+0005  *ERR /16/01                                                             
+0005:   Page   3
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  BMM.MC
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  04/27/01
+ *ERR      Severity:  Red
+ *ERR        Author:  KJS
+ *ERR       Problem:  Change variables and labels that conflict with BBj keywo
+:rds
+
+ *ERR  Modify Lines:  0790 4420 5105
+
+
+0010  *ERR REM "BMM - Bill Maintenance - Material Info
+0020  *ERR REM "Program BMM.MC"
+
+0790  *ERR GOSUB LIST_ALL
+4420  *ERR GOSUB LIST_ALL
+5105  *ERR LIST_ALL:
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  BMM.MC
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  01/17/01
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  Correct check for BOM item in materials when item comes
+ *ERR                 from lookup.
+
+ *ERR  Modify Lines:  2038
+
+
+0010  *ERR REM "BMM - Bill Maintenance - Material Info
+0020  *ERR REM "Program BMM.MC"
+
+2038  *ERR IF FNP$(B0$(3,20))=FNP$(V$) THEN GOSUB 6000; GOTO 2020
+
+0005  *ERR /16/01                                                             
+0005:   Page   4
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  BMR.IB
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  03/30/01
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  Bill description wrong after first page.
+
+ *ERR     Add Lines:  0730 0740 0750 0790
+ *ERR  Modify Lines:  0515 5050
+ *ERR  Delete Lines:  5025 5030 5035 5040 5045
+
+
+
+0010  *ERR REM "BMR - Bill Material Availability Hard Copy
+0020  *ERR REM "Program BMR.IB"
+
+0515  *ERR DIM B[10],B0$(55),B1$(75),B2$(10),D1$(60),X1$(160)
+0730  *ERR LET BILL_DESC$=FNITEM$(D1$,DESC[1],DESC[2],DESC[3])
+0740  *ERR FIND (IVM10_DEV,KEY=N0$+"C"+X0$,DOM=0741)IOL=IVM10C
+0750  *ERR LET X1$=X1$(6,24)
+0790  *ERR GOSUB 5000
+5050  *ERR PRINT (7)@(0),"For Bill Number: ",A0$(3,P[0])," ",BILL_DESC$
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  BMU.CB
+ *ERR     Reference:      4074
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  08/03/00
+ *ERR      Severity:  Red
+ *ERR        Author:  KJS
+ *ERR       Problem:  Prevent error 47 when resequencing by operations.
+
+ *ERR     Add Lines:  3655 3755
+ *ERR  Delete Lines:  3645 3745
+
+
+
+0010  *ERR REM "BMU - Bill of Material Resequence Detail Lines
+0020  *ERR REM "Program BMU.CB"
+
+3655  *ERR PRINT @(40,11),B0$(3,P[0]),
+3755  *ERR PRINT @(40,11),D0$(3,P[0]),
+
+0005  *ERR /16/01                                                             
+0005:   Page   5
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  GLM.JA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  03/27/01
+ *ERR      Severity:  Red
+ *ERR        Author:  KJS
+ *ERR       Problem:  Avoid error 42, be sure to copy fiscal report amounts.
+
+ *ERR  Modify Lines:  0510 4420
+
+
+0010  *ERR REM "GLM - Copy Financial Statements"
+0020  *ERR REM "Program GLM.JA"
+
+0510  *ERR DIM A0$(30),B0$(8),C0$(2),C1$(40),S0$(10),S[3]
+4420  *ERR LET K32$=KEY(GLM32_DEV,END=4500)
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  IVC.UA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  03/06/01
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  Don't change primary vendors to secondary
+
+ *ERR  Modify Lines:  1930 1960
+
+
+0010  *ERR REM "IVC - Inventory Item Update (ATAMO Routine)"
+0020  *ERR REM "Program IVC.UA"
+
+1930  *ERR LET B0$(1)=N0$+REFS$[1],B0$(9)=ITEM$,B1$(1,1)="S",X0$(1)=B0$(1,2)
+ *ERR              +"H"+B0$(9,20)+B0$(3,6)
+1960  *ERR LET B1$(2,3)=YMD$,B[6]=REFS[1],B[7]=REFS[3],B[8]=REFS[3]
+
+0005  *ERR /16/01                                                             
+0005:   Page   6
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  IVC.UA
+ *ERR     Reference:      4061
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  08/03/00
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  Not updating Item Vendor data (IVM-05) correctly.
+
+ *ERR  Modify Lines:  1930 1960
+
+
+0010  *ERR REM "IVC - Inventory Item Update (ATAMO Routine)"
+0020  *ERR REM "Program IVC.UA"
+
+1930  *ERR LET B0$(1)=N0$+REFS$[1],B0$(9)=ITEM$,B1$(1,1)="S",X0$(1)=B0$(1,2)
+ *ERR              +"H"+B0$(9,20)+B0$(3,6)
+1960  *ERR LET B1$(2,3)=YMD$,B[6]=REFS[1],B[7]=REFS[3],B[8]=REFS[3]
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  IVE.AA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  03/28/01
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  Prevent committing or posting G/L incorrectly.
+
+ *ERR     Add Lines:  0590 1315 5291 5292
+ *ERR  Modify Lines:  2300 4060 5230 5240 5270 5280 5290
+ *ERR  Delete Lines:  1220 4070 4080 4090 5210 5245 5255 5260 5265 5275
+
+
+
+0010  *ERR REM "IVE - Transaction Entry (Header Overlay)"
+0020  *ERR REM "Program IVE.AA"
+
+0590  *ERR LET NUMBER=1; DIM MESSAGE$[NUMBER]
+1315  *ERR LET NEWENTRY=0
+2300  *ERR PRINT @(V1,V2),A0$(13,2)," ",X0$(6,20),
+4060  *ERR ON POS(V$="YN") GOTO 4000,4100,2000
+5230  *ERR FIND (IVM10_DEV,KEY=N0$+"B"+V$,DOM=5295)IOL=IVM10B
+5240  *ERR LET STATUS=0
+5270  *ERR IF NEWENTRY OR (POS(X0$(26,1)="IC") AND POS(TYPE$="IC")) OR (POS(
+ *ERR              X0$(26,1)="IC")=0 AND POS(TYPE$="IC")=0) THEN GOTO 5290
+5280  *ERR LET STATUS=1,MESSAGE$[0]="Can't change the Transaction Code to Ty
+ *ERR              pe "+X0$(26,1)+".",MESSAGE$[1]="          <Enter> to Contin
+:ue"
+5290  *ERR PRINT @(18,4),A0$(13,2)," ",X0$(6,20),
+5291  *ERR LET TYPE$=X0$(26,1),POSTGL$=X0$(27,1)
+5292  *ERR IF POSTGL$="N" THEN LET X1$=""
+
+0005  *ERR /16/01                                                             
+0005:   Page   7
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  IVM.MR
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  12/14/00
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  Copy Item copied more than one Vendor record.
+
+ *ERR  Modify Lines:  4790
+
+
+0010  *ERR REM "IVM - Item Maintenance (Copy Item)
+0020  *ERR REM "Program IVM.MR"
+
+4790  *ERR GOTO 4640
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  IVR.7B
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  02/08/01
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  Make Open/Closed/Both work
+
+ *ERR     Add Lines:  0260 1200 1210 1220 1230 1240 1250 1290
+
+
+0010  *ERR REM "IVR - Inventory Serialized History By Item Report (Report Ov
+ *ERR              erlay)"
+0020  *ERR REM "Program IVR.7B"
+
+0260  *ERR IVM07A: IOLIST D0$,D1$,D0
+1200  *ERR REM " --- Open or Closed Lots?
+1210  *ERR IF OCB$="B" THEN GOTO 1300
+1220  *ERR LET D0=0
+1230  *ERR FIND (IVM07_DEV,KEY=K$(1,44),DOM=1231)IOL=IVM07A
+1240  *ERR IF (OCB$="O" AND D0) OR (OCB$="C" AND D0=0) THEN GOTO 1400
+1250  *ERR READ (IVT01_DEV,KEY=K$(1,44)+$FF$,DOM=1251)
+1290  *ERR GOTO 3900
+
+0005  *ERR /16/01                                                             
+0005:   Page   8
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  IVR.8B
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  02/08/01
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  Make Open/Closed/Both work
+
+ *ERR     Add Lines:  0260 1200 1210 1220 1230 1240
+
+
+0010  *ERR REM "IVR - Lot/Serial Transaction History By Vendor Report (Repor
+ *ERR              t)"
+0020  *ERR REM "Program IVR.8B"
+
+0260  *ERR IVM07A: IOLIST D0$,D1$,D0
+1200  *ERR REM " --- Open or Closed Lots?
+1210  *ERR IF OCB$="B" THEN GOTO 1300
+1220  *ERR LET D0=0
+1230  *ERR FIND (IVM07_DEV,KEY=N0$+K$(35,2)+K$(37,20)+K$(12,20),DOM=1231)IOL
+ *ERR              =IVM07A
+1240  *ERR IF (OCB$="O" AND D0=0) OR (OCB$="C" AND D0) THEN GOTO 3900
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  IVR.9B
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  02/08/01
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  Make Open/Closed/Both work
+
+ *ERR     Add Lines:  0260 1200 1210 1220 1230 1240
+
+
+0010  *ERR REM "IVR - Lot/Serial Transaction History By Customer Report (Rep
+ *ERR              ort)"
+0020  *ERR REM "Program IVR.9B"
+
+0260  *ERR IVM07A: IOLIST D0$,D1$,D0
+1200  *ERR REM " --- Open or Closed Lots?
+1210  *ERR IF OCB$="B" THEN GOTO 1300
+1220  *ERR LET D0=0
+1230  *ERR FIND (IVM07_DEV,KEY=N0$+K$(35,2)+K$(37,20)+K$(12,20),DOM=1231)IOL
+ *ERR              =IVM07A
+1240  *ERR IF (OCB$="O" AND D0=0) OR (OCB$="C" AND D0) THEN GOTO 3900
+
+0005  *ERR /16/01                                                             
+0005:   Page   9
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  IVR.RA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  02/06/01
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  Test for product type, correct display
+
+ *ERR     Add Lines:  1075 1122 1125
+ *ERR  Modify Lines:  1110 1160 1165
+
+
+0010  *ERR REM "IVR - Item Detail Listing (Input Overlay)"
+0020  *ERR REM "Program IVR.RA"
+
+1075  *ERR IF TYPE$<>"" THEN IF A2$(53,3)<>TYPE$ THEN GOTO 3900
+1110  *ERR LET X$="Item Information",PRODUCT$=NF$,CLASS$=NF$,TYPE_DESC$=NF$
+1122  *ERR FIND (IVM15_DEV,KEY=N0$+A2$(53,3),DOM=1130)IOL=IVM15A
+1125  *ERR LET TYPE_DESC$=X1$(1,20)
+1160  *ERR PRINT (7)"   Item Type: ",A2$(53,3)," ",TYPE_DESC$,@(45),"Weight:
+ *ERR               ",A[1]:M6$,@(65),"Inventoried: ",A2$(20,1)
+1165  *ERR PRINT (7)"   MSR Price: ",A[2]:M4$,@(34),"Conversion Factor: ",A[
+ *ERR ]:M5$,@(69),"Taxable: ",A2$(8,1)
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  MPU.AC
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  04/27/01
+ *ERR      Severity:  Red
+ *ERR        Author:  KJS
+ *ERR       Problem:  Change variables and labels that conflict with BBj keywo
+:rds
+
+ *ERR  Modify Lines:  3790 3840
+
+
+0010 REM "MRP Generation-Generate Purch/Prod/Resource & Pegging data"
+0020  *ERR REM "Program MPU.AC"
+
+3790 LET SETUP=D[4],RUN_AMT=D[0]/D[1]
+3840 IF W[V9,3]>0 THEN LET X[V9]=X[V9]+RUN_AMT*W[V9,3]+SETUP
+
+0005  *ERR /16/01                                                             
+0005:   Page  10
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  MPU.DA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  04/27/01
+ *ERR      Severity:  Red
+ *ERR        Author:  KJS
+ *ERR       Problem:  Change variables and labels that conflict with BBj keywo
+:rds
+
+ *ERR  Modify Lines:  6210
+
+
+0010  *ERR REM "MPU - Planned Work Order Update"
+0020  *ERR REM "Program MPU.DA"
+
+6210 DIM FOR1$(83),FOR2$(155)
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  OPR.KB
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  02/20/01
+ *ERR      Severity:  Red
+ *ERR        Author:  KJS
+ *ERR       Problem:  Prevent error 47, line 5920
+
+ *ERR  Modify Lines:  2130
+
+
+0010  *ERR REM "OPR - INVOICE HISTORY REPORT II"
+0020  *ERR REM "Program OPR.KB"
+
+2130  *ERR DIM D2$(19),D[10]; FIND (IVM01_DEV,KEY=N0$+W0$(33,20),DOM=2190)IO
+ *ERR              L=IVM01A
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  OPR.NA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  02/23/01
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  New feature: Print only picking list, quotes, or both?
+ *ERR                 Also requires 23Feb01 SCN to OPR.PA
+
+ *ERR     Add Lines:  1800 1810 1820 1830 1840 1890
+ *ERR  Modify Lines:  0510 0750 3960
+
+
+0010  *ERR REM "OPR - Order/Picking List Batch Print"
+0020  *ERR REM "Program OPR.NA"
+
+0510  *ERR LET P5$="",P7$="N",P8$="N",P9$=F0$(7,3),WHICH_ONES$="B"
+
+0005  *ERR /16/01                                                             
+0005:   Page  11
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  OPR.NA  *** Continued
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  02/23/01
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  New feature: Print only picking list, quotes, or both?
+ *ERR                 Also requires 23Feb01 SCN to OPR.PA
+
+ *ERR     Add Lines:  1800 1810 1820 1830 1840 1890
+ *ERR  Modify Lines:  0510 0750 3960
+
+0750  *ERR PRINT 'SB',@(20,3),"Print Prices (Y/N):",@(25,5),"Restart (Y/N):"
+ *ERR              ,@(23,7),"Customer Number:",@(20,9),"Selected Warehouse: ",
+:@(8,11
+ *ERR              ),"Picking List, Quotes, or Both?:",'SF',
+1800  *ERR REM " --- Print picking list, quote, or both
+1810  *ERR LET V0$="S",V1$="CR",V2$=WHICH_ONES$,V3$="PQB",V4$="Print only Pi
+ *ERR              cking Lists, only Quotes, or Both? (P/Q/B)",V0=1,V1=40,V2=1
+:1
+1820  *ERR GOSUB 7000
+1830  *ERR ON V3 GOTO 1840,1800,1890,1800,1890
+1840  *ERR LET WHICH_ONES$=V$
+1890  *ERR GOTO 3900
+3960  *ERR ON I0 GOTO 1000,1200,1400,1600,1800,4000
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  OPR.PA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  02/23/01
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  New feature: Print only packing list, quotes, or both?
+ *ERR                 Also requires 23Feb01 SCN to OPR.NA
+
+ *ERR     Add Lines:  1142 4422
+
+
+0010  *ERR REM "OPR - Order/Picking List (Form #203)"
+0020  *ERR REM "Program OPR.PA"
+
+1142  *ERR IF (WHICH_ONES$="P" AND A0$(21,1)<>"S") OR (WHICH_ONES$="Q" AND A
+ *ERR $(21,1)<>"P") THEN GOTO 1100
+4422  *ERR IF (WHICH_ONES$="P" AND A0$(21,1)<>"S") OR (WHICH_ONES$="Q" AND A
+ *ERR $(21,1)<>"P") THEN GOTO 4300
+
+0005  *ERR /16/01                                                             
+0005:   Page  12
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  POE.DD
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  03/30/01
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  Prevent entry of invalid lot/serial numbers
+
+ *ERR  Modify Lines:  2040
+
+
+0010  *ERR REM "POE - Lot/Serial Number Receipt Entry"
+0020  *ERR REM "Program POE.DD"
+
+2040 ON V3 GOTO 2060,2000,3200,2000,2060
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  POU.DA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  12/15/00
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  Updating YTD Receipt in Replenishment file incorrectly
+
+ *ERR  Modify Lines:  2240
+
+
+0010  *ERR REM "POU - Purchase Order Receipt Register Update
+0020  *ERR REM "Program POU.DA"
+
+2240 LET U0$(1)=A0$,U0$(9,3)=BUYER$,X=4
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  PRC.GA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  05/09/01
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  P/R Check Register Summary doesn't match G/L Distributio
+:n
+ *ERR                 ***Requires 09May01 SCNs to PRR.HB and PRR.TA***
+
+ *ERR     Add Lines:  0470 0480 1615 1625
+ *ERR  Modify Lines:  1620
+
+
+0010  *ERR REM "PRC - Generate Payroll G/L Postings"
+0020  *ERR REM "Program PRC.GA"
+
+0470  *ERR LET T1$="365052026024012004001",T2$="DWBSMQA",PR_PREC=INFO[4]
+0480  *ERR LET DAYS_PER_PERIOD=NUM(T1$(POS(INFO$[7]=T2$)*3-2,3))
+1615  *ERR PRECISION PR_PREC
+
+0005  *ERR /16/01                                                             
+0005:   Page  13
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  PRC.GA  *** Continued
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  05/09/01
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  P/R Check Register Summary doesn't match G/L Distributio
+:n
+ *ERR                 ***Requires 09May01 SCNs to PRR.HB and PRR.TA***
+
+ *ERR     Add Lines:  0470 0480 1615 1625
+ *ERR  Modify Lines:  1620
+
+1620  *ERR LET AMOUNT=A*DAYS*DAYS_PER_PERIOD/365,UNITS=U*DAYS*DAYS_PER_PERIO
+ *ERR              D/365
+1625  *ERR PRECISION 2
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  PRR.FA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  01/17/01
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  Correct pagination problem.
+
+ *ERR     Add Lines:  4440 5105 5190
+ *ERR  Modify Lines:  1620
+
+
+0010  *ERR REM "PRR - PRELIMINARY CHECK REPORT"
+0020  *ERR REM "Program PRR.FA"
+
+1620  *ERR IF L+2>L9 THEN GOSUB 5000
+4440 LET L=L+2
+5105 LET L=L+1
+5190 LET L=L+1
+
+0005  *ERR /16/01                                                             
+0005:   Page  14
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  PRR.HB
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  05/09/01
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  P/R Check Register Summary doesn't match G/L Distributio
+:n
+ *ERR                 ***Requires 09May01 SCNs to PRC.GA and PRR.TA***
+
+ *ERR     Add Lines:  1195
+ *ERR  Modify Lines:  0570
+
+
+0010  *ERR REM "PRR - Check Register (G/L Summary)"
+0020  *ERR REM "Program PRR.HB"
+
+0570  *ERR LET INFO$[3]=GLDATE$(1,3),INFO$[4]=CHKDATE$,INFO[4]=NUM(P3$(7,1))
+1195  *ERR LET INFO$[7]=A0$(25,1)
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  PRR.TA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  05/09/01
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  P/R Check Register Summary doesn't match G/L Distributio
+:n
+ *ERR                 ***Requires 09May01 SCNs to PRR.HB and PRC.GA***
+
+ *ERR     Add Lines:  1170
+ *ERR  Modify Lines:  0570
+
+
+0010  *ERR REM "PRR - G/L Distribution Report"
+0020  *ERR REM "Program PRR.TA"
+
+0570  *ERR LET INFO$[3]=P9$(1,3),INFO$[4]=INFO$[3],INFO[4]=NUM(P3$(7,1))
+1170  *ERR LET INFO$[7]=A0$(25,1)
+
+0005  *ERR /16/01                                                             
+0005:   Page  15
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  SAR.AB
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  10/25/00
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  S/A report always uses 12 periods
+
+ *ERR  Modify Lines:  0780
+
+
+0010  *ERR REM "SAR - Generic Sales Analysis Report Selection"
+0020  *ERR REM "Program SAR.AB"
+
+0780  *ERR PRINT @(COL-18,L1),STR(PERIODS:"##")+" Period Report:",@(COL-16,L
+0001  *ERR +1),"Sales Or Units:",@(COL-19,L1+2),"MTD, YTD Or Prior:",@(COL-
+0012  *ERR ,L1+3),"Page Break:",@(COL-26,L1+4),"Include Zero Sales Lines:"
+ *ERR              ,'SF',
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  SAR.AC
+ *ERR     Reference:      4067
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  08/03/00
+ *ERR      Severity:  Red
+ *ERR        Author:  KJS
+ *ERR       Problem:  Prevent error one from numeric mask overflow.
+
+ *ERR  Modify Lines:  0560 8320 8330 8345
+ *ERR  Delete Lines:  8310
+
+
+
+0010  *ERR REM "SAR - Generic Sales Analysis Report"
+0020  *ERR REM "Program SAR.AC"
+
+0560  *ERR LET M4$="-##0.00%",M4=LEN(M4$),M5=999.99; REM Needs to match M4$
+8320 IF Q1=0 THEN IF Q2=0 THEN LET Q=0 ELSE LET Q=-M5
+8330 IF Q1<>0 THEN LET Q=MAX(MIN((Q1-Q2)/Q1*100,M5),-M5)
+8345 FNEND
+
+0005  *ERR /16/01                                                             
+0005:   Page  16
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  SAR.AD
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  04/27/01
+ *ERR      Severity:  Red
+ *ERR        Author:  KJS
+ *ERR       Problem:  Change variables and labels that conflict with BBj keywo
+:rds
+
+ *ERR  Modify Lines:  1540 1550
+
+
+0010  *ERR REM "SAR - Generic Sales Analysis 12 Period Report"
+0020  *ERR REM "Program SAR.AD"
+
+1540  *ERR IF SAYEAR$=BEGYEAR$ THEN LET P=BEGPERIOD,FIRST=0 ELSE LET P=1,FIR
+ *ERR              ST=PERIODS-BEGPERIOD+1
+1550  *ERR FOR I=FIRST TO PERIODS-1
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  SAR.AD
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  10/25/00
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  S/A report always uses 12 periods
+
+ *ERR  Modify Lines:  0510 0520 0590 0605 0610 0615 1320 1420 1550 1770 1950 5
+:820
+5860  *ERR 6110 6310 6510 6630 6680
+
+
+0010  *ERR REM "SAR - Generic Sales Analysis 12 Period Report"
+0020  *ERR REM "Program SAR.AD"
+
+0510  *ERR DIM A0$(SORT_SIZE+KEYLEN-2),C[12],Q[12],S[12],NMBR[PERIODS-1]
+0520  *ERR LET TOTAL=0,ENDPERIOD=NUM(PERIOD$),BEGPERIOD=ENDPERIOD-PERIODS+1,
+ *ERR              ENDYEAR$=YEAR$,BEGYEAR$=YEAR$
+0590  *ERR LET HEADINGS$[0]=F4$,HEADINGS$[1]=STR(PERIODS:"##")+" Period "+F5
+ *ERR              $,HEADINGS$[2]=SUS$[POS(SU$=SUS$)]+" Through "+ENDPERIOD$
+0605  *ERR DIM O[4],O1[PERIODS]
+0610  *ERR LET O[1]=0,O[2]=O[1]+3,O[3]=O[2]+3,O[4]=O[3]+3,O1[PERIODS]=WIDTH-
+ *ERR              M1
+0615  *ERR FOR I=PERIODS-1 TO 0 STEP -1
+1320  *ERR FOR I=0 TO PERIODS-1
+1420  *ERR DIM A0$(SORT_SIZE+KEYLEN-2),NMBR[PERIODS-1]
+1550  *ERR FOR I=FIRST TO PERIODS-1
+1770  *ERR FOR I=0 TO PERIODS-1
+1950  *ERR DIM NMBR_TOT[PERIODS-1],N[PERIODS-1]
+5820  *ERR FOR I=0 TO PERIODS-1
+5860  *ERR PRINT (7)@(O1[PERIODS]),T:M1$
+6110  *ERR DIM NMBR_TOT1[PERIODS-1]
+6310  *ERR DIM NMBR_TOT2[PERIODS-1]
+6510  *ERR DIM NMBR_TOT3[PERIODS-1]
+6630  *ERR FOR I=0 TO PERIODS-1
+
+0005  *ERR /16/01                                                             
+0005:   Page  17
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  SAR.AD  *** Continued
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  10/25/00
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  S/A report always uses 12 periods
+
+ *ERR  Modify Lines:  0510 0520 0590 0605 0610 0615 1320 1420 1550 1770 1950 5
+:820
+5860  *ERR 6110 6310 6510 6630 6680
+
+6680  *ERR LET H3$(O1[PERIODS]+M1-5)="Total",H3$=H3$(O1[0]+1)
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  SYC.BC
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  03/28/01
+ *ERR      Severity:  Red
+ *ERR        Author:  KJS
+ *ERR       Problem:  When Inventory batched, some processes will report files
+: clear
+ *ERR                 when they are not.
+
+ *ERR  Modify Lines:  2060 3010
+
+
+0010  *ERR REM "SYC - Verify That Batched Files Are Empty"
+0020  *ERR REM "Program SYC.BC"
+
+2060  *ERR IF B2$(3,1)<>"Y" THEN GOTO 3900
+3010  *ERR LET K$=KEY(SYM59_DEV,END=3900); READ (SYM59_DEV)
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  SYC.EA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  11/09/00
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  Modifications for the Web Kit.
+
+ *ERR     Add Lines:  0400 0410 9030 9125 9810
+ *ERR  Modify Lines:  9930
+
+
+0010  *ERR REM "SYC - Standard Error Handler"
+0020  *ERR REM "Program SYC.EA"
+
+0400  *ERR REM " --- Are we being called by the Web Kit?
+0410  *ERR IF FID(0)="IO" THEN GOTO 9800
+9030  *ERR IF FID(0)="IO" THEN LET ERROR=127,LINE=TCB(5),PROGNAME$=PGM(-2);
+ *ERR              GOTO 9800
+9125  *ERR IF FID(0)="IO" THEN LET ERROR=ERR,LINE=TCB(5),PROGNAME$=PGM(-2);
+ *ERR              GOTO 9800
+
+0005  *ERR /16/01                                                             
+0005:   Page  18
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  SYC.EA  *** Continued
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  11/09/00
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  Modifications for the Web Kit.
+
+ *ERR     Add Lines:  0400 0410 9030 9125 9810
+ *ERR  Modify Lines:  9930
+
+9810 IF FID(0)="IO" THEN CALL "uterr.wbb",ERR=9811,ERROR,LINE,PROGNAME
+ *ERR              $
+9930 IF SNAME$<>"" THEN CALL "SYC.WD",SNAME$
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  SYC.ES
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  11/09/00
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  Modifications for the Web Kit.
+
+ *ERR     Add Lines:  0095
+
+
+0010  *ERR REM "SYC - Trap User ESCAPE's"
+0020  *ERR REM "Program SYC.ES"
+
+0095  *ERR IF FID(0)="IO" THEN LET FKEY=0; GOTO 9950
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  SYC.FC
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  01/15/00
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  Calculate future dates into the next year correctly.
+
+ *ERR  Modify Lines:  6110
+
+
+0010  *ERR REM "SYC - Days Forecast Ahead/Behind (Public/Called)"
+0020  *ERR REM "Program SYC.FC"
+
+6110  *ERR IF F_MTH>12 THEN LET F_YR=F_YR+1,F_MTH=1,YY$=FNYEAR_YY21$(F_YR)
+
+0005  *ERR /16/01                                                             
+0005:   Page  19
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  SYC.FC
+ *ERR     Reference:      4064
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  12/15/00
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  Return packed date if sent packed date, change only retu
+:rned
+ *ERR                 arguments.
+
+ *ERR  Modify Lines:  0090 0550 0810 0820 9920
+
+
+0010  *ERR REM "SYC - Days Forecast Ahead/Behind (Public/Called)"
+0020  *ERR REM "Program SYC.FC"
+
+0090  *ERR ENTER FILE_DEV,FIRM$,CUR$,FUTURE$,V9,FLAG$
+0550  *ERR LET V0=INT(V9),FLAG$=""
+0810  *ERR IF LEN(CUR$)=3 THEN LET CURRENT$=FNYY_YY21$(FNM$(FNC$(CUR$))),V0_
+ *ERR              LEN=3
+0820  *ERR IF LEN(CUR$)>3 THEN LET CURRENT$=FNYY_YY21$(CUR$),V0_LEN=6
+9920  *ERR LET FUTURE$="N",FLAG$="Y"
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  SYC.FK
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  03/29/01
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  SYC.FK won't truly reset globals under some circumstance
+:s
+
+ *ERR     Add Lines:  0500 0510 0520 0530 0550 0590
+
+
+0010  *ERR REM "SYC - Set Function Keys Back to Default CTL Values"
+0020  *ERR REM "Program SYC.FK"
+
+0500  *ERR REM "============================================================
+ *ERR              =====
+0510  *ERR REM "Start with the standard BASIS values for !EDIT and !TERMS
+0520  *ERR REM "============================================================
+ *ERR              =====
+0530  *ERR REM
+0550  *ERR LET JUNK$=STBL("!EDIT",STBL("!SEDIT")),JUNK$=STBL("!TERMS",STBL("
+ *ERR              !STERMS"))
+0590  *ERR REM
+
+0005  *ERR /16/01                                                             
+0005:   Page  20
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  SYC.FK
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  12/13/00
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  Get Home and End keys to work.
+
+ *ERR     Add Lines:  3372 3374 3376 3378
+ *ERR  Modify Lines:  2240
+
+
+0010  *ERR REM "SYC - Set Function Keys Back to Default CTL Values"
+0020  *ERR REM "Program SYC.FK"
+
+2240  *ERR PRINT 'EL'+"3"+$0600011D01011C0801A30901A40401A80501A9$,
+3372  *ERR REM "Change function 76 (Home) to $A8$
+3374  *ERR IF ASC(E$(X*2+2,1))=76 THEN LET E$(X*2+1,1)=$A8$
+3376  *ERR REM "Change function 77 (End) to $A9$
+3378  *ERR IF ASC(E$(X*2+2,1))=77 THEN LET E$(X*2+1,1)=$A9$
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  SYC.GA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  05/08/01
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  Additional support for PrintPLUS
+
+ *ERR  Modify Lines:  0410
+
+
+0010  *ERR REM "SYC - Open Printer"
+0020  *ERR REM "Program SYC.GA"
+
+0410  *ERR DIM P0$(3),P1$(152),P[4]
+
+0005  *ERR /16/01                                                             
+0005:   Page  21
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  SYC.GA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  05/02/01
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  Modifications for BBj
+
+ *ERR  Modify Lines:  1220
+ *ERR  Delete Lines:  1210
+
+
+
+0010  *ERR REM "SYC - Open Printer"
+0020  *ERR REM "Program SYC.GA"
+
+1220  *ERR IF POS("WIN"=CVS(INFO(0,0,ERR=1300),4))<>1 THEN GOTO 1300
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  SYC.GA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  02/27/01
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  Modifications for PrintPlus
+
+ *ERR     Add Lines:  1021 1022 1023 4100 4110 4140 4150 4160 4190 4200 4210 4
+:240
+ *ERR  Modify Lines:  1000 1020
+
+
+0010  *ERR REM "SYC - Open Printer"
+0020  *ERR REM "Program SYC.GA"
+
+1000  *ERR REM " --- Check for special printers
+1020  *ERR OPEN (PRINTER,ERR=9500,MODE="FIRM="+F0$(16,2)+",USER="+F0$(4,3)+"
+ *ERR              ,RPTNAME="+CVS(F5$,2))F0$(13,2)
+1021  *ERR IF F0$(13,2)=STBL("+EMAIL_PRINTER",ERR=1022) THEN GOTO 4100
+1022  *ERR IF F0$(13,2)=STBL("+FAX_PRINTER",ERR=1023) THEN GOTO 4150
+1023  *ERR IF F0$(13,2)=STBL("+PDF_PRINTER",ERR=1024) OR F0$(13,2)=STBL("+HT
+ *ERR              ML_PRINTER",ERR=1024) THEN GOTO 4200
+4100  *ERR REM " --- Do Email Printer Setup
+4110  *ERR CALL "SYC.GB",ERR=4111
+4140  *ERR GOTO 9900
+4150  *ERR REM " --- Do VSI-FAX Printer Setup
+4160  *ERR CALL "SYC.GC",ERR=4161
+4190  *ERR GOTO 9900
+4200  *ERR REM " --- PDF or HTML printers
+4210  *ERR CALL "SYC.GD",ERR=4221
+4240  *ERR GOTO 9900
+
+0005  *ERR /16/01                                                             
+0005:   Page  22
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  SYC.GA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  01/04/01
+ *ERR      Severity:  Red
+ *ERR        Author:  KJS
+ *ERR       Problem:  Incorrect processing when printer is missing from SYM-07
+:.
+
+ *ERR  Modify Lines:  1030
+
+
+0010  *ERR REM "SYC - Open Printer"
+0020  *ERR REM "Program SYC.GA"
+
+1030  *ERR FIND (SYM07_DEV,KEY=F0$(13,2),DOM=1040)IOL=SYM07A
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  SYC.IA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  01/15/00
+ *ERR      Severity:  Red
+ *ERR        Author:  KJS
+ *ERR       Problem:  Avoid error 26.  Strengthen time (type "T") checking.  S
+:ee also
+0019  *ERR Jan01 SCN to WOE.BB.
+
+ *ERR     Add Lines:  2905 2932 2934 2936
+ *ERR  Modify Lines:  2950
+ *ERR  Delete Lines:  2970
+
+
+
+0010  *ERR REM "SYC - Standard Input Routine (Public/Called)"
+0020  *ERR REM "Program SYC.IA"
+
+2905  *ERR IF CVS(FIELD$,2)="" THEN LET FIELD$="0000"
+2932  *ERR FOR II=1 TO 4
+2934  *ERR IF POS(FIELD$(II,1)="0123456789")=0 THEN EXITTO 1000
+2936  *ERR NEXT II
+2950  *ERR IF V4<0 OR V4>23 THEN GOTO 1000
+
+0005  *ERR /16/01                                                             
+0005:   Page  23
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  SYC.KA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  11/08/00
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  Correct confusing behavior. Requires corresponding v6.0.
+:8 SCN
+ *ERR                 to SYC.KA dated 11/07/2000.
+
+ *ERR     Add Lines:  5582
+ *ERR  Modify Lines:  2650 3190 3310 3320 3420 3490 4015 4030 5505
+
+
+0010  *ERR REM "SYC - Komments Maintenance"
+0020  *ERR REM "Program SYC.KA"
+
+2650  *ERR LET L=NUM(SELECTION$(1,2)),SEQ_NO=NUM(A0$(KEYLEN+1))
+3190  *ERR GOTO 3500
+3310  *ERR LET SEQ_NO=NUM(A0$(KEYLEN+1))+NUMBER
+3320  *ERR IF SEQ_NO>=10^SEQLEN THEN LET SEQ_NO=NUMBER
+3420  *ERR LET V0$="Z",V1$="KR",V2$=STR(SEQ_NO),V3$="",V4$="",K9$=A0$
+3490  *ERR IF K9$<>A0$ THEN GOSUB 5500
+4015  *ERR LET V0=1,V1=WIDTH-4,V2=L,SEQ_NO=NUM(A0$(KEYLEN+1))
+4030  *ERR ON V3 GOTO 4040,4000,3700,4000,4100
+5505  *ERR LET IP=0,IL=0,SELECTION$=""
+5582  *ERR IF SELECTION$<>"" THEN LET L=NUM(SELECTION$(1,2))
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  SYC.KA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  11/07/00
+ *ERR      Severity:  Red
+ *ERR        Author:  KJS
+ *ERR       Problem:  Avoid error 42 by correcting page calculation; avoid err
+:or 47
+ *ERR                 when <F4> after adding comment to a nex page.
+
+ *ERR     Add Lines:  3320 3442 3444
+ *ERR  Modify Lines:  0490 3440
+
+
+0010  *ERR REM "SYC - Komments Maintenance"
+0020  *ERR REM "Program SYC.KA"
+
+0490  *ERR LET PAGES=INT(10^SEQLEN/(LINES-1))+2,MAXROW=HEIGHT-5
+3320  *ERR IF SEQ_NO>=10^SEQLEN THEN LET SEQ_NO=NUMBER
+3440  *ERR IF V3<>4 THEN GOTO 3450
+3442  *ERR IF L=L0 AND PAGE>1 AND LLIST$[PAGE,L-O,1]="" THEN LET L=L9,PAGE=P
+ *ERR              AGE-1,LASTPAGE=PAGE
+3444  *ERR GOTO 2500
+
+0005  *ERR /16/01                                                             
+0005:   Page  24
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  SYC.LO
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  04/27/01
+ *ERR      Severity:  Red
+ *ERR        Author:  KJS
+ *ERR       Problem:  Change variables and labels that conflict with BBj keywo
+:rds
+
+ *ERR  Modify Lines:  0560 1380 1770 1930 1970 2070 2080 2320 2430
+
+
+0010  *ERR REM "SYC - Order/Invoice Lookup"
+0020  *ERR REM "Program SYC.LO"
+
+0560  *ERR LET OWIN_X=WIN_X+1,OWIN_Y=WIN_Y+2,FIRST$="",INVOICES=0
+1380  *ERR LET FIRST$=V$
+1770  *ERR LET FIRST$=V$
+1930  *ERR IF PREFIX$="*" THEN LET FIRST$=FNU$(FIRST$)
+1970  *ERR LET CHANNEL=ARE03_DEV,FIRST=0,FIRST=NUM(FIRST$,ERR=1980)
+2070  *ERR IF FIRST$="" THEN GOTO 2200
+2080  *ERR IF A0$(11,7)<FIRST$ THEN GOTO 3400
+2320  *ERR IF FIRST$<>"" THEN IF POS(FIRST$=FNU$(A0$))=0 THEN GOTO 3400
+2430  *ERR IF FIRST<>0 THEN IF X<>FIRST THEN GOTO 3400
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  SYC.QS
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  04/27/01
+ *ERR      Severity:  Red
+ *ERR        Author:  KJS
+ *ERR       Problem:  Change variables and labels that conflict with BBj keywo
+:rds
+
+ *ERR  Modify Lines:  6610 6660
+
+
+0010  *ERR REM "SYC - PF Reports Display (Print to Screen)"
+0020  *ERR REM "Program SYC.QS"
+
+6610  *ERR LET SELECT$="ON"
+6660  *ERR LET SELECT$="OFF"
+
+0005  *ERR /16/01                                                             
+0005:   Page  25
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  SYC.UB
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  05/01/01
+ *ERR      Severity:  Red
+ *ERR        Author:  KJS
+ *ERR       Problem:  Tokenized program source code is not currently available
+: under
+ *ERR                 BBj.
+
+ *ERR     Add Lines:  0095 0097
+
+
+0010  *ERR REM "SYC - Return Program Source Code Line"
+0020  *ERR REM "Program SYC.UB"
+
+0095  *ERR LET BBJ=0,DESCRIPTION$="",BBJ=NUM(STBL("+BBJ",ERR=0096))
+0097  *ERR IF BBJ THEN GOTO 4000
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  SYM.IA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  03/28/01
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  When Inventory batched, some processes will report files
+: clear
+ *ERR                 when they are not.
+
+ *ERR     Add Lines:  4535
+ *ERR  Modify Lines:  0110 0145 0150 0180 0620 0630 0640 4530
+ *ERR  Delete Lines:  4580
+
+
+
+0010  *ERR REM "SYM - Process Maintenance (Description)"
+0020  *ERR REM "Program SYM.IA"
+
+0110  *ERR LET FILES=30
+0145  *ERR LET FILES$[13]="SYS-01",FILES$[14]="SYM-69"
+0150  *ERR CALL "SYC.DA",1,1,19,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATC
+ *ERR              H,STATUS
+0180  *ERR LET SYS01_DEV=CHANNELS[13],SYM69_DEV=CHANNELS[14]
+0620  *ERR LET FILES$[20]="GLM-03",FILES$[21]="GLM-06"
+0630  *ERR CALL "SYC.DA",1,20,30,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BAT
+ *ERR              CH,STATUS
+0640  *ERR LET GLM03_DEV=CHANNELS[20],GLM06_DEV=CHANNELS[21]
+4530  *ERR REMOVE (SYM39_DEV,KEY=K$,DOM=4531)
+4535  *ERR REMOVE (SYM69_DEV,KEY=K$(11,6)+K$(1,10),DOM=4536)
+
+0005  *ERR /16/01                                                             
+0005:   Page  26
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  SYM.IC
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  03/28/01
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  When Inventory batched, some processes will report files
+: clear
+ *ERR                 when they are not.
+
+ *ERR     Add Lines:  0230 3410 3420 3745
+ *ERR  Modify Lines:  3740
+
+
+0010  *ERR REM "SYM - Process Maintenance (Batched Files)"
+0020  *ERR REM "Program SYM.IC"
+
+0230  *ERR SYM69A: IOLIST SYM69_K$
+3410  *ERR WRITE (SYM39_DEV,KEY=C0$)IOL=SYM39A
+3420  *ERR LET SYM69_K$=C0$(11,6)+C0$(1,10)
+3740  *ERR REMOVE (SYM39_DEV,KEY=C0$,DOM=3741)
+3745  *ERR REMOVE (SYM69_DEV,KEY=C0$(11,6)+C0$(1,10),DOM=3746)
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  SYS.ZA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  04/25/01
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  Set BBj global, check for FID(0)="" for BBj.
+
+ *ERR     Add Lines:  0300 0310 0320
+ *ERR  Modify Lines:  0410 9660
+
+
+0010  *ERR REM "SYS - ADD+ON Advantage/V System Startup"
+0020  *ERR REM "Program SYS.ZA"
+
+0300  *ERR REM " --- Set BBj global
+0310  *ERR LET BBJ=(CVS(SYS,3)>="LEVEL 6")
+0320  *ERR LET JUNK$=STBL("+BBJ",STR(BBJ))
+0410  *ERR IF FID(0)="IO" OR FID(0)="" THEN GOTO 9600
+9660  *ERR PRINT "Refer to your PRO/5 or BBj documentation for more informat
+ *ERR              ion."
+
+0005  *ERR /16/01                                                             
+0005:   Page  27
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  SYX.AA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  05/01/01
+ *ERR      Severity:  Green
+ *ERR        Author:  KJS
+ *ERR       Problem:  Do not attempt to display program source code when runni
+:ng
+ *ERR                 under BBj.
+
+ *ERR     Add Lines:  0560 0570 4200 4205 4210 4220 4290
+
+
+0010  *ERR REM "SYX - Display Program Information"
+0020  *ERR REM "Program SYX.AA"
+
+0560  *ERR LET BBJ=0,BBJ=NUM(STBL("+BBJ",ERR=0561))
+0570  *ERR IF BBJ THEN GOTO NO_SOURCE_CODE_AVAIL
+4200  *ERR REM " --- Source code not currently available under BBj (01May01)
+ *ERR              "
+4205  *ERR NO_SOURCE_CODE_AVAIL:
+4210  *ERR LET MESSAGE$[0]="Program Source Code Is Not Available in BBj(<Ent
+ *ERR              er>=Continue)"
+4220  *ERR CALL "SYC.XA",2,MESSAGE$[ALL],0,22,-1,V$,V3
+4290  *ERR GOTO 9900
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  SYX.DA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  03/28/01
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  When Inventory batched, some processes will report files
+: clear
+ *ERR                 when they are not.
+
+ *ERR     Add Lines:  0131 0161 0240 0250 3000 3010 3020 3030 3040 3050 3090
+ *ERR  Modify Lines:  0110 0140 0510 0850 0865 0875 2020
+ *ERR  Delete Lines:  1960 1970
+
+
+
+0010  *ERR REM "SYX - Rebuild Process Cross References"
+0020  *ERR REM "Program SYX.DA"
+
+0110  *ERR LET FILES=20
+0131  *ERR LET FILES$[4]="SYM-39"
+0140  *ERR CALL "SYC.DA",1,1,9,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH
+ *ERR              ,STATUS
+0161  *ERR LET SYM39_DEV=CHANNELS[4]
+0240  *ERR SYM39A: IOLIST B0$(1)
+0250  *ERR SYM69A: IOLIST SYM69_K$
+0510  *ERR DIM A1$(50),B0$(16)
+0850  *ERR REM " --- Clear and lock files to rebuild
+0865  *ERR CALL "SYC.DA",1,10,20,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BAT
+ *ERR              CH,STATUS
+
+0005  *ERR /16/01                                                             
+0005:   Page  28
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  SYX.DA  *** Continued
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  03/28/01
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  When Inventory batched, some processes will report files
+: clear
+ *ERR                 when they are not.
+
+ *ERR     Add Lines:  0131 0161 0240 0250 3000 3010 3020 3030 3040 3050 3090
+ *ERR  Modify Lines:  0110 0140 0510 0850 0865 0875 2020
+ *ERR  Delete Lines:  1960 1970
+
+
+0875  *ERR LET SYM29_DEV=CHANNELS[10],SYM59_DEV=CHANNELS[11],SYM69_DEV=CHANN
+ *ERR              ELS[12]
+2020  *ERR LET K$=KEY(SYM49_DEV,END=3000)
+3000  *ERR REM " --- Rebuild SYM-69 from SYM-39
+3010  *ERR READ (SYM39_DEV,KEY="",DOM=3011)
+3020  *ERR READ (SYM39_DEV,END=4000)IOL=SYM39A
+3030  *ERR PRINT @(COLUMN,11),B0$(1,10)," ",B0$(11,6),
+3040  *ERR LET SYM69_K$=B0$(11,6)+B0$(1,10)
+3050  *ERR WRITE (SYM69_DEV,KEY=SYM69_K$)IOL=SYM69A
+3090  *ERR GOTO 3020
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  WOE.BB
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  01/15/00
+ *ERR      Severity:  Red
+ *ERR        Author:  KJS
+ *ERR       Problem:  Avoid error 26 when entering times, need also 19Jan01 SC
+:N
+ *ERR                 to SYC.IA.
+
+ *ERR  Modify Lines:  3310 5085 5087
+ *ERR  Delete Lines:  2440
+
+
+
+0010  *ERR REM "WOE - Time Sheet Transaction Entry (Detail)"
+0020  *ERR REM "Program WOE.BB"
+
+3310  *ERR IF CVS(W1$(16,4),2)<>"" AND CVS(W1$(20,4),2)<>"" THEN GOTO 3350
+5085  *ERR IF CVS(W1$(16,4),2)<>"" THEN PRINT @(Q[4],L),FNE$(W1$(16)),
+5087  *ERR IF CVS(W1$(20,4),2)<>"" THEN PRINT @(Q[5],L),FNE$(W1$(20)),
+
+0005  *ERR /16/01                                                             
+0005:   Page  29
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  WOR.PA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  02/20/01
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  Use correct channel looking up Op Codes
+
+ *ERR     Add Lines:  6015
+
+
+0010  *ERR REM "WOR - Shop Floor Dispatch Report"
+0020  *ERR REM "Program WOR.PA"
+
+6015  *ERR IF BM$="Y" THEN LET CHANNEL=BMM08_DEV
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  WOR.PB
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  02/02/01
+ *ERR      Severity:  Red
+ *ERR        Author:  KJS
+ *ERR       Problem:  Prevent possible Error 31 by processing WOSTR$ more effi
+:ciently
+
+ *ERR  Modify Lines:  3420
+
+
+0010  *ERR REM "WOE - Shop Floor Dispatch Report"
+0020  *ERR REM "Program WOR.PB"
+
+3420  *ERR IF POS(K3$(12,7)=WOSTR$,7+2*UMASK)=0 THEN LET WOSTR$=WOSTR$+K3$(1
+0002  *ERR ,7)+STR(UNITS:UMASK$)+STR(SET:UMASK$)
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  WOR.VB
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  03/30/01
+ *ERR      Severity:  Red
+ *ERR        Author:  KJS
+ *ERR       Problem:  Prevent possible error 40 on line 2676
+
+ *ERR  Modify Lines:  2676
+
+
+0010  *ERR REM "WOS - Work Order Job Status Summery - Printing Overlay "
+0020  *ERR REM "Program:  WOR.VB"
+
+2676  *ERR IF TOTSLAB+TOTSMAT<>0 THEN PRINT (7)@(114),((TOTSLAB+TOTSMAT)-(TO
+ *ERR              TALAB+TOTAMAT))*100/(TOTSLAB+TOTSMAT):M6$
+
+0005  *ERR /16/01                                                             
+0005:   Page  30
+0011  *ERR :35 AM         S O F T W A R E    C H A N G E    N O T I C E
+ *ERR                          A D D + O N   S O F T W A R E
+
+ *ERR       Program:  WOU.CA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  10/20/00
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  The entire process is exited if one item or warehouse is
+ *ERR                 missing
+
+ *ERR  Delete Lines:  5630
+
+
+
+0010  *ERR REM "WOU - Closed Work Order Update"
+0020  *ERR REM "Program WOU.CA"
+
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  WOU.RA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  10/20/00
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  The entire process is exited if one item or warehouse is
+ *ERR                 missing
+
+ *ERR  Delete Lines:  3700
+
+
+
+0010  *ERR REM "WOU - Closed Recurring Work Order Update"
+0020  *ERR REM "Program WOU.RA"
+
+
+ *ERR  ***********************************************************************
+:********
+
+ *ERR       Program:  WOX.JA
+ *ERR     Reference:
+ *ERR    Applies To:  Version 6.0.8
+ *ERR   Change Date:  10/25/00
+ *ERR      Severity:  Yellow
+ *ERR        Author:  KJS
+ *ERR       Problem:  Clearing WO reference from wrong detail file
+
+ *ERR  Modify Lines:  1900 1920
+
+
+0010  *ERR REM "WOX - Work Order/P.O. Cross Reference Rebuild"
+0020  *ERR REM "Program:  WOX.JA"
+
+1900  *ERR REM " --- Clear W.O. Reference from POE-11
+1920  *ERR WRITE (POE11_DEV,KEY=K3$)IOL=POE11A

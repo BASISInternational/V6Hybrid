@@ -1,0 +1,80 @@
+0010 REM "GLC - Return GLM-02 Record ID Information"
+0020 REM "Program GLC.FA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0045 REM "GLM08_DEV   : GLM-08 Channel (Input)"
+0047 REM "N0$         : Firm ID (Input)"
+0050 REM "SELECTION$  : Record ID 0-5 Std/A-Z Budgets (Input)"
+0055 REM "FLAGS$      : A=Amount/U=Units (Input)"
+0060 REM "DESCRIPTION$: 30 Character Description (Returned)"
+0065 REM "TITLE$      : 15 Character Column Title (Returned)"
+0070 REM "STATUS      : 0=Found/1=Not Found (Returned)"
+0075 REM 
+0080 SETERR 9000
+0085 SETESC 9900
+0090 ENTER GLM08_DEV,N0$,SELECTION$,FLAG$,DESCRIPTION$,TITLE$,STATUS
+0200 REM " --- IOLIST's"
+0210 GLM08A: IOLIST A0$(1),A1$(1),A2$,A3$,A4$,A5$,A[ALL]
+0500 REM " --- Initializations"
+0510 DIM DESCRIPTIONS$[11],TITLES$[11],A0$(4),A1$(64),A[8]
+0590 LET DESCRIPTION$="",TITLE$="",STATUS=1
+0600 REM " --- Standard ADD+ON GLM-02 Records"
+0605 LET DESCRIPTIONS$[0]="Current Year Actual Amounts"
+0610 LET DESCRIPTIONS$[1]="Current Year Budget Amounts"
+0615 LET DESCRIPTIONS$[2]="Prior Year Actual Amounts"
+0620 LET DESCRIPTIONS$[3]="Prior Year Budget Amounts"
+0625 LET DESCRIPTIONS$[4]="Next Year Actual Amounts"
+0630 LET DESCRIPTIONS$[5]="Next Year Budget Amounts"
+0635 LET DESCRIPTIONS$[6]="Current Year Actual Units"
+0640 LET DESCRIPTIONS$[7]="Current Year Budget Units"
+0645 LET DESCRIPTIONS$[8]="Prior Year Actual Units"
+0650 LET DESCRIPTIONS$[9]="Prior Year Budget Units"
+0660 LET DESCRIPTIONS$[10]="Next Year Actual Units"
+0665 LET DESCRIPTIONS$[11]="Next Year Budget Units"
+0670 LET TITLES$[0]="Cur Actual Amt",TITLES$[1]="Cur Budget Amt"
+0675 LET TITLES$[2]="Pri Actual Amt",TITLES$[3]="Pri Budget Amt"
+0680 LET TITLES$[4]="Nxt Actual Amt",TITLES$[5]="Nxt Budget Amt"
+0685 LET TITLES$[6]="Cur Actual Unit",TITLES$[7]="Cur Budget Unit"
+0690 LET TITLES$[8]="Pri Actual Unit",TITLES$[9]="Pri Budget Unit"
+0695 LET TITLES$[10]="Nxt Actual Unit",TITLES$[11]="Nxt Budget Unit"
+0800 REM " --- Edit Arguments"
+0810 IF POS(FLAG$="AU")=0 THEN GOTO 9900
+0900 REM " --- Standard GLM-02 Record?"
+0910 LET INDEX=NUM(SELECTION$,ERR=1000)
+0920 IF INDEX<0 OR INDEX>5 THEN GOTO 9900
+0930 IF FLAG$="U" THEN LET INDEX=INDEX+6
+0940 LET DESCRIPTION$=DESCRIPTIONS$[INDEX],TITLE$=TITLES$[INDEX],STATUS=0
+0990 GOTO 9900
+2000 REM " --- Retrieve record"
+2010 LET A0$(1)=N0$+SELECTION$+FLAG$
+2020 FIND (GLM08_DEV,KEY=A0$,DOM=4000)IOL=GLM08A
+2030 LET DESCRIPTION$=FNP$(A1$(1,30)),TITLE$=FNP$(A1$(31,15)),STATUS=0
+4000 REM " --- All done"
+4090 GOTO 9900
+8000 REM " --- Functions"
+8080 DEF FNP$(Q$)=CVS(Q$,2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 SETERR 9000
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to calling program"
+9950 EXIT
+9999 END

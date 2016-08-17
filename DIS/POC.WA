@@ -1,0 +1,77 @@
+0010 REM "POC - Update Work Order Material/Subcontract Lines"
+0020 REM "Program POC.WA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0042 REM "WOE22_DEV: WOE-22 channel number (input)"
+0044 REM "WOE32_DEV: WOE-32 channel number (input)"
+0046 REM "N0$      : Firm ID (input)"
+0048 REM "PO$      : Requisition/PO Number and line number (input)"
+0050 REM "TYPE$    : Source type (input)"
+0052 REM "         : R=Requisition/P=Purchase Order"
+0054 REM "Y1$      : Line item line code 2nd string (input)"
+0056 REM "OLDWO$   : Old work order and line number (input)"
+0058 REM "NEWWO$   : New work order and line number (input)"
+0060 REM "PLACES   : Inventory precision (input)"
+0062 REM "STATUS   : 0=No error (returned)"
+0070 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER WOE22_DEV,WOE32_DEV,N0$,PO$,TYPE$,Y1$,OLDWO$,NEWWO$,PLACES,STATUS
+0200 REM " --- IOLIST's"
+0210 WOE22A: IOLIST A0$(1),A1$(1),A[ALL]
+0220 WOE32A: IOLIST A0$(1),A1$(1),A[ALL]
+0500 REM " --- Initializations"
+0505 PRECISION PLACES
+0510 DIM A0$(15),A1$(151),A[13]
+0550 IF NEWWO$="" THEN LET NEWWO$=FILL(10)
+0900 REM " --- Branch based on line code"
+0910 IF Y1$(21,1)="N" THEN GOTO 2000
+1000 REM " --- Remove link to work order materials line"
+1010 IF OLDWO$=NEWWO$ THEN GOTO 1200
+1020 LET A0$(1)=N0$+"  "+OLDWO$(1,7)+"B"+OLDWO$(8,3)
+1030 FIND (WOE22_DEV,KEY=A0$,DOM=1200)IOL=WOE22A
+1040 LET A1$(50,10)="",A1$(60,1)=""
+1050 WRITE (WOE22_DEV,KEY=A0$)IOL=WOE22A
+1200 REM " --- Add link to work order materials line"
+1210 LET A0$(1)=N0$+"  "+NEWWO$(1,7)+"B"+NEWWO$(8,3)
+1220 FIND (WOE22_DEV,KEY=A0$,DOM=4000)IOL=WOE22A
+1230 LET A1$(50,10)=PO$,A1$(60,1)=TYPE$
+1240 WRITE (WOE22_DEV,KEY=A0$)IOL=WOE22A
+1290 GOTO 4000
+2000 REM " --- Remove link to work order subcontract line"
+2010 IF OLDWO$=NEWWO$ THEN GOTO 2200
+2020 LET A0$(1)=N0$+"  "+OLDWO$(1,7)+"C"+OLDWO$(8,3)
+2030 FIND (WOE32_DEV,KEY=A0$,DOM=2200)IOL=WOE32A
+2040 LET A1$(43,10)="",A1$(56,1)=""
+2050 WRITE (WOE32_DEV,KEY=A0$)IOL=WOE32A
+2200 REM " --- Add line to work order subcontract line"
+2210 LET A0$(1)=N0$+"  "+NEWWO$(1,7)+"C"+NEWWO$(8,3)
+2220 FIND (WOE32_DEV,KEY=A0$,DOM=4000)IOL=WOE32A
+2230 LET A1$(43,10)=PO$,A1$(56,1)=TYPE$
+2240 WRITE (WOE32_DEV,KEY=A0$)IOL=WOE32A
+4000 REM " --- All done"
+4090 GOTO 9900
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9950 EXIT
+9999 END

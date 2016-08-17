@@ -1,0 +1,150 @@
+0010 REM "SHR - Parameter Hard Copy"
+0020 REM "Program SHR.PA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.5 - 01Dec98 |"
+0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0031 REM "23Feb98 WGH: Print complete Terminal ID (530)"
+0040 REM 
+0080 SETERR 9000
+0090 SETESC 9000
+0200 REM " --- IOLIST's"
+0220 SHM10A: IOLIST B0$(1),B1$(1),B[ALL]
+0230 SHM10D: IOLIST C0$(1),C1$(1),C[ALL]
+0240 SHM10N: IOLIST D0$(1),D1$(1)
+0250 SHM10E: IOLIST T0$(1),T1$(1)
+0260 SHS01A: IOLIST A0$(1),A1$(1)
+0400 REM " --- Parameters"
+0410 DIM A0$(6),A1$(128)
+0420 FIND (SYS01_DEV,KEY=N0$+"SH00",DOM=0430)IOL=SHS01A
+0500 REM " --- Initializations"
+0510 DIM J$(80,"-"),J1$(40," "),J0$(20,"0"),A[4],HEADINGS$[2]
+0520 DIM B0$(10),B1$(128),B[4],C0$(4),C1$(128),C[4],D0$(6),D1$(48)
+0530 DIM T0$(8),T1$(48)
+0540 LET HEADINGS$[0]=N1$,HEADINGS$[1]="SpeedShip Parameter Listing"
+0550 LET WIDTH=80,L9=55,L=L9+1,PAGE=0,M1$="##0.00-",WHEN$=F0$(7,3)
+0560 LET CLOCK$=""
+0700 REM " --- Background"
+0710 CALL "SYC.NB","Printing",4,COLUMN
+1000 REM " --- System Parameters"
+1010 GOSUB 5000
+1020 FIND (SHM10_DEV,KEY=N0$+"A"+A1$(55,7),DOM=1030)IOL=SHM10A
+1030 PRINT (7)""
+1040 PRINT (7)@(19),"Default Service ID: ",A1$(55,7)," ",B1$(2,24)
+1050 PRINT (7)@(16),"Fixed or % Addt'l Chg? ",A1$(2,1)
+1060 PRINT (7)""
+1070 LET L=L+4
+1500 REM " --- Carrier Parameters"
+1550 LET HEADINGS$[2]="Carrier Parameters",R$="D",N=0
+1560 IF L+5>L9 THEN GOSUB 5000
+1570 GOSUB 5200
+1590 READ (SHM10_DEV,KEY=N0$+R$,DOM=1600)
+1600 REM " --- Print next record"
+1610 LET K$=KEY(SHM10_DEV,END=1900)
+1615 IF POS(N0$+R$=K$)<>1 THEN GOTO 1900
+1620 READ (SHM10_DEV)IOL=SHM10D
+1630 PRINT @(COLUMN,11),C0$(4,1),
+1640 IF L<L9 THEN GOTO 1670
+1650 GOSUB 5000
+1660 GOSUB 5200
+1670 PRINT (7)C0$(4,1)," ",C1$(1,30),@(33),C[0]:M1$
+1680 LET L=L+1,N=N+1
+1690 GOTO 1600
+1900 REM " --- Warehouse Parameters"
+1910 PRINT (7)""
+1920 PRINT (7)N," Carrier Record(s)"
+1950 LET HEADINGS$[2]="Warehouse Parameters",R$="N",N=0
+1960 IF L+5>L9 THEN GOSUB 5000
+1970 GOSUB 5300
+1990 READ (SHM10_DEV,KEY=N0$+R$,DOM=2000)
+2000 REM " --- Print next record"
+2010 LET K$=KEY(SHM10_DEV,END=2900)
+2015 IF POS(N0$+R$=K$)<>1 THEN GOTO 2900
+2020 FIND (SHM10_DEV,KEY=N0$+"D"+K$(4,1),DOM=2025)IOL=SHM10D
+2025 READ (SHM10_DEV,KEY=K$)IOL=SHM10N
+2030 PRINT @(COLUMN,11),D0$(4,1),
+2040 IF L<L9 THEN GOTO 2070
+2050 GOSUB 5000
+2060 GOSUB 5300
+2070 PRINT (7)D0$(4,1)," ",C1$(1,24),@(27),D0$(5,2),@(33),D1$(1,10),@(45),D1$(
+2070:11,12),@(61),D1$(23,6),@(71),D1$(29,6)
+2080 LET L=L+1,N=N+1
+2090 GOTO 2000
+2900 REM " --- Terminal Parameters"
+2910 PRINT (7)""
+2920 PRINT (7)N," Warehouse Record(s)"
+2950 LET HEADINGS$[2]="Terminal Parameters",R$="E",N=0
+2960 IF L+5>L9 THEN GOSUB 5000
+2970 GOSUB 5400
+2990 READ (SHM10_DEV,KEY=N0$+R$,DOM=3000)
+3000 REM " --- Print next record"
+3010 LET K$=KEY(SHM10_DEV,END=3900)
+3015 IF POS(N0$+R$=K$)<>1 THEN GOTO 3900
+3020 READ (SHM10_DEV)IOL=SHM10E
+3030 PRINT @(COLUMN,11),T0$(4,1)," ",T0$(5,2),
+3040 IF L<L9 THEN GOTO 3070
+3050 GOSUB 5000
+3060 GOSUB 5400
+3070 PRINT (7)T0$(4,1),@(9),T0$(5),@(19),T1$(1,1),@(25),T1$(8,2),@(31),T1$(30,
+3070:6),@(40),T1$(2,1),@(48),T1$(36,2),@(57),T1$(3,1),@(65),T1$(38,2),@(74),T1
+3070:$(40,2)
+3080 LET L=L+1,N=N+1
+3090 GOTO 3000
+3900 REM " --- Terminals completed"
+3910 PRINT (7)""
+3920 PRINT (7)N," Terminal Record(s)"
+4000 REM " --- All done"
+4090 GOTO 9900
+5000 REM " --- Standard Report Heading"
+5010 LET L=0
+5020 CALL "SYC.HA",7,HEADINGS$[ALL],2,PAGE,WIDTH,WHEN$,CLOCK$,STATUS
+5030 IF STATUS>0 THEN EXITTO 9900
+5090 RETURN
+5200 REM " --- Carrier Heading"
+5210 PRINT (7)""
+5220 PRINT (7)@(32),"Add'l"
+5230 PRINT (7)"Carrier",@(32),"Charge"
+5240 PRINT (7)""
+5250 LET L=L+4
+5290 RETURN
+5300 REM " --- Carrier Heading"
+5310 PRINT (7)""
+5320 PRINT (7)@(33),"Shipper",@(45),"Manifest",@(61),"Shipping",@(71),"C O D"
+5330 PRINT (7)"Carrier",@(27),"Whse",@(33),"Number",@(45),"Book Number",@(61),
+5330:"Label",@(71),"Label"
+5340 PRINT (7)""
+5350 LET L=L+4
+5390 RETURN
+5400 REM " --- Terminal Heading"
+5410 PRINT (7)""
+5420 PRINT (7)@(19),"------ Scale ------  -- Shipping ---  ---- C O D ----"
+5430 PRINT (7)"Carrier  Terminal  Used  Port  Program  Labels  Printer  Labels
+5430:  Printer  Whse"
+5440 PRINT (7)""
+5450 LET L=L+4
+5490 RETURN
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to menu"
+9905 PRINT @(0,10),'CL',@(1,11),'CL',@(1,12),'CL',@(0,22),'CL',
+9910 CLOSE (7,ERR=9920)
+9940 LET L9=4
+9945 RUN O0$,ERR=9950
+9950 RUN "SYS.AA"
+9999 END

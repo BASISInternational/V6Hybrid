@@ -1,0 +1,254 @@
+0010 REM "PRW - Electronic W-2 Calculation"
+0020 REM "Program PRW.WA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0050 BEGIN
+0085 SETESC 9000
+0090 SETERR 9000
+0100 REM " --- Open/Lock Files"
+0110 LET FILES=4
+0120 DIM FILES$[FILES],OPTIONS$[FILES],CHANNELS[FILES]
+0125 LET FILES$[1]="PRM-10",FILES$[2]="PRW-06",FILES$[3]="SYS-01"
+0130 LET FILES$[4]="PRM-01"
+0160 CALL "SYC.DA",1,1,3,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STATUS
+0170 IF STATUS>0 THEN GOTO 9900
+0180 LET PRM10_DEV=CHANNELS[1],PRW06_DEV=CHANNELS[2],SYS01_DEV=CHANNELS[3]
+0185 LET W2_DEV=7
+0200 REM " --- IOLists"
+0250 SYS01S: IOLIST S0$,S1$,S2$,S3$,S4$,S5$,S6$
+0260 SYS01T: IOLIST X$,F0$,X$,X$,X$,F4$,F5$
+0270 PRS01A: IOLIST P0$,P1$,P2$,P3$,P4$,M0$,M1$,M2$,M3$
+0280 PRS01C: IOLIST X$,R0$(1),R1$
+0400 REM " --- Parameters"
+0410 FIND (SYS01_DEV,KEY="T"+FID(0),DOM=9800)IOL=SYS01T
+0420 LET N0$=F0$(16,2),N1$=F4$,N2$="PR",N3$=F5$
+0430 FIND (SYS01_DEV,KEY=N0$+N2$+"00",DOM=9800)IOL=PRS01A
+0435 DIM R0$(113)
+0440 FIND (SYS01_DEV,KEY=N0$+N2$+"02",DOM=9800)IOL=PRS01C
+0450 FIND (SYS01_DEV,KEY="S",DOM=9900)IOL=SYS01S
+0480 DIM P[4]
+0490 LET P[0]=NUM(P2$(1,2)),P[1]=NUM(P4$(1,2)),P[2]=FNYY_YEAR(P4$(3,2)),P[3]=N
+0490:UM(P3$(5,1))
+0500 REM " --- Init Data"
+0510 DIM J1$(128," "),J0$(20,"0")
+0520 LET W2FILE$="W2REPORT"
+0700 REM " --- Background"
+0710 FOR X=4 TO 10 STEP 2
+0720 CALL "SYC.WC",1,0,80,0,0,X,0
+0730 NEXT X
+0750 PRINT 'SB',@(22,3),"W2 Reporting Year:",@(19,5),"W2 Reporting Quarter:",@
+0750:(13,7),"Computer Manufacturer Name:",@(24,9),"Archive/Current:",'SF','CF'
+0750:,
+0900 REM " --- Initialize Variables
+0920 LET W0$="",W1$="",W2$="",W3$=""
+1000 REM " --- Set Up Of Transmitter Record 1A"
+1010 REM " --- W2 Payment Year Input"
+1020 LET V0$="Z",V1$="ER",V2$="",V3$="",V4$="",V0=4,V1=41,V2=3,I4=0
+1030 GOSUB 7000
+1040 IF V3=4 THEN GOTO 3900
+1045 IF LEN(V$)<>4 THEN GOTO 1020
+1060 LET I0$=V$,W0$=I0$
+1070 GOTO 3900
+1100 REM " --- Computer Mfg. Name Input"
+1110 LET V0$="S",V1$="R",V0=8,V1=41,V2=7
+1130 LET I3$=S2$,I3$=I3$+J1$(1,8-LEN(I3$))
+1150 PRINT @(V1,V2),I3$,
+1190 GOTO 3900
+1200 REM " --- Initialze W2REPORT File"
+1210 ERASE W2FILE$,ERR=1220
+1215 GOTO 1200
+1220 CALL "SYC.MA","T",W2FILE$,"PR","",0,0,STATUS
+1225 OPEN (W2_DEV,ISZ=128)W2FILE$
+1230 REM " --- W2 Payment Year"
+1235 LET W0$=I0$+J1$(1,4-LEN(I0$))
+1240 REM " --- Fed ID # Format"
+1245 GOSUB 2000
+1250 REM " --- Foreign Address Indicator"
+1255 LET W4$=" "
+1270 REM " --- Transmitter Name"
+1275 LET W2$=R0$(1,30)+J1$(1,50-LEN(R0$(1,30)))
+1280 REM " --- Street Address Format"
+1285 GOSUB 2100
+1290 IF LEN(W3$)<40 THEN LET W3$=W3$+J1$(1,40-LEN(W3$)) ELSE LET W3$=W3$(1,40)
+1365 REM " --- City Name"
+1370 LET Y0$=R0$(79,22)+J1$(1,25-LEN(R0$(79,22)))
+1375 REM " --- State Code "
+1380 LET Y1$=R0$(101,2)
+1385 REM " --- Zip Code And Extension"
+1390 LET Y2$=J1$(1,5),Y3$=J1$(1,5)
+1400 REM " --- Fix Up Zip Code"
+1410 LET X$=R0$(103,9),X0$=""
+1420 IF X$=J1$(1,9) THEN GOTO 1460
+1430 FOR I=1 TO LEN(X$)
+1440 IF X$(I,1)<>" " THEN IF X$(I,1)<>"-" THEN LET X0$=X0$+X$(I,1) ELSE EXITTO
+1440: 1460
+1450 NEXT I
+1460 LET X0$=X0$+J1$(1,10-LEN(X0$))
+1470 LET Y2$="-"+X0$(6,4)
+1475 IF POS(" "<>Y2$(2))=0 THEN LET Y2$=J1$(1,5)
+1480 LET Y3$=X0$(1,5)
+1490 REM " --- Create And Write 1A-2A Records"
+1500 DIM W$(128),Y$(128)
+1510 LET W$(1)="1A"+W0$+W1$+J1$(1,8)+W4$+W2$+W3$,S$="TRANSMITTER"
+1520 LET Y$(1)="2A"+Y0$+Y1$+J1$(1,8)+Y2$+Y3$
+1530 GOSUB 3800
+1540 REM " --- Set Up Of Authorization Record 1B"
+1550 REM "         Payment Year = W0$"
+1570 REM "         Transmitter's Fed Identification Num = W1$"
+1590 REM "         Computer Mfg. Name = I3$"
+1620 REM " --- Set Up Of Authorization Record 2B"
+1630 REM "         File Return Foreign Address Indicator = W4$"
+1635 REM "         File Return Name = W2$
+1640 REM "         File Return Address = W3$"
+1645 REM "         File Return Cite = Y0$"
+1650 REM "         File Return State = Y1$"
+1655 REM "         File Return Zip Code Extension = Y2$"
+1660 REM "         File Return Zip Code Or Foreign Postal Code = Y3$"
+1670 DIM W$(128),Y$(128)
+1680 LET W$(1)="1B"+W0$+W1$+I3$,S$="AUTHORIZATION"
+1690 LET Y$(1)="2B"+J1$(1,13)+W4$+W2$(1,44)+W3$(1,35)+Y0$(1,20)+Y1$+Y2$+Y3$
+1700 GOSUB 3800
+1710 REM " --- Set Up Employers 1E-2E Records"
+1720 REM "         Y4$ = State/Local 69 Number"
+1730 REM "         Y5$ = Estab # Or Coverage Group Pr Record Unit #"
+1740 REM "         Y6$ = Limitation Of Liability Indicator"
+1750 REM "         Y7$ = Other EIN Number"
+1752 REM "         Y8$ = Tax Withheld By 3rd Party Payer"
+1755 LET Y4$=J1$(1,9),Y5$=J1$(1,4),Y6$=" ",Y7$=J1$(1,9)
+1757 DIM W$(128),Y$(128),Y8$(12,"0")
+1760 LET W$(1)="1E"+W0$+W1$+Y4$+W2$+W3$+W4$,S$="EMPLOYER"
+1780 LET Y$(1)="2E"+Y0$+Y1$+J1$(1,10-LEN(Y1$))+Y2$+Y3$+"S"+"R"+J1$(1,2)+Y5$+J1
+1780:$(1,4-LEN(Y5$))+Y6$+" "+Y7$+" "+Y8$
+1790 GOSUB 3800
+1800 GOTO 4100
+2000 REM " --- Fix Up Fed ID Number"
+2020 FOR I=1 TO LEN(R1$)
+2040 IF R1$(I,1)>="0" AND R1$(I,1)<="9" THEN LET W1$=W1$+R1$(I,1)
+2060 NEXT I
+2080 LET W1$=W1$+J1$(1,9-LEN(W1$))
+2090 RETURN
+2100 REM " --- Fix Up Street Address Lines"
+2110 FOR X=0 TO 1
+2120 IF X=0 THEN LET X$=R0$(31,24) ELSE LET X$=R0$(55,24)
+2130 IF X$=J1$(1,24) THEN LET X$=""; GOTO 2200
+2140 FOR I=1 TO LEN(X$)
+2150 IF X$(I,1)=" " THEN LET X$=X$(I+1) ELSE EXITTO 2170
+2160 NEXT I
+2170 FOR I=LEN(X$) TO 1 STEP -1
+2180 IF X$(I,1)=" " THEN LET X$=X$(1,LEN(X$)-1) ELSE EXITTO 2200
+2190 NEXT I
+2200 LET W3$=W3$+X$+" "
+2210 NEXT X
+2220 IF POS("  "=W3$)<>0 THEN LET W3$=W3$(1,POS("  "=W3$))+W3$(POS("  "=W3$)+2
+2220:); GOTO 2220
+2240 RETURN
+2500 REM " --- W2 Reporting Quarter"
+2510 LET V0$="N",V1$="",V3$="#",V0=1,V1=41,V2=5
+2520 GOSUB 7000
+2530 IF V<0 OR V>4 THEN GOTO 2500
+2540 LET I3=V
+2560 GOTO 3900
+2600 REM " --- Current Or Archive?"
+2610 IF A_C$<>"" THEN GOTO 3900
+2620 LET V0$="S",V1$="C",V2$="C",V3$="AC",V4$="Draw Employee Data From Archive
+2620:d File Or Current Masterfile (A/C)? ",V0=1,V1=41,V2=9
+2630 PRINT @(V1,V2),V2$," Current"
+2640 GOSUB 7000
+2660 LET A_C$=V$
+2670 ON POS(A_C$="AC") GOTO 2620,2680,2700
+2680 LET FILES$[4]="PRMA"+I0$(3,2)+N0$
+2690 PRINT @(V1,V2),A_C$," Archive"
+2700 REM " --- Open Employee Masterfile"
+2710 CALL "SYC.DA",1,4,4,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STATUS
+2720 IF STATUS>0 THEN IF C_A$="A" THEN GOTO 2750 ELSE GOTO 9900
+2730 LET PRM01_DEV=CHANNELS[4]
+2740 GOTO 3900
+2750 REM " --- Can't Open Archive File"
+2755 DIM MESSAGE$[1]
+2760 LET MESSAGE$[0]="Unable to open "+I0$+" archive file."
+2765 LET MESSAGE$[1]=" <Enter>=Retry  <F4>=Exit"
+2770 CALL "SYC.XA",2,MESSAGE$[ALL],1,22,-1,V$,V3
+2780 ON V3 GOTO 0900,2750,2750,2750,9900
+3800 REM " --- Write To Tax file"
+3810 IF LEN(W$)<>128 OR LEN(Y$)<>128 THEN GOTO 3850
+3815 LET W$=FNU$(W$)
+3820 PRINT (W2_DEV)W$,
+3825 LET Y$=FNU$(Y$)
+3830 PRINT (W2_DEV)Y$,
+3845 RETURN
+3850 REM " --- Something Wrong With Length Of Record"
+3855 DIM MESSAGE$[1]
+3860 LET MESSAGE$[0]=S$+" Records Are Improperly Formed."
+3865 LET MESSAGE$[1]=" <Enter>=Continue  <F4>=Exit"
+3870 CALL "SYC.XA",2,MESSAGE$[ALL],1,22,-1,V$,V3
+3880 ON V3 GOTO 3815,3850,3850,3850,3900
+3900 REM " --- Seq Control"
+3910 IF V3=4 THEN GOTO 4000
+3920 IF V3<>2 THEN GOTO 3950
+3930 IF I4>0 THEN LET I4=I4-1
+3940 GOTO 3960
+3950 LET I4=I4+1
+3960 ON I4 GOTO 1000,2500,1100,2600,4000
+4000 REM " --- Correct?"
+4020 LET V0$="Y",V1$="CE",V2$="",V3$="",V4$="Is The Above Information Correct 
+4020:(Y/N)?",V0=1,V1=FNV(V4$),V2=22
+4030 GOSUB 7000
+4040 IF V3=4 THEN GOTO 9900
+4045 LET I1$=V$
+4050 ON POS(I1$="YN") GOTO 4000,1200,0900
+4100 REM " --- Overlay"
+4110 RUN "PRW.WB"
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions"
+8090 DEF FNV(Q$)=42+INT(LEN(Q$)/2)
+8095 DEF FNU$(Q$)=CVS(Q$,4)
+8145 REM " --- FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+8150 DEF FNYY21_YY$(Q1$)
+8155 LET Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABC
+8155:DEFGHIJ"))
+8160 RETURN Q1$
+8165 FNEND
+8170 REM " --- FNYY_YEAR Convert 2-Char Year to 21st Century Numeric Year"
+8175 DEF FNYY_YEAR(Q1$)
+8180 LET Q=NUM(FNYY21_YY$(Q1$)); IF Q<50 THEN LET Q=Q+100
+8185 RETURN Q
+8190 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9205 SETESC 9000
+9210 SETERR 9000
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9800 REM " --- Display Parameter record error"
+9810 LET LINE_ERR$=LST(PGM(TCB(5)))
+9820 CALL "SYC.YA",LINE_ERR$,N2$,ERR
+9900 RUN "SYS.AA"
+9999 END

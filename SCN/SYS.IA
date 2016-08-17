@@ -1,0 +1,347 @@
+0010 REM "SYS.IA - ADD+ON Installation Program
+0020 REM "Program SYS.IA
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.4 - 15Dec97 |"
+0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0031 REM "30Sep97 WGH: DAY command may not by Y2K compliant (720)"
+0040 REM 
+0070 BEGIN
+0080 SETERR 9000
+0090 SETESC 9900
+0200 REM " --- IOLIST's"
+0210 SYM04A: IOLIST X0$(1),X1$(1),X2$,X3$,X[ALL]
+0220 FILES: IOLIST A0$(1),A1$(1)
+0230 ZFILES: IOLIST A0$(1),A1$(1)
+0400 REM " --- Parameters"
+0410 CALL "SYC.FK",ERR=0420,STATUS
+0450 LET MODULES=15,F5$="ADD+ON Software Installation"
+0460 LET SLASH$="/",OS$=INFO(0,0,ERR=0500)
+0470 IF POS("DOS"=X$) THEN LET SLASH$="\"
+0500 REM " --- Initialization"
+0510 DIM MODULES$[MODULES,7],A0$(12),A1$(32),X0$(6),X1$(64),X[2]
+0550 REM " --- Software Modules"
+0555 LET MODULES$[1,1]="SY",MODULES$[1,2]="ADD+ON Administrator"
+0560 LET MODULES$[2,1]="AP",MODULES$[2,2]="Accounts Payable"
+0565 LET MODULES$[3,1]="AR",MODULES$[3,2]="Accounts Receivable"
+0570 LET MODULES$[4,1]="BM",MODULES$[4,2]="Bill of Materials"
+0575 LET MODULES$[5,1]="DD",MODULES$[5,2]="Data Dictionary"
+0580 LET MODULES$[6,1]="GE",MODULES$[6,2]="GENERAL Report Writer"
+0585 LET MODULES$[7,1]="GL",MODULES$[7,2]="General Ledger"
+0590 LET MODULES$[8,1]="IV",MODULES$[8,2]="Inventory Control"
+0595 LET MODULES$[9,1]="MP",MODULES$[9,2]="MRP"
+0600 LET MODULES$[10,1]="OP",MODULES$[10,2]="Order Processing"
+0605 LET MODULES$[11,1]="PO",MODULES$[11,2]="Purchase Orders"
+0610 LET MODULES$[12,1]="PR",MODULES$[12,2]="Payroll"
+0615 LET MODULES$[13,1]="SA",MODULES$[13,2]="Sales Analysis"
+0620 LET MODULES$[14,1]="SH",MODULES$[14,2]="SpeedShip"
+0625 LET MODULES$[15,1]="WO",MODULES$[15,2]="Shop Floor Control"
+0630 REM " --- Home directories, Post to GL and batching defaults"
+0635 LET MODULES$[1,5]="ADM",MODULES$[1,6]="N",MODULES$[1,7]="N"
+0640 LET MODULES$[2,5]="ACT",MODULES$[2,6]="Y",MODULES$[2,7]="N"
+0645 LET MODULES$[3,5]="ACT",MODULES$[3,6]="Y",MODULES$[3,7]="N"
+0650 LET MODULES$[4,5]="MFG",MODULES$[4,6]="Y",MODULES$[4,7]="N"
+0655 LET MODULES$[5,5]="ADM",MODULES$[5,6]="N",MODULES$[5,7]="N"
+0660 LET MODULES$[6,5]="GRW",MODULES$[6,6]="N",MODULES$[6,7]="N"
+0665 LET MODULES$[7,5]="ACT",MODULES$[7,6]="Y",MODULES$[5,7]="N"
+0670 LET MODULES$[8,5]="DIS",MODULES$[8,6]="Y",MODULES$[8,7]="N"
+0675 LET MODULES$[9,5]="MFG",MODULES$[9,6]="N",MODULES$[9,7]="N"
+0680 LET MODULES$[10,5]="DIS",MODULES$[10,6]="Y",MODULES$[10,7]="N"
+0685 LET MODULES$[11,5]="DIS",MODULES$[11,6]="Y",MODULES$[11,7]="N"
+0690 LET MODULES$[12,5]="PAY",MODULES$[12,6]="Y",MODULES$[12,7]="N"
+0693 LET MODULES$[13,5]="DIS",MODULES$[13,6]="N",MODULES$[13,7]="N"
+0695 LET MODULES$[14,5]="SHS",MODULES$[14,6]="N",MODULES$[14,7]="N"
+0697 LET MODULES$[15,5]="MFG",MODULES$[14,6]="Y",MODULES$[14,7]="N"
+0700 REM " --- Background"
+0705 PRINT 'CS',
+0710 CALL "SYC.WC",ERR=9800,0,0,47,3,0,0,0
+0715 CALL "SYC.WC",ERR=9800,0,0,33,3,47,0,0
+0720 PRINT 'SB',@(49,0)," ADD+ON Software v6.0.0 ",@(3,1),"SYS.IA",@(10),F5$,@
+0720:(49),DATE(0),@(58),FNE$(Q$),@(67),FID(0),'ER','SF',
+0725 CALL "SYC.WC",ERR=9800,0,0,53,4,14,4,0
+0730 PRINT @(16,5),"This program installs the ADD+ON Software Modules"
+0735 PRINT @(16,6),"      which have been copied to your system."
+0740 PRINT @(3,9),"If this is a new installation of ADD+ON Software this progr
+0740:am will create"
+0745 PRINT @(3,10),"the menu, system parameter and operator code files."
+0750 PRINT @(3,12),"If you are adding a module or upgrading an existing ADD+ON
+0750: System use the"
+0755 PRINT @(3,13),$22$,"Install/Upgrade ADD+ON Software",$22$," task on the D
+0755:ealer (SYU) Menu or run"
+0760 PRINT @(3,14),"the ADD+ON Software Upgrade Program ",$22$,"SYS.UA",$22$,"
+0760: from any menu."
+0765 PRINT @(3,16),"This program may also be used to re-install ADD+ON Softwar
+0765:e, overwriting"
+0770 PRINT @(3,17),"any existing data files."
+0790 GOSUB 6900
+0900 REM " --- Check for distribution files"
+0910 LET ZFILES_DEV=UNT
+0920 OPEN (ZFILES_DEV,ERR=9700)"ZFILES"
+0930 LET FILES_DEV=UNT
+0940 OPEN (FILES_DEV,ERR=9700)"_FILES"
+1000 REM " --- Format screen"
+1010 LET ROW=5,COLUMN=0
+1090 PRINT @(0,3),'CE',@(0,4),"The following ADD+ON Software Modules will be i
+1090:nstalled:"
+1100 REM " --- Which modules?"
+1110 FOR X=1 TO MODULES
+1120 LET PROGRAM$=MODULES$[X,1]+"C.VN"
+1130 CALL PROGRAM$,ERR=1190,VERSION$
+1140 LET ROW=ROW+1,MODULES$[X,3]="Y",MODULES$[X,4]=VERSION$
+1150 PRINT @(COLUMN,ROW),MODULES$[X,1],"  ",MODULES$[X,2],@(COLUMN+26,ROW),MOD
+1150:ULES$[X,4]
+1170 IF ROW>17 THEN LET ROW=5,COLUMN=40
+1190 NEXT X
+1200 REM " --- Must install Administrator and SpeedSearch"
+1210 GOSUB 6900
+1220 IF MODULES$[1,3]<>"Y" THEN GOTO 9600
+1300 REM " --- Look for files which might be overwritten"
+1310 PRINT @(0,3),'CE',@(0,4),"Verifying Distribution File",
+1320 LET FOUND=0,ROW=7,COLUMN=0,PRM10$="N"
+1400 REM " --- Read next ZFILES record"
+1410 LET K$=KEY(ZFILES_DEV,END=1800)
+1420 READ (ZFILES_DEV)IOL=ZFILES
+1430 LET FILENAME$=K$
+1450 PRINT @(28,4),FILENAME$,'CL',
+1500 REM " --- Does this file exist?"
+1510 LET SOURCE_DEV=UNT,TARGET_DEV=0
+1520 OPEN (SOURCE_DEV,ERR=1700)"Z"+FNP$(FILENAME$)
+1530 LET TARGET_DEV=UNT
+1540 OPEN (TARGET_DEV,ERR=1700)FNP$(FILENAME$)
+1600 REM " --- It does!"
+1610 IF FOUND=0 THEN PRINT @(0,6),'CE',"The following files will be overwritte
+1610:n if the installation continues:"
+1620 LET ROW=ROW+1,FOUND=FOUND+1
+1630 PRINT @(COLUMN,ROW),FILENAME$," ",A1$(1,24),
+1640 IF ROW<20 THEN GOTO 1690
+1650 IF COLUMN<40 THEN LET ROW=7,COLUMN=40; GOTO 1690
+1660 GOSUB 6900
+1670 LET ROW=7,COLUMN=0
+1680 PRINT @(COLUMN,ROW+1),'CE',
+1690 IF POS("PRM-10"=FILENAME$)>0 THEN LET PRM10$="Y"
+1700 REM " --- Loop back for next ZFILES record"
+1710 CLOSE (SOURCE_DEV,ERR=1720)
+1720 CLOSE (TARGET_DEV,ERR=1730)
+1790 GOTO 1400
+1800 REM " --- Done"
+1810 IF FOUND=0 THEN GOTO 2000
+1820 GOSUB 6900
+1840 IF PRM10$<>"Y" THEN GOTO 1900
+1850 REM " --- Payroll Installed?"
+1855 PRINT @(0,3),'CE',
+1860 CALL "SYC.WC",ERR=1865,0,0,59,4,11,4,0
+1865 PRINT @(36,4)," WARNING ",
+1870 PRINT @(13,5),"Payroll Tax Files currently exist on this system. This"
+1875 PRINT @(13,6),"indicates that an active payroll system may be present."
+1880 PRINT @(1,10),"Proceeding with this installation will overwrite these pay
+1880:roll files. If this"
+1885 PRINT @(1,11),"is a new payroll installation (or re-installation) you sho
+1885:uld proceed and"
+1890 PRINT @(1,12),"overwrite the files."
+1895 GOSUB 6900
+1900 REM " --- Verify operator's intent to overwrite existing files"
+1910 PRINT @(0,22),'CL',"Are you SURE that you wish to proceed (Enter YES to c
+1910:ontinue/<F4> to exit)?",
+1920 LET V0$="S",V1$="CE",V2$="NO",V3$="YESNO ",V4$="",V0=3,V1=76,V2=22
+1930 GOSUB 7000
+1940 IF V3<>0 THEN LET V$="NO"
+1950 IF V$="NO" THEN GOTO 9900
+1960 IF V$="YES" THEN GOTO 2000
+1990 GOTO 1900
+2000 REM " --- Install Distribution Files"
+2010 PRINT @(0,3),'CE',@(0,4),"Installing Distribution Files",
+2050 LET ROW=6,COLUMN=0
+2090 READ (ZFILES_DEV,KEY="",DOM=2100)
+2100 REM " --- Read next ZFILES record"
+2105 LET K$=KEY(ZFILES_DEV,END=2300)
+2110 READ (ZFILES_DEV)IOL=ZFILES
+2115 LET FILENAME$=K$
+2125 LET ZFILENAME$="Z"+FNP$(FILENAME$),SOURCE_DEV=UNT
+2130 OPEN (SOURCE_DEV,ERR=2100)ZFILENAME$
+2135 CLOSE (SOURCE_DEV,ERR=2165)
+2140 PRINT @(COLUMN,ROW),FILENAME$," ",A1$(1,24),
+2145 LET ROW=ROW+1
+2150 IF ROW<21 THEN GOTO 2200
+2155 IF COLUMN<40 THEN LET ROW=6,COLUMN=40; GOTO 2200
+2160 GOSUB 6900
+2170 LET ROW=6,COLUMN=0
+2180 PRINT @(COLUMN,ROW+1),'CE',
+2200 REM " --- Rename Zxxx-xx to xxx-xx"
+2210 LET NUMBER=1
+2220 DIM SOURCE$[NUMBER],TARGET$[NUMBER],ERASE$[NUMBER]
+2240 LET SOURCE$[1]="Z"+FNP$(FILENAME$),TARGET$[1]=FNP$(FILENAME$)
+2260 CALL "SYC.RN",SOURCE$[ALL],TARGET$[ALL],ERASE$[ALL],NUMBER,STATUS
+2280 IF STATUS>0 THEN GOTO 9500
+2290 GOTO 2100
+2300 REM " --- RENAME'ing completed"
+2310 GOSUB 6900
+3000 REM " --- Update version number on SY record for installed modules"
+3010 PRINT @(0,3),'CE',@(0,4),"Updating System Records"
+3020 LET SYM04_DEV=UNT
+3030 OPEN (SYM04_DEV,ERR=9400)"SYM-04"
+3050 CALL "SYC.VN",ERR=9600,VERSION$
+3060 LET ROW=6,COLUMN=0
+3100 REM " --- Update each installed module"
+3110 FOR X=1 TO MODULES
+3120 IF MODULES$[X,3]<>"Y" THEN GOTO 3290
+3130 PRINT @(COLUMN,ROW),MODULES$[X,1],"  ",MODULES$[X,2]
+3140 LET ROW=ROW+1
+3150 IF ROW>20 THEN LET ROW=6,COLUMN=40
+3200 REM 
+3210 DIM X0$(2),X1$(64),X[2]
+3220 LET X0$(1)=MODULES$[X,1],X1$(1)=MODULES$[X,2],X1$(36,1)="Y"
+3230 LET X1$(37,2)="99",X1$(46,1)=MODULES$[X,6],X1$(47,1)=MODULES$[X,7]
+3240 LET X2$="."+SLASH$+"aon"+SLASH$+"ADATA"
+3250 LET X3$="."+SLASH$+"aon"+SLASH$+MODULES$[X,5]
+3260 FIND (SYM04_DEV,KEY=X0$,DOM=3270)IOL=SYM04A
+3270 LET X1$(39,1)="Y",X1$(40,6)=VERSION$
+3280 WRITE (SYM04_DEV,KEY=X0$)IOL=SYM04A
+3290 NEXT X
+3300 REM " --- Remove distribution files"
+3310 GOSUB 6900
+3320 PRINT @(0,3),'CE',@(0,4),"Removing Distribution Files",
+3330 LET ROW=6,COLUMN=0
+3390 READ (ZFILES_DEV,KEY="",DOM=3400)
+3400 REM " --- Read next ZFILES record"
+3410 LET K$=KEY(ZFILES_DEV,END=3500)
+3420 READ (ZFILES_DEV)IOL=ZFILES
+3430 LET X$="Z",FILENAME$=K$
+3450 GOSUB 6000
+3490 GOTO 3400
+3500 REM " --- Remove '_' files"
+3510 GOSUB 6900
+3540 LET ROW=6,COLUMN=0
+3550 PRINT @(0,3),'CE',@(0,4),"Removing Merge Files",
+3590 READ (FILES_DEV,KEY="",DOM=3600)
+3600 REM " --- Read next _FILES record"
+3610 LET K$=KEY(FILES_DEV,END=3700)
+3620 READ (FILES_DEV)IOL=FILES
+3630 LET X$="_",FILENAME$=K$
+3650 GOSUB 6000
+3690 GOTO 3600
+3700 REM " --- Merge files removed."
+3710 GOSUB 6900
+3900 REM " --- Erase version programs"
+3910 FOR X=1 TO MODULES
+3920 IF MODULES$[X,3]<>"Y" THEN GOTO 3990
+3930 LET PROGRAM$=MODULES$[X,1]+"C.VN"
+3940 ERASE PROGRAM$,ERR=3990
+3950 GOTO 3940
+3990 NEXT X
+4000 REM " --- Installation completed"
+4005 PRINT @(0,3),'CE',
+4010 PRINT @(5,4),"The ADD+ON Software Installation Procedure is now complete.
+4010: Please"
+4015 PRINT @(5,5),"continue to follow the instructions in the ADD+ON Installat
+4015:ion Guide."
+4020 PRINT @(5,7),"1) Run System Description Maintenance (Set Logical Disks/Pa
+4020:ths)"
+4030 PRINT @(5,8),"2) Run File Mapping Utility (Create Data Files)"
+4035 PRINT @(5,9),"3) If this system includes SpeedShip, follow the instructio
+4035:ns in the"
+4037 PRINT @(5,10),"   SpeedShip Dealer Manual to complete the installation of
+4037: SpeedShip."
+4040 PRINT @(5,12),"When the copyright appears. Enter "+$22$+"+ON"+$22$+" as t
+4040:he identification code."
+4043 PRINT @(5,13),"This identification code may be changed after the installa
+4043:tion"
+4045 PRINT @(5,14),"process is complete."
+4050 CALL "SYC.WC",0,0,65,4,5,17,0
+4065 PRINT @(32,17)," WARNING "
+4070 PRINT @(7,18),"Do NOT use the ADD+ON File Mapping Utility to re-map exist
+4070:ing"
+4075 PRINT @(7,19),"data files. The data in these files will be erased."
+4080 PRINT @(0,22),'CL',@(14,22),"Press <Enter> to start the ADD+ON System: ",
+4085 LET V0$="S",V1$="CE",V2$="",V3$="",V4$="",V0=1,V1=57,V2=22
+4090 GOSUB 7000
+4100 REM " --- Start ADD+ON Software"
+4110 ERASE "SYX.VN",ERR=4120
+4190 RUN "SYS.ZA",ERR=9450
+6000 REM " --- Erase ZFILE or _FILE"
+6010 LET SOURCE_DEV=UNT
+6020 OPEN (SOURCE_DEV,ERR=6050)X$+FNP$(FILENAME$)
+6030 CLOSE (SOURCE_DEV,ERR=6040)
+6040 GOTO 6070
+6050 OPEN (SOURCE_DEV,ERR=6190)FNP$(FILENAME$)
+6060 CLOSE (SOURCE_DEV,ERR=6070)
+6070 PRINT @(COLUMN,ROW),FILENAME$,@(COLUMN+8),A1$(1,24)
+6080 ERASE X$+FNP$(FILENAME$),ERR=6100
+6090 GOTO 6080
+6100 LET ROW=ROW+1
+6110 IF ROW<21 THEN GOTO 6190
+6120 IF COLUMN<40 THEN LET ROW=6,COLUMN=40; GOTO 6190
+6130 GOSUB 6900
+6140 LET ROW=6,COLUMN=0
+6150 PRINT @(COLUMN,ROW+1),'CE',
+6190 RETURN
+6900 REM " --- Proceed or quit?"
+6910 PRINT @(0,22),'CL',@(14,22),"Press <Enter> to continue or <F4> to exit:",
+6910:'CI',
+6920 LET V0$="S",V1$="CE",V2$="",V3$="",V4$="",V0=1,V1=57,V2=22
+6930 GOSUB 7000
+6940 ON V3 GOTO 6950,6900,6900,6900,9900
+6950 IF FNU$(FNP$(V$))="END" THEN LET V3=4
+6990 RETURN
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions"
+8050 DEF FNE$(Q$)=DATE(0:"%hz:%mz %p")
+8085 DEF FNU$(Q$)=CVS(Q$,4)
+8090 DEF FNP$(Q$)=CVS(Q$,2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9400 REM " --- Missing SYS-01"
+9410 PRINT @(0,3),'CE',@(1,4),"ERROR: Unable to locate or open ADD+ON System C
+9410:ontrol File (SYS-01)"
+9440 GOTO 9800
+9450 REM " --- Missing SYS.ZA"
+9460 PRINT @(0,3),'CE',@(0,4),"ERROR: Unable to locate and/or run the ADD+ON C
+9460:opyright Program (SYS.ZA)"
+9490 GOTO 9800
+9500 REM " --- Rename problem"
+9510 PRINT @(0,3),'CE',@(0,4),"ERROR: Unable to rename ","Z"+FILENAME$," to ",
+9510:FILENAME$
+9590 GOTO 9900
+9600 REM " --- Missing Administrator Module"
+9610 PRINT @(0,3),'CE',@(1,4),"ERROR: The ADD+ON Administrator Module is requi
+9610:red to run these applications."
+9690 GOTO 9800
+9700 REM " --- Missing distribution file(s)"
+9710 PRINT @(0,3),'CE',@(1,4),"ERROR: Unable to locate or open installation da
+9710:ta file (ZFILES or _FILES)"
+9800 REM " --- Distribution installation and/or rename problem"
+9810 CALL "SYC.WC",ERR=9820,0,0,80,7,0,12,0
+9820 PRINT @(2,13),"If you are installing ADD+ON Software:"
+9825 PRINT @(2,14),"Reload the Administrator media and try the installation pr
+9825:ocedure again."
+9830 PRINT @(2,16),"If problems persist:"
+9835 PRINT @(2,17),"Call ADD+ON Software Support at (800) 275-6350"
+9900 REM " --- Abort installation"
+9910 PRINT @(1,20),'CE','SF',"ADD+ON Software Installation Terminated."
+9999 END

@@ -1,0 +1,91 @@
+0010 REM "SYC - SpeedSearch Change Password"
+0020 REM "Program SYC.QD"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0045 REM "D_STATUS  : SpeedSearch Status (0=No Error)"
+0050 REM "OPTION$[n]: Standard SpeedSearch Options Array"
+0055 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER D_STATUS,OPTION$[ALL]
+0100 REM " --- Open Files"
+0110 LET FILES=1
+0120 DIM FILES$[FILES],OPTIONS$[FILES],CHANNELS[FILES]
+0130 LET FILES$[1]="SYM-02"
+0150 CALL "SYC.DA",1,1,FILES,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STA
+0150:TUS
+0160 IF STATUS>0 THEN GOTO 9900
+0170 LET SYM02_DEV=CHANNELS[1]
+0200 REM " --- IOLIST's"
+0210 SYM02A: IOLIST A0$(1),A1$(1),A[ALL]
+0400 REM " --- Parameters"
+0410 DIM SPEED$(128),A0$(3),A1$(128),A[4]
+0420 LET SPEED$(1)=STBL("!SPEEDSEARCH",ERR=9900),A0$(1)=SPEED$(47,3)
+0500 REM " --- Initializations"
+0550 LET D_STATUS=0,TITLE$="Password Entry",TIMES=0,TERMINAL=0
+0700 REM " --- Background"
+0710 CALL "SYC.WA",0,62,3,9,10,TITLE$,NAME$
+0800 REM " --- Retrieve operator record"
+0810 FIND (SYM02_DEV,KEY=A0$,DOM=9900)IOL=SYM02A
+1000 REM " --- Get old password for verification"
+1010 IF A1$(27,1)="N" THEN GOTO 2000
+1020 IF FNP$(A1$(28,6))="" THEN GOTO 2000
+1030 LET V4$=" Please Enter Your OLD Password:"
+1040 GOSUB 6000
+1060 IF CTL=4 THEN GOTO 9900
+1070 IF V$=FNP$(A1$(28,6)) THEN GOTO 2000
+1080 LET TIMES=TIMES+1
+1085 IF TIMES>2 THEN GOTO 9900
+1090 GOTO 1000
+2000 REM " --- Get new password"
+2010 LET V4$=" Please Enter Your NEW Password:"
+2020 GOSUB 6000
+2030 IF CTL=4 THEN GOTO 9900
+2040 LET A1$(28,6)=V$
+3000 REM " --- Get new password again (for verification)"
+3010 LET V4$=" Please Re-Enter Your NEW Password for verification:"
+3020 GOSUB 6000
+3030 IF CTL=4 THEN GOTO 9900
+3040 IF V$<>FNP$(A1$(28,6)) THEN GOTO 2000
+4000 REM " --- All done"
+4010 LET A1$(27,1)="Y",A1$(28,6)=V$
+4020 IF FNP$(A1$(28,6))="" THEN LET A1$(27,1)="N"
+4030 WRITE (SYM02_DEV,KEY=A0$)IOL=SYM02A
+4090 GOTO 9900
+6000 REM " --- Special input routine for password stuff"
+6010 SETESC 6000
+6020 LET V1=LEN(V4$)+1
+6030 PRINT @(0,0),'CL','SF',V4$,'CURSOR'("ON"),
+6050 INPUT (TERMINAL,SIZ=6,ERR=6050)'CI','RB',@(V1-1,0),'SB',"[      ]",@(V1,0
+6050:),'SF',"XXXXXX",@(V1,0),'EE',V$,'BE',@(0,0),'CL','CURSOR'("OFF"),
+6060 SETESC 9000
+6090 RETURN
+8000 REM " --- Function Definitions"
+8080 DEF FNP$(Q$)=CVS(Q$,2)
+8090 DEF FNU$(Q$)=CVS(Q$,4)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to caller"
+9910 CLOSE (SYM02_DEV,ERR=9911)
+9940 IF NAME$<>"" THEN CALL "SYC.WD",NAME$
+9950 EXIT
+9999 END

@@ -1,0 +1,77 @@
+0010 REM "IVU - ABC Analysis Update"
+0020 REM "Program IVU.PA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0070 SETERR 9000
+0080 SETESC 9000
+0090 PRECISION P[1]
+0200 REM " --- IOLIST's"
+0210 IVM01A: IOLIST A0$(1),A1$(1),A2$(1),A3$,A4$,A5$,A6$,A[ALL]
+0220 IVM02A: IOLIST B0$(1),B1$(1),B2$,B[ALL]
+0230 IVE07A: IOLIST R0$(1),R1$(1),R[ALL]
+0240 IVE17A: IOLIST R0$(1),R1$(1),R[ALL]
+0500 REM " --- Initializations"
+0700 REM " --- Background"
+0710 PRINT @(COLUMN-9,11),FILL(12+P[0]),@(COLUMN-9,11),'SB',"Updating",'SF',
+0800 REM " --- Options"
+0810 LET V4$="Are You Ready To Update The "+F5$
+0820 CALL "SYC.YN",0,V4$,0,V$,V3
+0830 IF V$<>"YES" THEN GOTO 9900
+0940 REM " --- Disallow 'M'enu option in Error Routine
+0950 LET EXIT_CTRL=1
+0970 REM " --- Position file"
+0980 IF LEVEL$="W" THEN GOTO 1900
+0990 READ (IVE07_DEV,KEY=N0$,DOM=1000)
+1000 REM " --- Read next IVE-07 record"
+1010 LET K$=KEY(IVE07_DEV,END=1900)
+1020 IF POS(N0$=K$)<>1 THEN GOTO 1900
+1030 PRINT @(COLUMN,11),K$(5,P[0]),
+1040 READ (IVE07_DEV)IOL=IVE07A
+1200 REM " --- Update item"
+1210 LET A0$(1)=N0$+R0$(5)
+1220 FIND (IVM01_DEV,KEY=A0$,DOM=1800)IOL=IVM01A
+1230 LET A2$(25,1)=R1$(2,1)
+1240 WRITE (IVM01_DEV,KEY=A0$)IOL=IVM01A
+1800 REM " --- Loop back for next record"
+1890 GOTO 1000
+1900 REM " --- Position file"
+1910 IF LEVEL$="I" THEN GOTO 4000
+1920 PRINT @(COLUMN,11),FILL(P[0]),
+1990 READ (IVE17_DEV,KEY=N0$,DOM=2000)
+2000 REM " --- Read next IVE-17 record"
+2010 LET K$=KEY(IVE17_DEV,END=4000)
+2020 IF POS(N0$=K$)<>1 THEN GOTO 4000
+2040 PRINT @(COLUMN,11),K$(3,2)," ",K$(5,P[0]),
+2050 READ (IVE17_DEV)IOL=IVE17A
+2200 REM " --- Update warehouse"
+2210 LET B0$(1)=R0$
+2220 FIND (IVM02_DEV,KEY=B0$,DOM=2900)IOL=IVM02A
+2230 LET B1$(56,1)=R1$(2,1)
+2240 WRITE (IVM02_DEV,KEY=B0$)IOL=IVM02A
+2900 REM " --- Loop back for next record"
+2990 GOTO 2000
+4000 REM " --- All done"
+4090 GOTO 9900
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END

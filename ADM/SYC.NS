@@ -1,0 +1,126 @@
+0010 REM "SYC - Next Sequence Number Maintenance"
+0020 REM "Program SYC.NS"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0045 REM "CHANNEL    : Channel number of xxS-10 file"
+0050 REM "LINE       : Screen line for first input field"
+0052 REM "NUMBER     : Number of numeric fields to process (0 to ?)"
+0054 REM "TYPE$[n]   : V0$ for each input field ("" defaults to "Z")"
+0056 REM "PROMPT$[n] : Screen literal for each input field"
+0058 REM "LENGTH[n]  : V0 for each input field"
+0060 REM "MASK$[n]   : V3$ for each input field ("" defaults to LENGTH "#")"
+0062 REM "KEYVAL$    : Key value of record (normally N0$+"N")"
+0075 REM 
+0080 SETERR 9000
+0085 SETESC 9000
+0090 ENTER CHANNEL,LINE,NUMBER,TYPE$[ALL],PROMPT$[ALL],LENGTH[ALL],MASK$[ALL],
+0090:KEYVAL$
+0200 REM " --- IOLIST's"
+0210 SYS10N: IOLIST A0$,A[ALL]
+0400 REM " --- Parameters"
+0450 LET SIZE=MAX(NUMBER,1)
+0500 REM " --- Initializations"
+0510 DIM A[SIZE],M$(20,"#")
+0550 LET A0$=KEYVAL$
+0560 FOR X=0 TO NUMBER
+0570 IF TYPE$[X]="" THEN LET TYPE$[X]="Z"
+0575 IF MASK$[X]="" THEN LET MASK$[X]=M$(1,LENGTH[X])
+0590 NEXT X
+0700 REM " --- Background"
+0710 FOR X=0 TO NUMBER
+0720 PRINT 'SB',@(40-(LEN(PROMPT$[X])+2),LINE+X),PROMPT$[X],":",'SF',
+0730 NEXT X
+1200 REM " --- Retrieve record"
+1210 EXTRACT (CHANNEL,KEY=A0$,DOM=1400)IOL=SYS10N
+1300 REM " --- Display record"
+1320 GOSUB 5000
+1390 GOTO 4000
+1500 REM " --- Setup for new record"
+1510 DIM A[SIZE]
+2000 REM " --- For each sequence number"
+2010 FOR X=0 TO NUMBER
+2100 REM " --- Process input field"
+2110 LET V0$=TYPE$[X],V1$="CE",V2$=STR(A[X]),V3$=MASK$[X],V0=LENGTH[X]
+2120 LET V4$="Enter The "+PROMPT$[X],V1=40,V2=LINE+X
+2130 GOSUB 7000
+2140 ON V3 GOTO 2150,2100,2200,2100,2400
+2150 IF V<0 THEN GOTO 2100
+2160 LET A[X]=V
+2180 PRINT @(V1,V2),FNM$(A[X],MASK$[X],TYPE$[X]),
+2190 GOTO 2500
+2200 REM " --- <F2>"
+2210 LET X=MAX(X-1,0)
+2290 GOTO 2100
+2400 REM " --- <F4>"
+2490 EXITTO 4000
+2500 REM " --- Next field"
+2590 NEXT X
+4000 REM " --- Correct?"
+4010 CALL "SYC.YN",1,"Is The Above Information Correct",2,V$,V3
+4020 ON V3 GOTO 4030,4000,4000,4400,9900
+4090 ON POS(V$="YN") GOTO 4000,4100,2000
+4100 REM " --- Write record"
+4110 WRITE (CHANNEL,KEY=A0$)IOL=SYS10N
+4190 GOTO 9900
+5000 REM " --- Display record"
+5010 FOR X=0 TO NUMBER
+5020 PRINT @(40,LINE+X),FNM$(A[X],MASK$[X],TYPE$[X]),
+5030 NEXT X
+5090 RETURN
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Function Definitions"
+8090 DEF FNV(Q$)=42+INT(LEN(Q$)/2)
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF:
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+8300 REM " --- Multi-Line Functions"
+8310 DEF FNM$(Q,Q3$,Q4$)
+8320 LET Q$=STR(Q:Q3$)
+8330 IF Q4$="M" THEN LET Q$=FNF$(STR(Q),Q3$)
+8340 RETURN Q$
+8350 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return"
+9950 EXIT
+9999 END

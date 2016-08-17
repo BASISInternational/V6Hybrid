@@ -1,0 +1,58 @@
+0010 REM "GLR - Budget Revision Report (Lead Overlay)"
+0020 REM "Program GLR.LA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0060 BEGIN
+0085 SETESC 9000
+0090 SETERR 9000
+0100 REM " --- Open/Lock Files"
+0110 LET FILES=1
+0120 DIM FILES$[FILES],OPTIONS$[FILES],CHANNELS[FILES]
+0150 LET FILES$[1]="SYS-01"
+0160 CALL "SYC.DA",1,1,1,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STATUS
+0170 IF STATUS>0 THEN GOTO 9900
+0190 LET SYS01_DEV=CHANNELS[1]
+0200 REM " --- IOLIST's"
+0260 SYS01T: IOLIST X$,F0$,X$,X$,X$,F4$,F5$
+0270 GLS01A: IOLIST P0$,P1$,P2$(1),P3$(1),P4$(1),M0$,M1$,M2$,M3$
+0400 REM " --- Parameters"
+0410 DIM P2$(10),P3$(325),P4$(32),P[4]
+0420 FIND (SYS01_DEV,KEY="T"+FID(0),DOM=9800)IOL=SYS01T
+0430 LET N0$=F0$(16,2),N1$=F4$,N2$="GL",N3$=F5$
+0440 FIND (SYS01_DEV,KEY=N0$+N2$+"00",DOM=9800)IOL=GLS01A
+0450 IF P4$(2,1)<>"Y" THEN GOTO 4900
+0500 REM " --- Initializations"
+0550 LET ACTION$="2RB",PROGRAM$="GLR.IB",SOURCE$=PGM(-2)
+4000 REM " --- Run Input Overlay"
+4010 CLOSE (SYS01_DEV,ERR=4020)
+4090 RUN "GLR.AA"
+4900 REM " --- Budgets not specified on parameter record"
+4910 CALL "GLC.HA",STATUS
+4990 GOTO 9900
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9800 REM " --- Display Parameter record error"
+9810 LET LINE_ERR$=LST(PGM(TCB(5)))
+9820 CALL "SYC.YA",LINE_ERR$,N2$,ERR
+9900 REM " --- Return to menu"
+9950 RUN "SYS.AA"
+9999 END
