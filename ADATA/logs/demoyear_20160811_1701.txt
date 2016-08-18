@@ -1,6 +1,0 @@
-V6Demoyear log started: 2016-08-11@17:01:44
-Starting demo fiscal year: 1996
-Increment fiscal year by: 20
-
-Unable to open: !ADDON
-Unable to open: !GLCON

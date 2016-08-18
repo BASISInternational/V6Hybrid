@@ -1,9 +1,0 @@
-V6Demoyear log started: 2016-08-05@17:31:46
-Starting demo fiscal year: 1996
-Increment fiscal year by: 20
-
-Unable to open: !ADDON
-Unable to open: !GLCON
-Unable to open: !PROCE
-Processing: APE-01
-   Creating template for APE-01A

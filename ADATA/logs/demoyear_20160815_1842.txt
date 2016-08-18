@@ -1,7 +1,0 @@
-V6Demoyear log started: 2016-08-15@18:42:01
-Starting demo fiscal year: 1996
-Increment fiscal year by: 20
-
-Processing: ../apps/V6Hybrid/ADATA/MPM-01
-  Date elements: [PLAN_DATE   Plan Date                     D0006]
-  Creating template for MPM-01A
