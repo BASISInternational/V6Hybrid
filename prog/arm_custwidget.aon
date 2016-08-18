@@ -41,11 +41,43 @@ endif
     
 if (firmID$ <> "" and custNum$ <> "")
     REM Create the connect string
-    host$ = "localhost"
-    db$ = "AddonSoftware"
-    user$ = "guest"
-    ssl$ = "true"
-    connectString$="jdbc:basis:" + host$ + "?database=" + db$ + "&user=" + user$ + "&ssl=" + ssl$
+
+    dbserver$="localhost"
+    dbsqlport=2001
+    dbport=2002
+    dbtimeout=5000
+
+    dbserver$=stbl("+DBSERVER",err=*next)
+    dbsqlport=num(stbl("+DBSQLPORT",err=*next))
+    dbport=num(stbl("+DBPORT",err=*next))
+    dbssl=num(stbl("+DBSSL",err=*next))
+    dbtimeout=num(stbl("+DBTIMEOUT",err=*next))
+
+    if dbsqlport then dbsqlport$=":"+str(dbsqlport)
+
+    if dbssl then
+        dbssl$="&ssl=true"
+    else
+        dbssl$="&ssl=false"
+    endif
+
+    if dbtimeout then dbtimeout$="&socket_timeout="+str(dbtimeout)
+    
+    dbname$ = stbl("+DBNAME")
+    dbname_api$ = stbl("+DBNAME_API")
+    
+    url_user$="&user=guest"
+    url_pwd$=""
+
+    if pos("jdbc:apache"=cvs(dbname$,8))=1 then
+        url$ = dbname$
+    else
+        if pos("jdbc:"=cvs(dbname$,8))=1 then
+            url$ = dbname$+url_user$+url_pwd$+dbssl$+dbtimeout$
+        else
+            url$ = "jdbc:basis:"+dbserver$+dbsqlport$+"?database="+dbname_api$+url_user$+url_pwd$+dbssl$+dbtimeout$
+        endif
+    endif
 
     REM Create the SQL string
     sql$ = "select CUST_NAME,AGING_FUTURE,AGING_CUR,AGING_30,AGING_60,AGING_90,AGING_120 FROM ARM01,ARM02 "
@@ -59,7 +91,7 @@ if (firmID$ <> "" and custNum$ <> "")
     java.lang.Class.forName("com.basis.jdbc.BasisDriver")
 
     REM Make connection, prepare the statement, and execute the query
-    c! = DriverManager.getConnection(connectString$)
+    c! = DriverManager.getConnection(url$)
     p! = c!.prepareStatement(sql$)
     r! = p!.executeQuery()
 
