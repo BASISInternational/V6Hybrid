@@ -20,10 +20,14 @@ rem --- Open V6 dictionary files
     ddm04=unt
     open (ddm04)source_folder$+"DDM-04"
 
-input "Enter table name + record id (e.g., APM-01A): ",flnm$
-escape;rem watch
-gosub create_template
-escape
+    while wkin$<>"END"
+        input "Enter table name + record id (e.g., APM-01A): ",flnm$
+        gosub create_template
+        print v6_gen_table_tpl$
+        input "Continue (END to exit)? ",wkin$
+    wend
+    
+    release
 
 create_template:rem create template for V6 file
 

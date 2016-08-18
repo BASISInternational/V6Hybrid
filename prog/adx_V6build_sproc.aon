@@ -230,7 +230,7 @@ sqlclose(chan)
 
 update_status:rem --- Update AutoLaunch Status
 
-    extractrecord(ads_autolaunch,key="BUILDSPROC")ads_autolaunch$; rem Advisory Locking
+    extractrecord(ads_autolaunch,key="V6BLDSPROC")ads_autolaunch$; rem Advisory Locking
     ads_autolaunch.process_status$="C"
     ads_autolaunch.trans_date$=date(0:"%Yl%Mz%Dz")
     ads_autolaunch.trans_time$=date(0:"%Hz%mz%sz")

@@ -1,0 +1,155 @@
+REM /**
+REM  * arm_custwidget.aon
+REM  * Displays a pie chart widget that shows AR aging information
+REM  * @author bhipple
+REM  *
+REM  */
+
+
+rem Use statements
+use ::dashboard/dashboard.bbj::Dashboard
+use ::dashboard/dashboard.bbj::DashboardCategory
+use ::dashboard/dashboard.bbj::DashboardWidget
+use ::dashboard/dashboard.bbj::WidgetControl
+use ::dashboard/widget.bbj::Widget
+use ::dashboard/widget.bbj::ChartWidget
+use ::dashboard/widget.bbj::PieChartWidget
+use ::BBUtils.bbj::BBUtils
+use ::BBXImage.bbj::BBXImageFactory
+use ::BBXImage.bbj::BBXImage
+use ::bbwindowutils.bbj::BBWindowUtils
+
+use java.awt.TexturePaint
+use java.awt.geom.Rectangle2D
+use java.awt.image.BufferedImage
+
+REM Database stuff
+use java.sql.DriverManager
+use java.sql.Connection
+
+seterr Finished
+
+firmID$ = clientenv("firm_id",err=*next)
+if (firmID$ = "" and argc > 1)
+    firmID$ = argv(1)
+endif
+
+custNum$ = clientenv("cust_num",err=*next)
+if (custNum$ = "" and argc > 2)
+    custNum$ = argv(2)
+endif
+    
+if (firmID$ <> "" and custNum$ <> "")
+    REM Create the connect string
+    host$ = "localhost"
+    db$ = "AddonSoftware"
+    user$ = "guest"
+    ssl$ = "true"
+    connectString$="jdbc:basis:" + host$ + "?database=" + db$ + "&user=" + user$ + "&ssl=" + ssl$
+
+    REM Create the SQL string
+    sql$ = "select CUST_NAME,AGING_FUTURE,AGING_CUR,AGING_30,AGING_60,AGING_90,AGING_120 FROM ARM01,ARM02 "
+    sql$ = sql$ +  "where ARM01.FIRM_ID = ARM02.FIRM_ID and " 
+    sql$ = sql$ +  "ARM01.CUSTOMER_NBR = ARM02.CUSTOMER_NBR and "
+    sql$ = sql$ + "FIRM_ID = '" + firmID$ + "' and "
+    sql$ = sql$ + "CUSTOMER_NBR = '" + custNum$ + "' and "
+    sql$ = sql$ + "AR_TYPE = ''"
+
+    REM Make sure the JDBC driver is loaded
+    java.lang.Class.forName("com.basis.jdbc.BasisDriver")
+
+    REM Make connection, prepare the statement, and execute the query
+    c! = DriverManager.getConnection(connectString$)
+    p! = c!.prepareStatement(sql$)
+    r! = p!.executeQuery()
+
+    REM Get the  data
+    if (r!.next())
+        custName$ = r!.getObject(1)
+        future = r!.getObject(2)
+        current = r!.getObject(3)
+        over30 = r!.getObject(4)
+        over60 = r!.getObject(5)
+        over90 = r!.getObject(6)
+        over120 = r!.getObject(7)
+        totalAging = future + current + over30 + over60 + over90 + over120
+REM Debug
+REM print "custName: ",custName$
+REM print "future:   ",future
+REM print "current:  ",current
+REM print "over30:   ",over30
+REM print "over60:   ",over60
+REM print "over90:   ",over90
+REM print "over120:  ",over120
+        if (totalAging > 0)
+            rem Create the dashboard and category
+            dashboard! = new Dashboard("ARAging","AR Aging")
+            dashboardCategory! = dashboard!.addDashboardCategory("ARAging","AR Aging")
+            dashboardCategory!.setWidgetTitlebarNameBackColor(bbjapi().makeColor(215,215,215))
+            dashboardCategory!.setWidgetTitlebarDecorationBackColor(bbjapi().makeColor(225,225,225))    
+            
+            rem Create the widget
+            widgetName$ = "ARAging"
+            title$ = "Customer Aging"
+            previewText$ = ""
+            previewImage$ = ""
+            chartTitle$ = ""
+            flat = 1 
+            legend = 0
+            numSlices = 6
+            dashboardWidget! = dashboardCategory!.addPieChartDashboardWidget(widgetName$,title$,previewText$,previewImage$,chartTitle$,flat,legend,numSlices)
+            widget! = dashboardWidget!.getWidget()
+            
+            rem Get the background image for the AR Aging Chart
+            declare BBXImage xImage!
+            xImage! = BBXImageFactory.createImageFromServerFile(System.getProperty("basis.BBjHome") + "/utils/dashboard/images/chartBG.jpg")
+            xImage!.setOpacity(20)
+            tr! = new Rectangle2D.Double(0, 0, xImage!.getWidth(), xImage!.getHeight())
+            chartTexturePaint! = new TexturePaint(xImage!.getBufferedImage(BufferedImage.TYPE_INT_ARGB), tr!)
+            
+            rem Customize the chart
+            widget!.setChartBackground(chartTexturePaint!)
+            widget!.setPlotPadding(.06)
+            colors! = ChartWidget.getVectorOfJavaColorsFromHexColorStrings(4, "#f5bcbc", "#861313", .65, .65)
+            colors!.insertItem(0, ChartWidget.getColorWithAlphaFromHexString("#169c16", 0.65))
+            colors!.insertItem(0, ChartWidget.getColorWithAlphaFromHexString("#1d56c9", 0.65))
+            widget!.setChartColors(colors!)
+            widget!.setLegendPosition(ChartWidget.getSideLeft(), ChartWidget.getHAlignRight(), ChartWidget.getVAlignCenter())
+            widget!.setLabelFormat("{0}: {1}", java.text.NumberFormat.getCurrencyInstance(), java.text.NumberFormat.getPercentInstance())
+            rem Set the Widget data
+            widget!.setDataSetValue("  Future", future)
+            widget!.setDataSetValue(" Current", current)
+            widget!.setDataSetValue(" 30 Days", over30)
+            widget!.setDataSetValue(" 60 Days", over60)
+            widget!.setDataSetValue(" 90 Days", over90)
+            widget!.setDataSetValue("120 Days", over120)
+            
+            rem Create a window
+            sysgui! = BBjAPI().openSysGui("X0")
+            width=300
+            height=200
+            window! = sysgui!.addWindow(200,200,width,height,"Aging report for " + custName$,$01000012$)
+            widgetControl! = new WidgetControl(dashboardWidget!,window!,0,0,width,height,$$)
+            widgetControl!.setMoveParentWindow(1)
+            
+            closeButton! = widgetControl!.getBBjControl(WidgetControl.getDASHBOARD_WIDGET_CLOSE_BUTTON_NAME())
+            closeButton!.setCallback(BBjToolButton.ON_TOOL_BUTTON_PUSH,"Finished")
+            
+            BBWindowUtils.centerWindow(window!)
+            window!.setVisible(1)
+            process_events
+       endif
+    endif
+    
+
+Finished:
+    REM Clean up
+    r!.close(err=*next)
+    p!.close(err=*next)
+    c!.close(err=*next)
+    release
+
+
+
+
+

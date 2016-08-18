@@ -1,4 +1,4 @@
-0005 IF STBL("+LEGACY",ERR=0010)="Y" THEN RELEASE
+0005 IF STBL("+LEGACY",ERR=0010)="Y" THEN RELEASE; REM "V6Demo
 0010 REM "SYS - ADD+ON Menu Processing"
 0020 REM "Program SYS.AA"
 0022 REM "+-----------------------------------------------------------+"
