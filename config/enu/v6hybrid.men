@@ -9,11 +9,3 @@ Addon V6 Hybrid^AONV6^M^^^im_menua_miscellaneous.png^^00000000^V6H^^16.0^^^^^^^^
 	Accounts Receivable^AONV6_AR^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
 		Customer Maintenance^AONV6_CUSTMAST^A^^adx_v6leadin.aon - ARM.MA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
 		Customer Statements^AONV6_AR_STMTS^A^^adx_v6leadin.aon -- ARR.CA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
-	V6 Customer Master^ARM01^T^ARM01^^im_menui_table.png^N^00000000^V6H^^1.0^^^^^^^^
-
-	V6 Customer Detail^ARM02^T^ARM02^^im_menui_table.png^N^00000000^V6H^^1.0^^^^^^^^
-
-	ARM10F^ARM10F^T^ARM10F^^im_menui_table.png^N^00000000^V6H^^1.0^^^^^^^^
-
-	V6 AR Invoice History Header^ART03^T^ART03^^im_menui_table.png^N^00000000^V6H^^1.0^^^^^^^^
-
