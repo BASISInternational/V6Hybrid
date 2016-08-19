@@ -22,6 +22,8 @@ rem --- Open V6 dictionary files
 
     while wkin$<>"END"
         input "Enter table name + record id (e.g., APM-01A): ",flnm$
+        input "Prefix with V6_?",addpfx$
+        addpfx$=iff(pos(addpfx$="Yy")<>0,"V6_","")
         gosub create_template
         print v6_gen_table_tpl$
         input "Continue (END to exit)? ",wkin$
@@ -102,15 +104,16 @@ create_template:rem create template for V6 file
             endif  
             rd_temp_seg$=rd_temp_seg$+")"
             fields = fields + 1
+            if len(rd_temp_seg$(1,pos(":"=rd_temp_seg$)-1))>13 then escape;rem will need to shorten
             if len(v6_gen_table_tpl$) then
                 v6_gen_table_tpl$=v6_gen_table_tpl$+","
             endif
-            v6_gen_table_tpl$=v6_gen_table_tpl$+rd_temp_seg$
+            v6_gen_table_tpl$=v6_gen_table_tpl$+addpfx$+rd_temp_seg$
             if pos(ddm04.fld_sep$="KX")
                 if len(v6_gen_key_tpl$) then
                     v6_gen_key_tpl$=v6_gen_key_tpl$+","
                endif
-               v6_gen_key_tpl$=v6_gen_key_tpl$+rd_temp_seg$
+               v6_gen_key_tpl$=v6_gen_key_tpl$+addpfx$+rd_temp_seg$
                if v6_gen_key_tpl$(len(v6_gen_key_tpl$)-1,1)="*" then v6_gen_key_tpl$=v6_gen_key_tpl$(1,len(v6_gen_key_tpl$)-2)+")";rem strip delim at end of key template
             endif
             rem ' Date formats
