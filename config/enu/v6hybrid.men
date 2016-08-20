@@ -5,8 +5,9 @@ Addon V6 Hybrid^AONV6^M^^^im_menua_miscellaneous.png^^00000000^V6H^^16.0^^^^^^^^
 		Addon V6 CUI^AONV6_CUI^P^^sys.za^im_menui_table.png^^00000000^V6H^^16.0^^^^-u%USERNAME% -m5160 -tT0 -q^C:\bbj\apps\V6Hybrid\config.aon^^^
 		List File Contents^AONV6LISTER^A^^adx_v6leadin.aon -- lister^im_menui_utility.png^^00000000^V6H^^16.0^^^^^^^^
 		Create Stored Procedure Definitions^AONV6_SPROCS^A^^[V6HYBRID_PROG]adx_V6build_sproc.aon^im_menui_utility.png^^00000000^V6H^^16.0^^^^^^^^
-	Accounts Payable^AONV6_AP^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
 	Accounts Receivable^AONV6_AR^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
 		Cash Receipts Entry^AONV6_CR^A^^adx_v6leadin.aon - ARE.AA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
 		Customer Maintenance^AONV6_CUSTMAST^A^^adx_v6leadin.aon - ARM.MA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
 		Customer Statements^AONV6_AR_STMTS^A^^adx_v6leadin.aon -- ARR.CA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+	Purchase Orders^AONV6_PO^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
+		Purchase Order Entry^AONV6_POENTRY^A^^adx_v6leadin.aon - POE.BA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^

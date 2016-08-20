@@ -80,12 +80,12 @@ if (firmID$ <> "" and custNum$ <> "")
     endif
 
     REM Create the SQL string
-    sql$ = "select CUST_NAME,AGING_FUTURE,AGING_CUR,AGING_30,AGING_60,AGING_90,AGING_120 FROM ARM01,ARM02 "
-    sql$ = sql$ +  "where ARM01.FIRM_ID = ARM02.FIRM_ID and " 
-    sql$ = sql$ +  "ARM01.CUSTOMER_NBR = ARM02.CUSTOMER_NBR and "
-    sql$ = sql$ + "FIRM_ID = '" + firmID$ + "' and "
-    sql$ = sql$ + "CUSTOMER_NBR = '" + custNum$ + "' and "
-    sql$ = sql$ + "AR_TYPE = ''"
+    sql$ = "select V6_CUST_NAME,V6_AGING_FUTURE,V6_AGING_CUR,V6_AGING_30,V6_AGING_60,V6_AGING_90,V6_AGING_120 FROM ARM01,ARM02 "
+    sql$ = sql$ +  "where ARM01.V6_FIRM_ID = ARM02.V6_FIRM_ID and " 
+    sql$ = sql$ +  "ARM01.V6_CUSTOMER_NBR = ARM02.V6_CUSTOMER_NBR and "
+    sql$ = sql$ + "V6_FIRM_ID = '" + firmID$ + "' and "
+    sql$ = sql$ + "V6_CUSTOMER_NBR = '" + custNum$ + "' and "
+    sql$ = sql$ + "V6_AR_TYPE = ''"
 
     REM Make sure the JDBC driver is loaded
     java.lang.Class.forName("com.basis.jdbc.BasisDriver")

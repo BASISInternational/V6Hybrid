@@ -220,14 +220,13 @@
 
 
 10000 runBaristaQuery:
-10001 escape;rem CAH... dir("")? stbl("+DIR_BR?)
 10010 rem "V6demo --- run barista query
-10020 barista$ = dsk("")+dir("")
+10020 barista$ = dsk("")+dir(""), barista_cfg$=barista$+stbl("+FILE_CFG")
 10030 bbjhome$ = System.getProperty("basis.BBjHome") + "/"
 10040 pid$ = hta(info(3,0)); ns_name$="query_result" + pid$
 10050 xuserName$ = "admin";rem stbl("SYSTEMUID")
 10060 xpassword$ = "admin123";rem stbl("SYSTEMPWD")
-10070 cmdline$ = bbjhome$ + "bbj -tT0 -q -WD""" + barista$ + """ -c""" + barista$ + "sys/config/enu/barista.cfg"" sys/prog/bax_launch_task.bbj " + "- -yQ -u" + xuserName$+" -p"+xpassword$+" -qV6_ARM01 -n" + ns_name$ + " -w"
+10070 cmdline$ = bbjhome$ + "bbj -tT0 -q -WD""" + barista$ + """ -c""" + barista_cfg$ + """ sys/prog/bax_launch_task.bbj " + "- -yQ -u" + xuserName$ + " -p" + xpassword$ + " -qV6_ARM01 -n" + ns_name$ + " -w"
 10080 a = scall(cmdline$)
 10090 selectedKey$ = cast(BBjString, BBjAPI().getGroupNamespace().getValue(ns_name$, err=*next))
 10100 if pos("^"=selectedKey$,  -1) = len(selectedKey$) then selectedKey$ = selectedKey$(1,len(selectedKey$) -1)

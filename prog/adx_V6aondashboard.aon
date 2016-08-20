@@ -2,6 +2,9 @@ rem --- adx_aondashboard.aon
 rem --- Copyright BASIS International Ltd.  All Rights Reserved.
 rem --- Addon dashboards
 
+rem --- TODO Alter to use adc_fileopen rather than using ec_open and/or hard-coding templates
+rem --- TODO Alter connection strings as needed - use barUtils?
+
 	use ::dashboard/dashboard.bbj::Dashboard
 	use ::dashboard/dashboard.bbj::DashboardCategory
 	use ::dashboard/dashboard.bbj::DashboardWidget

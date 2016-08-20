@@ -85,6 +85,7 @@ create_template:rem create template for V6 file
 
             rem ' field names can only contain [A-Z0-9_]
             data_name$=tbl(cvs(data_name$,7),tbl=az_09)
+            if pos("RESERVED"=data_name$)=1 then data_name$="RSRVD"+data_name$(9)
             rd_temp_seg$=cvs(data_name$,3)+rd_col_occurs_sfx$+":"
             datatype$=iff(ddm01.data_type$="N","N","C")
             rd_temp_seg$=rd_temp_seg$+datatype$+"("+str(rd_col_length)

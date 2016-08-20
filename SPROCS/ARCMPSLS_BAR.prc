@@ -1,5 +1,7 @@
 rem --- sproc for the sales by month compare this year to last year
 
+rem --- TODO modify all dashboard sprocs as needed to set connection and use V6_ element names
+
 rem --- set start and end dates
 
 seterr proc_error
