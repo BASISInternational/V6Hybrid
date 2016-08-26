@@ -2,7 +2,7 @@ Addon V6 Hybrid^AONV6^M^^^im_menua_miscellaneous.png^^00000000^V6H^^16.0^^^^^^^^
 	Digital Dashboard^AONV6_DASH^A^^adx_V6aondashboard.aon^im_menui_view.png^^00000000^V6H^^16.0^^^^^^^^
 	Miscellaneous^AONV6_MISC^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
 		Create V6 Record Template^AONV6_TPL^A^^[V6HYBRID_PROG]adx_V6gettemplate.aon^im_menui_utility.png^^00000000^V6H^^16.0^^^^^^^^
-		Addon V6 CUI^AONV6_CUI^P^^sys.za^im_menui_table.png^^00000000^V6H^^16.0^^^^-u%USERNAME% -m5160 -tT0 -q^C:\bbj\apps\V6Hybrid\config.aon^^^
+		Addon V6 CUI^AONV6_CUI^P^^sys.za^im_menui_table.png^^00000000^V6H^^16.0^^^^-u%USERNAME% -m5160 -tT0 -q^C:/bbj/barista/sys/config/enu/barista.cfg^^^
 		List File Contents^AONV6LISTER^A^^adx_v6leadin.aon -- lister^im_menui_utility.png^^00000000^V6H^^16.0^^^^^^^^
 		Create Stored Procedure Definitions^AONV6_SPROCS^A^^[V6HYBRID_PROG]adx_V6build_sproc.aon^im_menui_utility.png^^00000000^V6H^^16.0^^^^^^^^
 	Accounts Receivable^AONV6_AR^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^

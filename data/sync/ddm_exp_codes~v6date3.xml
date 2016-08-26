@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<meta name='barista_version' content='16.0' />
+<barista_admin_record>
+	<barista_record_table>DDM_EXP_CODES</barista_record_table>
+	<DD_EXPAND_CODE>V6DATE3     </DD_EXPAND_CODE>
+	<DD_DESCRIPTION>V6 3 Character Date</DD_DESCRIPTION>
+	<DD_EXP_INSTRUCT>![V6HYBRID_PROG]+"adx_expand_date.aon"</DD_EXP_INSTRUCT>
+</barista_admin_record>

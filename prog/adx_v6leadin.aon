@@ -31,7 +31,7 @@ rem --- Retrieve sysinfo data
     user_id$=sysinfo.user_id$
     sys_date$=sysinfo.system_date$
     program$=argv(argc - 1)
-    
+ 
 rem --- Hybrid Payroll is not available with BUI
 if info(3,6)="5" then
     msg_id$ = "AD_TASK_NOT_BUI"
@@ -224,7 +224,7 @@ rem --- print header boxes
 
 	call "SYC.WC",0,0,47,3,0,0,0
 	call "SYC.WC",0,0,33,3,47,0,0
-	print 'sb',@(3,1),program$," ",sys01_5$,@(49),day,@(58),fne$(q$),@(74),printer$,
+	print 'sb',@(3,1),program$," ",sys01_5$,@(49),fnb$(sys01_0$(7,3)),@(58),fne$(q$),@(74),printer$,
 	print @(49,0)," ADD+ON Software v6",@(68,1),fid(0),'sf',
 
 rem --- get firm name and update the header
@@ -242,6 +242,9 @@ rem --- Run next program
     release
    
 rem --- functions
+
+    DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+    DEF FNB$(Q1$)=FNA$(Q1$(2),Q1$)+"/"+FNA$(Q1$(3),Q1$)+"/"+FNA$(Q1$(1),Q1$)
 
 	def fne$(q$)=date(0:"%hz:%mz %p")
 

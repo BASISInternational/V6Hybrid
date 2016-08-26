@@ -38,7 +38,7 @@ custNum$ = clientenv("cust_num",err=*next)
 if (custNum$ = "" and argc > 2)
     custNum$ = argv(2)
 endif
-    
+
 if (firmID$ <> "" and custNum$ <> "")
     REM Create the connect string
 
@@ -113,6 +113,7 @@ REM print "over30:   ",over30
 REM print "over60:   ",over60
 REM print "over90:   ",over90
 REM print "over120:  ",over120
+
         if (totalAging > 0)
             rem Create the dashboard and category
             dashboard! = new Dashboard("ARAging","AR Aging")

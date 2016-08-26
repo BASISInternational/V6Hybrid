@@ -21,9 +21,9 @@
 			<ASC_LICENSE_ID id="ddm_tables.arm01"></ASC_LICENSE_ID>
 			<DD_EXPORT_DATA id="ddm_tables.arm01">Y</DD_EXPORT_DATA>
 			<DD_CREATE_DATE id="ddm_tables.arm01">20160819</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_tables.arm01">20160819</DD_LSTREV_DATE>
-			<DD_LSTSYNC_DATE id="ddm_tables.arm01">20160819</DD_LSTSYNC_DATE>
-			<DD_LSTSYNC_TIME id="ddm_tables.arm01">163046</DD_LSTSYNC_TIME>
+			<DD_LSTREV_DATE id="ddm_tables.arm01">20160822</DD_LSTREV_DATE>
+			<DD_LSTSYNC_DATE id="ddm_tables.arm01">20160825</DD_LSTSYNC_DATE>
+			<DD_LSTSYNC_TIME id="ddm_tables.arm01">153826</DD_LSTSYNC_TIME>
 			<DD_ATTR_ATAB id="ddm_tables.arm01"></DD_ATTR_ATAB>
 			<DD_ATTR_CPGM id="ddm_tables.arm01"></DD_ATTR_CPGM>
 			<DD_ATTR_DKNM id="ddm_tables.arm01"></DD_ATTR_DKNM>
@@ -131,7 +131,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01001"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01001"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01001"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01001"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01001">1</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01001"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01001"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01001"></DD_ATTR_FONT>
@@ -175,7 +175,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01002"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01002"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01002"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01002"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01002">2</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01002"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01002"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01002"></DD_ATTR_FONT>
@@ -219,7 +219,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01003"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01003"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01003"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01003"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01003">3</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01003"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01003"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01003"></DD_ATTR_FONT>
@@ -263,7 +263,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01004"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01004"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01004"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01004"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01004">4</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01004"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01004"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01004"></DD_ATTR_FONT>
@@ -307,7 +307,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01005"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01005"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01005"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01005"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01005">5</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01005"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01005"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01005"></DD_ATTR_FONT>
@@ -351,7 +351,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01006"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01006"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01006"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01006"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01006">6</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01006"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01006"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01006"></DD_ATTR_FONT>
@@ -395,7 +395,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01007"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01007"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01007"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01007"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01007">7</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01007"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01007"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01007"></DD_ATTR_FONT>
@@ -439,7 +439,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01008"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01008"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01008"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01008"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01008">8</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01008"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01008"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01008"></DD_ATTR_FONT>
@@ -483,7 +483,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01009"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01009"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01009"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01009"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01009">9</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01009"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01009"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01009"></DD_ATTR_FONT>
@@ -527,7 +527,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01010"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01010"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01010"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01010"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01010">10</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01010"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01010"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01010"></DD_ATTR_FONT>
@@ -571,7 +571,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01011"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01011"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01011"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01011"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01011">11</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01011"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01011"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01011"></DD_ATTR_FONT>
@@ -615,7 +615,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01012"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01012"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01012"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01012"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01012">12</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01012"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01012"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01012"></DD_ATTR_FONT>
@@ -659,7 +659,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01013"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01013"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01013"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01013"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01013">13</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01013"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01013"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01013"></DD_ATTR_FONT>
@@ -703,7 +703,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01014"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01014"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01014"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01014"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01014">14</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01014"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01014"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01014"></DD_ATTR_FONT>
@@ -747,7 +747,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01015"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01015"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01015"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01015"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01015">15</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01015"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01015"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01015"></DD_ATTR_FONT>
@@ -791,7 +791,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01016"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01016"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01016"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01016"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01016">16</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01016"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01016"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01016"></DD_ATTR_FONT>
@@ -835,7 +835,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01017"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01017"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01017"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01017"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01017">17</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01017"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01017"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01017"></DD_ATTR_FONT>
@@ -879,7 +879,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01018"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01018"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01018"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01018"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01018">18</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01018"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01018"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01018"></DD_ATTR_FONT>
@@ -923,7 +923,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01019"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01019"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01019"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01019"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01019">19</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01019"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01019"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01019"></DD_ATTR_FONT>
@@ -967,7 +967,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01020"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01020"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01020"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01020"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01020">20</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01020"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01020"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01020"></DD_ATTR_FONT>
@@ -1011,7 +1011,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01021"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01021"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01021"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01021"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01021">21</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01021"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01021"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01021"></DD_ATTR_FONT>
@@ -1055,7 +1055,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01022"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01022"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01022"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01022"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01022">22</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01022"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01022"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01022"></DD_ATTR_FONT>
@@ -1099,7 +1099,7 @@
 			<DD_ATTR_PVAL id="ddm_table_cols.arm01023"></DD_ATTR_PVAL>
 			<DD_ATTR_SLEV id="ddm_table_cols.arm01023"></DD_ATTR_SLEV>
 			<DD_ATTR_TABG id="ddm_table_cols.arm01023"></DD_ATTR_TABG>
-			<DD_ATTR_TIND id="ddm_table_cols.arm01023"></DD_ATTR_TIND>
+			<DD_ATTR_TIND id="ddm_table_cols.arm01023">23</DD_ATTR_TIND>
 			<DD_ATTR_HELP id="ddm_table_cols.arm01023"></DD_ATTR_HELP>
 			<SQL_COLUMN_NAME id="ddm_table_cols.arm01023"></SQL_COLUMN_NAME>
 			<DD_ATTR_FONT id="ddm_table_cols.arm01023"></DD_ATTR_FONT>
@@ -1658,8 +1658,8 @@
 			<ASC_COMP_ID id="ddm_elements.v6_opened_date">00000000</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_elements.v6_opened_date">V6H</ASC_PROD_ID>
 			<LOCALIZATION_EX id="ddm_elements.v6_opened_date"></LOCALIZATION_EX>
-			<DD_CREATE_DATE id="ddm_elements.v6_opened_date">20160819</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_elements.v6_opened_date">20160819</DD_LSTREV_DATE>
+			<DD_CREATE_DATE id="ddm_elements.v6_opened_date">2457620</DD_CREATE_DATE>
+			<DD_LSTREV_DATE id="ddm_elements.v6_opened_date">20160825</DD_LSTREV_DATE>
 			<DD_AUTO_COMP id="ddm_elements.v6_opened_date"></DD_AUTO_COMP>
 			<DD_ATTR_BLNK id="ddm_elements.v6_opened_date"></DD_ATTR_BLNK>
 			<DD_ATTR_CDAT id="ddm_elements.v6_opened_date"></DD_ATTR_CDAT>
@@ -1667,8 +1667,8 @@
 			<DD_ATTR_CTLH id="ddm_elements.v6_opened_date"></DD_ATTR_CTLH>
 			<DD_ATTR_CTYP id="ddm_elements.v6_opened_date">E</DD_ATTR_CTYP>
 			<DD_ATTR_DCOL id="ddm_elements.v6_opened_date"></DD_ATTR_DCOL>
-			<DD_ATTR_DCOM id="ddm_elements.v6_opened_date">            </DD_ATTR_DCOM>
-			<DD_ATTR_DEXP id="ddm_elements.v6_opened_date">            </DD_ATTR_DEXP>
+			<DD_ATTR_DCOM id="ddm_elements.v6_opened_date"></DD_ATTR_DCOM>
+			<DD_ATTR_DEXP id="ddm_elements.v6_opened_date">V6DATE3     </DD_ATTR_DEXP>
 			<DD_ATTR_DFLT id="ddm_elements.v6_opened_date"></DD_ATTR_DFLT>
 			<DD_ATTR_DKNM id="ddm_elements.v6_opened_date"></DD_ATTR_DKNM>
 			<DD_ATTR_DKEY id="ddm_elements.v6_opened_date"></DD_ATTR_DKEY>
@@ -1694,7 +1694,7 @@
 			<DD_ATTR_SDLG id="ddm_elements.v6_opened_date"></DD_ATTR_SDLG>
 			<DD_ATTR_SLEV id="ddm_elements.v6_opened_date"></DD_ATTR_SLEV>
 			<DD_ATTR_STYP id="ddm_elements.v6_opened_date"></DD_ATTR_STYP>
-			<DD_ATTR_STEP id="ddm_elements.v6_opened_date"></DD_ATTR_STEP>
+			<DD_ATTR_STEP id="ddm_elements.v6_opened_date">0</DD_ATTR_STEP>
 			<DD_ATTR_FLPT id="ddm_elements.v6_opened_date"></DD_ATTR_FLPT>
 		</RECORD>
 		<RECORD id="ddm_elements.v6_ar_ship_via">
@@ -2235,6 +2235,14 @@
 			<DD_ATTR_STYP id="ddm_elements.v6_op_frt_terms"></DD_ATTR_STYP>
 			<DD_ATTR_STEP id="ddm_elements.v6_op_frt_terms"></DD_ATTR_STEP>
 			<DD_ATTR_FLPT id="ddm_elements.v6_op_frt_terms"></DD_ATTR_FLPT>
+		</RECORD>
+	</ALIAS>
+	<ALIAS id="ddm_exp_codes">
+		<ID id="ddm_exp_codes">DDM_EXP_CODES</ID>
+		<RECORD id="ddm_exp_codes.v6date3">
+			<DD_EXPAND_CODE id="ddm_exp_codes.v6date3">V6DATE3     </DD_EXPAND_CODE>
+			<DD_DESCRIPTION id="ddm_exp_codes.v6date3">V6 3 Character Date</DD_DESCRIPTION>
+			<DD_EXP_INSTRUCT id="ddm_exp_codes.v6date3">![V6HYBRID_PROG]+"adx_expand_date.aon"</DD_EXP_INSTRUCT>
 		</RECORD>
 	</ALIAS>
 </ARM01>
