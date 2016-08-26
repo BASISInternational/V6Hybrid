@@ -23,10 +23,6 @@ use java.awt.TexturePaint
 use java.awt.geom.Rectangle2D
 use java.awt.image.BufferedImage
 
-REM Database stuff
-use java.sql.DriverManager
-use java.sql.Connection
-
 seterr Finished
 
 firmID$ = clientenv("firm_id",err=*next)
@@ -40,44 +36,6 @@ if (custNum$ = "" and argc > 2)
 endif
 
 if (firmID$ <> "" and custNum$ <> "")
-    REM Create the connect string
-
-    dbserver$="localhost"
-    dbsqlport=2001
-    dbport=2002
-    dbtimeout=5000
-
-    dbserver$=stbl("+DBSERVER",err=*next)
-    dbsqlport=num(stbl("+DBSQLPORT",err=*next))
-    dbport=num(stbl("+DBPORT",err=*next))
-    dbssl=num(stbl("+DBSSL",err=*next))
-    dbtimeout=num(stbl("+DBTIMEOUT",err=*next))
-
-    if dbsqlport then dbsqlport$=":"+str(dbsqlport)
-
-    if dbssl then
-        dbssl$="&ssl=true"
-    else
-        dbssl$="&ssl=false"
-    endif
-
-    if dbtimeout then dbtimeout$="&socket_timeout="+str(dbtimeout)
-    
-    dbname$ = stbl("+DBNAME")
-    dbname_api$ = stbl("+DBNAME_API")
-    
-    url_user$="&user=guest"
-    url_pwd$=""
-
-    if pos("jdbc:apache"=cvs(dbname$,8))=1 then
-        url$ = dbname$
-    else
-        if pos("jdbc:"=cvs(dbname$,8))=1 then
-            url$ = dbname$+url_user$+url_pwd$+dbssl$+dbtimeout$
-        else
-            url$ = "jdbc:basis:"+dbserver$+dbsqlport$+"?database="+dbname_api$+url_user$+url_pwd$+dbssl$+dbtimeout$
-        endif
-    endif
 
     REM Create the SQL string
     sql$ = "select V6_CUST_NAME,V6_AGING_FUTURE,V6_AGING_CUR,V6_AGING_30,V6_AGING_60,V6_AGING_90,V6_AGING_120 FROM ARM01,ARM02 "
@@ -87,11 +45,8 @@ if (firmID$ <> "" and custNum$ <> "")
     sql$ = sql$ + "V6_CUSTOMER_NBR = '" + custNum$ + "' and "
     sql$ = sql$ + "V6_AR_TYPE = ''"
 
-    REM Make sure the JDBC driver is loaded
-    java.lang.Class.forName("com.basis.jdbc.BasisDriver")
-
-    REM Make connection, prepare the statement, and execute the query
-    c! = DriverManager.getConnection(url$)
+    REM Make a connection to the database, prepare and execute the query
+    c! = BBjAPI().getJDBCConnection(stbl("+DBNAME_API",err=*endif),err=*endif)
     p! = c!.prepareStatement(sql$)
     r! = p!.executeQuery()
 
@@ -105,14 +60,6 @@ if (firmID$ <> "" and custNum$ <> "")
         over90 = r!.getObject(6)
         over120 = r!.getObject(7)
         totalAging = future + current + over30 + over60 + over90 + over120
-REM Debug
-REM print "custName: ",custName$
-REM print "future:   ",future
-REM print "current:  ",current
-REM print "over30:   ",over30
-REM print "over60:   ",over60
-REM print "over90:   ",over90
-REM print "over120:  ",over120
 
         if (totalAging > 0)
             rem Create the dashboard and category
@@ -159,9 +106,9 @@ REM print "over120:  ",over120
             
             rem Create a window
             sysgui! = BBjAPI().openSysGui("X0")
-            width=300
-            height=200
-            window! = sysgui!.addWindow(200,200,width,height,"Aging report for " + custName$,$01000012$)
+            width=400
+            height=300
+            window! = sysgui!.addWindow(400,400,width,height,"Aging report for " + custName$,$01000012$)
             widgetControl! = new WidgetControl(dashboardWidget!,window!,0,0,width,height,$$)
             widgetControl!.setMoveParentWindow(1)
             
