@@ -507,21 +507,15 @@ rem ==========================================================
 rem --- create an Customer Sales by Month Comparison bar chart
 rem ==========================================================
 
-	dashboard_menu_id$="ADD_ARCMPSLS_BAR"
-	rem --- gosub get_security
-	rem ---- if allow_widget$="Y" and installMap!.get("GL")="Y"
-	
+	dashboard_menu_id$="ADD_ARCMPSLS_BAR"	
 	name$="ARCMPSLS_BAR"
 
-	rem ' title$ = Translate!.getTranslation("AON_INCOME_COMPARISON")
 	title$ = "Sales Comparison Last Year/Cur Year"
 
-	rem ' previewText$=Translate!.getTranslation("AON_INCOME_COMPARISON")
 	previewText$=title$
 	previewImage$=preview_path$+"glcmpinc_bar.png"
 	domainTitle$ = ""
 
-	rem ' rangeTitle$ = Translate!.getTranslation("AON_$_IN_1000S")
 	rangeTitle$ = "$ in 1000s"
 	
 	orientation=BarChartWidget.getORIENTATION_VERTICAL() 
@@ -531,9 +525,6 @@ rem ==========================================================
 	connectString$=aon_url$
 	
 	rem --- params for calling SPROC
-	rem ' include_type$="A"; rem "Include Current vs Prior years' data; summarized by period (filter values A/0)
-	rem ' acct_type$="I"; rem "Income accounts only
-	rem ' do_coa_join$="N"; rem "Change to Y to JOIN w/Chart of Accts to filter by account grouping
 	customer_nbr$ = "ALL"
 	slspsn_code$ = "ALL"
 	
@@ -542,14 +533,10 @@ rem ==========================================================
 	salesComparisonBarDashboardWidget! = BarUtils.addBarChartDashboardWidget(salesDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,sql$)
 	slsCmpWidget!=salesComparisonBarDashboardWidget!.getWidget()
 	slsCmpWidget!.setFontScalingFactor(0.45)
-rem	slsCmpWidget!.setChartColors("#00a4d9","#7fbe27",1.0,1.0); rem Colors for By Period
-rem	slsCmpWidget!.setChartColors("#3cb6df,#4aca75,#91bd5d"); rem supplying three explicit colors due to issue in legend vs chart if range is used (CAH)
 	slsCmpWidget!.setLabelsInBarChartColor("#000000")
 
-return;rem temp.CAH
 	rem Create Filters 
 	rem ' customer selection filter
-	rem ' filterName$ = Translate!.getTranslation("AON_COMPARE")
 	filterName$ = "Customer"
 
 	filterHashMap! = new LinkedHashMap()
@@ -585,49 +572,36 @@ rem CAH.	read record(arm01,key="", knum=2, dom=*next)arm01$
 				desc$ = desc$(2)
 			else
 				break
-			fi
+			endif
 		wend
 		desc$ = cvs(arm01.v6_cust_name$,3) + " (" + desc$ + ")"  
 		filterHashMap!.put(key$,desc$)		
 	wend
 
-	rem ' toolTip$ = Translate!.getTranslation("AON_SELECT_BASIS_FOR_COMPARISON")
 	toolTip$ = "Select Customer"
 	dockLocation = DashboardWidget.getDOCK_LEFT()
 	filter! = salesComparisonBarDashboardWidget!.addFilter(filterName$,filterHashMap!,toolTip$,dockLocation)
 	filter!.selectFilter("ALL")
 	filter!.setCallback(DashboardWidgetFilter.getON_FILTER_SELECT(),pgm(-2) + "::OnARCMPSLS_BARFilterSelect")
 	
-	rem ' salesperson seleciton
-	rem ' filterName$ = Translate!.getTranslation("AON_PERYEAR")
+	rem ' salesperson selection
 	filterName$ = "Salesperson"
 	filterHashMap! = new LinkedHashMap()
 	filterHashMap!.put("ALL","All Salespeople")
 
-rem CAH.changed sql$ from ...SLSPSN_NAME to CODE_DESC AS SLSPSN_NAME
-	sql$ = "SELECT v6_SLSPSN_CODE, v6_CODE_DESC AS SLSPSN_NAME FROM ARM10F "
-	sql$ = sql$ + "where v6_firm_id = '" +firm_id$ + "' and v6_record_id_f = 'F' order by slspsn_name"
+	sql$ = "select v6_SLSPSN_CODE, v6_CODE_DESC as SLSPSN_NAME from ARM10F "
+	sql$ = sql$ + "where V6_FIRM_ID = '" +firm_id$ + "' and V6_RECORD_ID_F = 'F' order by SLSPSN_NAME"
 	
-rem	CAH.	use ::SQLProperties.bbj::SQLProperties
-rem	CAH.	declare SQLProperties props!
-rem	CAH.	props! = new SQLProperties()
-rem	CAH.    sqlConnect$ = props!.getDBConnectForDatabase("AddOnData")
-rem	CAH.    inRs! = BBjAPI().createSQLRecordSet(sqlConnect$, "", sql$);rem CAH
-	inRs! = BBjAPI().createSQLRecordSet(stbl("+DBNAME_API"), "", sql$);rem CAH
+	inRs! = BarUtils.getResultSet(sql$)
 	
-	if !(inRs!.isEmpty()) then
-		while 1
-			rd! = inRs!.getCurrentRecordData()
-
-			key$ = rd!.getFieldValue("v6_SLSPSN_CODE")
-			desc$ = rd!.getFieldValue("SLSPSN_NAME")
-			desc$ = desc$ + " (" + key$ + ")"
-			filterHashMap!.put(key$,desc$)
-			inRs!.next(err=*break)
-		wend
-	fi
+	while (inRs!.next())
+        key$ = inRs!.getString("v6_SLSPSN_CODE")
+		desc$ = inRs!.getString("SLSPSN_NAME")
+		desc$ = desc$ + " (" + key$ + ")"
+		filterHashMap!.put(key$,desc$)
+	wend
 		
-	rem ' toolTip$ = Translate!.getTranslation("AON_SELECT_COMPARISON_FOR_PERIOD_OR_YEAR")
+	toolTip$ = "Select Salesperson"
 	dockLocation = DashboardWidget.getDOCK_RIGHT()
 	filter! = salesComparisonBarDashboardWidget!.addFilter(filterName$,filterHashMap!,toolTip$,dockLocation)
 	filter!.selectFilter("ALL")
@@ -1332,6 +1306,69 @@ rem     The inner widget gives us access to the dataset so that we can provide n
 	rem Refresh based on new sql
 	incExpAWidget!.setSQL(sql$)
     incExpAWidget!.refresh()
+	
+	exit
+
+rem ==============================================+
+rem Handle filter select event for Sales Comparison
+OnARCMPSLS_BARFilterSelect:
+rem ==============================================+
+rem The filter selection event for the Left filter on the Customer Sales Comparison bar graph
+rem Get the information from the filter event so we'll have our dashboard widget and the inner widget
+rem     The dashboard widget gives us access to the filters and links
+rem     The inner widget gives us access to the dataset so that we can provide new data
+
+	customEvent! = BBjAPI().getLastEvent()
+	filterSelectEvent! = customEvent!.getObject()
+	filterName$ = filterSelectEvent!.getFilterName()
+
+	rem You can get the current filter value from the filter selection event
+	filterKey$ = filterSelectEvent!.getFilterKey()
+	filterValue$ = filterSelectEvent!.getFilterValue()
+		
+	rem Get the dashboard widget and inner widget
+	salesComparisonBarDashboardWidget! = filterSelectEvent!.getDashboardWidget()
+	slsCmpWidget! = salesComparisonBarDashboardWidget!.getWidget()
+	
+    rem Get the current filter values from the dashboard widget, as that way we have access to all of them
+ 	rem ' left is customer, right is salesperson
+ 	filterLeft! = salesComparisonBarDashboardWidget!.getDashboardWidgetFilterLeft()
+	filterRight! = salesComparisonBarDashboardWidget!.getDashboardWidgetFilterRight()
+	
+	customer_nbr$ = filterLeft!.getKey()
+	slspsn_code$ = filterRight!.getKey()
+	
+	gosub get_sysinfo
+	
+	if filterName$ = "Customer" then
+		rem ' Customer triggered this event
+		slspsn_code$ = "ALL"
+		filterRight!.selectFilter("ALL")
+		if customer_nbr$ = "ALL" then
+			newTitle$ = "Sales for all Customers and Salespeople"
+		else
+			newTitle$ = "By Customer: " + customer_nbr$ + ", salesperson not filtered."
+		endif
+	else
+		rem ' Salesperson triggered this event
+		customer_nbr$ = "ALL"
+		filterLeft!.selectFilter("ALL")
+		if slspsn_code$ = "ALL" then
+			newTitle$ = "Sales for all Customers and Salespeople"
+		else
+			newTitle$ = "By Salesperson: " + slspsn_code$ + ", customer not filtered."
+		endif
+	endif
+	
+	sql$="CALL ARCMPSLS_BAR ('"+firm_id$+"', '"+customer_nbr$+"', '"+slspsn_code$+"', '"+barista_wd$+"')"
+
+	rem Clear out the old data from the inner widget
+	slsCmpWidget!.clearDataSet()
+	rem ' slsCmpWidget!.setChartTitle(newTitle$)
+	
+	rem Refresh based on new sql
+	slsCmpWidget!.setSQL(sql$)
+    slsCmpWidget!.refresh()
 	
 	exit
 
