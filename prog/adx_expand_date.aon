@@ -1,0 +1,11 @@
+rem --- V6demo --- adx_expand_date.aon
+rem --- expand 3-character packed date
+
+enter xdate$
+
+xdate$=fnb$(xdate$)
+
+exit
+
+DEF FNB$(Q1$)=FNA$(Q1$(2),Q1$)+"/"+FNA$(Q1$(3),Q1$)+"/"+FNA$(Q1$(1),Q1$)
+DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")

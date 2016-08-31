@@ -1,9 +1,7 @@
-rem --- adx_aondashboard.aon
+rem --- adx_V6aondashboard.aon
 rem --- Copyright BASIS International Ltd.  All Rights Reserved.
 rem --- Addon dashboards
-
-rem --- TODO Alter to use adc_fileopen rather than using ec_open and/or hard-coding templates
-rem --- TODO Alter connection strings as needed - use barUtils?
+rem --- V6demo --- modified to work in hybrid environment, where AP/GL are Barista Addon, and other modules are V6
 
 	use ::dashboard/dashboard.bbj::Dashboard
 	use ::dashboard/dashboard.bbj::DashboardCategory
@@ -11,6 +9,7 @@ rem --- TODO Alter connection strings as needed - use barUtils?
 	use ::dashboard/dashboard.bbj::DashboardWidgetFilter
 	use ::dashboard/dashboard.bbj::DashboardWidgetLink
 	use ::dashboard/dashboard.bbj::DashboardWindow
+	use ::dashboard/dashboard.bbj::DashboardWidgetClickEvent
 	use ::dashboard/widget.bbj::Widget
 	use ::dashboard/widget.bbj::ChartWidget
 	use ::dashboard/widget.bbj::ImageWidget
@@ -22,9 +21,15 @@ rem --- TODO Alter connection strings as needed - use barUtils?
 	use ::dashboard/widget.bbj::AreaChartWidget	
 	use ::dashboard/widget.bbj::PieChartWidget
 	use ::dashboard/widget.bbj::JasperViewerWidget
+	use ::dashboard/widget.bbj::CategoryDataItem
+    use ::dashboard/widget.bbj::KeyedValueDataItem
+	use ::dashboard/widget.bbj::EmbeddedWidgetFactory
+	use ::dashboard/widget.bbj::EmbeddedWidget
+	use ::dashboard/widget.bbj::EmbeddedWidgetWindow
 	use ::reporting/bbjasper/bbjasper.bbj::BBJasperReport
 	use ::BBUtils.bbj::BBUtils
     use ::bbtranslator.bbj::BBTranslator
+    use ::sys/prog/bao_utilities.bbj::BarUtils
 
 	use java.awt.Color
 	use java.awt.Font
@@ -63,23 +68,23 @@ rem --- if BUI, need to call bas_process_beg
 	endif
 
 rem --- initialization
-	
+
 	gosub get_sysinfo
+	
     if info(3,6)="5" then gosub get_translate_object
 	gosub get_masks	
-	gosub get_connectstring
 	gosub resolve_paths
 	gosub init_prog_meter
 	gosub get_installed_modules
-    
-    all_prod_types$ = Translate!.getTranslation("AON_ALL")+" "+Translate!.getTranslation("AON_PRODUCT_TYPE")
+
+    unspecified_prod_type$ = Translate!.getTranslation("AON_UNSPECIFIED")
 	
 rem --- create dashboard, tabs, widgets
 
 	gosub create_dashboard
-rem CAH.	gosub create_acct_tab_and_widgets
+	gosub create_acct_tab_and_widgets
 	gosub create_sales_tab_and_widgets
-rem CAH.	gosub create_mfg_tab_and_widgets
+	gosub create_mfg_tab_and_widgets
 	
 rem --- now create/show the Dashboard Window
  
@@ -118,6 +123,41 @@ rem ==============================================
 	acctDashboardCategory! = aonDashboard!.addDashboardCategory("Accounting",Translate!.getTranslation("AON_ACCOUNTING"))
 
 rem ==============================================
+rem --- create an AR company aging totals bar chart
+rem ==============================================
+    dashboard_menu_id$="ADD_ARAGINGTOT_BAR"
+    gosub get_security
+    if allow_widget$="Y" and installMap!.get("GL")="Y"
+        name$="ARAGINGTOT_BAR"
+        title$ = Translate!.getTranslation("AON_AR_CO_LAST_AGING_TOTALS")
+        previewText$=Translate!.getTranslation("AON_AR_CO_TOTALS_LAST_AGING")
+        previewImage$=preview_path$+"aragingtot_bar.png"
+        chartTitle$ = ""
+        domainTitle$ = ""
+        rangeTitle$ = ""
+        flat=0 
+        orientation=BarChartWidget.getORIENTATION_VERTICAL() 
+        legend=0
+
+        rem --- params for calling SPROC
+        sql$="CALL ARAGINGTOT_BAR ('"+firm_id$+"', '"+masks$+"', '"+barista_wd$+"')"
+
+        agingTotalsBarDashboardWidget! = BarUtils.addBarChartDashboardWidget(acctDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,sql$)
+        agingTotalsWidget!=agingTotalsBarDashboardWidget!.getWidget()
+        agingTotalsWidget!.setFontScalingFactor(0.45)
+        agingTotalsWidget!.setChartRangeAxisToCurrency()
+        agingTotalsWidget!.setLabelsInBarChartColor("#000000")
+        
+        rem Widget click event             
+        dim chartState$:"CHART_TYPE:C(25*)"
+        chartState.chart_type$="ARLastAgingTotals_bar"
+        agingTotalsWidget!.setUserData(chartState$)
+        agingTotalsBarDashboardWidget!.setCallback(DashboardWidget.getON_WIDGET_CLICK(),pgm(-2) + "::OnARLastAgingTotalsChartWidgetClick")
+
+        gosub update_meter
+    endif
+    
+rem ==============================================
 rem --- create a yearly GL totals grid
 rem ==============================================
 
@@ -128,7 +168,6 @@ rem ==============================================
 		title$ = Translate!.getTranslation("AON_GL_INCOME_ACCOUNT_TOTALS")
 		previewText$=Translate!.getTranslation("AON_GENERAL_LEDGER_INCOME_ACCOUNT_TOTALS_BY_YEAR_DISPLAYED_IN_A_GRID")
 		previewImage$=preview_path$+"glinctot_grd.png"
-		connectString$=aon_url$
 		
 		rem --- params for calling SPROC
 		include_type$="J"; rem "Include Current and Prior Actual summaries; includes GL Record IDs 0, 2
@@ -137,10 +176,17 @@ rem ==============================================
 
 		sql$="CALL GLINCTOT_GRD ('"+firm_id$+"', '"+include_type$+"', '"+acct_type$+"', '"+do_coa_join$+"', '"+masks$+"', '"+barista_wd$+"')"
 
-		incomeGridDashboardWidget! = acctDashboardCategory!.addGridDashboardWidget(name$,title$,previewText$,previewImage$,connectString$,sql$)
+		incomeGridDashboardWidget! = BarUtils.addGridDashboardWidget(acctDashboardCategory!,name$,title$,previewText$,previewImage$,sql$)
 		gridWidget!=incomeGridDashboardWidget!.getWidget()
-		gridWidget!.setColumnAlignment(3,GridWidget.getHORIZONTAL_ALIGNMENT_RIGHT())
 		gridWidget!.setColumnAlignment(0,GridWidget.getHORIZONTAL_ALIGNMENT_LEFT())
+        gridWidget!.setColumnAlignment(2,GridWidget.getHORIZONTAL_ALIGNMENT_RIGHT())
+        gridWidget!.setColumnMask(2,fngetmask$("gl_amt_mask","$###,###,##0.00-",masks$))
+        gridWidget!.setColumnStyle(2,GridWidget.getCELL_STYLE_INPUTN())
+        colHeaderVec!=BBjAPI().makeVector()
+        colHeaderVec!.addItem(Translate!.getTranslation("AON_DESCRIPTION"))
+        colHeaderVec!.addItem(Translate!.getTranslation("AON_YEAR"))
+        colHeaderVec!.addItem(Translate!.getTranslation("AON_TOTAL"))
+        gridWidget!.setColumnHeaderData(colHeaderVec!)
 
 		rem Create Filters 
 		filterName$ = Translate!.getTranslation("AON_INCOME_TOTALS_-_TIME_FRAME")
@@ -184,7 +230,6 @@ rem ==============================================
 		legend=1
 		chartTitle$ = ""
 		flat=0
-		connectString$=aon_url$
 
 		rem --- params for calling SPROC
 		include_type$="A"; rem "Include Current vs Prior years' data; summarized by period (filter values A/0)
@@ -193,13 +238,19 @@ rem ==============================================
 
 		sql$="CALL GLCMPINC_BAR ('"+firm_id$+"', '"+include_type$+"', '"+acct_type$+"', '"+do_coa_join$+"', '"+masks$+"', '"+barista_wd$+"')"
 
-		incomeComparisonBarDashboardWidget! = acctDashboardCategory!.addBarChartDashboardWidget(name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,connectString$,sql$)
+		incomeComparisonBarDashboardWidget! = BarUtils.addBarChartDashboardWidget(acctDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,sql$)
 		incCmpWidget!=incomeComparisonBarDashboardWidget!.getWidget()
 		incCmpWidget!.setFontScalingFactor(0.45)
         incCmpWidget!.setChartRangeAxisToCurrency()
 rem		incCmpWidget!.setChartColors("#00a4d9","#7fbe27",1.0,1.0); rem Colors for By Period
 rem		incCmpWidget!.setChartColors("#3cb6df,#4aca75,#91bd5d"); rem supplying three explicit colors due to issue in legend vs chart if range is used (CAH)
 		incCmpWidget!.setLabelsInBarChartColor("#000000")
+		
+        rem Widget click event             
+		dim chartState$:"CHART_TYPE:C(25*),INCLUDE_TYPE:C(1*),YEAR:C(4*),PERIOD:C(2*)"
+		chartState.CHART_TYPE$="IncomeCompare", chartState.INCLUDE_TYPE$="A",chartState.YEAR$="", chartState.period$=""
+		incCmpWidget!.setUserData(chartState$)
+		incomeComparisonBarDashboardWidget!.setCallback(DashboardWidget.getON_WIDGET_CLICK(),pgm(-2) + "::OnIncCmpBarChartWidgetClick")
 		
 		rem Create Filters 
 		filterName$ = Translate!.getTranslation("AON_COMPARE")
@@ -246,19 +297,24 @@ rem ==============================================
 		flat=0 
 		orientation=BarChartWidget.getORIENTATION_VERTICAL() 
 		legend=0
-		connectString$=aon_url$
 		
 		rem --- params for calling SPROC
 		include_type$="A"; rem "Include Current Year Actual totals (no data/period filtering)
 
 		sql$="CALL GLBNKBAL_BAR ('"+firm_id$+"', '"+include_type$+"', '"+masks$+"', '"+barista_wd$+"')"
 		
-		bankacctBarChartDashboardWidget! = acctDashboardCategory!.addBarChartDashboardWidget(name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,connectString$,sql$)
+		bankacctBarChartDashboardWidget! = BarUtils.addBarChartDashboardWidget(acctDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,sql$)
 		acctWidget! = bankacctBarChartDashboardWidget!.getWidget()
-		acctWidget!.setDomainLabelAngle(1)
+		acctWidget!.setDomainLabelAngle(BarChartWidget.getLABEL_POSITION_DOWN_45())
         acctWidget!.setChartRangeAxisToCurrency()
 rem		acctWidget!.setChartColors("#71a5d4","#6fd37c",1.0,1.0)
 rem		acctWidget!.setChartRangeColors("#71a5d4","#6fd37c",1.0,1.0)
+
+        rem Widget click event             
+        dim chartState$:"CHART_TYPE:C(25*)"
+        chartState.chart_type$="BankAccountBalances_bar"
+        acctWidget!.setUserData(chartState$)
+        bankacctBarChartDashboardWidget!.setCallback(DashboardWidget.getON_WIDGET_CLICK(),pgm(-2) + "::BankAccountBalancesChartWidgetClick")
 
 		gosub update_meter
 	endif
@@ -271,13 +327,12 @@ rem ==============================================
 	gosub get_security
 	if allow_widget$="Y" and installMap!.get("GL")="Y"
 		name$="GLBNKBAL_RNG"
-		title$ = Translate!.getTranslation("AON_BANK_BALANCES_RINGCHART")
+		title$ = Translate!.getTranslation("AON_BANK_ACCOUNT_BALANCES")
 		previewText$=Translate!.getTranslation("AON_BANK_ACCOUNT_BALANCES_DISPLAYED_IN_A_PIE_CHART")
 		previewImage$=preview_path$+"glbnkbal_rng.png"
 		chartTitle$ = ""
 		flat=1 
 		legend=0		
-		connectString$=aon_url$
 				
 		rem --- params for calling SPROC
 		include_type$="A"; rem "Include Current Year Actual totals
@@ -285,7 +340,7 @@ rem ==============================================
 
 		sql$="CALL GLBNKBAL_RNG ('"+firm_id$+"', '"+include_type$+"', '"+str(min_amt)+"', '"+masks$+"', '"+barista_wd$+"')"
 
-		bankacctRingChartDashboardWidget! = acctDashboardCategory!.addRingChartDashboardWidget(name$,title$,previewText$,previewImage$,chartTitle$,flat,legend,connectString$,sql$)
+		bankacctRingChartDashboardWidget! = BarUtils.addRingChartDashboardWidget(acctDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,flat,legend,sql$)
 		
 		rem Modify the chart
 		ringChartWidget! = bankacctRingChartDashboardWidget!.getWidget()
@@ -296,6 +351,12 @@ rem		ringChartWidget!.setChartColors(ringChartWidget!.getColorTheme(ChartWidget.
 	 
 		rem Ensure the labels aren't truncated by increasing the padding around the plot by 10%
 		ringChartWidget!.setPlotPadding(0.1)
+
+        rem Widget click event             
+        dim chartState$:"CHART_TYPE:C(25*)"
+        chartState.chart_type$="BankAccountBalances_ring"
+        ringChartWidget!.setUserData(chartState$)
+        bankacctRingChartDashboardWidget!.setCallback(DashboardWidget.getON_WIDGET_CLICK(),pgm(-2) + "::BankAccountBalancesChartWidgetClick")
 
 		rem Create Filters 
 		filterName$ = Translate!.getTranslation("AON_BANK_BALANCES_RINGCHART_-_TIMEFRAME")
@@ -322,10 +383,12 @@ rem ==============================================
 		previewText$=Translate!.getTranslation("AON_EXPENSE_YEAR_TO_DATE_BREAKDOWN_DISPLAYED_IN_A_PIE_CHART")
 		previewImage$=preview_path$+"glexptot_pie.png"
 		chartTitle$ = ""
+		domainTitle$=""
+		rangeTitle$=""
 		flat = 0
+		orientation=0
 		legend=0
 		numSlices=8
-		connectString$=aon_url$
 		
 		rem --- params for calling SPROC
 		include_type$="A"; rem "Include Current Year Actual totals (no data/period filtering)
@@ -334,7 +397,7 @@ rem ==============================================
 
 		sql$="CALL GLEXPTOT_PIE ('"+firm_id$+"', '"+include_type$+"', '"+acct_type$+"', '"+do_coa_join$+"', '"+masks$+"', '"+barista_wd$+"')"
 
-		expPieChartDashboardWidget! = acctDashboardCategory!.addPieChartDashboardWidget(name$,title$,previewText$,previewImage$,chartTitle$,flat,legend,connectString$,sql$)
+		expPieChartDashboardWidget! = BarUtils.addPieChartDashboardWidget(acctDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,flat,legend,sql$)
 		expPieWidget! = expPieChartDashboardWidget!.getWidget()
 rem		expPieWidget!.setChartColors("#860102,#cc2200,#e14900,#fe7600,#ff9c01,#fdce2e")
 		expPieWidget!.setGradientShadingAmount(.05)
@@ -350,8 +413,14 @@ rem		expPieWidget!.setCustomChartColors(chartColors!)
 		toolTip$ = Translate!.getTranslation("AON_LAUNCH_QUERY_ON_GL_CHART_OF_ACCOUNTS") 
 		dockLocation = DashboardWidget.getDOCK_LEFT()
 		browseOnSelect = 0
-		link! = expPieChartDashboardWidget!.addLink(url$,text$,toolTip$,dockLocation,browseOnSelect)
+		link! = BarUtils.addLink(expPieChartDashboardWidget!,text$,toolTip$,dockLocation,browseOnSelect)
 		link!.setCallback(DashboardWidgetLink.getON_LINK_SELECT(),pgm(-2) + "::OnGLEXPTOT_PIEAppLink")
+        
+        rem Widget click event             
+        dim chartState$:"CHART_TYPE:C(25*)"
+        chartState.chart_type$="YTDExpenseBreakdown_pie"
+        expPieWidget!.setUserData(chartState$)
+        expPieChartDashboardWidget!.setCallback(DashboardWidget.getON_WIDGET_CLICK(),pgm(-2) + "::YTDExpenseBreakdownChartWidgetClick")
 		
 		gosub update_meter
 	endif
@@ -374,7 +443,6 @@ rem =======================================
 		flat=1 
 		orientation=LineChartWidget.getORIENTATION_VERTICAL() 
 		legend=1
-		connectString$=aon_url$
 		
 		rem --- params for calling SPROC
 
@@ -382,11 +450,11 @@ rem =======================================
 
 		sql$="CALL GLINCEXP_ARE ('"+firm_id$+"', '"+include_type$+"', '"+masks$+"', '"+barista_wd$+"')"
 
-		incExpAAreaChartDashboardWidget! = acctDashboardCategory!.addAreaChartDashboardWidget(name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,orientation,legend,connectString$,sql$)
+		incExpAAreaChartDashboardWidget! = BarUtils.addAreaChartDashboardWidget(acctDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,orientation,legend,sql$)
 		incExpAWidget! = incExpAAreaChartDashboardWidget!.getWidget()
 		
 		incExpAWidget!.setFontScalingFactor(0.45)
-		incExpAWidget!.setDomainLabelAngle(1)
+		incExpAWidget!.setDomainLabelAngle(LineChartWidget.getLABEL_POSITION_DOWN_45())
         incExpAWidget!.setChartRangeAxisToCurrency()
 
 		rem Create Filters 
@@ -420,6 +488,20 @@ rem ==============================================
 	salesDashboardCategory! = aonDashboard!.addDashboardCategory("Sales",Translate!.getTranslation("AON_SALES"))
 rem	salesDashboardCategory!.setMinWidgetWidth(500)
 rem	salesDashboardCategory!.setMaxWidgetWidth(2000)
+
+    rem --- Open GL parameters file
+    files=1,begfile=1,endfile=files
+    dim files$[files],options$[files],ids$[files],templates$[files],channels[files]
+    files$[1]="gls_params",ids$[1]="GLS_PARAMS"  
+    
+    call stbl("+DIR_PGM")+"adc_fileopen.aon",action,begfile,endfile,files$[all],options$[all],ids$[all],templates$[all],channels[all],batch,status
+    if status goto std_exit
+    
+    gls01_dev=channels[1]
+    dim gls01a$:templates$[1]
+    
+    rem --- Convert processing date into fiscal period and year for Sales Analysis
+    call stbl("+DIR_PGM")+"adc_fiscalperyr.aon",firm_id$,gls01_dev,sysinfo.system_date$,period$,year$
 
 rem ==========================================================
 rem --- create an Customer Sales by Month Comparison bar chart
@@ -455,15 +537,16 @@ rem ==========================================================
 	customer_nbr$ = "ALL"
 	slspsn_code$ = "ALL"
 	
-	sql$="CALL ARCMPSLS_BAR ('"+firm_id$+"', '"+customer_nbr$+"', '"+slspsn_code$+"')"
-	
-	salesComparisonBarDashboardWidget! = salesDashboardCategory!.addBarChartDashboardWidget(name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,connectString$,sql$)
+	sql$="CALL ARCMPSLS_BAR ('"+firm_id$+"', '"+customer_nbr$+"', '"+slspsn_code$+"', '"+barista_wd$+"')"
+
+	salesComparisonBarDashboardWidget! = BarUtils.addBarChartDashboardWidget(salesDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,sql$)
 	slsCmpWidget!=salesComparisonBarDashboardWidget!.getWidget()
 	slsCmpWidget!.setFontScalingFactor(0.45)
 rem	slsCmpWidget!.setChartColors("#00a4d9","#7fbe27",1.0,1.0); rem Colors for By Period
 rem	slsCmpWidget!.setChartColors("#3cb6df,#4aca75,#91bd5d"); rem supplying three explicit colors due to issue in legend vs chart if range is used (CAH)
 	slsCmpWidget!.setLabelsInBarChartColor("#000000")
 
+return;rem temp.CAH
 	rem Create Filters 
 	rem ' customer selection filter
 	rem ' filterName$ = Translate!.getTranslation("AON_COMPARE")
@@ -471,37 +554,32 @@ rem	slsCmpWidget!.setChartColors("#3cb6df,#4aca75,#91bd5d"); rem supplying three
 
 	filterHashMap! = new LinkedHashMap()
 	filterHashMap!.put("ALL","All Customers")
-	
-	rem --- create the filter entries
-rem	CAH.call "ec_open::ARM01"
-rem	CAH.call "ec_open::ARM06"
 
-    arm01=unt
-    open(arm01)stbl("+V6DATA")+"ARM-01"
-    arm06=unt
-    open(arm06)stbl("+V6DATA")+"ARM-06"
-
-    dim arm01$:"FIRM_ID:C(2),CUSTOMER_NBR:C(6*),CUST_NAME:C(30),ADDR_LINE_1:C(24),ADDR_LINE_2:C(24),
-:   ADDR_LINE_3:C(24),ZIP_CODE:C(9),PHONE_NUMBER:C(10),PHONE_EXTEN:C(4),RESALE_NBR:C(20),ALT_SEQUENCE:C(10),
-:   OPENED_DATE:C(3),AR_SHIP_VIA:C(10),FAX_NUMBER:C(10),ADDR_LINE_4:C(24),ADDR_LINE_5:C(24),RETAIN_CUST:C(1),
-:   CONTACT_NAME:C(20),D_B_NUMBER:C(9),SIC_CODE:C(8),COUNTRY:C(24),FOB:C(15),OP_FRT_TERMS:C(2*)"
-
-    dim arm06$:"FIRM_ID:C(2),CUSTOMER_NBR:C(6*),LSTINV_DATE:C(3),LSTPAY_DATE:C(3),RESERVED_STR:C(10*),
-:   MTD_SALES:N(7*),YTD_SALES:N(7*),PYR_SALES:N(7*),MTD_COST:N(7*),YTD_COST:N(7*),PRI_YTD_COST:N(7*),
-:   AVG_DAYS:N(7*),NBR_PAYMENTS:N(7*),NMTD_SALES:N(7*),NXT_MTD_COST:N(7*),AVG_DAYS_MTD:N(7*),MTD_NBR_PMTS:N(7*),
-:   AVG_DAYS_YTD:N(7*),YTD_NBR_PMTS:N(7*),AVG_DTP_PYTD:N(7*),PYR_NBR_PY:N(7*),AVG_DTP_NMTD:N(7*),NMTD_NBR_PAY:N(7*),
-:   MTD_HIGH_CRD:N(7*),YTD_HI_CRED:N(7*),PYR_HI_CRD:N(7*),NMTD_HIGH_CR:N(7*)"
+    rem --- Open files for filter creation
+    files=2,begfile=1,endfile=files
+    dim files$[files],options$[files],ids$[files],templates$[files],channels[files]
+    files$[1]="ARM-01",ids$[1]="ARM01"  
+    files$[2]="ARM-06",ids$[2]="ARM06" 
+    
+    call stbl("+DIR_PGM")+"adc_fileopen.aon",action,begfile,endfile,files$[all],options$[all],ids$[all],templates$[all],channels[all],batch,status
+    if status goto std_exit
+    
+    arm01=channels[1]
+    arm06=channels[2]
+    
+    dim arm01$:templates$[1]
+    dim arm06$:templates$[2]
 		
 rem CAH.	read record(arm01,key="", knum=2, dom=*next)arm01$
 	read record(arm01,key="", dom=*next)arm01$
     
 	while 1
 		read record(arm01,end=*break)arm01$
-		if arm01.firm_id$ <> firm_id$ then continue
-		read record(arm06,key=arm01.firm_id$ + arm01.customer_nbr$,dom=*continue)arm06$
-		if arm06.pyr_sales = 0 and arm06.ytd_sales = 0 then continue
-		key$ = arm01.customer_nbr$
-		desc$ = arm01.customer_nbr$
+		if arm01.v6_firm_id$ <> firm_id$ then continue
+		read record(arm06,key=arm01.v6_firm_id$ + arm01.v6_customer_nbr$,dom=*continue)arm06$
+		if arm06.v6_pyr_sales = 0 and arm06.v6_ytd_sales = 0 then continue
+		key$ = arm01.v6_customer_nbr$
+		desc$ = arm01.v6_customer_nbr$
 		while 1
 			if pos("0"=desc$) = 1 then 
 				desc$ = desc$(2)
@@ -509,7 +587,7 @@ rem CAH.	read record(arm01,key="", knum=2, dom=*next)arm01$
 				break
 			fi
 		wend
-		desc$ = cvs(arm01.cust_name$,3) + " (" + desc$ + ")"  
+		desc$ = cvs(arm01.v6_cust_name$,3) + " (" + desc$ + ")"  
 		filterHashMap!.put(key$,desc$)		
 	wend
 
@@ -527,8 +605,8 @@ rem CAH.	read record(arm01,key="", knum=2, dom=*next)arm01$
 	filterHashMap!.put("ALL","All Salespeople")
 
 rem CAH.changed sql$ from ...SLSPSN_NAME to CODE_DESC AS SLSPSN_NAME
-	sql$ = "SELECT SLSPSN_CODE, CODE_DESC AS SLSPSN_NAME FROM ARM10F "
-	sql$ = sql$ + "where firm_id = '" +firm_id$ + "' and record_id_f = 'F' order by slspsn_name"
+	sql$ = "SELECT v6_SLSPSN_CODE, v6_CODE_DESC AS SLSPSN_NAME FROM ARM10F "
+	sql$ = sql$ + "where v6_firm_id = '" +firm_id$ + "' and v6_record_id_f = 'F' order by slspsn_name"
 	
 rem	CAH.	use ::SQLProperties.bbj::SQLProperties
 rem	CAH.	declare SQLProperties props!
@@ -541,7 +619,7 @@ rem	CAH.    inRs! = BBjAPI().createSQLRecordSet(sqlConnect$, "", sql$);rem CAH
 		while 1
 			rd! = inRs!.getCurrentRecordData()
 
-			key$ = rd!.getFieldValue("SLSPSN_CODE")
+			key$ = rd!.getFieldValue("v6_SLSPSN_CODE")
 			desc$ = rd!.getFieldValue("SLSPSN_NAME")
 			desc$ = desc$ + " (" + key$ + ")"
 			filterHashMap!.put(key$,desc$)
@@ -558,13 +636,14 @@ rem	CAH.    inRs! = BBjAPI().createSQLRecordSet(sqlConnect$, "", sql$);rem CAH
 	gosub update_meter
 
 return;rem CAH
+
 rem ==============================================
 rem --- create SA Top Customers bar chart
 rem ==============================================
 
 	dashboard_menu_id$="ADD_SATOPCST_BAR"
 	gosub get_security
-	rem ' if allow_widget$="Y" and installMap!.get("SA")="Y"
+	if allow_widget$="Y" and installMap!.get("SA")="Y"
 		name$="SATOPCST_BAR"
 		title$ = Translate!.getTranslation("AON_TOP_CUSTOMERS")
 		previewText$=Translate!.getTranslation("AON_TOP_5_CUSTOMERS_DISPLAYED_IN_A_BAR_CHART")
@@ -575,24 +654,22 @@ rem ==============================================
 		flat=0 
 		orientation=BarChartWidget.getORIENTATION_VERTICAL() 
 		legend=0
-		connectString$=aon_url$
 		
 		rem --- params for calling SPROC
-		year$ = proc_date$(7,4)
 		num_to_list$ = "5"; rem <<============= HARDCODED =========
 	
 		sql$="CALL SATOPCST_BAR_60 ('"+firm_id$+"', '"+year$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"')"
 		
-		topCustsBarChartDashboardWidget! = salesDashboardCategory!.addBarChartDashboardWidget(name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,connectString$,sql$)
+		topCustsBarChartDashboardWidget! = BarUtils.addBarChartDashboardWidget(salesDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,sql$)
 		topCustsWidget! = topCustsBarChartDashboardWidget!.getWidget()
 		topCustsWidget!.setFontScalingFactor(0.45)
-		topCustsWidget!.setDomainLabelAngle(1)
+		topCustsWidget!.setDomainLabelAngle(BarChartWidget.getLABEL_POSITION_DOWN_45())
         topCustsWidget!.setChartRangeAxisToCurrency()
 rem		topCustsWidget!.setChartColors("#71a5d4","#6fd37c",1.0,1.0)
 rem		topCustsWidget!.setChartRangeColors("#71a5d4","#6fd37c",1.0,1.0)
 
 		gosub update_meter
-	rem ' endif
+	endif
 
 
 rem ==============================================
@@ -601,37 +678,92 @@ rem ==============================================
 
 	dashboard_menu_id$="ADD_SATOPCST_SBR"
 	gosub get_security
-	rem ' if allow_widget$="Y" and installMap!.get("SA")="Y"
+	if allow_widget$="Y" and installMap!.get("SA")="Y"
 		name$ = "SATOPCST_SBR"
-		rem ' title$ = Translate!.getTranslation("AON_PRODUCTS_FOR_TOP_CUSTOMERS")
-		title$ = "Product Mix For Top Customers"
-		rem ' previewText$=Translate!.getTranslation("AON_TOP_5_CUSTOMERS_DISPLAYED_IN_A_STACKED_BAR_CHART")
-		previewText$ = "Product Mix for Top Customers Displayed in a Stacked Bar Chart."
-		previewImage$=preview_path$+"satopcst_sbr.png"
+        title$ = Translate!.getTranslation("AON_TOP_CUSTOMERS_MULTIYEAR")
+        previewText$=Translate!.getTranslation("AON_TOP_CUSTOMERS_MULTIYEAR_DISPLAYED_IN_A_STACKED_BAR_CHART")
 		chartTitle$ = ""
 		domainTitle$ = ""
 		rangeTitle$ = ""
 		flat=0 
 		orientation=BarChartWidget.getORIENTATION_HORIZONTAL() 
 		legend=1
-		connectString$=aon_url$
 		
 		rem --- params for calling SPROC
-		year$ = proc_date$(7,4)
+        include_type$="1"
 		num_to_list$ = "5"; rem <<============= HARDCODED =========
 	
-		sql$="CALL SATOPCST_SBR_60 ('"+firm_id$+"', '"+year$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"', '"+all_prod_types$+"')"
+		sql$="CALL SATOPCST_SBR_60 ('"+firm_id$+"', '"+include_type$+"', '"+year$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"')"
 
-		topCustsSStackedBarChartDashboardWidget! = salesDashboardCategory!.addStackedBarChartDashboardWidget(name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,connectString$,sql$)
-		topCustsSWidget! = topCustsSStackedBarChartDashboardWidget!.getWidget()
-		topCustsSWidget!.setFontScalingFactor(0.45)
-		topCustsSWidget!.setDomainLabelAngle(1)
-        topCustsSWidget!.setChartRangeAxisToCurrency()
-rem		topCustsSWidget!.setChartColors("#71a5d4","#6fd37c",1.0,1.0)
-rem		topCustsSWidget!.setChartRangeColors("#71a5d4","#6fd37c",1.0,1.0)
+		topCustsStackedBarChartDashboardWidget! = BarUtils.addStackedBarChartDashboardWidget(salesDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,sql$)
+		topCustsWidget! = topCustsStackedBarChartDashboardWidget!.getWidget()
+		
+		topCustsWidget!.setFontScalingFactor(0.45)
+		topCustsWidget!.setDomainLabelAngle(BarChartWidget.getLABEL_POSITION_DOWN_45())
+        topCustsWidget!.setLabelsInBarChartColor("#000000")
+        topCustsWidget!.setChartRangeAxisToCurrency()
+rem		topCustsWidget!.setChartColors("#71a5d4","#6fd37c",1.0,1.0)
+rem		topCustsWidget!.setChartRangeColors("#71a5d4","#6fd37c",1.0,1.0)
+
+        rem Create Filters 
+        filterName$ = "SATOPCST_SBR_FILTER_TIMEFRAME"
+        filterHashMap! = new LinkedHashMap()
+        include_last$=Translate!.getTranslation("AON_INCLUDE")+" "+Translate!.getTranslation("AON_LAST")
+        aon_years$=Translate!.getTranslation("AON_YEARS") 
+        filterHashMap!.put("1",include_last$+" "+Translate!.getTranslation("AON_YEAR"))
+        filterHashMap!.put("2",include_last$+" 2 "+aon_years$)
+        filterHashMap!.put("3",include_last$+" 3 "+aon_years$)
+        filterHashMap!.put("4",include_last$+" 4 "+aon_years$)
+        filterHashMap!.put("5",include_last$+" 5 "+aon_years$)
+        toolTip$ = Translate!.getTranslation("AON_SELECT_TIME_FRAME")
+        dockLocation = DashboardWidget.getDOCK_LEFT()
+        filter! = topCustsStackedBarChartDashboardWidget!.addFilter(filterName$,filterHashMap!,toolTip$,dockLocation)
+        filter!.setCallback(DashboardWidgetFilter.getON_FILTER_SELECT(),pgm(-2) + "::OnSATOPCST_SBRFilterSelect")
 
 		gosub update_meter
-	rem ' endif	
+	endif	
+
+    
+rem ==============================================
+rem --- create SA Top Salesrep YTD Totals bar chart
+rem ==============================================
+rem TODO --- want/need this one in demo?
+    dashboard_menu_id$="ADD_SAREPTOT_BAR"
+    gosub get_security
+    if allow_widget$="Y" and installMap!.get("SA")="Y"
+        name$ = "SAREPTOT_BAR"
+        title$ = Translate!.getTranslation("AON_TOP_SALESREPS")
+        previewText$=Translate!.getTranslation("AON_TOP_SALESREPS_DISPLAYED_IN_A_BAR_CHART")
+        previewImage$=preview_path$+"sareptot_bar.png"
+        chartTitle$ = ""
+        domainTitle$ = ""
+        rangeTitle$ = Translate!.getTranslation("AON_$_IN_1000S")
+        flat=0 
+        orientation=BarChartWidget.getORIENTATION_VERTICAL() 
+        legend=0
+        
+        rem --- params for calling SPROC
+        num_to_list$ = "5"; rem <<============= HARDCODED =========
+    
+        sql$="CALL SAREPTOT_BAR ('"+firm_id$+"', '"+year$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"')"
+
+        repsalesBarChartDashboardWidget! = BarUtils.addBarChartDashboardWidget(salesDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,sql$)
+        repsalesWidget! = repsalesBarChartDashboardWidget!.getWidget()
+        repsalesWidget!.setDomainLabelAngle(BarChartWidget.getLABEL_POSITION_DOWN_45())
+        repsalesWidget!.setFontScalingFactor(0.45)
+rem     repsalesWidget!.setChartColors("#71a5d4","#6fd37c",1.0,1.0)
+rem     repsalesWidget!.setChartRangeColors("#71a5d4","#6fd37c",1.0,1.0)
+        repsalesWidget!.setLabelsInBarChartColor("#000000")
+        repsalesWidget!.setChartRangeAxisToCurrency()
+        
+        rem Widget click event             
+        dim chartState$:"CHART_TYPE:C(25*)"
+        chartState.chart_type$="TopSalesrepsYTD_bar"
+        repsalesWidget!.setUserData(chartState$)
+        repsalesBarChartDashboardWidget!.setCallback(DashboardWidget.getON_WIDGET_CLICK(),pgm(-2) + "::OnTopSalesrepsYTDChartWidgetClick")
+
+        gosub update_meter
+    endif       
 
 	
 rem ==============================================
@@ -640,47 +772,60 @@ rem ==============================================
 
 	dashboard_menu_id$="ADD_SATOPREP_SBR"
 	gosub get_security
-	rem ' if allow_widget$="Y" and installMap!.get("SA")="Y"
+	if allow_widget$="Y" and installMap!.get("SA")="Y"
 		name$ = "SATOPREP_SBR"
-		rem ' title$ = Translate!.getTranslation("AON_PRODUCTS_FOR_TOP_SALESREPS")
-		title$ = "Product Mix For Top Sales Reps"
-		rem ' previewText$=Translate!.getTranslation("AON_PRODUCTS_FOR_TOP_SALESREPS_DISPLAYED_IN_A_STACKED_BAR_CHART")
-		previewText$ = "Product Mix for top Sales Reps Displayed in a Stacked Bar Chart."
+		title$ = Translate!.getTranslation("AON_TOP_SALESREPS_MULTIYEAR")
+		previewText$=Translate!.getTranslation("AON_TOP_SALESREPS_MULTIYEAR_DISPLAYED_IN_A_STACKED_BAR_CHART")
 		previewImage$=preview_path$+"satoprep_sbr.png"
 		chartTitle$ = ""
 		domainTitle$ = ""
-		rangeTitle$ = ""
+		rangeTitle$ = Translate!.getTranslation("AON_$_IN_1000S")
 		flat=0 
 		orientation=BarChartWidget.getORIENTATION_HORIZONTAL() 
 		legend=1
-		connectString$=aon_url$
 		
 		rem --- params for calling SPROC
-		year$ = proc_date$(7,4)
+        include_type$="1"
 		num_to_list$ = "5"; rem <<============= HARDCODED =========
 	
-		sql$="CALL SATOPREP_SBR_60 ('"+firm_id$+"', '"+year$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"', '"+all_prod_types$+"')"
+		sql$="CALL SATOPREP_SBR_60 ('"+firm_id$+"', '"+include_type$+"', '"+year$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"')"
 
-		toprepSStackedBarChartDashboardWidget! = salesDashboardCategory!.addStackedBarChartDashboardWidget(name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,connectString$,sql$)
+		toprepSStackedBarChartDashboardWidget! = BarUtils.addStackedBarChartDashboardWidget(salesDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,sql$)
 		toprepWidget! = toprepSStackedBarChartDashboardWidget!.getWidget()
 		
-		toprepWidget!.setDomainLabelAngle(1)
+		toprepWidget!.setDomainLabelAngle(BarChartWidget.getLABEL_POSITION_DOWN_45())
 		toprepWidget!.setFontScalingFactor(0.45)
+        toprepWidget!.setLabelsInBarChartColor("#000000")
         toprepWidget!.setChartRangeAxisToCurrency()
 rem		toprepWidget!.setChartColors("#71a5d4","#6fd37c",1.0,1.0)
 rem		toprepWidget!.setChartRangeColors("#71a5d4","#6fd37c",1.0,1.0)
 
+        rem Create Filters 
+        filterName$ = "SATOPREP_SBR_FILTER_TIMEFRAME"
+        filterHashMap! = new LinkedHashMap()
+        include_last$=Translate!.getTranslation("AON_INCLUDE")+" "+Translate!.getTranslation("AON_LAST")
+        aon_years$=Translate!.getTranslation("AON_YEARS") 
+        filterHashMap!.put("1",include_last$+" "+Translate!.getTranslation("AON_YEAR"))
+        filterHashMap!.put("2",include_last$+" 2 "+aon_years$)
+        filterHashMap!.put("3",include_last$+" 3 "+aon_years$)
+        filterHashMap!.put("4",include_last$+" 4 "+aon_years$)
+        filterHashMap!.put("5",include_last$+" 5 "+aon_years$)
+        toolTip$ = Translate!.getTranslation("AON_SELECT_TIME_FRAME")
+        dockLocation = DashboardWidget.getDOCK_LEFT()
+        filter! = toprepSStackedBarChartDashboardWidget!.addFilter(filterName$,filterHashMap!,toolTip$,dockLocation)
+        filter!.setCallback(DashboardWidgetFilter.getON_FILTER_SELECT(),pgm(-2) + "::OnSATOPREP_SBRFilterSelect")
+
 		gosub update_meter
-	rem ' endif	
+	endif	
 
 	
 rem ==============================================
-rem --- create SA Top Salesreps pie chart
+rem --- create SA Top Salesreps YTD Totals pie chart
 rem ==============================================
 
 	dashboard_menu_id$="ADD_SATOPREP_PIE"
 	gosub get_security
-	rem ' if allow_widget$="Y" and installMap!.get("SA")="Y"
+	if allow_widget$="Y" and installMap!.get("SA")="Y"
 		name$ = "SATOPREP_PIE"
 		title$ = Translate!.getTranslation("AON_TOP_SALESREPS")
 		previewText$=Translate!.getTranslation("AON_TOP_SALESREPS_DISPLAYED_IN_A_PIE_CHART")
@@ -689,26 +834,29 @@ rem ==============================================
 		flat=0 
 		legend=0
 		numSlices=8
-		connectString$=aon_url$
 		
 		rem --- params for calling SPROC
-		year$ = proc_date$(7,4)
 		num_to_list$ = "5"; rem <<============= HARDCODED =========
 	
 		sql$="CALL SATOPREP_PIE_60 ('"+firm_id$+"', '"+year$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"')"
 
-		toprepPPieChartDashboardWidget! = salesDashboardCategory!.addPieChartDashboardWidget(name$,title$,previewText$,previewImage$,chartTitle$,flat,legend,connectString$,sql$)
+		toprepPPieChartDashboardWidget! = BarUtils.addPieChartDashboardWidget(salesDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,flat,legend,sql$)
 		toprepPWidget! = toprepPPieChartDashboardWidget!.getWidget()
 
 		toprepPWidget!.setFontScalingFactor(0.45)
 rem		toprepPWidget!.setChartColors("#71a5d4","#6fd37c",1.0,1.0)
 rem		toprepPWidget!.setChartRangeColors("#71a5d4","#6fd37c",1.0,1.0)
 rem		toprepPWidget!.setLabelsInPieChartColor("#ffffff")
+        
+        rem Widget click event             
+        dim chartState$:"CHART_TYPE:C(25*)"
+        chartState.chart_type$="TopSalesrepsYTD_pie"
+        toprepPWidget!.setUserData(chartState$)
+        toprepPPieChartDashboardWidget!.setCallback(DashboardWidget.getON_WIDGET_CLICK(),pgm(-2) + "::OnTopSalesrepsYTDChartWidgetClick")
 	
 		gosub update_meter
-	rem ' endif		
+	endif		
 
-	
 rem ==============================================
 rem --- create SA Salesrep YTD Totals stacked bar chart
 rem ==============================================
@@ -747,15 +895,15 @@ rem		repsalesWidget!.setChartRangeColors("#71a5d4","#6fd37c",1.0,1.0)
         repsalesWidget!.setChartRangeAxisToCurrency()
 
 		gosub update_meter
-	rem ' endif		
-		
+	rem ' endif		 
+    
 rem =======================================
 rem --- create SA SA Top Salesrep line chart
 rem =======================================
 rem GOTO TMPSKIP_SAREPS
 	dashboard_menu_id$="ADD_SATOPREP_LIN"
 	gosub get_security
-	rem ' if allow_widget$="Y" and installMap!.get("SA")="Y"
+	if allow_widget$="Y" and installMap!.get("SA")="Y"
 		name$ = "SATOPREP_LIN"
 		title$ = Translate!.getTranslation("AON_TOP_SALESREP_TOTALS")
 		previewText$=Translate!.getTranslation("AON_TOP_5_SALESREPS_DISPLAYED_IN_A_LINE_CHART")
@@ -766,29 +914,26 @@ rem GOTO TMPSKIP_SAREPS
 		flat=1 
 		orientation=LineChartWidget.getORIENTATION_VERTICAL() 
 		legend=1
-		connectString$=aon_url$
 		
 		rem --- params for calling SPROC
-		year$ = proc_date$(7,4)
 		num_to_list$ = "5"; rem <<============= HARDCODED =========. Also Note: SATOPREP_LIN sets a MAX of 5
 		include_type$ = "A"; rem Summarize at the rep-level. No others are currently implemented
 		
 		sql$="CALL SATOPREP_LIN_60 ('"+firm_id$+"', '"+include_type$+"', '"+year$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"')"
 
-		topRepsLLineChartDashboardWidget! = salesDashboardCategory!.addLineChartDashboardWidget(name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,connectString$,sql$)
+		topRepsLLineChartDashboardWidget! = BarUtils.addLineChartDashboardWidget(salesDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,sql$)
 		topRepsLWidget! = topRepsLLineChartDashboardWidget!.getWidget()
 		
 		topRepsLWidget!.setFontScalingFactor(0.45)
-		topRepsLWidget!.setDomainLabelAngle(1)
+		topRepsLWidget!.setDomainLabelAngle(LineChartWidget.getLABEL_POSITION_DOWN_45())
         topRepsLWidget!.setChartRangeAxisToCurrency()
 rem		topRepsLWidget!.setChartColors("#71a5d4","#6fd37c",1.0,1.0)
 rem		topRepsLWidget!.setChartRangeColors("#71a5d4","#6fd37c",1.0,1.0)
 
 		gosub update_meter
 
-	rem ' endif
+	endif
 		
-
 		
 rem =======================================
 rem --- create SA SA Top Salesrep Stacked Area chart
@@ -796,7 +941,7 @@ rem =======================================
 
 	dashboard_menu_id$="ADD_SATOPREP_SAR"
 	gosub get_security
-	rem ' if allow_widget$="Y" and installMap!.get("SA")="Y"
+	if allow_widget$="Y" and installMap!.get("SA")="Y"
 		name$ = "SATOPREP_SAR"
 		title$ = Translate!.getTranslation("AON_TOP_SALESREPS_PERIOD_TOTALS")
 		previewText$=Translate!.getTranslation("AON_TOP_5_SALESREPS'_PERIOD_TOTALS_DISPLAYED_IN_A_STACKED_AREA_CHART")
@@ -807,25 +952,23 @@ rem =======================================
 		flat=1 
 		orientation=LineChartWidget.getORIENTATION_VERTICAL() 
 		legend=1
-		connectString$=aon_url$
 		
 		rem --- params for calling SPROC
-		year$ = proc_date$(7,4)
 		num_to_list$ = "5"; rem <<============= HARDCODED =========. Also Note: SATOPREP_SAR sets a MAX of 5
 		include_type$ = "A"; rem Summarize at the rep-level. No others are currently implemented
 		
 		sql$="CALL SATOPREP_SAR_60 ('"+firm_id$+"', '"+include_type$+"', '"+year$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"')"
 
-		topRepsSAAreaChartDashboardWidget! = salesDashboardCategory!.addStackedAreaChartDashboardWidget(name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,orientation,legend,connectString$,sql$)
+		topRepsSAAreaChartDashboardWidget! = BarUtils.addStackedAreaChartDashboardWidget(salesDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,orientation,legend,sql$)
 		topRepsSAWidget! = topRepsSAAreaChartDashboardWidget!.getWidget()
 		
 		topRepsSAWidget!.setFontScalingFactor(0.45)
-		topRepsSAWidget!.setDomainLabelAngle(1)
+		topRepsSAWidget!.setDomainLabelAngle(LineChartWidget.getLABEL_POSITION_DOWN_45())
         topRepsSAWidget!.setChartRangeAxisToCurrency()
 		
 		gosub update_meter
 
-	rem ' endif	
+	endif	
 		
 	
 rem ==============================================   
@@ -835,83 +978,52 @@ rem ==============================================
 
 	dashboard_menu_id$="ADD_SLSBYCST_JAS"
 	gosub get_security
-	rem ' if allow_widget$="Y" and installMap!.get("OP")="Y"
+	if allow_widget$="Y" and installMap!.get("OP")="Y"
 		call stbl("+DIR_PGM")+"adc_getmask.aon","CUSTOMER_ID","","","",custIdMask$,0,custIdLen
 		custIdMaskLen = len(custIdMask$)
 
-		REM ' Initialization
-		server$ = "localhost"
-		uid$ = "admin"
-		pwd$ = "2B||!tobe"
-		dbName$ = "AddOnData"
-		connectString$ = "jdbc:basis:" + server$ + ":2001?database=" + dbName$ + "&user=" + uid$ + "&pwd=" + pwd$ + "&ssl=true"
-		
-		
-		REM set current month and year
-		year$ = date(0:"%Y")
-		year = num(year$)
-		month$ = date(0:"%M")
-		month = num(month$)
-
 rem --- get the accounting periods
 
-		rem ' sql$ = "SELECT TOTAL_PERS, CURRENT_PER, CURRENT_YEAR, "
-		rem ' sql$ = sql$ + "PER_ENDING_01, PER_ENDING_02, PER_ENDING_03, PER_ENDING_04, PER_ENDING_05, PER_ENDING_06, "
-		rem ' sql$ = sql$ + "PER_ENDING_07, PER_ENDING_08, PER_ENDING_09, PER_ENDING_10, PER_ENDING_11, PER_ENDING_12, PER_ENDING_13 "
-		rem ' sql$ = sql$ + "FROM GLS_PARAMS "
-		rem ' sql$ = sql$ + "WHERE FIRM_ID = '" + firm_id$ + "'"
-
-		rem ' params! = BBjAPI().createSQLRecordSet(aon_url$,"",sql$)
-		rem ' periods! = params!.getCurrentRecordData()
+        readrecord(gls01_dev,key=firm_id$+"GL00",dom=*next)gls01a$
 
 rem --- Assign input values to local variables
-rem --- ***************** HARD-CODED FOR NOW TO BE CURRENT MONTH/YR
 
-		rem ' period$="03"
-		rem ' year$=proc_date$(7,4)
+        period$=gls01a.current_per$
+        year$=gls01a.current_year$
 
-rem - establish the month 
+        switch num(period$)
+			case 1; ending$ = gls01a.per_ending_01$; break
+			case 2; ending$ = gls01a.per_ending_02$; break
+			case 3; ending$ = gls01a.per_ending_03$; break
+			case 4; ending$ = gls01a.per_ending_04$; break
+			case 5; ending$ = gls01a.per_ending_05$; break
+			case 6; ending$ = gls01a.per_ending_06$; break
+			case 7; ending$ = gls01a.per_ending_07$; break
+			case 8; ending$ = gls01a.per_ending_08$; break
+			case 9; ending$ = gls01a.per_ending_09$; break
+			case 10; ending$ = gls01a.per_ending_10$; break
+			case 11; ending$ = gls01a.per_ending_11$; break
+			case 12; ending$ = gls01a.per_ending_12$; break
+			case 13; ending$ = gls01a.per_ending_13$; break
+            case default; ending$ = "    "; break
+		swend
 
-		rem ' period = num(period$)
-
-		rem ' firstPerEnding$ = periods!.getFieldValue("PER_ENDING_01")
-
-		rem ' switch period
-		rem ' 	case 1; ending$ = periods!.getFieldValue("PER_ENDING_01"); break
-		rem ' 	case 2; ending$ = periods!.getFieldValue("PER_ENDING_02"); break
-		rem ' 	case 3; ending$ = periods!.getFieldValue("PER_ENDING_03"); break
-		rem ' 	case 4; ending$ = periods!.getFieldValue("PER_ENDING_04"); break
-		rem ' 	case 5; ending$ = periods!.getFieldValue("PER_ENDING_05"); break
-		rem ' 	case 6; ending$ = periods!.getFieldValue("PER_ENDING_06"); break
-		rem ' 	case 7; ending$ = periods!.getFieldValue("PER_ENDING_07"); break
-		rem ' 	case 8; ending$ = periods!.getFieldValue("PER_ENDING_08"); break
-		rem ' 	case 9; ending$ = periods!.getFieldValue("PER_ENDING_09"); break
-		rem ' 	case 10; ending$ = periods!.getFieldValue("PER_ENDING_10"); break
-		rem ' 	case 11; ending$ = periods!.getFieldValue("PER_ENDING_11"); break
-		rem ' 	case 12; ending$ = periods!.getFieldValue("PER_ENDING_12"); break
-		rem ' 	case 13; ending$ = periods!.getFieldValue("PER_ENDING_13"); break
-		rem ' swend
-
-		rem ' month$ = ending$(1,2)
+		month$ = ending$(1,2)
 
 		name$="SLSBYCST_JAS"
 		title$ = Translate!.getTranslation("AON_SALES_BY_CUSTOMER_TYPE")
 		previewText$=Translate!.getTranslation("AON_DRILLDOWN_SALES_REPORT_FOR_MONTH/YEAR_DISPLAYED_IN_A_JASPER_VIEWER")
 		previewImage$=preview_path$+"slsbycst_jas.png"
-		
-		rem ' reportFile$ = report_path$+"SalesByCustType.jasper"
-		reportFile$ = "/mnt/data/ec/"+"SalesByCustType.jasper"
-		
-		rem ' connectString$=aon_url$
-		report! = new BBJasperReport(reportFile$,connectString$)
+		reportFile$ = report_path$+"SalesByCustType.jasper"
+		report! = BarUtils.getBBJasperReport(reportFile$)
 
 		report!.putParam("FIRM_ID",firm_id$)
 		report!.putParam("FIRM_NAME",firm_name$)
 		report!.putParam("MONTH",month$)
 		report!.putParam("YEAR",year$)
-		rem ' report!.putParam("CUST_ID_MASK", custIdMask$)
-		rem ' report!.putParam("CUST_ID_LEN", str(custIdLen))
-		rem ' report!.putParam("BARISTA_WD",barista_wd$)
+		report!.putParam("CUST_ID_MASK", custIdMask$)
+		report!.putParam("CUST_ID_LEN", str(custIdLen))
+		report!.putParam("BARISTA_WD",barista_wd$)
 
 		report!.fill()
 
@@ -929,15 +1041,15 @@ rem - establish the month
 		filterHashMap!.put("01",Translate!.getTranslation("AON_JANUARY","January",1))
 		filterHashMap!.put("02",Translate!.getTranslation("AON_FEBRUARY","February",1))
 		filterHashMap!.put("03",Translate!.getTranslation("AON_MARCH","March",1))
-        	filterHashMap!.put("04",Translate!.getTranslation("AON_APRIL","April",1))
-        	filterHashMap!.put("05",Translate!.getTranslation("AON_MAY","May",1))
-        	filterHashMap!.put("06",Translate!.getTranslation("AON_JUNE","June",1))
-        	filterHashMap!.put("07",Translate!.getTranslation("AON_JULY","July",1))
-        	filterHashMap!.put("08",Translate!.getTranslation("AON_AUGUST","August",1))
-        	filterHashMap!.put("09",Translate!.getTranslation("AON_SEPTEMBER","September",1))
-        	filterHashMap!.put("10",Translate!.getTranslation("AON_OCTOBER","October",1))
-        	filterHashMap!.put("11",Translate!.getTranslation("AON_NOVEMBER","November",1))
-        	filterHashMap!.put("12",Translate!.getTranslation("AON_DECEMBER","December",1))
+        filterHashMap!.put("04",Translate!.getTranslation("AON_APRIL","April",1))
+        filterHashMap!.put("05",Translate!.getTranslation("AON_MAY","May",1))
+        filterHashMap!.put("06",Translate!.getTranslation("AON_JUNE","June",1))
+        filterHashMap!.put("07",Translate!.getTranslation("AON_JULY","July",1))
+        filterHashMap!.put("08",Translate!.getTranslation("AON_AUGUST","August",1))
+        filterHashMap!.put("09",Translate!.getTranslation("AON_SEPTEMBER","September",1))
+        filterHashMap!.put("10",Translate!.getTranslation("AON_OCTOBER","October",1))
+        filterHashMap!.put("11",Translate!.getTranslation("AON_NOVEMBER","November",1))
+        filterHashMap!.put("12",Translate!.getTranslation("AON_DECEMBER","December",1))
 		
 		toolTip$ = Translate!.getTranslation("AON_SELECT_MONTH","Select reporting month",1)
 		dockLocation = DashboardWidget.getDOCK_LEFT()
@@ -987,7 +1099,6 @@ rem ==============================================
 		title$ = Translate!.getTranslation("AON_WOS_LINKED_TO_SOS")
 		previewText$=Translate!.getTranslation("AON_WORK_ORDERS_LINKED_TO_SALES_ORDERS_DISPLAYED_IN_A_GRID")
 		previewImage$=preview_path$+"sfwossos_grd.png"
-		connectString$=aon_url$
 		
 		rem --- params for calling SPROC
 		wo_include_type$="A"; rem "Default to Open WOs only
@@ -995,10 +1106,21 @@ rem ==============================================
 
 		sql$="CALL SFWOSSOS_GRD ('"+firm_id$+"', '"+wo_include_type$+"', '"+so_include_type$+"', '"+masks$+"', '"+barista_wd$+"')"
 
-		woSOGridDashboardWidget! = mfgDashboardCategory!.addGridDashboardWidget(name$,title$,previewText$,previewImage$,connectString$,sql$)
+		woSOGridDashboardWidget! = BarUtils.addGridDashboardWidget(mfgDashboardCategory!,name$,title$,previewText$,previewImage$,sql$)
 		woSOgridWidget!=woSOGridDashboardWidget!.getWidget()
 		woSOgridWidget!.setColumnAlignment(3,GridWidget.getHORIZONTAL_ALIGNMENT_RIGHT())
 		woSOgridWidget!.setColumnAlignment(0,GridWidget.getHORIZONTAL_ALIGNMENT_LEFT())
+        woSOgridWidget!.setColumnWidthPercentages("14,9,15,14,10,14,9,15")
+        colHeaderVec!=BBjAPI().makeVector()
+        colHeaderVec!.addItem(Translate!.getTranslation("AON_WORK_ORDER"))
+        colHeaderVec!.addItem(Translate!.getTranslation("AON_WO_STATUS"))
+        colHeaderVec!.addItem(Translate!.getTranslation("AON_EST")+" "+Translate!.getTranslation("AON_CMPLT"))
+        colHeaderVec!.addItem(Translate!.getTranslation("AON_ITEM"))
+        colHeaderVec!.addItem(Translate!.getTranslation("AON_QTY"))
+        colHeaderVec!.addItem(Translate!.getTranslation("AON_SALES")+" "+Translate!.getTranslation("AON_ORDER"))
+        colHeaderVec!.addItem(Translate!.getTranslation("AON_ORDER")+" "+Translate!.getTranslation("AON_STATUS"))
+        colHeaderVec!.addItem(Translate!.getTranslation("AON_EST")+" "+Translate!.getTranslation("AON_SHIP"))
+        woSOgridWidget!.setColumnHeaderData(colHeaderVec!)
 
 		rem Create Filters 
 		filterName$ = Translate!.getTranslation("AON_WO_STATUS")
@@ -1009,7 +1131,10 @@ rem ==============================================
 		filterHashMap!.put("D",Translate!.getTranslation("AON_OPEN_AND_PLANNED_WOS"))
 		filterHashMap!.put("E",Translate!.getTranslation("AON_PLANNED_AND_QUOTED_WOS"))
 		filterHashMap!.put("F",Translate!.getTranslation("AON_OPEN_AND_QUOTED_WOS"))
-		filterHashMap!.put("G",Translate!.getTranslation("AON_ALL_OPEN/PLANNED/QUOTED"))
+        filterHashMap!.put("G",Translate!.getTranslation("AON_ALL_EXCEPT_CLOSED_WOS"))
+        filterHashMap!.put("H",Translate!.getTranslation("AON_CLOSED_WOS_ONLY"))
+        filterHashMap!.put("I",Translate!.getTranslation("AON_OPEN_AND_CLOSED_WOS"))
+        filterHashMap!.put("J",Translate!.getTranslation("AON_ALL_OPEN/PLANNED/QUOTED/CLOSED"))
 
 		toolTip$ = Translate!.getTranslation("AON_SELECT_WO_STATUS")
 		dockLocation = DashboardWidget.getDOCK_LEFT()
@@ -1075,7 +1200,6 @@ rem     The inner widget gives us access to the dataset so that we can provide n
 	
 	gosub get_masks
 	gosub get_sysinfo
-	gosub get_connectstring
 	acct_type$="I"; rem "Income accounts only
 	do_coa_join$="N"; rem "Change to Y to include a column for Chart of Accts Category
 	include_type$=filterKey$
@@ -1083,7 +1207,7 @@ rem     The inner widget gives us access to the dataset so that we can provide n
 	sql$="CALL GLINCTOT_GRD ('"+firm_id$+"', '"+include_type$+"', '"+acct_type$+"', '"+do_coa_join$+"', '"+masks$+"', '"+barista_wd$+"')"
 	
 	rem Refresh based on new sql
-	gridWidget!.fill(aon_url$,sql$)
+	BarUtils.fill(gridWidget!,sql$)
 	gridWidget!.refresh()
 
 	exit
@@ -1159,14 +1283,18 @@ rem     The inner widget gives us access to the dataset so that we can provide n
 	include_type$=chr(asc(include_type$)+num(incCmpWidgetFilterCompareKey$));rem A,B,C,D,E,F
 	acct_type$="I"; rem "Income accounts only
 	do_coa_join$="N"; rem "Change to Y to JOIN w/Chart of Accts to filter by account grouping
-
+	
+	rem ' when changing filter values the chart reverts to the base chart
 	sql$="CALL GLCMPINC_BAR ('"+firm_id$+"', '"+include_type$+"', '"+acct_type$+"', '"+do_coa_join$+"', '"+masks$+"', '"+barista_wd$+"')"
+	dim chartState$:"CHART_TYPE:C(25*),INCLUDE_TYPE:C(1*),YEAR:C(4*),PERIOD:C(2*)"
+	chartState.CHART_TYPE$="IncomeCompare", chartState.INCLUDE_TYPE$ = include_type$,chartState.YEAR$ = ""; chartState.PERIOD$=""
 	
 	rem Clear out the old data from the inner widget
 	incCmpWidget!.clearDataSet()
 	
 	rem Refresh based on new sql
 	incCmpWidget!.setSQL(sql$)
+	incCmpWidget!.setUserData(chartState$)
     incCmpWidget!.refresh()
 	
 	exit
@@ -1206,6 +1334,82 @@ rem     The inner widget gives us access to the dataset so that we can provide n
     incExpAWidget!.refresh()
 	
 	exit
+
+rem ==============================================   
+rem Handle filter select event for SATOPCST_SBR
+OnSATOPCST_SBRFilterSelect:
+rem ==============================================    
+rem The filter selection event for the Left filter on the Top Customers Over Multiple Years stacked bar graph
+rem Get the information from the filter event so we'll have our dashboard widget and the inner widget
+rem     The dashboard widget gives us access to the filters and links
+rem     The inner widget gives us access to the dataset so that we can provide new data
+
+    customEvent! = BBjAPI().getLastEvent()
+    filterSelectEvent! = customEvent!.getObject()
+    filterName$ = filterSelectEvent!.getFilterName()
+    
+    rem You can get the current filter value from the filter selection event
+    filterKey$ = filterSelectEvent!.getFilterKey()
+    filterValue$ = filterSelectEvent!.getFilterValue()
+    
+    rem Get the dashboard widget and inner widget
+    topCustsStackedBarChartDashboardWidget! = filterSelectEvent!.getDashboardWidget()
+    topCustsWidget! = topCustsStackedBarChartDashboardWidget!.getWidget()
+    
+    gosub get_masks
+    gosub get_sysinfo
+    include_type$=filterKey$
+    year$ = proc_date$(7,4)
+    num_to_list$ = "5"; rem <<============= HARDCODED =========
+
+    sql$="CALL SATOPCST_SBR ('"+firm_id$+"', '"+include_type$+"', '"+year$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"')"
+    
+    rem Clear out the old data from the inner widget
+    topCustsWidget!.clearDataSet()
+    
+    rem Refresh based on new sql
+    topCustsWidget!.setSQL(sql$)
+    topCustsWidget!.refresh()
+    
+    exit
+
+rem ==============================================   
+rem Handle filter select event for SATOPREP_SBR
+OnSATOPREP_SBRFilterSelect:
+rem ==============================================    
+rem The filter selection event for the Left filter on the Top Salesreps Over Multiple Years stacked bar graph
+rem Get the information from the filter event so we'll have our dashboard widget and the inner widget
+rem     The dashboard widget gives us access to the filters and links
+rem     The inner widget gives us access to the dataset so that we can provide new data
+
+    customEvent! = BBjAPI().getLastEvent()
+    filterSelectEvent! = customEvent!.getObject()
+    filterName$ = filterSelectEvent!.getFilterName()
+    
+    rem You can get the current filter value from the filter selection event
+    filterKey$ = filterSelectEvent!.getFilterKey()
+    filterValue$ = filterSelectEvent!.getFilterValue()
+    
+    rem Get the dashboard widget and inner widget
+    toprepSStackedBarChartDashboardWidget! = filterSelectEvent!.getDashboardWidget()
+    toprepWidget! = toprepSStackedBarChartDashboardWidget!.getWidget()
+    
+    gosub get_masks
+    gosub get_sysinfo
+    include_type$=filterKey$
+    year$ = proc_date$(7,4)
+    num_to_list$ = "5"; rem <<============= HARDCODED =========
+
+    sql$="CALL SATOPREP_SBR ('"+firm_id$+"', '"+include_type$+"', '"+year$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"')"
+    
+    rem Clear out the old data from the inner widget
+    toprepWidget!.clearDataSet()
+    
+    rem Refresh based on new sql
+    toprepWidget!.setSQL(sql$)
+    toprepWidget!.refresh()
+    
+    exit
 	
 rem ==============================================   
 rem Handle filter select event for "WOs linked to SOs" grid
@@ -1231,7 +1435,7 @@ rem     The inner widget gives us access to the dataset so that we can provide n
     rem Get the current filter values from the dashboard widget, as that way we have access to all of them
     filterLeft! = woSOGridDashboardWidget!.getDashboardWidgetFilterLeft()
 	woSOWidgetFilterCompareKey$ = filterLeft!.getKey()
-	wo_include_type$=woSOWidgetFilterCompareKey$;rem A-G
+	wo_include_type$=woSOWidgetFilterCompareKey$;rem A-J
 	
 	filterRight! = woSOGridDashboardWidget!.getDashboardWidgetFilterRight()
 	woSOWidgetFilterCompareKey$ = filterRight!.getKey();rem A-G
@@ -1239,111 +1443,503 @@ rem     The inner widget gives us access to the dataset so that we can provide n
 	
 	gosub get_masks
 	gosub get_sysinfo
-	gosub get_connectstring
 	
 	sql$="CALL SFWOSSOS_GRD ('"+firm_id$+"', '"+wo_include_type$+"', '"+so_include_type$+"', '"+masks$+"', '"+barista_wd$+"')"
 	
 	rem Refresh based on new sql
-	woSOgridWidget!.fill(aon_url$,sql$)	
+	BarUtils.fill(woSOgridWidget!,sql$)	
 	woSOgridWidget!.refresh()
 	
 	exit
 
-rem ==============================================   
-rem Handle filter select event for AR Drilldown Jasper widget
-OnSLSBYCST_JASFilterSelect:
-rem ==============================================    
-rem The filter selection event for the filters on the AR Drilldown Jasper widget
-rem Get the information from the filter event so we'll have our dashboard widget and the inner widget
-rem     The dashboard widget gives us access to the filters and links
-rem     The inner widget gives us access to the dataset so that we can provide new data
+    
+rem ==================================================================
+rem ===                      CLICK EVENTS                                 ===
+rem ==================================================================
 
-    customEvent! = BBjAPI().getLastEvent()
-    filterSelectEvent! = customEvent!.getObject()
-    filterName$ = filterSelectEvent!.getFilterName()
+REM =============================================   
+REM Handle the click event for the AR Company Aging Totals Bar Chart
+REM ============================================= 
+OnARLastAgingTotalsChartWidgetClick:
     
-    salesJasperViewerDashboardWidget! = filterSelectEvent!.getDashboardWidget()
-    salesJasperViewerWidget! = salesJasperViewerDashboardWidget!.getWidget()
-    report! = salesJasperViewerWidget!.getReport()
+    declare DashboardWidgetClickEvent   dbWidgetClickEvent!
+    declare DashboardWidget             dbWidget!
+    declare BBjMouseUpEvent             click!
+    declare BBjVector                   data!
     
-    filterLeft! = salesJasperViewerDashboardWidget!.getDashboardWidgetFilterLeft()
-    month$ = filterLeft!.getKey()
-    report!.putParam("MONTH",month$)
+    rem Get the event and the object payload
+    event! = BBjAPI().getLastEvent()
+    dbWidgetClickEvent! = cast(DashboardWidgetClickEvent, event!.getObject())
     
-    filterRight! = salesJasperViewerDashboardWidget!.getDashboardWidgetFilterRight()
-    year$ = filterRight!.getKey()
-    report!.putParam("YEAR",year$)
-    
-    report!.fill()
-    
-    salesJasperViewerWidget!.refresh()
-    
-    exit
+    rem From the custom event we can get the dashboard widget and the click event
+    dbWidget! = cast(DashboardWidget, dbWidgetClickEvent!.getDashboardWidget())
+    click! = cast(BBjMouseUpEvent, dbWidgetClickEvent!.getBBjMouseUpEvent()) 
 
-rem ==============================================+
-rem Handel filter select event for Sales Comparison
-OnARCMPSLS_BARFilterSelect:
-rem ==============================================+
-rem The filter selection event for the Left filter on the Customer Sales Comparison bar graph
-rem Get the information from the filter event so we'll have our dashboard widget and the inner widget
-rem     The dashboard widget gives us access to the filters and links
-rem     The inner widget gives us access to the dataset so that we can provide new data
+    rem Get the chart widget and some of the widget properties
+    widget! = dbWidget!.getWidget()
+    widgetName$ = dbWidget!.getName()
+    widgetTitle$ = dbWidget!.getTitle()
 
-	customEvent! = BBjAPI().getLastEvent()
-	filterSelectEvent! = customEvent!.getObject()
-	filterName$ = filterSelectEvent!.getFilterName()
+    rem Get information about the click event
+    button = click!.getMouseButton()
+    x = click!.getX()
+    y = click!.getY()  
+                    
+    gosub get_sysinfo
+    gosub get_masks
+    gosub get_translate_object
 
-	rem You can get the current filter value from the filter selection event
-	filterKey$ = filterSelectEvent!.getFilterKey()
-	filterValue$ = filterSelectEvent!.getFilterValue()
-		
-	rem Get the dashboard widget and inner widget
-	salesComparisonBarDashboardWidget! = filterSelectEvent!.getDashboardWidget()
-	slsCmpWidget! = salesComparisonBarDashboardWidget!.getWidget()
+    dim chartState$:"CHART_TYPE:C(25*)"
+    chartState$ = widget!.getUserData()
+
+    rem For a Left click, drilldown
+    if (button = 1) then
+        dataItem! = cast(CategoryDataItem, widget!.getChartDataItemFromPoint(x, y))
+
+        if (dataItem! <> null()) then
+        
+            rem Get the data from the chart
+            rowKey$ = dataItem!.getRowKey()
+            colKey$ = dataItem!.getColKey()
+           
+            rem Build an SQL query to return customers with largest aging for selected aging period
+            aging_period$=pad(colKey$,10)
+            num_to_list$ = "5"; rem <<============= HARDCODED =========
+            sql$ = "CALL ARAGING_BAR ('"+firm_id$+"', '"+aging_period$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"')"
+
+            rem Create an embedded bar chart widget with the agings for the customers
+            name$ = "ARAGING_BAR"
+            title$ = Translate!.getTranslation("AON_AR_LARGEST_AGING_CUSTOMERS")
+            previewText$=Translate!.getTranslation("AON_AR_LARGEST_LAST_AGING_CUSTOMERS")
+            chartTitle$ = ""
+            domainTitle$ = ""
+            rangeTitle$ = ""
+            flat=0 
+            orientation=BarChartWidget.getORIENTATION_VERTICAL() 
+            legend=1
+            connectString$ = widget!.getConnectString()
+                
+            embeddedBarChartWidget! = EmbeddedWidgetFactory.createBarChartEmbeddedWidget(name$,title$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,connectString$,sql$)
+
+            agingWidget!=embeddedBarChartWidget!.getWidget()
+            agingWidget!.setFontScalingFactor(0.45)
+            agingWidget!.setChartRangeAxisToCurrency()
+            agingWidget!.setDomainLabelAngle(BarChartWidget.getLABEL_POSITION_DOWN_45())
+
+            rem Create an embedded widget window to display the grid in
+            embeddedWidgetWindow! = new EmbeddedWidgetWindow(embeddedBarChartWidget!, 500, 400)
+            embeddedWidgetWindow!.setTitle("WidgetWindow")
+            embeddedWidgetWindow!.doModal()
+            embeddedWidgetWindow!.destroy()
+            widget!.OnClearTip(null())
+            sql$ = ""
+        else
+            rem They clicked on the chart, but not on a data entity so we'll show an instructional tip
+            msg$=Translate!.getTranslation("AON_WIDGET_LEFT_CLICK_ARAGING")
+            widget!.showTip(msg$)
+        endif   
+    endif
+   
+exit
+
+REM =============================================   
+REM Handle the click event for the Income Compare Bar Chart
+REM ============================================= 
+OnIncCmpBarChartWidgetClick:
+
+    declare DashboardWidgetClickEvent   dbWidgetClickEvent!
+    declare DashboardWidget             dbWidget!
+    declare BBjMouseUpEvent             click!
+    declare BBjVector                   data!
+    
+    rem Get the event and the object payload
+    event! = BBjAPI().getLastEvent()
+    dbWidgetClickEvent! = cast(DashboardWidgetClickEvent, event!.getObject())
+    
+    rem From the custom event we can get the dashboard widget and the click event
+    dbWidget! = cast(DashboardWidget, dbWidgetClickEvent!.getDashboardWidget())
+    click! = cast(BBjMouseUpEvent, dbWidgetClickEvent!.getBBjMouseUpEvent()) 
+
+    rem Get the chart widget and some of the widget properties
+    widget! = dbWidget!.getWidget()
+    widgetName$ = dbWidget!.getName()
+    widgetTitle$ = dbWidget!.getTitle()
+
+    rem Get information about the click event
+    button = click!.getMouseButton()
+    x = click!.getX()
+    y = click!.getY()  
+
+    dim chartState$:"CHART_TYPE:C(25*),INCLUDE_TYPE:C(1*),YEAR:C(4*),PERIOD:C(2*)"
+    chartState$ = widget!.getUserData()
+    
+    rem Reset the widget back to the original query on a right click
+    if (button = 3) then 
+	   rem --- params for calling SPROC
+	   gosub get_sysinfo
+	   gosub get_masks
+    	   acct_type$="I", do_coa_join$="N"
+    	   include_type$=chartState.INCLUDE_TYPE$, acct_type$="I", do_coa_join$="N"
+	   sql$="CALL GLCMPINC_BAR ('"+firm_id$+"', '"+include_type$+"', '"+acct_type$+"', '"+do_coa_join$+"', '"+masks$+"', '"+barista_wd$+"')"
+	   chartState.CHART_TYPE$="IncomeCompare", chartState.INCLUDE_TYPE$=include_type$,chartState.YEAR$="", chartState.period$=""
+	   widget!.setUserData(chartState$)
+	   widget!.setSQL(sql$)
+           widget!.refresh()
+           exit
+     endif
+
+    rem For a Left click, drilldown
+    if (button = 1) then
+        dataItem! = cast(CategoryDataItem, widget!.getChartDataItemFromPoint(x, y))
+
+	    if (dataItem! <> null()) then
+	    
+    		rem Get the data from the chart
+    		rowKey$ = dataItem!.getRowKey()
+    		colKey$ = dataItem!.getColKey()
+
+	        rem Figure out what query they are currently viewing
+	        if chartState.CHART_TYPE$ = "IncomeCompare" then
+                	
+                	gosub get_sysinfo
+                	gosub get_masks
+				
+			year$ = rowKey$
+			if len(colKey$) > 2 then period$ = colKey$(1,2) else period$ = ""
+			
+	                rem Build an SQL query to return the accounts totals for the selected year and period
+	                sql$ = "CALL GLINCACCT_BAR ('"+firm_id$+"', '"+year$+"', '"+period$+"', '"+masks$+"', '"+barista_wd$+"')"
 	
-    	rem Get the current filter values from the dashboard widget, as that way we have access to all of them
- 	rem ' left is customer, right is salesperson
- 	filterLeft! = salesComparisonBarDashboardWidget!.getDashboardWidgetFilterLeft()
-	filterRight! = salesComparisonBarDashboardWidget!.getDashboardWidgetFilterRight()
-	
-	customer_nbr$ = filterLeft!.getKey()
-	slspsn_code$ = filterRight!.getKey()
-	
-	gosub get_sysinfo
-	
-	if filterName$ = "Customer" then
-		rem ' Customer triggered this event
-		slspsn_code$ = "ALL"
-		filterRight!.selectFilter("ALL")
-		if customer_nbr$ = "ALL" then
-			newTitle$ = "Sales for all Customers and Salespeople"
+                	rem Change the font size for the domain axis and leave the other elements at their default size
+                	rem ' widget!.setChartFontSizes(0,0,0,0,8,0,0)
+                	rem ' widget!.setDomainLabelAngle(1)
+                	                	                
+                	rem Change the user data
+                	chartState.CHART_TYPE$="IncomeAccountsYearPeriod",chartState.YEAR$=year$,chartState.PERIOD$=period$
+                	widget!.setUserData(chartState$)
+                	
+                	rem Set the new query and refresh the chart
+			widget!.OnClearTip(null())
+			widget!.setSQL(sql$)
+			widget!.refresh() 
 		else
-			newTitle$ = "By Customer: " + customer_nbr$ + ", salesperson not filtered."
-		fi
-	else
-		rem ' Salesperson triggered this event
-		customer_nbr$ = "ALL"
-		filterLeft!.selectFilter("ALL")
-		if slspsn_code$ = "ALL" then
-			newTitle$ = "Sales for all Customers and Salespeople"
-		else
-			newTitle$ = "By Salesperson: " + slspsn_code$ + ", customer not filtered."
-		fi
-	fi
-	
-	sql$="CALL ARCMPSLS_BAR ('"+firm_id$+"', '"+customer_nbr$+"', '"+slspsn_code$+"')"
+	                if chartState.CHART_TYPE$ = "IncomeAccountsYearPeriod" then
+	                    rem We have information about the year, period, and account
+	                    rem rowKey = year and period
+	                    rem colKey = account
+	                    gosub get_sysinfo
+	                    gosub get_masks
 
-	rem Clear out the old data from the inner widget
-	slsCmpWidget!.clearDataSet()
-	rem ' slsCmpWidget!.setChartTitle(newTitle$)
-	
-	rem Refresh based on new sql
-	slsCmpWidget!.setSQL(sql$)
-    	slsCmpWidget!.refresh()
-	
-	exit
+			    p=pos("-"=rowKey$)
+			    rem --- could an annul list or a list of a period
+			    if p then 
+			    	year$ = rowKey$(1,p-1)
+			    	period$ = rowKey$(p+1)
+			    else
+			    	year$ = rowKey$
+			    	period$ = ""
+			    endif
 
-	
+			    account$ = colKey$
+			    while pos("-"=account$)
+			    	p = pos("-"=account$)
+			    	account$ = account$(1,p-1) + account$(p+1)
+			    wend
+			    
+			    rem --- get the account's description
+			    account_desc$=""
+			    files=1,begfile=1,endfile=files
+			    dim files$[files],options$[files],ids$[files],templates$[files],channels[files]
+			    files$[1]="glm-01",ids$[1]="GLM_ACCT"
+			    call pgmdir$+"adc_fileopen.aon",action,begfile,endfile,files$[all],options$[all],ids$[all],templates$[all],channels[all],batch,status
+			    if !status then
+			        glm01a_dev=channels[1]
+			        dim glm01a$:templates$[1]
+		                read record(glm01a_dev,key=firm_id$ + account$,dom=*next)glm01a$
+		                read record(glm01a_dev,err=*next)glm01a$
+		                if glm01a.firm_id$ = firm_id$ and pos(account$=glm01a.gl_account$)=1 then account_desc$ = glm01a.gl_acct_desc$
+			    endif			    
+			    
+			    rem Create an embedded grid widget with the accounts detail for the period
+			    name$ = "Transaction"
+			    if cvs(account_desc$,3) = "" then
+				    title$ = colKey$ + " Transactions"
+			    else
+			            title$ = colKey$ + " " + cvs(account_desc$,3)
+			    endif
+                            connectString$ = widget!.getConnectString()
+                            
+                            sql$ = "CALL GLACCTDET_GRD ('"+firm_id$+"', '"+year$+"', '"+period$+"', '"+account$+"', '"+masks$+"', '"+barista_wd$+"')"
+                            embeddedDBWidget! = EmbeddedWidgetFactory.createGridEmbeddedWidget(name$, title$, connectString$, sql$)
+ 	                    rem Set the grid's column widths
+ 	                    embeddedWidget! = embeddedDBWidget!.getWidget()
+                     	    embeddedWidget!.setColumnWidthPercentages("20,40,20,20")
+
+                            rem Set a custom font on the grid
+	                    rem ' if (info(3,6)="5") then fontName$ = "'Lucida Console',Monospace,Sans-serif" else fontName$ = "Monospaced"
+	                    rem ' font! = BBjAPI().getSysGui().makeFont(fontName$,13,0)
+	                    rem ' embeddedWidget!.setFont(font!)
+	                    rem ' embeddedWidget!.setRowHeight(23)
+
+			    rem Create an embedded widget window to display the grid in
+			    embeddedWidgetWindow! = new EmbeddedWidgetWindow(embeddedDBWidget!, 600, 230)
+			    embeddedWidgetWindow!.setTitle("WidgetWindow")
+			    embeddedWidgetWindow!.doModal()
+			    embeddedWidgetWindow!.destroy()
+			    widget!.OnClearTip(null())
+			    sql$ = ""
+		       endif
+		endif
+	    else
+	        rem They clicked on the chart, but not on a data entity so we'll show an instructional tip
+	        if (widget!.getUserData() = "IncomeCompare") then
+	                    msg$ = "Left click a period bar to see the sales break down by account." + $0a$ + "Right click to reset the chart."
+	                else
+	                    msg$ = "Left click an account bar to see the detail transactions." + $0a$ + "Right click to reset the chart."
+	                endif
+	                widget!.showTip(msg$)
+	        endif
+	    endif	
+    endif
+   
+exit
+
+REM =============================================   
+REM Handle the click event for the YTD Expense Breakdown charts
+REM ============================================= 
+YTDExpenseBreakdownChartWidgetClick:
+
+    declare DashboardWidgetClickEvent   dbWidgetClickEvent!
+    declare DashboardWidget             dbWidget!
+    declare BBjMouseUpEvent             click!
+
+    rem Get the event and the object payload
+    event! = BBjAPI().getLastEvent()
+    dbWidgetClickEvent! = cast(DashboardWidgetClickEvent, event!.getObject())
+    
+    rem From the custom event we can get the dashboard widget and the click event
+    dbWidget! = cast(DashboardWidget, dbWidgetClickEvent!.getDashboardWidget())
+    click! = cast(BBjMouseUpEvent, dbWidgetClickEvent!.getBBjMouseUpEvent()) 
+
+    rem Get the chart widget and some of the widget properties
+    widget! = dbWidget!.getWidget()
+    widgetName$ = dbWidget!.getName()
+    widgetTitle$ = dbWidget!.getTitle()
+
+    rem Get information about the click event
+    button = click!.getMouseButton()
+    x = click!.getX()
+    y = click!.getY()  
+
+    dim chartState$:"CHART_TYPE:C(25*)"
+    chartState$ = widget!.getUserData()
+
+    rem For a Left click, drilldown
+    if (button = 1) then 
+        dataItem! = cast(KeyedValueDataItem, widget!.getChartDataItemFromPoint(x, y))
+        if (dataItem! <> null()) then
+            rem Convert the sales value to a currency for the locale
+            currency! = java.text.NumberFormat.getCurrencyInstance()
+            value$ = str(currency!.format(dataItem!.getValue()))
+
+            rem --- Show custom tip
+            gosub get_masks 
+            msg$=cvs(dataItem!.getKey(),3)+" = "+value$
+            widget!.showTip(msg$)
+        endif   
+    endif
+   
+exit
+
+REM =============================================   
+REM Handle the click event for the Bank Account Balances charts
+REM ============================================= 
+BankAccountBalancesChartWidgetClick:
+
+    declare DashboardWidgetClickEvent   dbWidgetClickEvent!
+    declare DashboardWidget             dbWidget!
+    declare BBjMouseUpEvent             click!
+
+    rem Get the event and the object payload
+    event! = BBjAPI().getLastEvent()
+    dbWidgetClickEvent! = cast(DashboardWidgetClickEvent, event!.getObject())
+    
+    rem From the custom event we can get the dashboard widget and the click event
+    dbWidget! = cast(DashboardWidget, dbWidgetClickEvent!.getDashboardWidget())
+    click! = cast(BBjMouseUpEvent, dbWidgetClickEvent!.getBBjMouseUpEvent()) 
+
+    rem Get the chart widget and some of the widget properties
+    widget! = dbWidget!.getWidget()
+    widgetName$ = dbWidget!.getName()
+    widgetTitle$ = dbWidget!.getTitle()
+
+    rem Get information about the click event
+    button = click!.getMouseButton()
+    x = click!.getX()
+    y = click!.getY()  
+
+    dim chartState$:"CHART_TYPE:C(25*)"
+    chartState$ = widget!.getUserData()
+
+    rem For a Left click, drilldown
+    if (button = 1) then 
+        if pos("BankAccountBalances_bar"=chartState.chart_type$)=1 then
+            dataItem! = cast(CategoryDataItem, widget!.getChartDataItemFromPoint(x, y))
+        endif
+        if pos("BankAccountBalances_ring"=chartState.chart_type$)=1 then
+            dataItem! = cast(KeyedValueDataItem, widget!.getChartDataItemFromPoint(x, y))
+        endif
+        
+        gosub get_sysinfo
+        gosub get_translate_object
+    
+        if (dataItem! <> null()) then
+       
+            rem Get the data from the chart
+            if pos("BankAccountBalances_bar"=chartState.chart_type$)=1 then
+                gl_account$ = dataItem!.getColKey()
+            endif
+            if pos("BankAccountBalances_ring"=chartState.chart_type$)=1 then
+                gl_account$ = dataItem!.getKey()
+            endif
+
+            rem --- Remove non-numeric characters from GL account
+            tmp$=""
+            for i=1 to len(gl_account$)
+                tmp$=tmp$+str(num(gl_account$(i,1),err=*continue))
+            next i
+            gl_account$=tmp$
+            
+            rem --- Pad GL account to full element type size
+            account_desc$=""
+            files=1,begfile=1,endfile=files
+            dim files$[files],options$[files],ids$[files],templates$[files],channels[files]
+            files$[1]="glm-01",ids$[1]="GLM_ACCT"
+            call pgmdir$+"adc_fileopen.aon",action,begfile,endfile,files$[all],options$[all],ids$[all],templates$[all],channels[all],batch,status
+            if !status then
+                dim glm01a$:templates$[1]
+                wk$=fattr(glm01a$,"gl_account")
+                gl_accnt_size=dec(wk$(10,2))
+            else
+                gl_accnt_size=10
+            endif
+            gl_account$=pad(gl_account$,gl_accnt_size,"0")               
+
+            rem --- Launch Account Summary Activity form for this GL account
+            rdNSAdmin! = BBjAPI().getNamespace("adminobjects", "barista", 1)
+            rdAdmin! = rdNSAdmin!.getValue("+bar_admin_" + cvs(stbl("+USER_ID"), 11))
+            query_user$=rdAdmin!.getUser()
+            query_pass$=rdAdmin!.getPassword()
+            
+            myConfig! = BBjAPI().getConfig().getCurrentCommandLineObject()
+            myConfig!.setProgramName(stbl("+DIR_SYP")+"bax_launch_task.bbj")
+            key_prefix$=firm_id$+gl_account$
+            myConfig!.setProgramArgs("-yT"+" -u"+query_user$+" -p"+query_pass$+" -tGLM_ACCTSUMHDR"+" -k"+key_prefix$)
+            
+            tmp=BBjAPI().newBBjSession(myConfig!)
+        else
+            rem They clicked on the chart, but not on a data entity so we'll show an instructional tip
+            msg$=Translate!.getTranslation("AON_WIDGET_LEFT_CLICK_GLBNKBAL")
+            widget!.showTip(msg$)
+        endif   
+    endif
+   
+exit
+
+REM =============================================   
+REM Handle the click event for the Top Salesreps YTD charts
+REM ============================================= 
+OnTopSalesrepsYTDChartWidgetClick:
+
+    declare DashboardWidgetClickEvent   dbWidgetClickEvent!
+    declare DashboardWidget             dbWidget!
+    declare BBjMouseUpEvent             click!
+
+    rem Get the event and the object payload
+    event! = BBjAPI().getLastEvent()
+    dbWidgetClickEvent! = cast(DashboardWidgetClickEvent, event!.getObject())
+    
+    rem From the custom event we can get the dashboard widget and the click event
+    dbWidget! = cast(DashboardWidget, dbWidgetClickEvent!.getDashboardWidget())
+    click! = cast(BBjMouseUpEvent, dbWidgetClickEvent!.getBBjMouseUpEvent()) 
+
+    rem Get the chart widget and some of the widget properties
+    widget! = dbWidget!.getWidget()
+    widgetName$ = dbWidget!.getName()
+    widgetTitle$ = dbWidget!.getTitle()
+
+    rem Get information about the click event
+    button = click!.getMouseButton()
+    x = click!.getX()
+    y = click!.getY()  
+
+    dim chartState$:"CHART_TYPE:C(25*)"
+    chartState$ = widget!.getUserData()
+
+    rem For a Left click, drilldown
+    if (button = 1) then 
+        if pos("TopSalesrepsYTD_bar"=chartState.chart_type$)=1 then
+            dataItem! = cast(CategoryDataItem, widget!.getChartDataItemFromPoint(x, y))
+        endif
+        if pos("TopSalesrepsYTD_pie"=chartState.chart_type$)=1 then
+            dataItem! = cast(KeyedValueDataItem, widget!.getChartDataItemFromPoint(x, y))
+        endif
+        
+        gosub get_sysinfo
+        gosub get_translate_object
+    
+        if (dataItem! <> null()) then
+
+            rem Get the data from the chart
+            if pos("TopSalesrepsYTD_bar"=chartState.chart_type$)=1 then
+                slspsn_desc$ = dataItem!.getColKey()
+            endif
+            if pos("TopSalesrepsYTD_pie"=chartState.chart_type$)=1 then
+                slspsn_desc$ = dataItem!.getKey()
+            endif
+                
+            rem --- Setup SPROC
+            gosub get_masks
+            year$=proc_date$(7,4)
+            unspecified_prod_type$ = Translate!.getTranslation("AON_UNSPECIFIED")
+            sql$ = "CALL SATOPREPPROD_GRD ('"+firm_id$+"', '"+year$+"', '"+slspsn_desc$+"', '"+masks$+"', '"+barista_wd$+"', '"+unspecified_prod_type$+"')"
+                                                
+            rem Create an embedded grid widget with the product type sales for the salesperson
+            name$ = "SATOPREPPROD_GRD"
+            title$ = cvs(slspsn_desc$,2)+" "+Translate!.getTranslation("AON_SALES")+" "+
+:           Translate!.getTranslation("AON_BY_PRODUCT")+" "+Translate!.getTranslation("AON_TYPE")
+            connectString$ = widget!.getConnectString()
+                
+            embeddedDBWidget! = EmbeddedWidgetFactory.createGridEmbeddedWidget(name$, title$, connectString$, sql$)
+ 
+            rem Setup the grid's columns
+            embeddedWidget! = embeddedDBWidget!.getWidget()
+            embeddedWidget!.setColumnWidthPercentages("50,25,25")
+            embeddedWidget!.setColumnAlignment(0,GridWidget.getHORIZONTAL_ALIGNMENT_LEFT())
+            embeddedWidget!.setColumnAlignment(1,GridWidget.getHORIZONTAL_ALIGNMENT_RIGHT())
+            embeddedWidget!.setColumnAlignment(2,GridWidget.getHORIZONTAL_ALIGNMENT_RIGHT())
+            colHeaderVec!=BBjAPI().makeVector()
+            colHeaderVec!.addItem(Translate!.getTranslation("AON_PRODUCT_TYPE"))
+            colHeaderVec!.addItem(Translate!.getTranslation("AON_YTD_SALES"))
+            colHeaderVec!.addItem(Translate!.getTranslation("AON_PRIOR_YEAR")+" "+Translate!.getTranslation("AON_SALES"))
+            embeddedWidget!.setColumnHeaderData(colHeaderVec!)
+
+            rem Create an embedded widget window to display the grid in
+            embeddedWidgetWindow! = new EmbeddedWidgetWindow(embeddedDBWidget!, 400, 250)
+            embeddedWidgetWindow!.setTitle("WidgetWindow")
+            embeddedWidgetWindow!.doModal()
+            embeddedWidgetWindow!.destroy()
+            widget!.OnClearTip(null())
+            sql$ = ""
+        else
+            rem They clicked on the chart, but not on a data entity so we'll show an instructional tip
+            msg$=Translate!.getTranslation("AON_WIDGET_SATOPREPPROD_GRD_LEFT_CLICK")
+            widget!.showTip(msg$)
+        endif   
+    endif
+   
+exit
+
 	
 rem ==================================================================
 rem ===                      LINKS                                 ===
@@ -1376,6 +1972,37 @@ rem ==============================================
 rem ==================================================================
 rem ===                     JASPER                                 ===
 rem ==================================================================
+
+rem ==============================================   
+rem Handle filter select event for AR Drilldown Jasper widget
+OnSLSBYCST_JASFilterSelect:
+rem ==============================================    
+rem The filter selection event for the filters on the AR Drilldown Jasper widget
+rem Get the information from the filter event so we'll have our dashboard widget and the inner widget
+rem     The dashboard widget gives us access to the filters and links
+rem     The inner widget gives us access to the dataset so that we can provide new data
+
+    customEvent! = BBjAPI().getLastEvent()
+    filterSelectEvent! = customEvent!.getObject()
+    filterName$ = filterSelectEvent!.getFilterName()
+    
+    salesJasperViewerDashboardWidget! = filterSelectEvent!.getDashboardWidget()
+    salesJasperViewerWidget! = salesJasperViewerDashboardWidget!.getWidget()
+    report! = salesJasperViewerWidget!.getReport()
+    
+    filterLeft! = salesJasperViewerDashboardWidget!.getDashboardWidgetFilterLeft()
+    month$ = filterLeft!.getKey()
+    report!.putParam("MONTH",month$)
+    
+    filterRight! = salesJasperViewerDashboardWidget!.getDashboardWidgetFilterRight()
+    year$ = filterRight!.getKey()
+    report!.putParam("YEAR",year$)
+    
+    report!.fill()
+   
+    salesJasperViewerWidget!.refresh()
+    
+    exit
 
 rem ==============================================    
 OnSLSBYCST_JASFileSave:
@@ -1466,7 +2093,7 @@ rem ==============================================
 init_prog_meter:
 rem ============================================== 
 
-	num_recs=5;rem current count of widgets being built
+	num_recs=16;rem current count of widgets being built
 	progress! = bbjAPI().getGroupNamespace()
 	progress!.setValue("+process_task",task_id$+"^C^"+sysinfo.task_desc$+"^CNC^"+str(num_recs)+"^")
 	curr_rec=0
@@ -1492,43 +2119,6 @@ rem --- resolve path to jasper reports
 	chdir report_path$
 	report_path$=dsk("")+dir("")
 	chdir sv_dir$
-	
-	return
-
-rem ==============================================   
-get_connectstring:
-rem ==============================================
-
-    dbserver$="localhost"
-    dbsqlport$=":2001" 
-    dbserver$=stbl("+DBSERVER",err=*next)
-    dbsqlport$=":"+stbl("+DBSQLPORT",err=*next)
-    dbssl=num(stbl("+DBSSL",err=*next))
-    
-    if dbssl
-        dbssl$="&ssl=true"
-    else
-        dbssl$="&ssl=false"
-    endif
-
-    url_user$="&user=guest"
-    if stbl("!DSUDDB",err=*endif)<>"" then
-        url_user$=""
-    endif
-
-    dbname$ = stbl("+DBNAME")
-    dbname_api$ = stbl("+DBNAME_API")
-    if pos("jdbc:apache"=cvs(dbname$,8))=1 then
-        url$ = dbname$
-    else
-        if pos("jdbc:"=cvs(dbname$,8))=1 then			
-            url$=dbname$+url_user$+dbssl$
-        else
-            url$ = "jdbc:basis:"+dbserver$+dbsqlport$+"?database="+dbname_api$+url_user$+dbssl$
-        endif
-    endif
-	
-	aon_url$=url$
 	
 	return
 
@@ -1571,7 +2161,12 @@ rem        sv_dir$=dsk("")+dir("")
 rem        chdir locale_path$
 rem        locale_path$=dsk("")+dir("")
 rem        chdir sv_dir$
-        Translate!=BBTranslator.getInstance(rd_adm_modules.locale_resource$,stbl("+USER_LOCALE"),null(),locale_path$); rem ,err=*endif
+        rdTransSpaceKey$=rd_adm_modules.locale_resource$+"_"+stbl("+USER_LOCALE")+"_BBTranslator"
+        Translate!=cast(BBTranslator,BBjAPI().getGroupNamespace().getValue(rdTransSpaceKey$,err=*next))
+        if Translate!=null()
+            Translate!=BBTranslator.getInstance(rd_adm_modules.locale_resource$,stbl("+USER_LOCALE"),null(),locale_path$)
+            BBjAPI().getGroupNamespace().setValue(rdTransSpaceKey$,Translate!)
+        endif
         rd_temp_stbl$=stbl("+PROPS_NAME",rd_adm_modules.locale_resource$)
         rd_temp_stbl$=stbl("+PROPS_PATH",locale_path$)
     endif
@@ -1709,6 +2304,23 @@ std_error: rem --- Standard error handler (18Nov2014)
     if pos("RETRY"=rd_err_act$) retry
     if pgm(-1)<>pgm(-2) status=999; exit 
     release
+    
+rem --- Functions
+
+    def fngetmask$(q1$,q2$,q3$)
+        rem --- q1$=mask name, q2$=default mask if not found in mask string, q3$=mask string from parameters
+        q$=q2$
+        if len(q1$)=0 return q$
+        if q1$(len(q1$),1)<>"^" q1$=q1$+"^"
+        q=pos(q1$=q3$)
+        if q=0 return q$
+        q$=q3$(q)
+        q=pos("^"=q$)
+        q$=q$(q+1)
+        q=pos("|"=q$)
+        q$=q$(1,q-1)
+        return q$
+    fnend
 
 rem ==============================================
 std_exit: rem --- Standard program end
