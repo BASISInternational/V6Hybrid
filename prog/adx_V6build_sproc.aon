@@ -117,6 +117,10 @@ rem --- first drop all std Addon SPROCs
 	sproc_vw_name$="SATOPREP_SBR_60"
 	sqlprep$=sql_action$+" "+sproc_vw_name$+" "
 	gosub create_sproc_def
+
+	sproc_vw_name$="SATOPREPPROD_GRD_60"
+	sqlprep$=sql_action$+" "+sproc_vw_name$+" "
+	gosub create_sproc_def
 	
 rem --- now add them back (i.e., drop, then add, in case anything has changed)
 
@@ -211,7 +215,6 @@ rem --- now add them back (i.e., drop, then add, in case anything has changed)
 
 	gosub create_sproc_def
 	
-	satoprep_sbr_60:
 	rem --- Dashboard: SATOPREP_SBR_60
 	sproc_vw_name$="SATOPREP_SBR_60"
 	sqlprep$="CREATE PROCEDURE SATOPREP_SBR_60 "
@@ -223,6 +226,16 @@ rem --- now add them back (i.e., drop, then add, in case anything has changed)
 
 	gosub create_sproc_def
 
+	rem --- Dashboard: SATOPREPPROD_GRD_60
+	sproc_vw_name$="SATOPREPPROD_GRD_60"
+	sqlprep$="CREATE PROCEDURE SATOPREPPROD_GRD_60 "
+	sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, YEAR CHAR(4) IN, SLSPSN_DESC VARCHAR(20) IN, "
+	sqlprep$=sqlprep$+"MASKS VARCHAR(1) IN, BARISTA_WD VARCHAR(50) IN, UNSPECIFIED_PROD_TYPE VARCHAR(50) IN)"	
+	sqlprep$=sqlprep$+"'"+sproc_path$+"SATOPREPPROD_GRD_60.prc' '"+barista_cfg_path$+"barista.cfg' "
+	sqlprep$=sqlprep$+"RESULT_SET "
+	sqlprep$=sqlprep$+"{_begin_}{_end_} 'Dashboard SA Salesrep Sales by Product Type - Grid Widget'"
+
+	gosub create_sproc_def
 
 done:
 
