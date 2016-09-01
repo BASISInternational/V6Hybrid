@@ -825,9 +825,7 @@ rem		topRepsLWidget!.setChartRangeColors("#71a5d4","#6fd37c",1.0,1.0)
 
 		gosub update_meter
 
-	rem endif
-
-return;rem CAH ****LEFT OFF HERE 		
+	rem endif	
 		
 rem =======================================
 rem --- create SA SA Top Salesrep Stacked Area chart
@@ -835,7 +833,7 @@ rem =======================================
 
 	dashboard_menu_id$="ADD_SATOPREP_SAR"
 	gosub get_security
-	if allow_widget$="Y" and installMap!.get("SA")="Y"
+	rem V6demo --- if allow_widget$="Y" and installMap!.get("SA")="Y"
 		name$ = "SATOPREP_SAR"
 		title$ = Translate!.getTranslation("AON_TOP_SALESREPS_PERIOD_TOTALS")
 		previewText$=Translate!.getTranslation("AON_TOP_5_SALESREPS'_PERIOD_TOTALS_DISPLAYED_IN_A_STACKED_AREA_CHART")
@@ -862,9 +860,9 @@ rem =======================================
 		
 		gosub update_meter
 
-	endif	
+	rem endif	
 		
-	
+return;rem CAH ****LEFT OFF HERE 		
 rem ==============================================   
 rem --- create jasper widget for Sales by Cust Type
 rem --- code copied from arr_drillDownSalesReport.aon

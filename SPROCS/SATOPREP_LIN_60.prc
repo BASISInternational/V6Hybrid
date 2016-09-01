@@ -81,7 +81,7 @@ rem --- Get the IN parameters used by the procedure
 	DEF FNYEAR_YY21$(Q)=FNYY_YY21$(STR(MOD(Q,100):"00"))
 	REM " --- FNYY_YY21$ Convert 2-Char Year to 21st Century 2-Char Year"
 	DEF FNYY_YY21$(Q1$)
-	LET Q3$=" AB23456789ABCDEFGHIJ",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+	LET Q3$=" ABCDE56789ABCDEFGHIJ",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABCDEFGHIJ"))
 	RETURN Q1$
 	FNEND
 

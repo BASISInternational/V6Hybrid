@@ -19,21 +19,28 @@ rem
 rem AddonSoftware
 rem Copyright BASIS International Ltd.
 rem ----------------------------------------------------------------------------
-
-GOTO SKIP_DEBUG
-Debug$= "/mnt/data/basisaon/aon/tmp/SATOPREP_SAR_DebugPRC.txt"
-erase Debug$,err=*next
-string Debug$
-debugchan=unt
-open(debugchan)Debug$	
-write(debugchan)"Top of SATOPREP_SAR "
-SKIP_DEBUG:
+rem
+rem
+rem V6demo --- modified by KEW to work for BASIS on Addon 6.0 Data
+rem
+rem
+rem ----------------------------------------------------------------------------
+    rem ' trace
+    goto skip_trace;rem this out to do the trace
+    tfl$="C:/temp_downloads/sproctrace.txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
 
 seterr sproc_error
 
 rem --- Set of utility methods
 
 	use ::ado_func.src::func
+    use ::sys/prog/bao_utilities.bbj::BarUtils
 
 rem --- Declare some variables ahead of time
 
@@ -74,7 +81,7 @@ rem --- Get the IN parameters used by the procedure
 	DEF FNYEAR_YY21$(Q)=FNYY_YY21$(STR(MOD(Q,100):"00"))
 	REM " --- FNYY_YY21$ Convert 2-Char Year to 21st Century 2-Char Year"
 	DEF FNYY_YY21$(Q1$)
-	LET Q3$=" AB23456789ABCDEFGHIJ",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+	LET Q3$=" ABCDE56789ABCDEFGHIJ",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABCDEFGHIJ"))
 	RETURN Q1$
 	FNEND
 
@@ -103,32 +110,25 @@ rem --- Get masks
 
 rem --- Get number of periods used by fiscal calendar
 
-	rem ' sql_prep$=""
-	rem ' sql_prep$=sql_prep$+"SELECT total_pers FROM gls_params "
-	rem ' sql_prep$=sql_prep$+"WHERE firm_id='"+firm_id$+"' AND gl='GL' AND sequence_00='00'"
-	
-	rem ' sql_chan=sqlunt
-	rem ' sqlopen(sql_chan,mode="PROCEDURE",err=*next)stbl("+DBNAME")
-	rem ' sqlprep(sql_chan)sql_prep$
-	rem ' dim read_tpl$:sqltmpl(sql_chan)
-	rem ' sqlexec(sql_chan)
+	sql_prep$=""
+	sql_prep$=sql_prep$+"SELECT total_pers FROM gls_params "
+	sql_prep$=sql_prep$+"WHERE firm_id='"+firm_id$+"' AND gl='GL' AND sequence_00='00'"
 
-	rem ' read_tpl$ = sqlfetch(sql_chan,end=*break)
-	rem ' total_cal_periods=num(read_tpl.total_pers$)
-	total_cal_periods=12
+    tmprs!=BarUtils.getResultSet(sql_prep$)
+    
+    while (tmprs!.next())
+        total_cal_periods= num(tmprs!.getString("total_pers"))
+    wend
+    
+    tmprs!.close(err=*next)
 	
-	rem ' sqlclose(sql_chan)
-	
-rem --- create the in memory recordset for return
+rem --- create the in memory recordset for return to the widget
 
-rem	dataTemplate$ = "PRODTYPE:C(25*),SALESREP:C(25*),TOTAL:N(10)"
 	dataTemplate$ = "SALESREP:C(25*),PERIOD:C(6),TOTAL:N(10)"
 
 	rs! = BBJAPI().createMemoryRecordSet(dataTemplate$)
 	
 rem --- Build the SELECT statement to be returned to caller
-
-	rem ' write(debugchan)"begin SQL"
 
 	sql_prep$ = ""
 
@@ -136,70 +136,47 @@ rem --- Build the SELECT statement to be returned to caller
 	rem ---------------------------------------
 	
 	rem --- Values for the SPROC return assignments
-	sql_prep$ = sql_prep$+"SELECT topReps.slspsn_code, LEFT(topReps.rep_name,15) AS rep_name "
+	sql_prep$ = sql_prep$+"SELECT topReps.v6_slspsn_code, LEFT(topReps.rep_name,15) AS rep_name "
 	sql_prep$ = sql_prep$+" 	, perTots.period , perTots.total "
 	sql_prep$ = sql_prep$+"FROM "
-
 	
 	rem --- Build query to determine TOP n reps for the year (based on total sales for the year)
 	rem ---------------------------------------
 	
-	sql_prep$ = sql_prep$+"  (SELECT TOP "+str(num_to_list)+" rep.slspsn_code "
+	sql_prep$ = sql_prep$+"  (SELECT TOP "+str(num_to_list)+" rep.v6_slspsn_code "
 	sql_prep$ = sql_prep$+"              ,rep.rep_name "
 	sql_prep$ = sql_prep$+"              ,ROUND(SUM(rep.total),2) AS total "
 	sql_prep$ = sql_prep$+"   FROM "
 	sql_prep$ = sql_prep$+"     (SELECT  "
-	sql_prep$ = sql_prep$+"          r.slspsn_code "
+	sql_prep$ = sql_prep$+"          r.v6_slspsn_code "
 	
-	rem ' sql_prep$ = sql_prep$+"	   	    ,c.code_desc AS rep_name "
-	sql_prep$ = sql_prep$+"	   	    ,c.slspsn_name AS rep_name "
+	sql_prep$ = sql_prep$+"	   	    ,c.v6_code_desc AS rep_name "
 	
-	rem ' sql_prep$ = sql_prep$+"	        ,(r.total_sales_01 "
-	rem ' sql_prep$ = sql_prep$+"		     +r.total_sales_02 "
-	rem ' sql_prep$ = sql_prep$+"		     +r.total_sales_03 "
-	rem ' sql_prep$ = sql_prep$+"		     +r.total_sales_04 "
-	rem ' sql_prep$ = sql_prep$+"		     +r.total_sales_05 "
-	rem ' sql_prep$ = sql_prep$+"		     +r.total_sales_06 "
-	rem ' sql_prep$ = sql_prep$+"		     +r.total_sales_07 "
-	rem ' sql_prep$ = sql_prep$+"		     +r.total_sales_08 "
-	rem ' sql_prep$ = sql_prep$+"		     +r.total_sales_09 "
-	rem ' sql_prep$ = sql_prep$+"		     +r.total_sales_10 "
-	rem ' sql_prep$ = sql_prep$+"		     +r.total_sales_11 "
-	rem ' sql_prep$ = sql_prep$+"		     +r.total_sales_12 "
-	rem ' sql_prep$ = sql_prep$+"		     +r.total_sales_13 "
-
-	sql_prep$ = sql_prep$+"	        ,(r.total_sales_1 "
-	sql_prep$ = sql_prep$+"		     +r.total_sales_2 "
-	sql_prep$ = sql_prep$+"		     +r.total_sales_3 "
-	sql_prep$ = sql_prep$+"		     +r.total_sales_4 "
-	sql_prep$ = sql_prep$+"		     +r.total_sales_5 "
-	sql_prep$ = sql_prep$+"		     +r.total_sales_6 "
-	sql_prep$ = sql_prep$+"		     +r.total_sales_7 "
-	sql_prep$ = sql_prep$+"		     +r.total_sales_8 "
-	sql_prep$ = sql_prep$+"		     +r.total_sales_9 "
-	sql_prep$ = sql_prep$+"		     +r.total_sales_10 "
-	sql_prep$ = sql_prep$+"		     +r.total_sales_11 "
-	sql_prep$ = sql_prep$+"		     +r.total_sales_12 "
-	sql_prep$ = sql_prep$+"		     +r.total_sales_13 "
+	sql_prep$ = sql_prep$+"	        ,(r.v6_tot_sales_01 "
+	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_02 "
+	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_03 "
+	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_04 "
+	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_05 "
+	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_06 "
+	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_07 "
+	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_08 "
+	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_09 "
+	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_10 "
+	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_11 "
+	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_12 "
+	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_13 "
 	
 	sql_prep$ = sql_prep$+"		      ) AS total "
 	
-	rem ' sql_prep$ = sql_prep$+"		 FROM sam_salespsn r "; rem r for rep
-	sql_prep$ = sql_prep$+"		 FROM sam03 r "; rem r for rep
-	
-	
-	rem ' sql_prep$ = sql_prep$+"      LEFT JOIN arc_salecode c "; rem c for code
-	sql_prep$ = sql_prep$+"      LEFT JOIN arm10f c "; rem c for code
-	
-	sql_prep$ = sql_prep$+"        ON c.firm_id=r.firm_id "
-	sql_prep$ = sql_prep$+"       AND c.slspsn_code=r.slspsn_code "
-	
-	rem ' sql_prep$ = sql_prep$+"      WHERE r.firm_id='"+firm_id$+"' AND r.year='"+year$+"' "
-	sql_prep$ = sql_prep$+"      WHERE r.firm_id='"+firm_id$+"' AND r.year='"+year$+"' AND c.record_id_f = 'F' "
-	
-	
+	sql_prep$ = sql_prep$+"		 FROM SAM03 r "; rem r for rep
+    
+	sql_prep$ = sql_prep$+"      LEFT JOIN ARM10F c "; rem c for code
+	sql_prep$ = sql_prep$+"        ON c.v6_firm_id=r.v6_firm_id "
+	sql_prep$ = sql_prep$+"       AND c.v6_slspsn_code=r.v6_slspsn_code "
+	sql_prep$ = sql_prep$+"      WHERE r.v6_firm_id='"+firm_id$+"' AND r.v6_year='"+year$+"' AND c.v6_record_id_f = 'F' "
+		
 	sql_prep$ = sql_prep$+"     ) AS rep	 "
-	sql_prep$ = sql_prep$+"   GROUP BY rep.slspsn_code,rep.rep_name "
+	sql_prep$ = sql_prep$+"   GROUP BY rep.v6_slspsn_code,rep.rep_name "
 	sql_prep$ = sql_prep$+"   ORDER BY total DESC "
 	sql_prep$ = sql_prep$+"  ) AS topReps "
 	
@@ -212,16 +189,13 @@ rem --- Build the SELECT statement to be returned to caller
 	rem --- Build query to get Sales for each period for each sales rep
 	rem ---------------------------------------	
 	
-	rem ' write(debugchan)"before loop in SQL prep"
-	
 	rem --- Loop through periods UNIONing queries for ea period
 	for per=1 to total_cal_periods
 		
-		rem ' per_num$=str(per:"00")
-		per_num$=str(per:"0"), sort_per_num$=str(per:"00")
+		per_num$=str(per:"00"), sort_per_num$=str(per:"00")
 		
 		per_name_abbr$="p.abbr_name_"+per_num$
-		period_amt$="r.total_sales_"+per_num$
+		period_amt$="r.v6_tot_sales_"+per_num$
 		gosub add_to_sql_prep_byPeriod
 	next per
 
@@ -231,43 +205,25 @@ rem --- Build the SELECT statement to be returned to caller
 	endif
 
 	rem --- Add "ORDER BY and closing paren, name, and ON clause (for previous LEFT JOIN)"
-rem	sql_prep$=sql_prep$+" ORDER BY period, r.slspsn_code"
-	sql_prep$ = sql_prep$+"  ) AS perTots "
-		
-	sql_prep$ = sql_prep$+"ON topReps.slspsn_code=perTots.slspsn_code "	
 
+	sql_prep$ = sql_prep$+"  ) AS perTots "	
+	sql_prep$ = sql_prep$+"ON topReps.v6_slspsn_code=perTots.v6_slspsn_code "	
 	
 	rem --- Add final ORDER BY for outer query
 	rem ---------------------------------------		
-	sql_prep$ = sql_prep$+"ORDER BY topReps.slspsn_code, perTots.period "	
+	sql_prep$ = sql_prep$+"ORDER BY topReps.v6_slspsn_code, perTots.period "	
 
-	rem ' write(debugchan)sql_prep$
-	
 rem --- Execute the query
 
-	sql_chan=sqlunt
-	
-	rem ' sqlopen(sql_chan,mode="PROCEDURE",err=*next)stbl("+DBNAME")
-	sqlopen(sql_chan,mode="UID=admin, pwd=2B||!tobe",err=*next)"AddOnData"
-	rem ' if err <> 0 then write(debugchan)sqlerr(0); goto sproc_error
-	
-	sqlprep(sql_chan)sql_prep$
-	rem ' if err <> 0 then write(debugchan)sqlerr(sql_chan); goto sproc_error
-	
-	dim read_tpl$:sqltmpl(sql_chan)
-	sqlexec(sql_chan)
-
-rem --- Assign the SELECT results to rs!
-
-	while 1
-		read_tpl$ = sqlfetch(sql_chan,end=*break)
-		data! = rs!.getEmptyRecordData()
-		data!.setFieldValue("SALESREP",read_tpl.rep_name$)
-		data!.setFieldValue("PERIOD",read_tpl.period$)
-		data!.setFieldValue("TOTAL",str(read_tpl.total))
-		rs!.insert(data!)
-
-	wend		
+    qryRs!=BarUtils.getResultSet(sql_prep$)
+    
+    while (qryRs!.next())
+        data! = rs!.getEmptyRecordData()
+		data!.setFieldValue("SALESREP",qryRs!.getString("rep_name"))
+		data!.setFieldValue("PERIOD",qryRs!.getString("period"))
+		data!.setFieldValue("TOTAL",qryRs!.getString("total"))
+		rs!.insert(data!)    
+    wend	
 
 rem --- Tell the stored procedure to return the result set.
 
@@ -278,30 +234,16 @@ rem --- Add SELECT to sql_prep$ based on include_type/gl_record_id (By Period)
 
 add_to_sql_prep_byPeriod:	
 
-	rem ' sql_prep$ = sql_prep$+"SELECT r.slspsn_code, LEFT(c.code_desc,15) AS rep_name  "
-	sql_prep$ = sql_prep$+"SELECT r.slspsn_code, LEFT(c.slspsn_name,15) AS rep_name  "
-	
-	rem ' sql_prep$ = sql_prep$+",'"+per_num$+"-'+"+per_name_abbr$+" AS period "; rem Prepended per num for sorting
-	sql_prep$ = sql_prep$+",'"+sort_per_num$+"-'+"+per_name_abbr$+" AS period "; rem Prepended per num for sorting
-	
+	sql_prep$ = sql_prep$+"SELECT r.v6_slspsn_code, LEFT(c.v6_code_desc,15) AS rep_name  "
+	sql_prep$ = sql_prep$+",'"+sort_per_num$+"-'+"+per_name_abbr$+" AS period "; rem Prepended per num for sorting	
 	sql_prep$ = sql_prep$+",ROUND(sum("+period_amt$+"),2) AS Total "
-	
-	rem ' sql_prep$ = sql_prep$+"FROM sam_salespsn r "; rem r for rep
-	sql_prep$ = sql_prep$+"FROM sam03 r "; rem r for rep
-	
-	rem ' sql_prep$ = sql_prep$+"LEFT JOIN arc_salecode c "; rem c for code
-	sql_prep$ = sql_prep$+"LEFT JOIN arm10f c "; rem c for code
-
-	sql_prep$ = sql_prep$+"  ON c.firm_id=r.firm_id "
-	sql_prep$ = sql_prep$+" AND c.slspsn_code=r.slspsn_code "
-	
-	rem ' sql_prep$ = sql_prep$+"LEFT JOIN gls_params p ON r.firm_id=p.firm_id "
-	sql_prep$ = sql_prep$+"LEFT JOIN gls01a p ON r.firm_id=p.firm_id "
-	
-	rem ' sql_prep$ = sql_prep$+"WHERE r.firm_id='"+firm_id$+"' AND r.year='"+year$+"' "
-	sql_prep$ = sql_prep$+"WHERE r.firm_id='"+firm_id$+"' AND r.year='"+year$+"' AND c.record_id_f = 'F' AND p.gl = 'GL' AND p.SEQUENCE_00 = '00' "
-	
-	sql_prep$ = sql_prep$+"GROUP BY r.slspsn_code, rep_name, period "
+	sql_prep$ = sql_prep$+"FROM SAM03 r "; rem r for rep
+	sql_prep$ = sql_prep$+"LEFT JOIN ARM10F c "; rem c for code
+	sql_prep$ = sql_prep$+"  ON c.v6_firm_id=r.v6_firm_id "
+	sql_prep$ = sql_prep$+" AND c.v6_slspsn_code=r.v6_slspsn_code "
+	sql_prep$ = sql_prep$+"LEFT JOIN gls_params p ON r.v6_firm_id=p.firm_id "
+	sql_prep$ = sql_prep$+"WHERE r.v6_firm_id='"+firm_id$+"' AND r.v6_year='"+year$+"' AND c.v6_record_id_f = 'F' AND p.gl = 'GL' AND p.SEQUENCE_00 = '00' "
+	sql_prep$ = sql_prep$+"GROUP BY r.v6_slspsn_code, rep_name, period "
 
 	sql_prep$ = sql_prep$+"UNION "	
 
