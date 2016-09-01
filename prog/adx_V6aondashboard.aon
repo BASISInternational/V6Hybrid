@@ -78,6 +78,7 @@ rem --- initialization
 	gosub get_installed_modules
 
     unspecified_prod_type$ = Translate!.getTranslation("AON_UNSPECIFIED")
+    all_prod_types$ = Translate!.getTranslation("AON_ALL")+" "+Translate!.getTranslation("AON_PRODUCT_TYPE")
 	
 rem --- create dashboard, tabs, widgets
 
@@ -485,7 +486,7 @@ rem ==============================================
 	
 	declare DashboardCategory   salesDashboardCategory!
 	
-	salesDashboardCategory! = aonDashboard!.addDashboardCategory("Sales",Translate!.getTranslation("AON_SALES"))
+	salesDashboardCategory! = aonDashboard!.addDashboardCategory("Sales",Translate!.getTranslation("AON_SALES")+" - V6")
 rem	salesDashboardCategory!.setMinWidgetWidth(500)
 rem	salesDashboardCategory!.setMaxWidgetWidth(2000)
 
@@ -502,9 +503,9 @@ rem	salesDashboardCategory!.setMaxWidgetWidth(2000)
     
     rem --- Convert processing date into fiscal period and year for Sales Analysis
     call stbl("+DIR_PGM")+"adc_fiscalperyr.aon",firm_id$,gls01_dev,sysinfo.system_date$,period$,year$
-
+    
 rem ==========================================================
-rem --- create an Customer Sales by Month Comparison bar chart
+rem --- V6demo --- create an Customer Sales by Month Comparison bar chart
 rem ==========================================================
 
 	dashboard_menu_id$="ADD_ARCMPSLS_BAR"	
@@ -556,9 +557,8 @@ rem ==========================================================
     
     dim arm01$:templates$[1]
     dim arm06$:templates$[2]
-		
-rem CAH.	read record(arm01,key="", knum=2, dom=*next)arm01$
-	read record(arm01,key="", dom=*next)arm01$
+
+	read record(arm01,key="", knum=1, dom=*next)arm01$;rem knum=1 is by Cust Name
     
 	while 1
 		read record(arm01,end=*break)arm01$
@@ -575,7 +575,8 @@ rem CAH.	read record(arm01,key="", knum=2, dom=*next)arm01$
 			endif
 		wend
 		desc$ = cvs(arm01.v6_cust_name$,3) + " (" + desc$ + ")"  
-		filterHashMap!.put(key$,desc$)		
+		filterHashMap!.put(key$,desc$)
+		
 	wend
 
 	toolTip$ = "Select Customer"
@@ -609,15 +610,13 @@ rem CAH.	read record(arm01,key="", knum=2, dom=*next)arm01$
 
 	gosub update_meter
 
-return;rem CAH
-
 rem ==============================================
 rem --- create SA Top Customers bar chart
 rem ==============================================
 
 	dashboard_menu_id$="ADD_SATOPCST_BAR"
 	gosub get_security
-	if allow_widget$="Y" and installMap!.get("SA")="Y"
+	rem V6demo --- if allow_widget$="Y" and installMap!.get("SA")="Y"
 		name$="SATOPCST_BAR"
 		title$ = Translate!.getTranslation("AON_TOP_CUSTOMERS")
 		previewText$=Translate!.getTranslation("AON_TOP_5_CUSTOMERS_DISPLAYED_IN_A_BAR_CHART")
@@ -643,8 +642,7 @@ rem		topCustsWidget!.setChartColors("#71a5d4","#6fd37c",1.0,1.0)
 rem		topCustsWidget!.setChartRangeColors("#71a5d4","#6fd37c",1.0,1.0)
 
 		gosub update_meter
-	endif
-
+	rem endif
 
 rem ==============================================
 rem --- create SA Top Customers STACKED bar chart
@@ -652,11 +650,12 @@ rem ==============================================
 
 	dashboard_menu_id$="ADD_SATOPCST_SBR"
 	gosub get_security
-	if allow_widget$="Y" and installMap!.get("SA")="Y"
+	rem V6demo --- if allow_widget$="Y" and installMap!.get("SA")="Y"
 		name$ = "SATOPCST_SBR"
-        title$ = Translate!.getTranslation("AON_TOP_CUSTOMERS_MULTIYEAR")
-        previewText$=Translate!.getTranslation("AON_TOP_CUSTOMERS_MULTIYEAR_DISPLAYED_IN_A_STACKED_BAR_CHART")
-		chartTitle$ = ""
+        title$ = "Product Mix For Top Customers"
+		previewText$ = "Product Mix for Top Customers Displayed in a Stacked Bar Chart."
+		previewImage$=preview_path$+"satopcst_sbr.png"
+        chartTitle$ = ""
 		domainTitle$ = ""
 		rangeTitle$ = ""
 		flat=0 
@@ -664,10 +663,9 @@ rem ==============================================
 		legend=1
 		
 		rem --- params for calling SPROC
-        include_type$="1"
 		num_to_list$ = "5"; rem <<============= HARDCODED =========
 	
-		sql$="CALL SATOPCST_SBR_60 ('"+firm_id$+"', '"+include_type$+"', '"+year$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"')"
+		sql$="CALL SATOPCST_SBR_60 ('"+firm_id$+"', '"+year$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"', '"+all_prod_types$+"')"
 
 		topCustsStackedBarChartDashboardWidget! = BarUtils.addStackedBarChartDashboardWidget(salesDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,sql$)
 		topCustsWidget! = topCustsStackedBarChartDashboardWidget!.getWidget()
@@ -679,66 +677,8 @@ rem ==============================================
 rem		topCustsWidget!.setChartColors("#71a5d4","#6fd37c",1.0,1.0)
 rem		topCustsWidget!.setChartRangeColors("#71a5d4","#6fd37c",1.0,1.0)
 
-        rem Create Filters 
-        filterName$ = "SATOPCST_SBR_FILTER_TIMEFRAME"
-        filterHashMap! = new LinkedHashMap()
-        include_last$=Translate!.getTranslation("AON_INCLUDE")+" "+Translate!.getTranslation("AON_LAST")
-        aon_years$=Translate!.getTranslation("AON_YEARS") 
-        filterHashMap!.put("1",include_last$+" "+Translate!.getTranslation("AON_YEAR"))
-        filterHashMap!.put("2",include_last$+" 2 "+aon_years$)
-        filterHashMap!.put("3",include_last$+" 3 "+aon_years$)
-        filterHashMap!.put("4",include_last$+" 4 "+aon_years$)
-        filterHashMap!.put("5",include_last$+" 5 "+aon_years$)
-        toolTip$ = Translate!.getTranslation("AON_SELECT_TIME_FRAME")
-        dockLocation = DashboardWidget.getDOCK_LEFT()
-        filter! = topCustsStackedBarChartDashboardWidget!.addFilter(filterName$,filterHashMap!,toolTip$,dockLocation)
-        filter!.setCallback(DashboardWidgetFilter.getON_FILTER_SELECT(),pgm(-2) + "::OnSATOPCST_SBRFilterSelect")
-
 		gosub update_meter
-	endif	
-
-    
-rem ==============================================
-rem --- create SA Top Salesrep YTD Totals bar chart
-rem ==============================================
-rem TODO --- want/need this one in demo?
-    dashboard_menu_id$="ADD_SAREPTOT_BAR"
-    gosub get_security
-    if allow_widget$="Y" and installMap!.get("SA")="Y"
-        name$ = "SAREPTOT_BAR"
-        title$ = Translate!.getTranslation("AON_TOP_SALESREPS")
-        previewText$=Translate!.getTranslation("AON_TOP_SALESREPS_DISPLAYED_IN_A_BAR_CHART")
-        previewImage$=preview_path$+"sareptot_bar.png"
-        chartTitle$ = ""
-        domainTitle$ = ""
-        rangeTitle$ = Translate!.getTranslation("AON_$_IN_1000S")
-        flat=0 
-        orientation=BarChartWidget.getORIENTATION_VERTICAL() 
-        legend=0
-        
-        rem --- params for calling SPROC
-        num_to_list$ = "5"; rem <<============= HARDCODED =========
-    
-        sql$="CALL SAREPTOT_BAR ('"+firm_id$+"', '"+year$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"')"
-
-        repsalesBarChartDashboardWidget! = BarUtils.addBarChartDashboardWidget(salesDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,sql$)
-        repsalesWidget! = repsalesBarChartDashboardWidget!.getWidget()
-        repsalesWidget!.setDomainLabelAngle(BarChartWidget.getLABEL_POSITION_DOWN_45())
-        repsalesWidget!.setFontScalingFactor(0.45)
-rem     repsalesWidget!.setChartColors("#71a5d4","#6fd37c",1.0,1.0)
-rem     repsalesWidget!.setChartRangeColors("#71a5d4","#6fd37c",1.0,1.0)
-        repsalesWidget!.setLabelsInBarChartColor("#000000")
-        repsalesWidget!.setChartRangeAxisToCurrency()
-        
-        rem Widget click event             
-        dim chartState$:"CHART_TYPE:C(25*)"
-        chartState.chart_type$="TopSalesrepsYTD_bar"
-        repsalesWidget!.setUserData(chartState$)
-        repsalesBarChartDashboardWidget!.setCallback(DashboardWidget.getON_WIDGET_CLICK(),pgm(-2) + "::OnTopSalesrepsYTDChartWidgetClick")
-
-        gosub update_meter
-    endif       
-
+	rem endif	
 	
 rem ==============================================
 rem --- create SA Top Salesreps STACKED bar chart
@@ -746,10 +686,10 @@ rem ==============================================
 
 	dashboard_menu_id$="ADD_SATOPREP_SBR"
 	gosub get_security
-	if allow_widget$="Y" and installMap!.get("SA")="Y"
+	rem V6demo ---if allow_widget$="Y" and installMap!.get("SA")="Y"
 		name$ = "SATOPREP_SBR"
-		title$ = Translate!.getTranslation("AON_TOP_SALESREPS_MULTIYEAR")
-		previewText$=Translate!.getTranslation("AON_TOP_SALESREPS_MULTIYEAR_DISPLAYED_IN_A_STACKED_BAR_CHART")
+		title$ = "Product Mix For Top Sales Reps"
+		previewText$ = "Product Mix for top Sales Reps Displayed in a Stacked Bar Chart."
 		previewImage$=preview_path$+"satoprep_sbr.png"
 		chartTitle$ = ""
 		domainTitle$ = ""
@@ -759,10 +699,9 @@ rem ==============================================
 		legend=1
 		
 		rem --- params for calling SPROC
-        include_type$="1"
 		num_to_list$ = "5"; rem <<============= HARDCODED =========
 	
-		sql$="CALL SATOPREP_SBR_60 ('"+firm_id$+"', '"+include_type$+"', '"+year$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"')"
+		sql$="CALL SATOPREP_SBR_60 ('"+firm_id$+"', '"+year$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"', '"+all_prod_types$+"')"
 
 		toprepSStackedBarChartDashboardWidget! = BarUtils.addStackedBarChartDashboardWidget(salesDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,sql$)
 		toprepWidget! = toprepSStackedBarChartDashboardWidget!.getWidget()
@@ -774,24 +713,8 @@ rem ==============================================
 rem		toprepWidget!.setChartColors("#71a5d4","#6fd37c",1.0,1.0)
 rem		toprepWidget!.setChartRangeColors("#71a5d4","#6fd37c",1.0,1.0)
 
-        rem Create Filters 
-        filterName$ = "SATOPREP_SBR_FILTER_TIMEFRAME"
-        filterHashMap! = new LinkedHashMap()
-        include_last$=Translate!.getTranslation("AON_INCLUDE")+" "+Translate!.getTranslation("AON_LAST")
-        aon_years$=Translate!.getTranslation("AON_YEARS") 
-        filterHashMap!.put("1",include_last$+" "+Translate!.getTranslation("AON_YEAR"))
-        filterHashMap!.put("2",include_last$+" 2 "+aon_years$)
-        filterHashMap!.put("3",include_last$+" 3 "+aon_years$)
-        filterHashMap!.put("4",include_last$+" 4 "+aon_years$)
-        filterHashMap!.put("5",include_last$+" 5 "+aon_years$)
-        toolTip$ = Translate!.getTranslation("AON_SELECT_TIME_FRAME")
-        dockLocation = DashboardWidget.getDOCK_LEFT()
-        filter! = toprepSStackedBarChartDashboardWidget!.addFilter(filterName$,filterHashMap!,toolTip$,dockLocation)
-        filter!.setCallback(DashboardWidgetFilter.getON_FILTER_SELECT(),pgm(-2) + "::OnSATOPREP_SBRFilterSelect")
-
 		gosub update_meter
-	endif	
-
+	rem endif	
 	
 rem ==============================================
 rem --- create SA Top Salesreps YTD Totals pie chart
@@ -799,7 +722,7 @@ rem ==============================================
 
 	dashboard_menu_id$="ADD_SATOPREP_PIE"
 	gosub get_security
-	if allow_widget$="Y" and installMap!.get("SA")="Y"
+	rem V6demo --- if allow_widget$="Y" and installMap!.get("SA")="Y"
 		name$ = "SATOPREP_PIE"
 		title$ = Translate!.getTranslation("AON_TOP_SALESREPS")
 		previewText$=Translate!.getTranslation("AON_TOP_SALESREPS_DISPLAYED_IN_A_PIE_CHART")
@@ -829,7 +752,7 @@ rem		toprepPWidget!.setLabelsInPieChartColor("#ffffff")
         toprepPPieChartDashboardWidget!.setCallback(DashboardWidget.getON_WIDGET_CLICK(),pgm(-2) + "::OnTopSalesrepsYTDChartWidgetClick")
 	
 		gosub update_meter
-	endif		
+	rem endif		
 
 rem ==============================================
 rem --- create SA Salesrep YTD Totals stacked bar chart
@@ -837,11 +760,9 @@ rem ==============================================
 
 	dashboard_menu_id$="ADD_SAREPTOT_SBR"
 	gosub get_security
-	rem ' if allow_widget$="Y" and installMap!.get("SA")="Y"
+	rem ' V6demo --- if allow_widget$="Y" and installMap!.get("SA")="Y"
 		name$ = "SAREPTOT_SBR"
-		rem ' title$ = Translate!.getTranslation("AON_PRODUCTS_FOR_SALESREPS")
 		title$ = "Product Mix For Sales Reps"
-		rem ' previewText$=Translate!.getTranslation("AON_PRODUCTS_FOR_SALESREPS_DISPLAYED_IN_A_STACKED_BAR_CHART")
 		previewText$ = "Product Mix for Sales Reps Displayed in a Vertical Stacked Bar Chart."
 		previewImage$=preview_path$+"sareptot_sbr.png"
 		chartTitle$ = ""
@@ -850,15 +771,13 @@ rem ==============================================
 		flat=0 
 		orientation=BarChartWidget.getORIENTATION_VERTICAL() 
 		legend=1
-		connectString$=aon_url$
 		
 		rem --- params for calling SPROC
-		year$ = proc_date$(7,4)
 		num_to_list$ = "5"; rem <<============= HARDCODED =========
 	
 		sql$="CALL SAREPTOT_SBR_60 ('"+firm_id$+"', '"+year$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"', '"+all_prod_types$+"')"
 	
-		repsalesSStackedBarChartDashboardWidget! = salesDashboardCategory!.addStackedBarChartDashboardWidget(name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,connectString$,sql$)
+		repsalesSStackedBarChartDashboardWidget! = BarUtils.addStackedBarChartDashboardWidget(salesDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,sql$)
 		repsalesWidget! = repsalesSStackedBarChartDashboardWidget!.getWidget()
 		
 		repsalesWidget!.setDomainLabelAngle(1)
@@ -870,14 +789,14 @@ rem		repsalesWidget!.setChartRangeColors("#71a5d4","#6fd37c",1.0,1.0)
 
 		gosub update_meter
 	rem ' endif		 
-    
+   
 rem =======================================
 rem --- create SA SA Top Salesrep line chart
 rem =======================================
-rem GOTO TMPSKIP_SAREPS
+
 	dashboard_menu_id$="ADD_SATOPREP_LIN"
 	gosub get_security
-	if allow_widget$="Y" and installMap!.get("SA")="Y"
+	rem V6demo --- if allow_widget$="Y" and installMap!.get("SA")="Y"
 		name$ = "SATOPREP_LIN"
 		title$ = Translate!.getTranslation("AON_TOP_SALESREP_TOTALS")
 		previewText$=Translate!.getTranslation("AON_TOP_5_SALESREPS_DISPLAYED_IN_A_LINE_CHART")
@@ -906,8 +825,9 @@ rem		topRepsLWidget!.setChartRangeColors("#71a5d4","#6fd37c",1.0,1.0)
 
 		gosub update_meter
 
-	endif
-		
+	rem endif
+
+return;rem CAH ****LEFT OFF HERE 		
 		
 rem =======================================
 rem --- create SA SA Top Salesrep Stacked Area chart
@@ -1325,7 +1245,7 @@ rem     The inner widget gives us access to the dataset so that we can provide n
 	rem You can get the current filter value from the filter selection event
 	filterKey$ = filterSelectEvent!.getFilterKey()
 	filterValue$ = filterSelectEvent!.getFilterValue()
-		
+
 	rem Get the dashboard widget and inner widget
 	salesComparisonBarDashboardWidget! = filterSelectEvent!.getDashboardWidget()
 	slsCmpWidget! = salesComparisonBarDashboardWidget!.getWidget()
@@ -1364,89 +1284,13 @@ rem     The inner widget gives us access to the dataset so that we can provide n
 
 	rem Clear out the old data from the inner widget
 	slsCmpWidget!.clearDataSet()
-	rem ' slsCmpWidget!.setChartTitle(newTitle$)
+	rem 'slsCmpWidget!.setChartTitle(newTitle$)
 	
 	rem Refresh based on new sql
 	slsCmpWidget!.setSQL(sql$)
     slsCmpWidget!.refresh()
 	
 	exit
-
-rem ==============================================   
-rem Handle filter select event for SATOPCST_SBR
-OnSATOPCST_SBRFilterSelect:
-rem ==============================================    
-rem The filter selection event for the Left filter on the Top Customers Over Multiple Years stacked bar graph
-rem Get the information from the filter event so we'll have our dashboard widget and the inner widget
-rem     The dashboard widget gives us access to the filters and links
-rem     The inner widget gives us access to the dataset so that we can provide new data
-
-    customEvent! = BBjAPI().getLastEvent()
-    filterSelectEvent! = customEvent!.getObject()
-    filterName$ = filterSelectEvent!.getFilterName()
-    
-    rem You can get the current filter value from the filter selection event
-    filterKey$ = filterSelectEvent!.getFilterKey()
-    filterValue$ = filterSelectEvent!.getFilterValue()
-    
-    rem Get the dashboard widget and inner widget
-    topCustsStackedBarChartDashboardWidget! = filterSelectEvent!.getDashboardWidget()
-    topCustsWidget! = topCustsStackedBarChartDashboardWidget!.getWidget()
-    
-    gosub get_masks
-    gosub get_sysinfo
-    include_type$=filterKey$
-    year$ = proc_date$(7,4)
-    num_to_list$ = "5"; rem <<============= HARDCODED =========
-
-    sql$="CALL SATOPCST_SBR ('"+firm_id$+"', '"+include_type$+"', '"+year$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"')"
-    
-    rem Clear out the old data from the inner widget
-    topCustsWidget!.clearDataSet()
-    
-    rem Refresh based on new sql
-    topCustsWidget!.setSQL(sql$)
-    topCustsWidget!.refresh()
-    
-    exit
-
-rem ==============================================   
-rem Handle filter select event for SATOPREP_SBR
-OnSATOPREP_SBRFilterSelect:
-rem ==============================================    
-rem The filter selection event for the Left filter on the Top Salesreps Over Multiple Years stacked bar graph
-rem Get the information from the filter event so we'll have our dashboard widget and the inner widget
-rem     The dashboard widget gives us access to the filters and links
-rem     The inner widget gives us access to the dataset so that we can provide new data
-
-    customEvent! = BBjAPI().getLastEvent()
-    filterSelectEvent! = customEvent!.getObject()
-    filterName$ = filterSelectEvent!.getFilterName()
-    
-    rem You can get the current filter value from the filter selection event
-    filterKey$ = filterSelectEvent!.getFilterKey()
-    filterValue$ = filterSelectEvent!.getFilterValue()
-    
-    rem Get the dashboard widget and inner widget
-    toprepSStackedBarChartDashboardWidget! = filterSelectEvent!.getDashboardWidget()
-    toprepWidget! = toprepSStackedBarChartDashboardWidget!.getWidget()
-    
-    gosub get_masks
-    gosub get_sysinfo
-    include_type$=filterKey$
-    year$ = proc_date$(7,4)
-    num_to_list$ = "5"; rem <<============= HARDCODED =========
-
-    sql$="CALL SATOPREP_SBR ('"+firm_id$+"', '"+include_type$+"', '"+year$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"')"
-    
-    rem Clear out the old data from the inner widget
-    toprepWidget!.clearDataSet()
-    
-    rem Refresh based on new sql
-    toprepWidget!.setSQL(sql$)
-    toprepWidget!.refresh()
-    
-    exit
 	
 rem ==============================================   
 rem Handle filter select event for "WOs linked to SOs" grid
@@ -1668,7 +1512,7 @@ OnIncCmpBarChartWidgetClick:
 	                    gosub get_masks
 
 			    p=pos("-"=rowKey$)
-			    rem --- could an annul list or a list of a period
+			    rem --- could be an annual list or a list of a period
 			    if p then 
 			    	year$ = rowKey$(1,p-1)
 			    	period$ = rowKey$(p+1)
@@ -1924,6 +1768,7 @@ OnTopSalesrepsYTDChartWidgetClick:
         
         gosub get_sysinfo
         gosub get_translate_object
+        gosub get_fiscal_year
     
         if (dataItem! <> null()) then
 
@@ -1937,17 +1782,16 @@ OnTopSalesrepsYTDChartWidgetClick:
                 
             rem --- Setup SPROC
             gosub get_masks
-            year$=proc_date$(7,4)
             unspecified_prod_type$ = Translate!.getTranslation("AON_UNSPECIFIED")
-            sql$ = "CALL SATOPREPPROD_GRD ('"+firm_id$+"', '"+year$+"', '"+slspsn_desc$+"', '"+masks$+"', '"+barista_wd$+"', '"+unspecified_prod_type$+"')"
-                                                
+            sql$ = "CALL SATOPREPPROD_GRD_60 ('"+firm_id$+"', '"+year$+"', '"+slspsn_desc$+"', '"+masks$+"', '"+barista_wd$+"', '"+unspecified_prod_type$+"')"
+
             rem Create an embedded grid widget with the product type sales for the salesperson
             name$ = "SATOPREPPROD_GRD"
             title$ = cvs(slspsn_desc$,2)+" "+Translate!.getTranslation("AON_SALES")+" "+
 :           Translate!.getTranslation("AON_BY_PRODUCT")+" "+Translate!.getTranslation("AON_TYPE")
-            connectString$ = widget!.getConnectString()
+
                 
-            embeddedDBWidget! = EmbeddedWidgetFactory.createGridEmbeddedWidget(name$, title$, connectString$, sql$)
+            embeddedDBWidget! = BarUtils.createGridEmbeddedWidget(name$, title$, sql$)
  
             rem Setup the grid's columns
             embeddedWidget! = embeddedDBWidget!.getWidget()
@@ -2158,6 +2002,25 @@ rem --- resolve path to jasper reports
 	chdir sv_dir$
 	
 	return
+
+rem ==============================================
+get_fiscal_year:
+rem ==============================================
+    rem --- Open GL parameters file
+    files=1,begfile=1,endfile=files
+    dim files$[files],options$[files],ids$[files],templates$[files],channels[files]
+    files$[1]="gls_params",ids$[1]="GLS_PARAMS"  
+    
+    call stbl("+DIR_PGM")+"adc_fileopen.aon",action,begfile,endfile,files$[all],options$[all],ids$[all],templates$[all],channels[all],batch,status
+    if status goto std_exit
+    
+    gls01_dev=channels[1]
+    dim gls01a$:templates$[1]
+    
+    rem --- Convert processing date into fiscal period and year for Sales Analysis
+    call stbl("+DIR_PGM")+"adc_fiscalperyr.aon",firm_id$,gls01_dev,sysinfo.system_date$,period$,year$
+
+    return
 
 rem ==============================================   
 get_sysinfo:

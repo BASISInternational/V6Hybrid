@@ -18,14 +18,21 @@ rem
 rem AddonSoftware
 rem Copyright BASIS International Ltd.
 rem ----------------------------------------------------------------------------
-
-GOTO SKIP_DEBUG
-Debug$= "C:\Dev_aon\aon\_SPROC-Debug\SATOPREP_PIE_DebugPRC.txt"	
-string Debug$
-debugchan=unt
-open(debugchan)Debug$	
-write(debugchan)"Top of SATOPREP_PIE "
-SKIP_DEBUG:
+rem
+rem
+rem V6demo --- modified by KEW to work for BASIS on Addon 6.0 Data
+rem
+rem
+rem ----------------------------------------------------------------------------
+    rem ' trace
+    goto skip_trace;rem this out to do the trace
+    tfl$="C:/temp_downloads/sproctrace.txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
 
 seterr sproc_error
 
@@ -83,33 +90,25 @@ rem --- create the in memory recordset for return
 
 rem --- Open/Lock files
 
-rem '    files=2,begfile=1,endfile=files
-rem '    dim files$[files],options$[files],ids$[files],templates$[files],channels[files]
-rem '    files$[1]="sam-03",ids$[1]="SAM_SALESPSN"
-rem '    files$[2]="arc_salecode",ids$[2]="ARC_SALECODE"
+    files=2,begfile=1,endfile=files
+    dim files$[files],options$[files],ids$[files],templates$[files],channels[files]
+    files$[1]="SAM-03",ids$[1]="SAM03"
+    files$[2]="ARM-10",ids$[2]="ARM10F"
 
-rem '    call pgmdir$+"adc_fileopen.aon",action,begfile,endfile,files$[all],options$[all],ids$[all],templates$[all],channels[all],batch,status
-rem '    if status then
-rem '        seterr 0
-rem '        x$=stbl("+THROWN_ERR","TRUE")   
-rem '        throw "File open error.",1001
-rem '    endif
+    call pgmdir$+"adc_fileopen.aon",action,begfile,endfile,files$[all],options$[all],ids$[all],templates$[all],channels[all],batch,status
+    if status then
+        seterr 0
+        x$=stbl("+THROWN_ERR","TRUE")   
+        throw "File open error.",1001
+    endif
 
-rem '    sam03a_dev=channels[1]
-rem '    arm10f_dev=channels[2]
-    
-    call "ec_open::SAM03"
-    call "ec_open::ARM10F"
-    sam03a_dev = sam03
-    arm10f_dev = arm10f
+    sam03a_dev=channels[1]
+    arm10f_dev=channels[2]
 
 rem --- Dimension string templates
 
-rem '    dim sam03a$:templates$[1]
-rem '    dim arm10f$:templates$[2]
-    
-	dim sam03a$:fattr(sam03$)
-	dim arm10f$:fattr(arm10f$)
+    dim sam03a$:templates$[1]
+    dim arm10f$:templates$[2]
     
 rem --- Get sales by salesperson and salesperson + product type
 rem --- salesMap! key=total sales for salesperson, holds slspsnMap! (in case more than one salesperson with same total sales)
@@ -119,18 +118,14 @@ rem --- slspsnMap! key=salesperson, holds nothing (empty)
     read(sam03a_dev,key=firm_id$+year$,dom=*next)
     while 1
         readrecord(sam03a_dev,end=*break)sam03a$
-        if sam03a.firm_id$+sam03a.year$<>firm_id$+year$ then break
+        if sam03a.v6_firm_id$+sam03a.v6_year$<>firm_id$+year$ then break
 
-        if sam03a.slspsn_code$<>slspsn_code$ then gosub slspsn_break
+        if sam03a.v6_slspsn_code$<>slspsn_code$ then gosub slspsn_break
 
-        rem ' thisSales=sam03a.total_sales_01+sam03a.total_sales_02+sam03a.total_sales_03+sam03a.total_sales_04+
-:                 sam03a.total_sales_05+sam03a.total_sales_06+sam03a.total_sales_07+sam03a.total_sales_08+
-:                 sam03a.total_sales_09+sam03a.total_sales_10+sam03a.total_sales_11+sam03a.total_sales_12+
-:                 sam03a.total_sales_13
-	thisSales=sam03a.total_sales_1+sam03a.total_sales_2+sam03a.total_sales_3+sam03a.total_sales_4+
-:                 sam03a.total_sales_5+sam03a.total_sales_6+sam03a.total_sales_7+sam03a.total_sales_8+
-:                 sam03a.total_sales_9+sam03a.total_sales_10+sam03a.total_sales_11+sam03a.total_sales_12+
-:                 sam03a.total_sales_13
+        thisSales=sam03a.v6_tot_sales_01+sam03a.v6_tot_sales_02+sam03a.v6_tot_sales_03+sam03a.v6_tot_sales_04+
+:                 sam03a.v6_tot_sales_05+sam03a.v6_tot_sales_06+sam03a.v6_tot_sales_07+sam03a.v6_tot_sales_08+
+:                 sam03a.v6_tot_sales_09+sam03a.v6_tot_sales_10+sam03a.v6_tot_sales_11+sam03a.v6_tot_sales_12+
+:                 sam03a.v6_tot_sales_13
 
         thisSales=round(thisSales,2)
         slspsnSales=slspsnSales+thisSales
@@ -154,12 +149,11 @@ rem --- Build result set for top five salespersons by sales
                 findrecord(arm10f_dev,key=firm_id$+"F"+slspsn_code$,dom=*next)arm10f$
                 
                 if slspsnSales <> 0 then
-			data! = rs!.getEmptyRecordData()
-			rem ' data!.setFieldValue("SALESREP",arm10f.code_desc$)
-			data!.setFieldValue("SALESREP",cvs(arm10f.slspsn_name$,3))
-			data!.setFieldValue("TOTAL",str(slspsnSales))
-			rs!.insert(data!)
-		endif
+                    data! = rs!.getEmptyRecordData()
+                    data!.setFieldValue("SALESREP",arm10f.v6_code_desc$)
+                    data!.setFieldValue("TOTAL",str(slspsnSales))
+                    rs!.insert(data!)
+                endif
             wend
             if topSlspsns>5 then break
         wend
@@ -182,7 +176,7 @@ slspsn_break: rem --- Salesperson break
     endif
     
     rem --- Initialize for next customer
-    slspsn_code$=sam03a.slspsn_code$
+    slspsn_code$=sam03a.v6_slspsn_code$
     slspsnSales=0
     return
 	

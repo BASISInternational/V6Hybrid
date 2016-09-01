@@ -22,8 +22,8 @@
 			<DD_EXPORT_DATA id="ddm_tables.arm02">Y</DD_EXPORT_DATA>
 			<DD_CREATE_DATE id="ddm_tables.arm02">20160819</DD_CREATE_DATE>
 			<DD_LSTREV_DATE id="ddm_tables.arm02">20160825</DD_LSTREV_DATE>
-			<DD_LSTSYNC_DATE id="ddm_tables.arm02">20160819</DD_LSTSYNC_DATE>
-			<DD_LSTSYNC_TIME id="ddm_tables.arm02">174748</DD_LSTSYNC_TIME>
+			<DD_LSTSYNC_DATE id="ddm_tables.arm02">20160825</DD_LSTSYNC_DATE>
+			<DD_LSTSYNC_TIME id="ddm_tables.arm02">173230</DD_LSTSYNC_TIME>
 			<DD_ATTR_ATAB id="ddm_tables.arm02"></DD_ATTR_ATAB>
 			<DD_ATTR_CPGM id="ddm_tables.arm02"></DD_ATTR_CPGM>
 			<DD_ATTR_DKNM id="ddm_tables.arm02"></DD_ATTR_DKNM>
@@ -1483,8 +1483,8 @@
 			<ASC_COMP_ID id="ddm_elements.v6_firm_id">00000000</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_elements.v6_firm_id">V6H</ASC_PROD_ID>
 			<LOCALIZATION_EX id="ddm_elements.v6_firm_id"></LOCALIZATION_EX>
-			<DD_CREATE_DATE id="ddm_elements.v6_firm_id">20160819</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_elements.v6_firm_id">20160819</DD_LSTREV_DATE>
+			<DD_CREATE_DATE id="ddm_elements.v6_firm_id">20160826</DD_CREATE_DATE>
+			<DD_LSTREV_DATE id="ddm_elements.v6_firm_id">20160831</DD_LSTREV_DATE>
 			<DD_AUTO_COMP id="ddm_elements.v6_firm_id"></DD_AUTO_COMP>
 			<DD_ATTR_BLNK id="ddm_elements.v6_firm_id"></DD_ATTR_BLNK>
 			<DD_ATTR_CDAT id="ddm_elements.v6_firm_id"></DD_ATTR_CDAT>
@@ -1532,8 +1532,8 @@
 			<ASC_COMP_ID id="ddm_elements.v6_customer_nbr">00000000</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_elements.v6_customer_nbr">V6H</ASC_PROD_ID>
 			<LOCALIZATION_EX id="ddm_elements.v6_customer_nbr"></LOCALIZATION_EX>
-			<DD_CREATE_DATE id="ddm_elements.v6_customer_nbr">20160819</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_elements.v6_customer_nbr">20160819</DD_LSTREV_DATE>
+			<DD_CREATE_DATE id="ddm_elements.v6_customer_nbr">20160826</DD_CREATE_DATE>
+			<DD_LSTREV_DATE id="ddm_elements.v6_customer_nbr">20160826</DD_LSTREV_DATE>
 			<DD_AUTO_COMP id="ddm_elements.v6_customer_nbr"></DD_AUTO_COMP>
 			<DD_ATTR_BLNK id="ddm_elements.v6_customer_nbr"></DD_ATTR_BLNK>
 			<DD_ATTR_CDAT id="ddm_elements.v6_customer_nbr"></DD_ATTR_CDAT>
@@ -1924,8 +1924,8 @@
 			<ASC_COMP_ID id="ddm_elements.v6_rsrvd_str">00000000</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_elements.v6_rsrvd_str">V6H</ASC_PROD_ID>
 			<LOCALIZATION_EX id="ddm_elements.v6_rsrvd_str"></LOCALIZATION_EX>
-			<DD_CREATE_DATE id="ddm_elements.v6_rsrvd_str">20160819</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_elements.v6_rsrvd_str">20160825</DD_LSTREV_DATE>
+			<DD_CREATE_DATE id="ddm_elements.v6_rsrvd_str">2457627</DD_CREATE_DATE>
+			<DD_LSTREV_DATE id="ddm_elements.v6_rsrvd_str">20160826</DD_LSTREV_DATE>
 			<DD_AUTO_COMP id="ddm_elements.v6_rsrvd_str"></DD_AUTO_COMP>
 			<DD_ATTR_BLNK id="ddm_elements.v6_rsrvd_str"></DD_ATTR_BLNK>
 			<DD_ATTR_CDAT id="ddm_elements.v6_rsrvd_str"></DD_ATTR_CDAT>
@@ -1973,8 +1973,8 @@
 			<ASC_COMP_ID id="ddm_elements.v6_lstinv_date">00000000</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_elements.v6_lstinv_date">V6H</ASC_PROD_ID>
 			<LOCALIZATION_EX id="ddm_elements.v6_lstinv_date"></LOCALIZATION_EX>
-			<DD_CREATE_DATE id="ddm_elements.v6_lstinv_date">20160819</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_elements.v6_lstinv_date">20160819</DD_LSTREV_DATE>
+			<DD_CREATE_DATE id="ddm_elements.v6_lstinv_date">20160826</DD_CREATE_DATE>
+			<DD_LSTREV_DATE id="ddm_elements.v6_lstinv_date">20160826</DD_LSTREV_DATE>
 			<DD_AUTO_COMP id="ddm_elements.v6_lstinv_date"></DD_AUTO_COMP>
 			<DD_ATTR_BLNK id="ddm_elements.v6_lstinv_date"></DD_ATTR_BLNK>
 			<DD_ATTR_CDAT id="ddm_elements.v6_lstinv_date"></DD_ATTR_CDAT>
@@ -2022,8 +2022,8 @@
 			<ASC_COMP_ID id="ddm_elements.v6_lstpay_date">00000000</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_elements.v6_lstpay_date">V6H</ASC_PROD_ID>
 			<LOCALIZATION_EX id="ddm_elements.v6_lstpay_date"></LOCALIZATION_EX>
-			<DD_CREATE_DATE id="ddm_elements.v6_lstpay_date">20160819</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_elements.v6_lstpay_date">20160819</DD_LSTREV_DATE>
+			<DD_CREATE_DATE id="ddm_elements.v6_lstpay_date">20160826</DD_CREATE_DATE>
+			<DD_LSTREV_DATE id="ddm_elements.v6_lstpay_date">20160826</DD_LSTREV_DATE>
 			<DD_AUTO_COMP id="ddm_elements.v6_lstpay_date"></DD_AUTO_COMP>
 			<DD_ATTR_BLNK id="ddm_elements.v6_lstpay_date"></DD_ATTR_BLNK>
 			<DD_ATTR_CDAT id="ddm_elements.v6_lstpay_date"></DD_ATTR_CDAT>

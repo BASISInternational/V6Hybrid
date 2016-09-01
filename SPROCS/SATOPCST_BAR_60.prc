@@ -20,18 +20,20 @@ rem Copyright BASIS International Ltd.
 rem ----------------------------------------------------------------------------
 rem
 rem
-rem modified by KEW to work for BASIS on Addon 6.0 Data
+rem V6demo --- modified by KEW to work for BASIS on Addon 6.0 Data
 rem
 rem
 rem ----------------------------------------------------------------------------
 
-GOTO SKIP_DEBUG
-Debug$= "C:\Dev_aon\aon\_SPROC-Debug\SATOPCST_BAR_DebugPRC.txt"	
-string Debug$
-DebugChan=unt
-open(DebugChan)Debug$	
-write(DebugChan)"Top of SATOPCST_BAR "
-SKIP_DEBUG:
+    rem ' trace
+    goto skip_trace;rem this out to do the trace
+    tfl$="C:/temp_downloads/sproctrace.txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
 
 seterr sproc_error
 
@@ -60,12 +62,12 @@ rem --- Get the IN parameters used by the procedure
 	firm_id$ =	sp!.getParameter("FIRM_ID")
 	barista_wd$ = sp!.getParameter("BARISTA_WD")
 
-	rem --- added code by kew
+	rem --- V6demo --- added code by kew
 	REM " --- FNYEAR_YY21$ Convert Numeric Year to 21st Century 2-Char Year"
 	DEF FNYEAR_YY21$(Q)=FNYY_YY21$(STR(MOD(Q,100):"00"))
 	REM " --- FNYY_YY21$ Convert 2-Char Year to 21st Century 2-Char Year"
 	DEF FNYY_YY21$(Q1$)
-	LET Q3$=" AB23456789ABCDEFGHIJ",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+	LET Q3$=" ABCDE56789ABCDEFGHIJ",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABCDEFGHIJ"))
 	RETURN Q1$
 	FNEND
 
@@ -87,34 +89,26 @@ rem --- create the in memory recordset for return
 	rs! = BBJAPI().createMemoryRecordSet(dataTemplate$)
 	
 rem --- Open/Lock files
-rem
-rem    files=2,begfile=1,endfile=files
-rem    dim files$[files],options$[files],ids$[files],templates$[files],channels[files]
-rem    files$[1]="sam-01",ids$[1]="SAM_CUSTOMER"
-rem    files$[2]="arm-01",ids$[2]="ARM_CUSTMAST"
-rem
-rem    call pgmdir$+"adc_fileopen.aon",action,begfile,endfile,files$[all],options$[all],ids$[all],templates$[all],channels[all],batch,status
-rem    if status then
-rem        seterr 0
-rem        x$=stbl("+THROWN_ERR","TRUE")   
-rem        throw "File open error.",1001
-rem    endif
 
-rem    sam01a_dev=channels[1]
-rem    arm01a_dev=channels[2]
+    files=2,begfile=1,endfile=files
+    dim files$[files],options$[files],ids$[files],templates$[files],channels[files]
+    files$[1]="SAM-01",ids$[1]="SAM01"
+    files$[2]="ARM-01",ids$[2]="ARM01"
 
-	call "ec_open::SAM01"
-	call "ec_open::ARM01"
-	sam01a_dev = sam01
-	arm01a_dev = arm01
+    call pgmdir$+"adc_fileopen.aon",action,begfile,endfile,files$[all],options$[all],ids$[all],templates$[all],channels[all],batch,status
+    if status then
+        seterr 0
+        x$=stbl("+THROWN_ERR","TRUE")   
+        throw "File open error.",1001
+    endif
+
+    sam01a_dev=channels[1]
+    arm01a_dev=channels[2]
 
 rem --- Dimension string templates
-rem
-rem    dim sam01a$:templates$[1]
-rem    dim arm01a$:templates$[2]
 
-	dim sam01a$:fattr(sam01$)
-	dim arm01a$:fattr(arm01$)
+    dim sam01a$:templates$[1]
+    dim arm01a$:templates$[2]
 	
 rem --- Get sales by customer
 rem --- salesMap! key=total sales for custom, holds customerMap! (in case more than one customer with same total sales)
@@ -124,20 +118,14 @@ rem --- customerMap! key=customer, holds nothing (empty)
     read(sam01a_dev,key=firm_id$+year$,dom=*next)
     while 1
         readrecord(sam01a_dev,end=*break)sam01a$
-        if sam01a.firm_id$+sam01a.year$<>firm_id$+year$ then break
+        if sam01a.v6_firm_id$+sam01a.v6_year$<>firm_id$+year$ then break
+        if sam01a.v6_customer_nbr$<>customer_id$ then gosub customer_break
 
-        rem if sam01a.customer_id$<>customer_id$ then gosub customer_break
-        if sam01a.customer_nbr$<>customer_id$ then gosub customer_break
+        thisSales=sam01a.v6_tot_sales_01+sam01a.v6_tot_sales_02+sam01a.v6_tot_sales_03+sam01a.v6_tot_sales_04+
+:                 sam01a.v6_tot_sales_05+sam01a.v6_tot_sales_06+sam01a.v6_tot_sales_07+sam01a.v6_tot_sales_08+
+:                 sam01a.v6_tot_sales_09+sam01a.v6_tot_sales_10+sam01a.v6_tot_sales_11+sam01a.v6_tot_sales_12+
+:                 sam01a.v6_tot_sales_13
 
-        rem thisSales=sam01a.total_sales_01+sam01a.total_sales_02+sam01a.total_sales_03+sam01a.total_sales_04+
-rem :                 sam01a.total_sales_05+sam01a.total_sales_06+sam01a.total_sales_07+sam01a.total_sales_08+
-rem :                 sam01a.total_sales_09+sam01a.total_sales_10+sam01a.total_sales_11+sam01a.total_sales_12+
-rem :                 sam01a.total_sales_13
-
-        thisSales=sam01a.total_sales_1+sam01a.total_sales_2+sam01a.total_sales_3+sam01a.total_sales_4+
-:                 sam01a.total_sales_5+sam01a.total_sales_6+sam01a.total_sales_7+sam01a.total_sales_8+
-:                 sam01a.total_sales_9+sam01a.total_sales_10+sam01a.total_sales_11+sam01a.total_sales_12+
-:                 sam01a.total_sales_13
         thisSales=round(thisSales,2)
         custSales=custSales+thisSales
     wend
@@ -161,8 +149,7 @@ rem --- Build result set for top five customers by sales
                 
                 data! = rs!.getEmptyRecordData()
                 data!.setFieldValue("DUMMY"," ")
-                rem data!.setFieldValue("CUSTOMER",arm01a.customer_name$)
-                data!.setFieldValue("CUSTOMER",arm01a.cust_name$)
+                data!.setFieldValue("CUSTOMER",arm01a.v6_cust_name$)
                 data!.setFieldValue("TOTAL",str(custSales))
                 rs!.insert(data!)
             wend
@@ -188,7 +175,7 @@ customer_break: rem --- Customer break
     
     rem --- Initialize for next customer
     rem customer_id$=sam01a.customer_id$
-    customer_id$=sam01a.customer_nbr$
+    customer_id$=sam01a.v6_customer_nbr$
     custSales=0
     return
 	

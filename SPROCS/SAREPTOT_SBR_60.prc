@@ -18,14 +18,21 @@ rem
 rem AddonSoftware
 rem Copyright BASIS International Ltd.
 rem ----------------------------------------------------------------------------
-
-GOTO SKIP_DEBUG
-Debug$= "C:\Dev_aon\aon\_SPROC-Debug\SAREPTOT_SBR_DebugPRC.txt"	
-string Debug$
-debugchan=unt
-open(debugchan)Debug$	
-write(debugchan)"Top of SAREPTOT_SBR "
-SKIP_DEBUG:
+rem
+rem
+rem V6demo --- modified by KEW to work for BASIS on Addon 6.0 Data
+rem
+rem
+rem ----------------------------------------------------------------------------
+    rem ' trace
+    goto skip_trace;rem this out to do the trace
+    tfl$="C:/temp_downloads/sproctrace.txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
 
 seterr sproc_error
 
@@ -54,7 +61,7 @@ rem --- Get the IN parameters used by the procedure
 	firm_id$ =	sp!.getParameter("FIRM_ID")
 	barista_wd$ = sp!.getParameter("BARISTA_WD")
 	
-	rem --- added code by kew
+	rem --- V6demo --- added code by kew
 	REM " --- FNYEAR_YY21$ Convert Numeric Year to 21st Century 2-Char Year"
 	DEF FNYEAR_YY21$(Q)=FNYY_YY21$(STR(MOD(Q,100):"00"))
 	REM " --- FNYY_YY21$ Convert 2-Char Year to 21st Century 2-Char Year"
@@ -83,39 +90,28 @@ rem --- create the in memory recordset for return
 
 rem --- Open/Lock files
 
-rem '    files=3,begfile=1,endfile=files
-rem '    dim files$[files],options$[files],ids$[files],templates$[files],channels[files]
-rem '    files$[1]="sam-03",ids$[1]="SAM_SALESPSN"
-rem '    files$[2]="arc_salecode",ids$[2]="ARC_SALECODE"
-rem '    files$[3]="ivc_prodcode",ids$[3]="IVC_PRODCODE"
+   files=3,begfile=1,endfile=files
+   dim files$[files],options$[files],ids$[files],templates$[files],channels[files]
+   files$[1]="SAM-03",ids$[1]="SAM03"
+   files$[2]="ARM-10",ids$[2]="ARM10F"
+   files$[3]="IVM-10",ids$[3]="IVM10A"
 
-rem '    call pgmdir$+"adc_fileopen.aon",action,begfile,endfile,files$[all],options$[all],ids$[all],templates$[all],channels[all],batch,status
-rem '    if status then
-rem '        seterr 0
-rem '        x$=stbl("+THROWN_ERR","TRUE")   
-rem '        throw "File open error.",1001
-rem '    endif
+   call pgmdir$+"adc_fileopen.aon",action,begfile,endfile,files$[all],options$[all],ids$[all],templates$[all],channels[all],batch,status
+   if status then
+       seterr 0
+       x$=stbl("+THROWN_ERR","TRUE")   
+       throw "File open error.",1001
+   endif
 
-rem '    sam03a_dev=channels[1]
-rem '    arm10f_dev=channels[2]
-rem '    ivm10a_dev=channels[3]
-    
-    call "ec_open::SAM03"
-    call "ec_open::ARM10F"
-    call "ec_open::CSM01"
-    sam03a_dev = sam03
-    arm10f_dev = arm10f
-    csm01a_dev = csm01
+   sam03a_dev=channels[1]
+   arm10f_dev=channels[2]
+   ivm10a_dev=channels[3]
 
 rem --- Dimension string templates
 
-rem '    dim sam03a$:templates$[1]
-rem '    dim arm10f$:templates$[2]
-rem '    dim ivm10a$:templates$[3]
-
-    dim sam03a$:fattr(sam03$)
-    dim arm10f$:fattr(arm10f$)
-    dim csm01a$:fattr(csm01$)
+   dim sam03a$:templates$[1]
+   dim arm10f$:templates$[2]
+   dim ivm10a$:templates$[3]
     
 rem --- Get sales by salesperson and salesperson + product type
 rem --- salesMap! key=total sales for salesperson, holds slspsnMap! (in case more than one salesperson with same total sales)
@@ -127,19 +123,15 @@ rem --- prodTypeMap! key=product type, holds customer sales for product type
     read(sam03a_dev,key=firm_id$+year$,dom=*next)
     while 1
         readrecord(sam03a_dev,end=*break)sam03a$
-        if sam03a.firm_id$+sam03a.year$<>firm_id$+year$ then break
+        if sam03a.v6_firm_id$+sam03a.v6_year$<>firm_id$+year$ then break
 
-        if sam03a.slspsn_code$<>slspsn_code$ then gosub slspsn_break
-        if sam03a.product_type$<>product_type$ then gosub prodType_break
+        if sam03a.v6_slspsn_code$<>slspsn_code$ then gosub slspsn_break
+        if sam03a.v6_product_type$<>product_type$ then gosub prodType_break
 
-rem '        thisSales=sam03a.total_sales_01+sam03a.total_sales_02+sam03a.total_sales_03+sam03a.total_sales_04+
-:                 sam03a.total_sales_05+sam03a.total_sales_06+sam03a.total_sales_07+sam03a.total_sales_08+
-:                 sam03a.total_sales_09+sam03a.total_sales_10+sam03a.total_sales_11+sam03a.total_sales_12+
-:                 sam03a.total_sales_13
-	thisSales=sam03a.total_sales_1+sam03a.total_sales_2+sam03a.total_sales_3+sam03a.total_sales_4+
-:                 sam03a.total_sales_5+sam03a.total_sales_6+sam03a.total_sales_7+sam03a.total_sales_8+
-:                 sam03a.total_sales_9+sam03a.total_sales_10+sam03a.total_sales_11+sam03a.total_sales_12+
-:                 sam03a.total_sales_13
+        thisSales=sam03a.v6_tot_sales_01+sam03a.v6_tot_sales_02+sam03a.v6_tot_sales_03+sam03a.v6_tot_sales_04+
+:                 sam03a.v6_tot_sales_05+sam03a.v6_tot_sales_06+sam03a.v6_tot_sales_07+sam03a.v6_tot_sales_08+
+:                 sam03a.v6_tot_sales_09+sam03a.v6_tot_sales_10+sam03a.v6_tot_sales_11+sam03a.v6_tot_sales_12+
+:                 sam03a.v6_tot_sales_13
 
         thisSales=round(thisSales,2)
         slspsnSales=slspsnSales+thisSales
@@ -168,37 +160,27 @@ rem --- Build result set for top five salespersons by sales
                 while prodIter!.hasNext()
                     product_type$=prodIter!.next()
                     prodTypeSales=prodTypeMap!.get(product_type$)
-                    rem ' dim ivm10a$:fattr(ivm10a$)
-                    dim csm01a$:fattr(csm01a$)
+                    dim ivm10a$:fattr(ivm10a$)
                     
-                    rem ' if product_type$=fill(len(ivm10a.product_type$)," ") then
-                    rem '     rem --- Sales might be summarized by customer with no product type
-                    rem '     ivm10a.code_desc$(1)=Translate!.getTranslation("AON_ALL")+" "+Translate!.getTranslation("AON_PRODUCT_TYPE")
-                    rem ' else
-                    rem '     findrecord(ivm10a_dev,key=firm_id$+"A"+product_type$,dom=*next)ivm10a$
-                    rem ' endif
-                
-                    if product_type$=fill(len(csm01a.product$)," ") then
+                    if product_type$=fill(len(ivm10a.v6_product_type$)," ") then
                         rem --- Sales might be summarized by customer with no product type
-                        csm01a.description$(1)=Translate!.getTranslation("AON_ALL")+" "+Translate!.getTranslation("AON_PRODUCT_TYPE")
+                        ivm10a.v6_code_desc$(1)=Translate!.getTranslation("AON_ALL")+" "+Translate!.getTranslation("AON_PRODUCT_TYPE")
                     else
-                    	rem ' findrecord(ivm10a_dev,key=firm_id$+"A"+product_type$,dom=*next)ivm10a$
-                        findrecord(csm01a_dev,key=firm_id$+product_type$,dom=*next)csm01a$
+                        findrecord(ivm10a_dev,key=firm_id$+"A"+product_type$,dom=*next)ivm10a$
                     endif
 
                     if prodTypeSales <> 0 then
-			    data! = rs!.getEmptyRecordData()
-			    rem ' data!.setFieldValue("SALESREP",arm10f.code_desc$)
-			    data!.setFieldValue("SALESREP",cvs(arm10f.slspsn_name$,3))
-			    rem ' data!.setFieldValue("PRODTYPE",ivm10a.code_desc$)
-			    if cvs(csm01a.description$,3)= "" then
-				data!.setFieldValue("PRODTYPE",product_type$)
-			    else
-				data!.setFieldValue("PRODTYPE",cvs(csm01a.description$,3))
-			    endif
-			    data!.setFieldValue("TOTAL",str(prodTypeSales))
-			    rs!.insert(data!)
-		    endif
+                        data! = rs!.getEmptyRecordData()
+                        data!.setFieldValue("SALESREP",arm10f.v6_code_desc$)
+                    
+                        if cvs(ivm10a.v6_code_desc$,3)= "" then
+                            data!.setFieldValue("PRODTYPE",product_type$)
+                        else
+                            data!.setFieldValue("PRODTYPE",ivm10a.v6_code_desc$)
+                        endif
+                        data!.setFieldValue("TOTAL",str(prodTypeSales))
+                        rs!.insert(data!)
+                    endif
                 wend
             wend
             if topSlspsns>5 then break
@@ -223,20 +205,20 @@ slspsn_break: rem --- Salesperson break
     endif
     
     rem --- Initialize for next customer
-    slspsn_code$=sam03a.slspsn_code$
+    slspsn_code$=sam03a.v6_slspsn_code$
     slspsnSales=0
     prodTypeMap!=new java.util.TreeMap()
-    product_type$=sam03a.product_type$
+    product_type$=sam03a.v6_product_type$
     prodTypeSales=0
     return
     
 prodType_break: rem --- Product type break
     if product_type$<>"" then
-        prodTypeMap!.put(product_type$,round(prodTypeSales/1000,2))
+        prodTypeMap!.put(product_type$,round(prodTypeSales,2))
     endif
 
     rem --- Initialize for next product type
-    product_type$=sam03a.product_type$
+    product_type$=sam03a.v6_product_type$
     prodTypeSales=0
     return
 	
