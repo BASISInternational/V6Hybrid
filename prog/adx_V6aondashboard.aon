@@ -860,9 +860,8 @@ rem =======================================
 		
 		gosub update_meter
 
-	rem endif	
-		
-return;rem CAH ****LEFT OFF HERE 		
+	rem endif
+    
 rem ==============================================   
 rem --- create jasper widget for Sales by Cust Type
 rem --- code copied from arr_drillDownSalesReport.aon
@@ -870,7 +869,7 @@ rem ==============================================
 
 	dashboard_menu_id$="ADD_SLSBYCST_JAS"
 	gosub get_security
-	if allow_widget$="Y" and installMap!.get("OP")="Y"
+	rem V6demo --- if allow_widget$="Y" and installMap!.get("OP")="Y"
 		call stbl("+DIR_PGM")+"adc_getmask.aon","CUSTOMER_ID","","","",custIdMask$,0,custIdLen
 		custIdMaskLen = len(custIdMask$)
 
@@ -960,7 +959,7 @@ rem --- Assign input values to local variables
 		filter! = salesJasperViewerDashboardWidget!.addFilter(filterName$,filterHashMap!,toolTip$,dockLocation)
 		filter!.selectFilter(year$)
 		filter!.setCallback(DashboardWidgetFilter.getON_FILTER_SELECT(),pgm(-2) + "::OnSLSBYCST_JASFilterSelect")
-	endif
+	rem endif
 	
 	return
 
@@ -1993,7 +1992,7 @@ rem --- resolve path to preview image pngs
 
 rem --- resolve path to jasper reports
 
-    report_path$=stbl("+DIR_REPORTS",err=*next)
+    report_path$=stbl("+V6_DIR_REPORTS",err=*next)
 	sv_dir$=dsk("")+dir("")
 	chdir report_path$
 	report_path$=dsk("")+dir("")

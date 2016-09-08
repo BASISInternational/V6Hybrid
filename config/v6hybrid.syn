@@ -15,6 +15,7 @@ SYSSTBL=SET V6HYBRID_PROP=../apps/V6Hybrid/prop/
 SYSSTBL=SET +V6DATA=../apps/V6Hybrid/ADATA/
 SYSSTBL=SET +V6_DIR_PDF=../apps/V6Hybrid/documents/
 SYSSTBL=SET +V6_DIR_SPROCS=../apps/V6Hybrid/sprocs/
+SYSSTBL=SET +V6_DIR_REPORTS=../apps/V6Hybrid/reports/
 SYSPFX=../apps/V6Hybrid/prog/
 SYSPFX=../apps/V6Hybrid/ADATA/
 SYSPFX=../apps/V6Hybrid/DLR/
