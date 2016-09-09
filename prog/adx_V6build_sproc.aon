@@ -137,6 +137,22 @@ rem --- first drop all std Addon SPROCs
 	sproc_vw_name$="SALES_INVOICE_DETAILS_60"
 	sqlprep$=sql_action$+" "+sproc_vw_name$+" "
 	gosub create_sproc_def
+
+	sproc_vw_name$="ARAGINGTOT_BAR_60"
+	sqlprep$=sql_action$+" "+sproc_vw_name$+" "
+	gosub create_sproc_def
+
+	sproc_vw_name$="ARAGING_BAR_60"
+	sqlprep$=sql_action$+" "+sproc_vw_name$+" "
+	gosub create_sproc_def
+
+	sproc_vw_name$="SIMPLE_INVOICE_60"
+	sqlprep$=sql_action$+" "+sproc_vw_name$+" "
+	gosub create_sproc_def
+
+	sproc_vw_name$="SIMPLE_INVVOICE_DTL_60"
+	sqlprep$=sql_action$+" "+sproc_vw_name$+" "
+	gosub create_sproc_def
 	
 rem --- now add them back (i.e., drop, then add, in case anything has changed)
 
@@ -291,6 +307,47 @@ rem --- now add them back (i.e., drop, then add, in case anything has changed)
 	sqlprep$=sqlprep$+"'"+sproc_path$+"SALES_INVOICE_DETAILS_60.prc' '"+barista_cfg_path$+"barista.cfg' "
 	sqlprep$=sqlprep$+"RESULT_SET "
 	sqlprep$=sqlprep$+"{_begin_}{_end_} 'V6 Invoice Details'"
+
+	gosub create_sproc_def
+
+	rem --- Dashboard: ARAGINGTOT_BAR_60
+	sproc_vw_name$="ARAGINGTOT_BAR_60"
+	sqlprep$="CREATE PROCEDURE ARAGINGTOT_BAR_60 "
+	sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, MASKS VARCHAR(1) IN, BARISTA_WD VARCHAR(50) IN)"	
+	sqlprep$=sqlprep$+"'"+sproc_path$+"ARAGINGTOT_BAR_60.prc' '"+barista_cfg_path$+"barista.cfg' "
+	sqlprep$=sqlprep$+"RESULT_SET "
+	sqlprep$=sqlprep$+"{_begin_}{_end_} 'V6 Company Totals for Last AR Agings'"
+
+	gosub create_sproc_def
+
+	rem --- Dashboard: ARAGING_BAR_60
+	sproc_vw_name$="ARAGING_BAR_60"
+	sqlprep$="CREATE PROCEDURE ARAGING_BAR_60 "
+	sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, AGING_PERIOD CHAR(10) IN, NUM_TO_LIST VARCHAR(1) IN, MASKS VARCHAR(1) IN, BARISTA_WD VARCHAR(50) IN)"	
+	sqlprep$=sqlprep$+"'"+sproc_path$+"ARAGING_BAR_60.prc' '"+barista_cfg_path$+"barista.cfg' "
+	sqlprep$=sqlprep$+"RESULT_SET "
+	sqlprep$=sqlprep$+"{_begin_}{_end_} 'V6 Company Totals for Last AR Agings'"
+
+	gosub create_sproc_def
+
+	rem --- Dashboard: SIMPLE_INVOICE_60
+	sproc_vw_name$="SIMPLE_INVOICE_60"
+	sqlprep$="CREATE PROCEDURE SIMPLE_INVOICE_60 "
+	sqlprep$=sqlprep$+"(FIRM_ID VARCHAR(2) IN, AMT_MASK VARCHAR(20) IN, CUST_MASK VARCHAR(20) IN, CUST_SIZE VARCHAR(1) IN, "
+    sqlprep$=sqlprep$+"CUSTOMER_ID VARCHAR(6) IN, TERMS_CD VARCHAR(2) IN, UNIT_MASK VARCHAR(20) IN, AR_INV_NO VARCHAR(7) IN, BARISTA_WD VARCHAR(50) IN)"	
+	sqlprep$=sqlprep$+"'"+sproc_path$+"SIMPLE_INVOICE_60.prc' '"+barista_cfg_path$+"barista.cfg' "
+	sqlprep$=sqlprep$+"RESULT_SET "
+	sqlprep$=sqlprep$+"{_begin_}{_end_} 'V6 AR Simple Invoice'"
+
+	gosub create_sproc_def
+
+	rem --- Dashboard: SIMPLE_INVOICE_DTL_60
+	sproc_vw_name$="SIMPLE_INVOICE_DTL_60"
+	sqlprep$="CREATE PROCEDURE SIMPLE_INVOICE_DTL_60 "
+	sqlprep$=sqlprep$+"(FIRM_ID VARCHAR(2) IN, AR_INV_NO VARCHAR(10) IN, AMT_MASK VARCHAR(20) IN, UNIT_MASK VARCHAR(20) IN, BARISTA_WD VARCHAR(50) IN)"	
+	sqlprep$=sqlprep$+"'"+sproc_path$+"SIMPLE_INVOICE_DTL_60.prc' '"+barista_cfg_path$+"barista.cfg' "
+	sqlprep$=sqlprep$+"RESULT_SET "
+	sqlprep$=sqlprep$+"{_begin_}{_end_} 'V6 AR Simple Invoice Detail'"
 
 	gosub create_sproc_def
 

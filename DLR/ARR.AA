@@ -1,0 +1,671 @@
+0010 REM "ARR - Cash Receipts Register"
+0020 REM "Program ARR.AA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.2 - 01Jan96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0031 REM "19Sep96 JAL: Clear GL recap file on open (650)"
+0040 REM 
+0050 BEGIN
+0085 SETESC 9000
+0090 SETERR 9000
+0100 REM " --- Open/Lock Files"
+0110 LET FILES=12
+0120 DIM FILES$[FILES],OPTIONS$[FILES],CHANNELS[FILES]
+0130 LET FILES$[1]="ARE-01",FILES$[2]="ARE-11",FILES$[3]="ARE-21"
+0135 LET FILES$[4]="ARM-01",FILES$[5]="ARM-02",FILES$[6]="ARM-10"
+0140 LET FILES$[7]="ART-01",FILES$[8]="ARW-05",FILES$[9]="ARS-10"
+0145 LET FILES$[10]="SYS-01"
+0150 LET FILES$[11]="GLM-01",FILES$[12]=GLW11$
+0152 LET OPTIONS$[1]="L",OPTIONS$[2]="L",OPTIONS$[3]="L"
+0155 LET OPTIONS$[8]="L",OPTIONS$[12]="C"
+0160 CALL "SYC.DA",1,1,10,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STATUS
+0170 IF STATUS>0 THEN GOTO 9900
+0175 LET ARE01_DEV=CHANNELS[1],ARE11_DEV=CHANNELS[2],ARE21_DEV=CHANNELS[3]
+0180 LET ARM01_DEV=CHANNELS[4],ARM02_DEV=CHANNELS[5],ARM10_DEV=CHANNELS[6]
+0185 LET ART01_DEV=CHANNELS[7],ARW05_DEV=CHANNELS[8],ARS10_DEV=CHANNELS[9]
+0190 LET SYS01_DEV=CHANNELS[10]
+0200 REM " --- IOLIST's"
+0210 ARE01A: IOLIST A0$,A[0]
+0220 ARE11A: IOLIST W0$,W[ALL]
+0230 ARE21A: IOLIST W0$,W[ALL]
+0240 ARM01A: IOLIST B0$,B1$
+0250 ARM02A: IOLIST *,X$(1)
+0260 SYS01T: IOLIST X$,F0$,X$,X$,X$,F4$,F5$
+0270 ARS01A: IOLIST P0$,P1$,P2$,P3$,P4$,M0$,M1$,M2$,M3$
+0280 GLS01A: IOLIST X$,G1$,G2$,G3$,G4$,G5$,G6$,G7$
+0290 ART01A: IOLIST X$(1)
+0320 ARM10C: IOLIST R0$,Z0$(1)
+0330 ARM10D: IOLIST *,Z0$(1)
+0360 ARS10C: IOLIST X0$,U[ALL]
+0370 ARW05A: IOLIST Z$
+0400 REM " --- Parameters"
+0405 DIM P[3],G[4],U[6]
+0410 FIND (SYS01_DEV,KEY="T"+FID(0),DOM=9800)IOL=SYS01T
+0415 LET N0$=F0$(16,2),N1$=F4$,N2$="AR",N3$=F5$,SOURCE$=PGM(-2)
+0420 FIND (SYS01_DEV,KEY=N0$+N2$+"00",DOM=9800)IOL=ARS01A
+0425 FIND (SYS01_DEV,KEY=N0$+"GL00",DOM=9800)IOL=GLS01A
+0430 FOR X=0 TO 4
+0435 LET G[X]=NUM(G2$(X*2+1,2),ERR=0440)
+0440 NEXT X
+0445 LET G[2]=FNYY_YEAR(G2$(5,2))
+0450 LET P[0]=NUM(P2$(1,2)),P[1]=NUM(P2$(3,2))
+0455 LET P[2]=NUM(P4$(1,2)),P[3]=FNYY_YEAR(P4$(3,2))
+0460 CALL "SYC.PA",SYS01_DEV,P[2],P[3],X$,G9$,STATUS
+0485 FIND (ARS10_DEV,KEY=N0$+"C",DOM=0490)IOL=ARS10C
+0500 REM " --- Initializations"
+0510 LET L9=59,L=L9+1,H=0,PAGE=H,WIDTH=132,HEADINGS=2,UNITS=0,CODE_T$="",DATE_T$=""
+0520 DIM A[1],W[1],CODE_T[2],DATE_T[2],V[5],HEADINGS$[HEADINGS]
+0530 LET CLOCK$="",WHEN$=F0$(7,3),HEADINGS$[0]=N1$,HEADINGS$[1]=N3$
+0540 LET G5=LEN(G5$),M0=LEN(M0$),M2=LEN(M2$)
+0550 CALL "SYC.RM",M1$,M1,8,INT((132-60-G5)/5)
+0560 DIM DEP$(10+M1,"-"); LET X$="Deposit"
+0565 IF LEN(DEP$)>LEN(X$) THEN LET DEP$(1+INT((LEN(DEP$)-LEN(X$))/2),LEN(X$))=X$ ELSE LET DEP$(1)=X$
+0570 DIM MSC$(G5+M1,"-"); LET X$="Miscellaneous"
+0575 IF LEN(MSC$)>LEN(X$) THEN LET MSC$(1+INT((LEN(MSC$)-LEN(X$))/2),LEN(X$))=X$ ELSE LET MSC$(1)=X$
+0580 LET SEQ$="D",ERRORS=0,GLSTATUS=0
+0600 REM " --- Additional file Opens
+0610 LET GL$="N",STATUS=0
+0620 CALL "GLC.BA",ERR=0630,SOURCE$,N2$,GLW11$,GL$,STATUS
+0630 IF STATUS<>0 THEN GOTO 9900
+0640 IF GL$<>"Y" THEN GOTO 0700
+0650 LET FILES$[11]="GLM-01",FILES$[12]=GLW11$,OPTIONS$[12]="CL"
+0660 CALL "SYC.DA",1,11,12,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STATUS
+0670 IF STATUS THEN GOTO 9900
+0680 LET GLM01_DEV=CHANNELS[11],GLW11_DEV=CHANNELS[12]
+0700 REM " --- Background
+0720 CALL "SYC.WC",1,0,80,0,0,4,0
+0740 PRINT 'SB',@(30,3),"Sequence:",'SF',
+0800 REM " --- Register Sequence"
+0820 LET V0$="S",V1$="C",V2$=SEQ$,V3$="DC",V4$="C=Cash Receipt Code   D=Receipt Date",V0=1,V1=40,V2=3
+0830 GOSUB 7000
+0840 ON V3 GOTO 0860,0800,0800,0800,0900
+0860 IF POS(V$="CD")=0 THEN GOTO 0800
+0870 LET SEQ$=V$
+0880 IF SEQ$="D" THEN LET HEADINGS$[2]="By Receipt Date" ELSE LET HEADINGS$[2]="By Cash Receipt Code"
+0900 REM " --- Correct?"
+0905 PRINT @(40,3),SEQ$,
+0910 LET V0$="Y",V1$="C",V2$="Y",V3$="",V4$="Is The Above Information Correct (Y/N)?",V0=1,V1=FNV(V4$),V2=22
+0920 GOSUB 7000
+0930 IF V3=4 THEN GOTO 9900
+0940 ON POS(V$="YN") GOTO 0900,0950,0800
+0950 REM " --- File initializations"
+0952 rem 'V6demo --- converting to use DocOut Object no need to open the printer
+0960 rem CALL "SYC.GA",7,1,"","",STATUS
+0970 rem IF STATUS THEN GOTO 9900
+0975 gosub setUp_docOut; gosub setReportHeadings; gosub setReportColumns
+0980 CALL "SYC.NB","Printing",M0+8,COLUMN
+0990 IF SEQ$="C" THEN GOSUB 6800
+1000 REM " --- Trip Read"
+1020 IF SEQ$="D" THEN READ (ARE01_DEV,KEY=N0$,DOM=1030)
+1030 IF SEQ$="C" THEN READ (ARW05_DEV,KEY=N0$,DOM=1040)
+1100 REM " --- Cash Receipt Code Sequence"
+1110 IF SEQ$<>"C" THEN GOTO 1200
+1120 LET ARW05_K$=KEY(ARW05_DEV,END=4000)
+1130 READ (ARW05_DEV)
+1140 IF POS(N0$=ARW05_K$)<>1 THEN GOTO 4000
+1150 READ (ARE01_DEV,KEY=N0$+ARW05_K$(6,12)+ARW05_K$(3,3)+ARW05_K$(18,8),DOM=1100)IOL=ARE01A
+1200 REM " --- Receipt Date Sequence"
+1210 IF SEQ$<>"D" THEN GOTO 1300
+1220 READ (ARE01_DEV,END=4000)IOL=ARE01A
+1230 IF A0$(1,2)<>N0$ THEN GOTO 4000
+1300 REM " --- Breaks"
+1320 IF SEQ$="C" AND A0$(15,3)<>CODE_T$ THEN GOSUB 6000
+1340 IF A0$(6,3)<>DATE_T$ THEN GOSUB 6200
+1500 REM " --- Print"
+1510 PRINT @(COLUMN,11),FNF$(A0$(9,P[0]),M0$)," ",A0$(18,7),
+1520 IF L+3>L9 THEN GOSUB 5000
+1530 GOSUB 6700
+1540 rem V6demo PRINT (7)@(0),FNF$(A0$(9,P[0]),M0$),@(25),A0$(15,3)
+1541 gosub detailLineOne
+1545 LET L=L+1
+1550 rem V6demo PRINT (7)@(0),B1$(1,30)," ",A0$(18,7),@(50+4*M1+G5),A0$(27,10),@(60+4*M1+G5),A[0]:M1$,
+1552 gosub detailLineTwoPayment
+1580 IF GL$="Y" THEN CALL "GLC.EA",A0$(6,3),"N",PERIOD$,YEAR$,GLSTATUS
+1600 IF A0$(26,1)="C" THEN LET CODE_T0=CODE_T0+A[0],DATE_T0=DATE_T0+A[0]
+1620 IF A0$(26,1)="$" THEN LET CODE_T1=CODE_T1+A[0],DATE_T1=DATE_T1+A[0]
+2000 REM " --- Detail"
+2010 REM " --- Invoice Record"
+2020 READ (ARE11_DEV,KEY=A0$(1,24),DOM=2030)
+2030 LET ARE11_K$=KEY(ARE11_DEV,END=GLRECORD)
+2040 IF ARE11_K$(1,24)<>A0$(1,24) THEN GOTO GLRECORD
+2060 READ (ARE11_DEV)IOL=ARE11A
+2200 REM 
+2220 IF L+1>L9 THEN GOSUB 5000
+2300 rem V6demo PRINT (7)@(40),W0$(26,7),@(48),W[0]:M1$,W[1]:M1$,W[0]+W[1]:M1$
+2305 gosub detailLineTwoInvoice
+2310 LET L=L+1
+2320 IF GLSTATUS>0 THEN CALL "GLC.GA",7,A0$(6,3),GLSTATUS,L,ERRORS,STATUS
+2330 LET GLSTATUS=0
+2350 IF A0$(6,3)<=G9$ THEN LET N=0 ELSE LET N=3
+2360 FOR X=0 TO 1
+2370 LET CODE_T[X]=CODE_T[X]+W[X],DATE_T[X]=DATE_T[X]+W[X],V[X+N]=V[X+N]+W[X]
+2380 NEXT X
+2400 REM " --- Invoice GL Breakdown"
+2410 GOSUB 6400; GOSUB 6500
+2430 LET REF1$=FNF$(A0$(9,P[0]),M0$),REF2$=W0$(18,7),REF3$=W0$(26,7)
+2435 LET ACCOUNT$=Z0$,GLDATE$=A0$(6,3),AMOUNT=-W[0],MEMO$=B1$(1,30)
+2440 GOSUB GLRECAP
+2450 LET ACCOUNT$=Z1$,GLDATE$=A0$(6,3),AMOUNT=W[0]
+2460 GOSUB GLRECAP
+2470 LET ACCOUNT$=Z2$,GLDATE$=A0$(6,3),AMOUNT=W[1]
+2475 GOSUB GLRECAP
+2480 LET ACCOUNT$=Z0$,GLDATE$=A0$(6,3),AMOUNT=-W[1]
+2485 GOSUB GLRECAP
+2490 GOTO 2030
+2500 REM " --- General Ledger Record"
+2510 GLRECORD:
+2520 READ (ARE21_DEV,KEY=A0$(1,24),DOM=2530)
+2530 LET ARE21_K$=KEY(ARE21_DEV,END=3000)
+2540 IF ARE21_K$(1,24)<>A0$(1,24) THEN GOTO 3000
+2560 READ (ARE21_DEV)IOL=ARE21A
+2580 REM 
+2590 IF L+1>L9 THEN GOSUB 5000
+2600 rem V6demo PRINT (7)@(48+3*M1),FNF$(W0$(26,G[3]),G5$),W[0]:M1$
+2502 gosub detailLineTwoGLAccount
+2605 LET L=L+1
+2610 IF GLSTATUS>0 THEN CALL "GLC.GA",7,A0$(6,3),GLSTATUS,L,ERRORS,STATUS
+2615 LET GLSTATUS=0
+2620 IF A0$(6,3)<=G9$ THEN LET N=0 ELSE LET N=3
+2630 LET CODE_T[2]=CODE_T[2]+W[0],DATE_T[2]=DATE_T[2]+W[0],V[2+N]=V[2+N]+W[0]
+2640 GOSUB 6400; GOSUB 6500
+2650 LET ACCOUNT$=W0$(26,G[4]),GLDATE$=A0$(6,3),AMOUNT=W[0],REF3$=""
+2655 LET REF1$=FNF$(A0$(9,P[0]),M0$),REF2$=A0$(18,7),MEMO$=B1$(1,30)
+2660 GOSUB GLRECAP
+2670 LET ACCOUNT$=Z1$,GLDATE$=A0$(6,3),AMOUNT=-W[0]
+2680 GOSUB GLRECAP
+2690 GOTO 2530
+3000 REM " --- Transaction End"
+3005 IF L+2>L9 THEN GOSUB 5000; GOTO 3090
+3010 rem V6demo PRINT (7)'LF',
+3015 gosub blankLine
+3020 LET L=L+1
+3090 GOTO 1100
+4000 REM " --- Totals"
+4010 IF H=0 THEN GOSUB 5000
+4020 LET T9$="E"
+4030 IF SEQ$="C" THEN GOSUB 6000
+4040 IF SEQ$="D" THEN GOSUB 6200
+4050 IF L+5>L9 THEN GOSUB 5000
+4060 rem V6demo PRINT (7)'LF',@(16),"Register Total:",@(48),V[0]+V[3]:M1$,V[1]+V[4]:M1$,V[0]+V[1]+V[3]+V[4]:M1$,@(48+3*M1+G5),V[2]+V[5]:M1$,@(60+4*M1+G5),V[0]-V[2]+V[3]-V[5]:M1$
+4065 gosub registerTotalLine
+4080 rem V6demo PRINT (7)'LF',@(20),"MTD Totals:",@(48),U[0]+V[0]:M1$,U[1]+V[1]:M1$,U[0]+U[1]+V[0]+V[1]:M1$,@(48+3*M1+G5),U[2]+V[2]:M1$,@(60+4*M1+G5),U[0]-U[2]+V[0]-V[2]:M1$
+4085 gosub mtdTotalLine
+4090 rem V6demo PRINT (7)@(13),"Next Month Totals:",@(48),U[3]+V[3]:M1$,U[4]+V[4]:M1$,U[3]+U[4]+V[3]+V[4]:M1$,@(48+3*M1+G5),U[5]+V[5]:M1$,@(60+4*M1+G5),U[3]-U[5]+V[3]-V[5]:M1$
+4095 gosub nmtdTotalLine
+4100 REM " --- Run Overlay"
+4110 LET PAGE=H,UPDATE$="ARU.AA"
+4120 PRINT @(0,10),'CE',
+4130 rem V6demo render the docout object
+4140 gosub showReport
+4180 IF GL$="Y" THEN RUN "GLR.XA.docout"
+4190 RUN UPDATE$,ERR=9900
+5000 REM " --- Heading"
+5005 return;rem V6demo
+5010 CALL "SYC.HA",7,HEADINGS$[ALL],HEADINGS,H,WIDTH,WHEN$,CLOCK$,STATUS
+5020 IF STATUS>0 THEN EXITTO 9900
+5030 LET L=HEADINGS+1
+5100 PRINT (7)'LF',"Customer",@(25),"Rec",@(32),"Check",@(40),"Invoice",@(41+M1),"Cash",@(39+2*M1),"Discount",@(40+3*M1),"Total",@(48+3*M1),MSC$,@(50+G5+4*M1),DEP$
+5120 PRINT (7)@(0),"Number And Name",@(25),"Code",@(32),"Number",@(40),"Number",@(40+M1),"Amount",@(40+2*M1),"Amount",@(40+3*M1),"Credit",@(48+3*M1),"Acct",@(48+G5+4*M1-7),"Amount",@(50+G5+4*M1),"ABA Number",@(60+G5+5*M1-7),"Amount",'LF'
+5140 LET L=L+4
+5190 RETURN
+5200 REM " --- Cash Receipt Code Heading"
+5220 rem V6demo PRINT (7)@(0),"Receipt Code: ",CODE_T$,"  ",R0$(7,20),'LF'
+5225 gosub receiptCodeLine
+5240 LET L=L+2
+5290 RETURN
+5300 REM " --- Receipt Date Heading"
+5320 rem V6demo PRINT (7)@(0),"Receipt Date: ",FNB$(DATE_T$),'LF'
+5325 gosub receiptDateLine
+5340 LET L=L+2
+5390 RETURN
+6000 REM " --- Cash Receipt Code Break"
+6005 IF SEQ$<>"C" THEN GOTO 6190
+6010 IF CODE_T$="" THEN GOTO 6100
+6020 IF T9$="" THEN LET T9$="A"
+6030 GOSUB 6200
+6040 IF T9$="A" THEN LET T9$=""
+6050 IF L+4>L9 THEN GOSUB 5000
+6060 rem V6demo PRINT (7)@(50+4*M1+G5),"Checks:",@(60+4*M1+G5),CODE_T0:M1$,'LF',@(8),"Receipt Code ",CODE_T$," Total:",@(48),CODE_T[0]:M1$,CODE_T[1]:M1$,CODE_T[0]+CODE_T[1]:M1$,@(48+3*M1+G5),CODE_T[2]:M1$,@(50+4*M1+G5),"Cash:",@(60+4*M1+G5),CODE_T1:M1$,'LF',@(50+4*M1+G5),"Deposit:",@(60+4*M1+G5),CODE_T[0]-CODE_T[2]:M1$,'LF'
+6065 gosub receiptCodeTotalLine
+6070 LET L=L+4
+6080 LET DATE_T$=""
+6100 IF T9$<>"" THEN RETURN
+6120 DIM CODE_T[2]
+6140 LET CODE_T$=A0$(15,3),CODE_T0=0,CODE_T1=0
+6160 GOSUB 6400
+6170 GOSUB 5000
+6180 GOSUB 5200
+6190 RETURN
+6200 REM " --- Receipt Date Break"
+6210 IF DATE_T$="" THEN GOTO 6300
+6240 IF L+4>L9 THEN GOSUB 5000
+6250 IF SEQ$="D" THEN LET X$=FNB$(DATE_T$)+" Daily Total:" ELSE LET X$="   "+FNB$(DATE_T$)+" Subtotal:"
+6260 rem V6demo PRINT (7)@(50+4*M1+G5),"Checks:",@(60+4*M1+G5),DATE_T0:M1$,'LF',@(10),X$,@(48),DATE_T[0]:M1$,DATE_T[1]:M1$,DATE_T[0]+DATE_T[1]:M1$,@(48+3*M1+G5),DATE_T[2]:M1$,@(50+4*M1+G5),"Cash:",@(60+4*M1+G5),DATE_T1:M1$,'LF',@(50+4*M1+G5),"Deposit:",@(60+4*M1+G5),DATE_T[0]-DATE_T[2]:M1$,'LF'
+6265 gosub receiptDateTotalLine
+6270 LET L=L+4
+6300 IF T9$<>"" THEN RETURN
+6320 DIM DATE_T[2]
+6340 LET DATE_T$=A0$(6,3),DATE_T0=0,DATE_T1=0
+6370 IF SEQ$="D" OR L+4>L9 THEN GOSUB 5000
+6380 GOSUB 5300
+6390 RETURN
+6400 REM " --- Get Cash Receipt Code"
+6420 DIM R0$(30),Z0$(2*G[4])
+6440 FIND (ARM10_DEV,KEY=N0$+"C"+A0$(15,3),DOM=6450)IOL=ARM10C
+6460 LET Z1$=Z0$(1,G[4]),Z2$=Z0$(G[4]+1,G[4])
+6490 RETURN
+6500 REM " --- Get Invoice Distribution Code"
+6520 DIM Z0$(8*G[4],"0"),X$(40)
+6530 IF W0$(26,2)="OA" THEN GOTO 6600
+6540 FIND (ART01_DEV,KEY=N0$+"  "+W0$(9,6)+W0$(26,7)+"00",DOM=6580)IOL=ART01A
+6560 FIND (ARM10_DEV,KEY=N0$+"D"+X$(20,2),DOM=6570)IOL=ARM10D
+6580 LET Z0$=Z0$(1,G[4]),X$=""
+6590 RETURN
+6600 REM " --- Get Customer Default Distribution Code"
+6640 FIND (ARM02_DEV,KEY=N0$+W0$(9,6)+"  ",DOM=6680)IOL=ARM02A
+6660 FIND (ARM10_DEV,KEY=N0$+"D"+X$(8,2),DOM=6670)IOL=ARM10D
+6680 LET Z0$=Z0$(1,G[4]),X$=""
+6690 RETURN
+6700 REM " --- Find Customer"
+6720 DIM B1$(30)
+6740 LET B1$(1)="Not On File"
+6760 FIND (ARM01_DEV,KEY=N0$+A0$(9,6),DOM=6780)IOL=ARM01A
+6790 RETURN
+6800 REM " --- Build ARW-05 Cash Receipts Work File"
+6802 CALL "SYC.FA",ARW05_DEV
+6806 PRINT 'SB',@(COLUMN-9,11)," Sorting",'SF',
+6810 READ (ARE01_DEV,KEY=N0$,DOM=6820)
+6820 LET K$=KEY(ARE01_DEV,END=6890)
+6830 IF K$(1,2)<>N0$ THEN GOTO 6890
+6840 READ (ARE01_DEV,END=6890)
+6870 LET Z$=K$(1,2)+K$(15,3)+K$(3,12)+K$(18,8)
+6875 PRINT @(COLUMN,11),FNF$(K$(9,P[0]),M0$)," ",K$(18,7),
+6880 WRITE (ARW05_DEV,KEY=Z$)IOL=ARW05A
+6885 GOTO 6820
+6890 PRINT 'SB',@(COLUMN-9,11),"Printing",'SF',
+6895 RETURN
+6900 REM " --- Standard G/L Recap Routine"
+6910 GLRECAP:
+6920 IF GL$<>"Y" THEN GOTO 6990
+6950 CALL "GLC.AA",GLM01_DEV,GLW11_DEV,GLT05_DEV,ACCOUNT$,GLDATE$,REF1$,REF2$,REF3$,MEMO$,AMOUNT,UNITS,STATUS
+6990 RETURN
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions
+8010 DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+8020 DEF FNB$(Q1$)=FNA$(Q1$(2),Q1$)+"/"+FNA$(Q1$(3),Q1$)+"/"+FNA$(Q1$(1),Q1$)
+8080 DEF FNV(Q$)=42+INT(LEN(Q$)/2)
+8145 REM " --- FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+8150 DEF FNYY21_YY$(Q1$)
+8155 LET Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+8160 RETURN Q1$
+8165 FNEND
+8170 REM " --- FNYY_YEAR Convert 2-Char Year to 21st Century Numeric Year"
+8175 DEF FNYY_YEAR(Q1$)
+8180 LET Q=NUM(FNYY21_YY$(Q1$)); IF Q<50 THEN LET Q=Q+100
+8185 RETURN Q
+8190 FNEND
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF:
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 SETERR 9000
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9800 REM " --- Display Parameter record error"
+9810 LET LINE_ERR$=LST(PGM(TCB(5)))
+9820 CALL "SYC.YA",LINE_ERR$,N2$,ERR
+9900 RUN "SYS.AA"
+9999 END
+
+13000 rem ' *****************************************************
+13010 rem ' set up the DocOut object
+13020 rem ' *****************************************************
+13030 setup_docOut:
+13040 use ::sys/prog/bao_document.bbj::Document
+13060 declare Document doc!
+13080 declare BBjVector out!
+13090 doc! = new Document()
+13110 out! = bbjAPI().makeVector()
+13120 rem ' *****************************************************
+13130 rem ' * Prep docout
+13140 rem ' *****************************************************
+13150 xUserName$ = "guest"
+13160 xUserPwd$ = ""
+13180 doc!.setUserID(xUserName$)
+13190 doc!.setPassword(xUserPwd$)
+13200 doc!.setFirmID(N0$)
+13210 doc!.setLanguage("ENU")
+13220 doc!.setDocumentID("CASH_RECPT_" + N0$)
+13225 docname$ = n0$+"_CashReceiptsRegister"
+13230 doc!.setReportTitle(docname$)
+
+13240 return
+
+
+13500 rem ' *****************************************************
+13510 rem ' * Set Report Headings
+13520 rem ' *****************************************************
+13530 setReportHeadings:
+13540 for headcnt = 0 to headings
+13550 	if cvs(headings$[headcnt],3) <> "" then
+13560		doc!.addReportHeading(headings$[headcnt])
+13570	endif
+13580 next headcnt
+13590 return
+
+
+14000 rem ' *****************************************************
+14010 rem ' * Set Report Columns
+14020 rem ' *****************************************************
+14030 rem ' column are set up here 
+14040 setReportColumns:
+14050 	doc!.addColumn("Customer^Number And Name", "C", 35, 120, "", "E", "L", "")
+14060	doc!.addColumn("Rec^Code", "C", 8, 50, "", "E", "L", "")
+14070	doc!.addColumn("Check^Number", "C", 8, 50, "", "E", "L", "")
+14080	doc!.addColumn("Invoice^Number", "C", 7, 70, "", "E", "L", "")
+14090	doc!.addColumn("Cash^Amount", "N", 12, 110, "-####,##0.00", "N", "R", "")
+14100	doc!.addColumn("Discount^Amount", "N", 8, 110, "-##0.00", "N", "R", "")
+14210	doc!.addColumn("Total^Credit", "N", 12, 110, "-####,##0.00", "N", "R", "")
+14320	doc!.addColumn("Miscellaneous^Acct", "C", 12, 90, "", "E", "L", "")
+14430	doc!.addColumn("Miscellaneous^Amount", "N", 12, 110, "-####,##0.00", "N", "R", "")
+14440	doc!.addColumn("Deposit^ABA Number", "C", 12, 90, "", "E", "L", "")
+14450	doc!.addColumn("Deposit^Amount", "N", 12, 110, "-####,##0.00", "N", "R", "")
+14460	repCols = 11
+14470 return
+
+
+14600 rem ' *****************************************************
+14610 rem ' * add a blank line
+14620 rem ' *****************************************************
+14630 blankLine:
+14640 for columnItem = 1 to repCols
+14650	out!.addItem("")
+14660 next columnItem
+14670 return
+
+
+14800 rem ' *****************************************************
+14810 rem ' * add the receipt date line to the report
+14820 rem ' *****************************************************
+14830 receiptDateLine:
+14840 gosub blankLine
+14850 receiptDate$ = "Receipt Date: " + FNB$(DATE_T$)
+14860 out!.addItem(receiptDate$)
+14870 for columnItem = 2 to repCols
+14880	out!.addItem("")
+14890 next columnItem
+14900 gosub blankline
+14910 return
+
+
+15000 rem ' *****************************************************
+15010 rem ' * add detail line one
+15020 rem ' *****************************************************
+15030 detailLineOne:
+15040 out!.addItem(FNF$(A0$(9,P[0]),M0$))
+15050 out!.addItem(A0$(15,3))
+15060 for columnItem = 3 to repCols
+15070	out!.addItem("")
+15080 next columnItem
+15090 return
+
+
+15200 rem ' *****************************************************
+15210 rem ' * add detail line two payment
+15220 rem ' *****************************************************
+15230 detailLineTwoPayment:
+15240 out!.addItem(B1$(1,30))
+15250 out!.addItem("")
+15260 out!.addItem(A0$(18,7))
+15270 out!.addItem("")
+15280 out!.addItem("")
+15290 for columnItem = 6 to 9
+15300	out!.addItem("")
+15310 next columnItem
+15320 out!.addItem(cvs(A0$(27,14),3))
+15330 out!.addItem(str(A[0]))
+15340 return
+
+15400 rem ' *****************************************************
+15410 rem ' * add detail line two invoice
+15420 rem ' *****************************************************
+15430 detailLineTwoInvoice:
+15440 out!.addItem("")
+15450 out!.addItem("")
+15460 out!.addItem("")
+15470 out!.addItem(W0$(26,7))
+15480 out!.addItem(str(W[0]))
+15490 out!.addItem(str(W[1]))
+15500 out!.addItem(str(W[0] + W[1]))
+15510 out!.addItem("")
+15520 out!.addItem("")
+15530 out!.addItem("")
+15540 out!.addItem("")
+15550 return
+
+
+15700 rem ' *****************************************************
+15710 rem ' * add detail line two GL Account
+15720 rem ' *****************************************************
+15730 detailLineTwoGLAccount:
+15740 out!.addItem("")
+15750 out!.addItem("")
+15760 out!.addItem("")
+15770 out!.addItem("")
+15780 out!.addItem("")
+15790 out!.addItem("")
+15800 out!.addItem("")
+15810 out!.addItem(FNF$(W0$(26,G[3]),G5$))
+15820 out!.addItem(str(W[0]))
+15830 out!.addItem("")
+15840 out!.addItem("")
+15850 return
+
+
+16000 rem ' *****************************************************
+16010 rem ' * add the receipt code line to the report
+16020 rem ' *****************************************************
+16030 receiptCodeLine:
+16040 gosub blankLine
+16050 receiptCode$ = "Receipt Code: " + CODE_T$ + " " + R0$(7,20)
+16060 out!.addItem(receiptCode$)
+16070 for columnItem = 2 to repCols
+16080	out!.addItem("")
+16090 next columnItem
+16100 gosub blankline
+16110 return
+
+
+16300 rem ' *****************************************************
+16310 rem ' * add the register total line 
+16320 rem ' *****************************************************
+16330 registerTotalLine:
+16340 gosub blankLine
+16350 out!.addItem("")
+16360 out!.addItem("Register Total:")
+16370 out!.addItem("")
+16380 out!.addItem("")
+16390 out!.addItem(str(V[0]+V[3]))
+16400 out!.addItem(str(V[1]+V[4]))
+16410 out!.addItem(str(V[0]+V[1]+V[3]+V[4]))
+16420 out!.addItem("")
+16430 out!.addItem(str(V[2]+V[5]))
+16440 out!.addItem("")
+16450 out!.addItem(str(V[0]-V[2]+V[3]-V[5]))
+16460 gosub blankline
+16470 return
+
+
+16600 rem ' *****************************************************
+16610 rem ' * add the mtd total line 
+16620 rem ' *****************************************************
+16630 mtdTotalLine:
+16640 gosub blankLine
+16650 out!.addItem("")
+16660 out!.addItem("MTD Totals:")
+16670 out!.addItem("")
+16680 out!.addItem("")
+16690 out!.addItem(str(U[0]+V[0]))
+16700 out!.addItem(str(U[1]+V[1]))
+16810 out!.addItem(str(U[0]+U[1]+V[0]+V[1]))
+16820 out!.addItem("")
+16830 out!.addItem(str(U[2]+V[2]))
+16840 out!.addItem("")
+16850 out!.addItem(str(U[0]-U[2]+V[0]-V[2]))
+16860 gosub blankline
+16870 return
+
+
+17000 rem ' *****************************************************
+17010 rem ' * add the next month td total line 
+17020 rem ' *****************************************************
+17030 nmtdTotalLine:
+17040 out!.addItem("")
+17050 out!.addItem("Next Month Totals:")
+17060 out!.addItem("")
+17070 out!.addItem("")
+17080 out!.addItem(str(U[3]+V[3]))
+17090 out!.addItem(str(U[4]+V[4]))
+17100 out!.addItem(str(U[3]+U[4]+V[3]+V[4]))
+17110 out!.addItem("")
+17120 out!.addItem(str(U[5]+V[5]))
+17130 out!.addItem("")
+17140 out!.addItem(str(U[3]-U[5]+V[3]-V[5]))
+17150 gosub blankline
+17160 return
+
+
+17300 rem ' *****************************************************
+17310 rem ' * add the receipt code total lines 
+17320 rem ' *****************************************************
+17330 receiptCodeTotalLine:
+17340 rem ' first line
+17350 out!.addItem("")
+17360 out!.addItem("")
+17370 out!.addItem("")
+17380 out!.addItem("")
+17390 out!.addItem("")
+17400 out!.addItem("")
+17410 out!.addItem("")
+17420 out!.addItem("")
+17430 out!.addItem("")
+17440 out!.addItem("Checks:")
+17450 out!.addItem(str(CODE_T0))
+17460 rem ' second line
+17470 out!.addItem("")
+17480 linelabel$ = "Receipt Code " + CODE_T$ + " Total:"
+17490 out!.addItem(linelabel$)
+17500 out!.addItem("")
+17510 out!.addItem("")
+17520 out!.addItem(str(CODE_T[0]))
+17530 out!.addItem(str(CODE_T[1]))
+17540 out!.addItem(str(CODE_T[0]+CODE_T[1]))
+17550 out!.addItem("")
+17560 out!.addItem(str(CODE_T[2]))
+17570 out!.addItem("Cash:")
+17580 out!.addItem(str(CODE_T1))
+17590 rem ' third line
+17600 out!.addItem("")
+17610 out!.addItem("")
+17620 out!.addItem("")
+17630 out!.addItem("")
+17640 out!.addItem("")
+17650 out!.addItem("")
+17660 out!.addItem("")
+17670 out!.addItem("")
+17680 out!.addItem("")
+17690 out!.addItem("Deposit:")
+17700 out!.addItem(str(CODE_T[0]-CODE_T[2]))
+17710 gosub blankline
+17720 return
+
+
+17900 rem ' *****************************************************
+17910 rem ' * add the receipt date total lines 
+17920 rem ' *****************************************************
+17930 receiptDateTotalLine:
+17940 rem ' first line
+17950 out!.addItem("")
+17960 out!.addItem("")
+17970 out!.addItem("")
+17980 out!.addItem("")
+17990 out!.addItem("")
+18000 out!.addItem("")
+18010 out!.addItem("")
+18020 out!.addItem("")
+18030 out!.addItem("")
+18040 out!.addItem("Checks:")
+18050 out!.addItem(str(DATE_T0))
+18060 rem ' second line
+18070 out!.addItem("")
+18080 out!.addItem(X$)
+18090 out!.addItem("")
+18100 out!.addItem("")
+18110 out!.addItem(str(DATE_T[0]))
+18120 out!.addItem(str(DATE_T[1]))
+18130 out!.addItem(str(DATE_T[0]+DATE_T[1]))
+18140 out!.addItem("")
+18150 out!.addItem(str(DATE_T[2]))
+18160 out!.addItem("Cash:")
+18170 out!.addItem(str(DATE_T1))
+18180 rem ' third line
+18190 out!.addItem("")
+18200 out!.addItem("")
+18210 out!.addItem("")
+18220 out!.addItem("")
+18230 out!.addItem("")
+18240 out!.addItem("")
+18250 out!.addItem("")
+18260 out!.addItem("")
+18270 out!.addItem("")
+18280 out!.addItem("Deposit:")
+18290 out!.addItem(str(DATE_T[0]-DATE_T[2]))
+18300 gosub blankline
+18310 return
+
+
+18500 rem ' *****************************************************
+18510 rem ' * launch report
+18520 rem ' *****************************************************
+18530 showReport:
+18555 doc!.setOutputData(out!)
+18570 doc!.process()
+
+18690 return

@@ -128,7 +128,7 @@ rem --- create an AR company aging totals bar chart
 rem ==============================================
     dashboard_menu_id$="ADD_ARAGINGTOT_BAR"
     gosub get_security
-    if allow_widget$="Y" and installMap!.get("GL")="Y"
+    rem V6demo --- if allow_widget$="Y" and installMap!.get("GL")="Y"
         name$="ARAGINGTOT_BAR"
         title$ = Translate!.getTranslation("AON_AR_CO_LAST_AGING_TOTALS")
         previewText$=Translate!.getTranslation("AON_AR_CO_TOTALS_LAST_AGING")
@@ -141,7 +141,7 @@ rem ==============================================
         legend=0
 
         rem --- params for calling SPROC
-        sql$="CALL ARAGINGTOT_BAR ('"+firm_id$+"', '"+masks$+"', '"+barista_wd$+"')"
+        sql$="CALL ARAGINGTOT_BAR_60 ('"+firm_id$+"', '"+masks$+"', '"+barista_wd$+"')"
 
         agingTotalsBarDashboardWidget! = BarUtils.addBarChartDashboardWidget(acctDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,sql$)
         agingTotalsWidget!=agingTotalsBarDashboardWidget!.getWidget()
@@ -156,7 +156,7 @@ rem ==============================================
         agingTotalsBarDashboardWidget!.setCallback(DashboardWidget.getON_WIDGET_CLICK(),pgm(-2) + "::OnARLastAgingTotalsChartWidgetClick")
 
         gosub update_meter
-    endif
+    rem endif
     
 rem ==============================================
 rem --- create a yearly GL totals grid
@@ -486,7 +486,7 @@ rem ==============================================
 	
 	declare DashboardCategory   salesDashboardCategory!
 	
-	salesDashboardCategory! = aonDashboard!.addDashboardCategory("Sales",Translate!.getTranslation("AON_SALES")+" - V6")
+	salesDashboardCategory! = aonDashboard!.addDashboardCategory("Sales",Translate!.getTranslation("AON_SALES"))
 rem	salesDashboardCategory!.setMinWidgetWidth(500)
 rem	salesDashboardCategory!.setMaxWidgetWidth(2000)
 
@@ -523,7 +523,6 @@ rem ==========================================================
 	legend=1
 	chartTitle$ = ""
 	flat=0
-	connectString$=aon_url$
 	
 	rem --- params for calling SPROC
 	customer_nbr$ = "ALL"
@@ -1383,7 +1382,7 @@ OnARLastAgingTotalsChartWidgetClick:
             rem Build an SQL query to return customers with largest aging for selected aging period
             aging_period$=pad(colKey$,10)
             num_to_list$ = "5"; rem <<============= HARDCODED =========
-            sql$ = "CALL ARAGING_BAR ('"+firm_id$+"', '"+aging_period$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"')"
+            sql$ = "CALL ARAGING_BAR_60 ('"+firm_id$+"', '"+aging_period$+"', '"+num_to_list$+"', '"+masks$+"', '"+barista_wd$+"')"
 
             rem Create an embedded bar chart widget with the agings for the customers
             name$ = "ARAGING_BAR"
@@ -1395,9 +1394,8 @@ OnARLastAgingTotalsChartWidgetClick:
             flat=0 
             orientation=BarChartWidget.getORIENTATION_VERTICAL() 
             legend=1
-            connectString$ = widget!.getConnectString()
                 
-            embeddedBarChartWidget! = EmbeddedWidgetFactory.createBarChartEmbeddedWidget(name$,title$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,connectString$,sql$)
+            embeddedBarChartWidget! = BarUtils.createBarChartEmbeddedWidget(name$,title$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,sql$)
 
             agingWidget!=embeddedBarChartWidget!.getWidget()
             agingWidget!.setFontScalingFactor(0.45)
@@ -1545,10 +1543,9 @@ OnIncCmpBarChartWidgetClick:
 			    else
 			            title$ = colKey$ + " " + cvs(account_desc$,3)
 			    endif
-                            connectString$ = widget!.getConnectString()
-                            
+ 
                             sql$ = "CALL GLACCTDET_GRD ('"+firm_id$+"', '"+year$+"', '"+period$+"', '"+account$+"', '"+masks$+"', '"+barista_wd$+"')"
-                            embeddedDBWidget! = EmbeddedWidgetFactory.createGridEmbeddedWidget(name$, title$, connectString$, sql$)
+                            embeddedDBWidget! = BarUtils.createGridEmbeddedWidget(name$, title$, sql$)
  	                    rem Set the grid's column widths
  	                    embeddedWidget! = embeddedDBWidget!.getWidget()
                      	    embeddedWidget!.setColumnWidthPercentages("20,40,20,20")
@@ -1829,7 +1826,6 @@ rem ==============================================
 
 	customEvent! = BBjAPI().getLastEvent()
 	linkSelectEvent! = customEvent!.getObject()
-	url$ = linkSelectEvent!.getURL();rem not using
 	dashboardWidget! = linkSelectEvent!.getDashboardWidget()
 	widget! = dashboardWidget!.getWidget()
 	

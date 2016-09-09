@@ -1,7 +1,7 @@
 rem ----------------------------------------------------------------------------
 rem Program: SATOPREP_SAR.prc  
-rem Description: Stored Procedure to build a resultset that aon_dashboard.bbj
-rem              can use to populate the given dashboard widget
+rem Description: Stored Procedure to build a resultset that adx_aondashboard.aon
+rem rem              can use to populate the given dashboard widget
 rem 
 rem              Data returned is each period's SA totals by Salesrep for a
 rem              given year for the top n salesreps. It's based on Sales 
@@ -21,13 +21,13 @@ rem Copyright BASIS International Ltd.
 rem ----------------------------------------------------------------------------
 rem
 rem
-rem V6demo --- modified by KEW to work for BASIS on Addon 6.0 Data
+rem V6demo --- modified to work on Addon 6.0 Data
 rem
 rem
 rem ----------------------------------------------------------------------------
     rem ' trace
     goto skip_trace;rem this out to do the trace
-    tfl$="C:/temp_downloads/sproctrace.txt"
+    tfl$="C:/temp_downloads/sproctrace_SATOPREP_SAR_60.txt"
     erase tfl$,err=*next
     string tfl$
     tfl=unt
@@ -74,17 +74,16 @@ rem --- Get the IN parameters used by the procedure
 	
 	firm_id$ =	sp!.getParameter("FIRM_ID")
 	barista_wd$ = sp!.getParameter("BARISTA_WD")
-	masks$ = sp!.getParameter("MASKS")
-	
+
 	rem --- added code by kew
 	REM " --- FNYEAR_YY21$ Convert Numeric Year to 21st Century 2-Char Year"
 	DEF FNYEAR_YY21$(Q)=FNYY_YY21$(STR(MOD(Q,100):"00"))
 	REM " --- FNYY_YY21$ Convert 2-Char Year to 21st Century 2-Char Year"
 	DEF FNYY_YY21$(Q1$)
-	LET Q3$=" ABCDE56789ABCDEFGHIJ",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+	LET Q3$=" AB23456789ABCDEFGHIJ",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABCDEFGHIJ"))
 	RETURN Q1$
 	FNEND
-
+	
 	year$ = fnyear_yy21$(num(year$))
 
 rem --- dirs	
@@ -96,159 +95,137 @@ rem --- Get Barista System Program directory
 	sypdir$=stbl("+DIR_SYP",err=*next)
 	pgmdir$=stbl("+DIR_PGM",err=*next)
 	
-rem --- masks$ will contain pairs of fields in a single string mask_name^mask|
+rem --- create the in memory recordset for return
 
-	if len(masks$)>0
-		if masks$(len(masks$),1)<>"|"
-			masks$=masks$+"|"
-		endif
-	endif
-	
-rem --- Get masks
+    dataTemplate$ = "SALESREP:C(20*),PERIOD:C(6),TOTAL:C(7*)"
 
-	ar_amt_mask$=fngetmask$("ar_amt_mask","$###,###,##0.00-",masks$)	
+	rs! = BBJAPI().createMemoryRecordSet(dataTemplate$)
 
-rem --- Get number of periods used by fiscal calendar
+rem --- Open/Lock files via Barista for files defined in dictionary
+
+    files=3,begfile=1,endfile=files
+    dim files$[files],options$[files],ids$[files],templates$[files],channels[files]
+    files$[1]="SAM-03",ids$[1]="SAM03"
+    files$[2]="ARM-10",ids$[2]="ARM10F"
+
+    call pgmdir$+"adc_fileopen.aon",action,begfile,endfile,files$[all],options$[all],ids$[all],templates$[all],channels[all],batch,status
+    if status then
+        seterr 0
+        x$=stbl("+THROWN_ERR","TRUE")   
+        throw "File open error.",1001
+    endif
+
+    sam03a_dev=channels[1]
+    arm10f_dev=channels[2]
+    glparams_dev=channels[3]
+
+rem --- Dimension string templates
+
+    dim sam03a$:templates$[1]
+    dim arm10f$:templates$[2]
+
+rem --- Get number of periods and period end abbrs used by fiscal calendar
 
 	sql_prep$=""
-	sql_prep$=sql_prep$+"SELECT total_pers FROM gls_params "
+	sql_prep$=sql_prep$+"SELECT total_pers, abbr_name_01, abbr_name_02, abbr_name_03, abbr_name_04, abbr_name_05, abbr_name_06, "
+    sql_prep$=sql_prep$+"abbr_name_07, abbr_name_08, abbr_name_09, abbr_name_10, abbr_name_11, abbr_name_12, abbr_name_13 "
+    sql_prep$=sql_prep$+"FROM gls_params "
 	sql_prep$=sql_prep$+"WHERE firm_id='"+firm_id$+"' AND gl='GL' AND sequence_00='00'"
 
     tmprs!=BarUtils.getResultSet(sql_prep$)
+    periodAbbr!=BBjAPI().makeVector()
     
     while (tmprs!.next())
-        total_cal_periods= num(tmprs!.getString("total_pers"))
+        numGlPers = num(tmprs!.getString("total_pers"))
+        for period=1 to numGlPers
+            periodAbbr!.addItem(tmprs!.getString("abbr_name_"+str(period:"00")))
+        next period
     wend
     
     tmprs!.close(err=*next)
-	
-rem --- create the in memory recordset for return to the widget
-
-	dataTemplate$ = "SALESREP:C(25*),PERIOD:C(6),TOTAL:N(10)"
-
-	rs! = BBJAPI().createMemoryRecordSet(dataTemplate$)
-	
-rem --- Build the SELECT statement to be returned to caller
-
-	sql_prep$ = ""
-
-	rem --- Build wrapper/outer query segements
-	rem ---------------------------------------
-	
-	rem --- Values for the SPROC return assignments
-	sql_prep$ = sql_prep$+"SELECT topReps.v6_slspsn_code, LEFT(topReps.rep_name,15) AS rep_name "
-	sql_prep$ = sql_prep$+" 	, perTots.period , perTots.total "
-	sql_prep$ = sql_prep$+"FROM "
-	
-	rem --- Build query to determine TOP n reps for the year (based on total sales for the year)
-	rem ---------------------------------------
-	
-	sql_prep$ = sql_prep$+"  (SELECT TOP "+str(num_to_list)+" rep.v6_slspsn_code "
-	sql_prep$ = sql_prep$+"              ,rep.rep_name "
-	sql_prep$ = sql_prep$+"              ,ROUND(SUM(rep.total),2) AS total "
-	sql_prep$ = sql_prep$+"   FROM "
-	sql_prep$ = sql_prep$+"     (SELECT  "
-	sql_prep$ = sql_prep$+"          r.v6_slspsn_code "
-	
-	sql_prep$ = sql_prep$+"	   	    ,c.v6_code_desc AS rep_name "
-	
-	sql_prep$ = sql_prep$+"	        ,(r.v6_tot_sales_01 "
-	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_02 "
-	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_03 "
-	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_04 "
-	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_05 "
-	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_06 "
-	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_07 "
-	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_08 "
-	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_09 "
-	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_10 "
-	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_11 "
-	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_12 "
-	sql_prep$ = sql_prep$+"		     +r.v6_tot_sales_13 "
-	
-	sql_prep$ = sql_prep$+"		      ) AS total "
-	
-	sql_prep$ = sql_prep$+"		 FROM SAM03 r "; rem r for rep
     
-	sql_prep$ = sql_prep$+"      LEFT JOIN ARM10F c "; rem c for code
-	sql_prep$ = sql_prep$+"        ON c.v6_firm_id=r.v6_firm_id "
-	sql_prep$ = sql_prep$+"       AND c.v6_slspsn_code=r.v6_slspsn_code "
-	sql_prep$ = sql_prep$+"      WHERE r.v6_firm_id='"+firm_id$+"' AND r.v6_year='"+year$+"' AND c.v6_record_id_f = 'F' "
-		
-	sql_prep$ = sql_prep$+"     ) AS rep	 "
-	sql_prep$ = sql_prep$+"   GROUP BY rep.v6_slspsn_code,rep.rep_name "
-	sql_prep$ = sql_prep$+"   ORDER BY total DESC "
-	sql_prep$ = sql_prep$+"  ) AS topReps "
-	
-	
-	rem --- Join TopRep query with period totals query (not yet built)
-	rem ---------------------------------------
-	sql_prep$ = sql_prep$+"LEFT JOIN "
-	sql_prep$ = sql_prep$+"  ("
-		
-	rem --- Build query to get Sales for each period for each sales rep
-	rem ---------------------------------------	
-	
-	rem --- Loop through periods UNIONing queries for ea period
-	for per=1 to total_cal_periods
-		
-		per_num$=str(per:"00"), sort_per_num$=str(per:"00")
-		
-		per_name_abbr$="p.abbr_name_"+per_num$
-		period_amt$="r.v6_tot_sales_"+per_num$
-		gosub add_to_sql_prep_byPeriod
-	next per
+rem --- Get total sales and period sales by salesperson
+rem --- salesMap! key=total sales for salesperson, holds slspsnMap! (in case more than one salesperson with same total sales)
+rem --- slspsnMap! key=salesperson, holds periodSalesVect!
+rem --- periodSalesVect! holds salesperson's sales by period
+    salesMap!=new java.util.TreeMap()
+    slspsn_code$=""
+    product_type$=""
+    read(sam03a_dev,key=firm_id$+year$,dom=*next)
+    while 1
+        readrecord(sam03a_dev,end=*break)sam03a$
+        if sam03a.v6_firm_id$+sam03a.v6_year$<>firm_id$+year$ then break
 
-	rem --- Strip trailing "UNION "
-	if pos("UNION "=sql_prep$,-1)
-		sql_prep$=sql_prep$(1,len(sql_prep$)-6)
-	endif
+        if sam03a.v6_slspsn_code$<>slspsn_code$ then gosub slspsn_break
 
-	rem --- Add "ORDER BY and closing paren, name, and ON clause (for previous LEFT JOIN)"
+        thisSales=sam03a.v6_tot_sales_01+sam03a.v6_tot_sales_02+sam03a.v6_tot_sales_03+sam03a.v6_tot_sales_04+
+:                 sam03a.v6_tot_sales_05+sam03a.v6_tot_sales_06+sam03a.v6_tot_sales_07+sam03a.v6_tot_sales_08+
+:                 sam03a.v6_tot_sales_09+sam03a.v6_tot_sales_10+sam03a.v6_tot_sales_11+sam03a.v6_tot_sales_12+
+:                 sam03a.v6_tot_sales_13
 
-	sql_prep$ = sql_prep$+"  ) AS perTots "	
-	sql_prep$ = sql_prep$+"ON topReps.v6_slspsn_code=perTots.v6_slspsn_code "	
-	
-	rem --- Add final ORDER BY for outer query
-	rem ---------------------------------------		
-	sql_prep$ = sql_prep$+"ORDER BY topReps.v6_slspsn_code, perTots.period "	
+        thisSales=round(thisSales,2)
+        slspsnSales=slspsnSales+thisSales
+        for period=1 to numGlPers
+            periodSales=nfield(sam03a$,"V6_TOT_SALES_"+str(period:"00"))
+            periodSales=periodSalesVect!.get(period-1)+periodSales
+            periodSalesVect!.setItem(period-1,round(periodSales,2))
+        next period
+    wend
+    gosub slspsn_break
 
-rem --- Execute the query
-
-    qryRs!=BarUtils.getResultSet(sql_prep$)
-    
-    while (qryRs!.next())
-        data! = rs!.getEmptyRecordData()
-		data!.setFieldValue("SALESREP",qryRs!.getString("rep_name"))
-		data!.setFieldValue("PERIOD",qryRs!.getString("period"))
-		data!.setFieldValue("TOTAL",qryRs!.getString("total"))
-		rs!.insert(data!)    
-    wend	
+rem --- Build result set for top five salespersons by sales
+    if salesMap!.size()>0 then
+        topSlspsns=0
+        salesDeMap!=salesMap!.descendingMap()
+        salesIter!=salesDeMap!.keySet().iterator()
+        while salesIter!.hasNext()
+            slspsnSales=salesIter!.next()
+            slspsnMap!=salesDeMap!.get(slspsnSales)
+            slspsnIter!=slspsnMap!.keySet().iterator()
+            while slspsnIter!.hasNext()
+                slspsn_code$=slspsnIter!.next()
+                topSlspsns=topSlspsns+1
+                if topSlspsns>num_to_list then break
+                dim arm10f$:fattr(arm10f$)
+                findrecord(arm10f_dev,key=firm_id$+"F"+slspsn_code$,dom=*next)arm10f$
+                
+                periodSalesVect!=slspsnMap!.get(slspsn_code$)
+                for period=1 to numGlPers
+                    data! = rs!.getEmptyRecordData()
+                    data!.setFieldValue("SALESREP",arm10f.v6_code_desc$)
+                    data!.setFieldValue("PERIOD",str(period:"00")+"-"+periodAbbr!.get(period-1))
+                    data!.setFieldValue("TOTAL",str(periodSalesVect!.get(period-1)))
+                    rs!.insert(data!)
+                next period
+            wend
+            if topSlspsns>num_to_list then break
+        wend
+    endif
 
 rem --- Tell the stored procedure to return the result set.
 
 	sp!.setRecordSet(rs!)
 	goto std_exit
 
-rem --- Add SELECT to sql_prep$ based on include_type/gl_record_id (By Period)
-
-add_to_sql_prep_byPeriod:	
-
-	sql_prep$ = sql_prep$+"SELECT r.v6_slspsn_code, LEFT(c.v6_code_desc,15) AS rep_name  "
-	sql_prep$ = sql_prep$+",'"+sort_per_num$+"-'+"+per_name_abbr$+" AS period "; rem Prepended per num for sorting	
-	sql_prep$ = sql_prep$+",ROUND(sum("+period_amt$+"),2) AS Total "
-	sql_prep$ = sql_prep$+"FROM SAM03 r "; rem r for rep
-	sql_prep$ = sql_prep$+"LEFT JOIN ARM10F c "; rem c for code
-	sql_prep$ = sql_prep$+"  ON c.v6_firm_id=r.v6_firm_id "
-	sql_prep$ = sql_prep$+" AND c.v6_slspsn_code=r.v6_slspsn_code "
-	sql_prep$ = sql_prep$+"LEFT JOIN gls_params p ON r.v6_firm_id=p.firm_id "
-	sql_prep$ = sql_prep$+"WHERE r.v6_firm_id='"+firm_id$+"' AND r.v6_year='"+year$+"' AND c.v6_record_id_f = 'F' AND p.gl = 'GL' AND p.SEQUENCE_00 = '00' "
-	sql_prep$ = sql_prep$+"GROUP BY r.v6_slspsn_code, rep_name, period "
-
-	sql_prep$ = sql_prep$+"UNION "	
-
-	return
-
+slspsn_break: rem --- Salesperson break
+    if slspsn_code$<>"" then
+        if salesMap!.containsKey(slspsnSales) then
+            slspsnMap!=salesMap!.get(slspsnSales)
+        else
+            slspsnMap!=new java.util.HashMap()
+        endif
+        slspsnMap!.put(slspsn_code$,periodSalesVect!)
+        salesMap!.put(slspsnSales,slspsnMap!)
+    endif
+    
+    rem --- Initialize for next salesperson
+    slspsn_code$=sam03a.v6_slspsn_code$
+    slspsnSales=0
+    periodSalesVect!=BBjAPI().makeVector()
+    for period=1 to numGlPers
+        periodSalesVect!.addItem(0)
+    next period
+    return
 	
 rem --- Functions
 
@@ -298,7 +275,7 @@ rem --- fngetPattern$: Build iReports 'Pattern' from Addon Mask
 				if q1=len(q$)
 					q1$=q$(1,len(q$)-1)+";"+q$; rem Has negatives with minus at the end =>> ##0.00;##0.00-
 				else
-					q1$=q$(2,len(q$))+";"+q$; rem Has negatives with minus at the front =>> ##0.00;-##0.00
+					q1$=q$(2,len(q$)-1)+";"+q$; rem Has negatives with minus at the front =>> ##0.00;-##0.00
 				endif
 			endif
 			if pos("CR"=q$)=len(q$)-1

@@ -1,13 +1,27 @@
 Addon V6 Hybrid^AONV6^M^^^im_menua_miscellaneous.png^^00000000^V6H^^16.0^^^^^^^^
 	Digital Dashboard^AONV6_DASH^A^^adx_V6aondashboard.aon^im_menui_view.png^^00000000^V6H^^16.0^^^^^^^^
-	Miscellaneous^AONV6_MISC^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
-		Create V6 Record Template^AONV6_TPL^A^^[V6HYBRID_PROG]adx_V6gettemplate.aon^im_menui_utility.png^^00000000^V6H^^16.0^^^^^^^^
-		Addon V6 CUI^AONV6_CUI^P^^sys.za^im_menui_table.png^^00000000^V6H^^16.0^^^^-u%USERNAME% -m5160 -tT0 -q^C:/bbj/barista/sys/config/enu/barista.cfg^^^
-		List File Contents^AONV6LISTER^A^^adx_v6leadin.aon -- lister^im_menui_utility.png^^00000000^V6H^^16.0^^^^^^^^
-		Create Stored Procedure Definitions^AONV6_SPROCS^A^^[V6HYBRID_PROG]adx_V6build_sproc.aon^im_menui_utility.png^^00000000^V6H^^16.0^^^^^^^^
 	Accounts Receivable^AONV6_AR^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
+		Simple Invoice Entry^AONV6_SINV^A^^adx_v6leadin.aon - ARE.FA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+		Simple Invoice Printing^AONV6_SINV_P^A^^adx_v6leadin.aon - ARR.UA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+		Simple Invoice Register^AONV6_SINV_R^A^^adx_v6leadin.aon - ARR.VA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
 		Cash Receipts Entry^AONV6_CR^A^^adx_v6leadin.aon - ARE.AA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
-		Customer Maintenance^AONV6_CUSTMAST^A^^adx_v6leadin.aon - ARM.MA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
-		Customer Statements^AONV6_AR_STMTS^A^^adx_v6leadin.aon -- ARR.CA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+		Cash Receipts Register^AONV6_CR_R^A^^adx_v6leadin.aon - ARR.AA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+		Aging Report^AONV6_AGE_R^A^^adx_v6leadin.aon - ARR.4A^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+		Aging Analysis Report^AONV6_AGEANAL_R^A^^adx_v6leadin.aon - ARR.5A^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+		Age AR Transactions^AONV6_AGE_TRANS^A^^adx_v6leadin.aon - ARU.EA^im_menui_update.png^^00000000^V6H^^16.0^^^^^^^^
+		Credit Manager's Review and Release^AONV6_CRED_RVW^A^^adx_v6leadin.aon - ARM.QA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+		Reports^AONV6_AR_R^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
+		Period End Processing^AONV6_AR_END^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
+			Customer Statements^AONV6_AR_STMTS^A^^adx_v6leadin.aon -- ARR.CA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+		Maintenance^AONV6_AR_M^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
+			Customers^AONV6_AR_CUSTMAST^A^^adx_v6leadin.aon - ARM.MA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+			Salespersons^AONV6_ARSLS^A^^adx_v6leadin.aon - ARM.FA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
 	Purchase Orders^AONV6_PO^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
 		Purchase Order Entry^AONV6_POENTRY^A^^adx_v6leadin.aon - POE.BA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+	Miscellaneous^AONV6_MISC^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
+		F1 Reports^AONV6_F1^A^^adx_v6leadin.aon - V6D.AA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+		Create Stored Procedure Definitions^AONV6_SPROCS^A^^[V6HYBRID_PROG]adx_V6build_sproc.aon^im_menui_utility.png^^00000000^V6H^^16.0^^^^^^^^
+		Addon V6 CUI^AONV6_CUI^P^^sys.za^im_menui_table.png^^00000000^V6H^^16.0^^^^-u%USERNAME% -m5160 -tT0 -q^C:/bbj/barista/sys/config/enu/barista.cfg^^^
+	Utilities^V6AON_UTIL^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
+		List File Contents^AONV6_LSTR^A^^adx_v6leadin.aon - lister^im_menui_utility.png^^00000000^V6H^^16.0^^^^^^^^
+		Create V6 Record Template^AONV6_TMPL^A^^[V6HYBRID_PROG]adx_V6gettemplate.aon^im_menui_utility.png^^00000000^V6H^^16.0^^^^^^^^

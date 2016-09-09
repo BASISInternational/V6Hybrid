@@ -1,0 +1,529 @@
+0010 REM "GLR - G/L Recap Report"
+0020 REM "Program GLR.XA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.3 - 15May97 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0031 REM "02Jan97 JWK: Leaves GLM03_DEV misassigned for following overlays (180,4920,4930,6340)
+0032 REM "30Jul98 KJS: Incorrect variable name (120)
+0040 REM 
+0045 REM "This report overlay prints the standard ADD+ON G/L Summary"
+0050 REM 
+0055 REM "Input Arguments:"
+0057 REM 
+0060 REM "PAGE        : Current report page number (H)"
+0065 REM "WIDTH       : Report width in characters (H0)"
+0070 REM "UPDATE$     : Name of update overlay to run (or null)"
+0075 REM "GLW11_DEV   : Summary work file channel number"
+0080 REM "HEADINGS$[*]: Standard report headings array"
+0083 REM "ACTION$     : D = Perform date verification"
+0084 REM 
+0085 SETESC 9000
+0090 SETERR 9000
+0100 REM " --- Open/Lock Files"
+0110 LET GLFILES=1
+0120 DIM GLFILES$[GLFILES],GLOPTIONS$[GLFILES],GLCHANNELS[GLFILES]
+0130 LET GLFILES$[1]="GLM-03"
+0160 CALL "SYC.DA",1,1,1,GLFILES$[ALL],GLOPTIONS$[ALL],GLCHANNELS[ALL],BATCH,STATUS
+0170 IF STATUS THEN GOTO 9900
+0180 LET GLM03_DEVTMP=GLCHANNELS[1]
+0200 REM " --- IOLIST's"
+0210 GLM01A: IOLIST A0$(1),A1$(1)
+0220 GLM03A: IOLIST B0$(1),B1$,B[ALL]
+0230 GLW11A: IOLIST C0$(1),C1$(1),C2$,C[ALL]
+0260 GLS01A: IOLIST X$,G1$,G2$,G3$(1),G4$(1),GLM0$,GLM1$,GLM2$,GLM3$
+0400 REM " --- Parameters"
+0405 DIM GLCONTROL$(640)
+0410 LET GLCONTROL$(1)=STBL("!GLCONTROL",ERR=4900)
+0420 IF GLCONTROL$(49,1)<>"Y" THEN GOTO 4900
+0430 DIM GL[4],G3$(325),G4$(32)
+0435 LET REPORT$=GLCONTROL$(50,1)
+0440 FIND (SYS01_DEV,KEY=N0$+"GL00",DOM=9800)IOL=GLS01A
+0450 LET GL[0]=NUM(G2$(1,2)),GL[1]=NUM(G2$(3,2)),GL[2]=FNYY_YEAR(G2$(5,2))
+0460 LET GL[3]=NUM(G2$(7,2)),GL[4]=NUM(G2$(9,2))
+0500 REM " --- Initializations"
+0510 DIM A0$(2+GL[4]),A1$(40),B0$(32),B[2],HDR$(WIDTH)
+0520 DIM C0$(26+GL[4]),C1$(64),C[4],O[5],AT[1],DT[1],RT[1],GT[1],J0$(40,"0")
+0550 LET WHEN$=F0$(7,3),CLOCK$="",SEQUENCE$="A",DONE=0
+0560 IF G4$(7,1)="D" THEN LET SEQUENCE$="D"
+0570 LET T0$="",T1$="",T2$="",T3$="",L9=59,L=L9+1,L1=0,XF$="N"
+0580 LET M0=LEN(GLM0$),M1=LEN(GLM1$),M=M0,H0$="",H2$="",NUMBER=0
+0590 IF M<8 THEN LET M=8
+0600 REM " --- Initialize Print Positions"
+0605 LET O[5]=WIDTH-M1,O[4]=O[5]-M1
+0610 IF SEQUENCE$="A" THEN LET O[1]=9
+0615 IF SEQUENCE$="D" THEN LET O[1]=0
+0620 LET O[2]=O[1]+M+1
+0625 IF WIDTH>80 THEN GOTO 0645
+0630 LET O[3]=O[2],W=O[4]-O[2]-2
+0635 IF W>35 THEN LET W=35
+0640 GOTO 0650
+0645 LET O[3]=O[2]+37,W=35
+0650 REM " --- Build heading strings"
+0660 IF SEQUENCE$="A" THEN LET HDR$(O[0]+3)="Date"
+0670 LET HDR$(O[1]+1)="Account",HDR$(O[2]+1)="Description/Memo/Reference"
+0680 IF WIDTH>80 THEN LET HDR$(O[2]+1)="Description",HDR$(O[3]+1)="Memo/Reference"
+0690 LET HDR$(O[4]+1+M1-7)="Debits",HDR$(O[5]+1+M1-8)="Credits"
+0700 REM " --- Background"
+0710 FOR X=10 TO 12
+0720 PRINT @(0,X),'CL',
+0730 NEXT X
+0750 CALL "SYC.NB","Printing",M0+9,COLUMN
+0800 REM " --- Report Headings"
+0810 DIM WORK$[1]
+0820 LET WORK$[0]=HEADINGS$[0],WORK$[1]=HEADINGS$[1],HEADINGS=2
+0830 DIM HEADINGS$[HEADINGS]
+0840 LET HEADINGS$[0]=WORK$[0],HEADINGS$[1]=WORK$[1]
+0850 LET HEADINGS$[2]="General Ledger Summary"
+0870 rem ' prep the docout system
+0880 gosub setUp_docOut; gosub setReportHeadings; gosub setReportColumns
+0900 REM " --- Position File"
+0950 LET C0$(1)=N0$
+0990 READ (GLW11_DEV,KEY=C0$,DOM=1000,ERR=4000)
+1000 REM " --- Get next GLW-11 key"
+1010 LET K$=KEY(GLW11_DEV,END=4000)
+1020 IF POS(N0$=K$)=0 THEN GOTO 4000
+1030 LET GLSTATUS=0
+1200 REM " --- Read next GLW-11 record"
+1210 READ (GLW11_DEV,KEY=K$)IOL=GLW11A
+1300 REM " --- Display account being processed"
+1310 PRINT @(COLUMN,11),FNB6$(C0$(16,6))," ",FNF$(C0$(22,GL[3]),GLM0$)
+1400 REM " --- Level breaks?"
+1410 IF C0$(16,6)<>T0$ THEN GOSUB 6000
+1420 IF C0$(3,2)<>T1$ THEN GOSUB 6200
+1430 IF C0$(14,2)+C0$(12,2)<>T2$ THEN GOSUB 6400
+1440 IF C0$(16,GL[4]+6)<>T3$ THEN GOSUB 6600
+1500 REM " --- Print subheadings"
+1510 IF H0$<>"" THEN GOSUB 5300
+1520 IF H2$<>"" THEN GOSUB 5500
+2000 REM " --- Format detail line fields"
+2010 LET DEBITS=0,CREDITS=0,DEBIT$="",CREDIT$="",NUMBER=NUMBER+1
+2020 IF C[0]>=0 THEN LET DEBITS=C[0],DEBIT$=STR(C[0]:GLM1$)
+2030 IF C[0]<0 THEN LET CREDITS=C[0],CREDIT$=STR(ABS(C[0]):GLM1$)
+2040 LET MEMO$=C1$(31,30),REF1$=C1$(1,10)
+2050 LET REF2$=C1$(11,10),REF3$=C1$(21,10)
+2100 REM " --- Print detail line"
+2105 IF REPORT$<>"Y" THEN GOTO 2400
+2110 DIM BUF$(WIDTH)
+2120 IF L+2>L9 THEN GOSUB 5000
+2130 IF SEQUENCE$="A" THEN LET BUF$(O[0]+1)=FNB6$(C0$(16,6))
+2135 IF FNP$(C0$(22,GL[3]))="" THEN LET C0$(22,GL[3])=J0$(1,GL[4])
+2140 LET BUF$(O[1]+1)=FNF$(C0$(22,GL[3]),GLM0$)
+2145 LET BUF$(O[2]+1)=DESCRIPTION$
+2150 IF WIDTH>80 THEN LET BUF$(O[3]+1)=MEMO$
+2155 LET BUF$(O[4]+1)=DEBIT$,BUF$(O[5]+1)=CREDIT$
+2160 IF XF$="" THEN GOTO 2180
+2165 rem ' PRINT (7)""
+2167 gosub blankLine
+2168 if txt then print(txt)""
+2170 LET L=L+1,XF$=""
+2180 rem ' PRINT (7)BUF$
+2182 if txt then print(txt)buf$
+2184 gosub detailLine
+2190 LET L=L+1,L1=L1+1
+2200 REM " --- Print memo information?"
+2210 IF WIDTH>80 THEN GOTO 2300
+2220 IF FNP$(MEMO$)="" THEN GOTO 2300
+2225 IF L+1>L9 THEN GOSUB 5000
+2230 rem ' PRINT (7)@(O[3]),MEMO$
+2235 gosub memoLine
+2240 LET L=L+1
+2250 if txt then PRINT (txt)@(O[3]),MEMO$
+2300 REM " --- Print reference information?"
+2310 LET REF$=REF1$+" "+REF2$+" "+REF3$
+2320 IF FNP$(REF$)="" THEN GOTO 2400
+2325 IF L+1>L9 THEN GOSUB 5000
+2330 rem ' PRINT (7)@(O[3]),REF$
+2335 gosub refLine
+2340 LET L=L+1
+2350 if txt then PRINT (txt)@(O[3]),REF$
+2400 REM " --- Test date?"
+2410 IF GLSTATUS>0 THEN GOTO 2500
+2420 IF POS("D"=ACTION$)=0 THEN GOTO 2500
+2430 CALL "GLC.EA",C0$(16,6),"N",PERIOD$,YEAR$,GLSTATUS
+3000 REM " --- Print error message (if necessary)"
+3010 IF GLSTATUS>0 THEN CALL "GLC.GA",7,C0$(16,6),GLSTATUS,L,ERRORS,STATUS
+3500 REM " --- Accumulate totals"
+3510 LET AT[0]=AT[0]+DEBITS,AT[1]=AT[1]+CREDITS
+3520 LET DT[0]=DT[0]+DEBITS,DT[1]=DT[1]+CREDITS
+3530 LET GT[0]=GT[0]+DEBITS,GT[1]=GT[1]+CREDITS
+3540 LET RT[0]=RT[0]+DEBITS,RT[1]=RT[1]+CREDITS
+3900 REM " --- Loop back for next GLW-11 record"
+3990 GOTO 1000
+4000 REM " --- All Done"
+4010 LET DONE=1
+4020 IF SEQUENCE$="A" THEN GOSUB 6200
+4030 IF SEQUENCE$="D" THEN GOSUB 6000
+4040 LET TOTAL$="Total For Report",DEBITS=RT[0],CREDITS=RT[1]
+4050 LET BALANCE=DEBITS+CREDITS
+4060 IF BALANCE<>0 THEN LET REPORT$="Y"
+4070 IF REPORT$<>"Y" THEN GOTO 4200
+4080 IF L+2>L9 THEN GOSUB 5000
+4090 GOSUB 6800
+4100 REM " --- Debits = Credits?"
+4110 IF BALANCE=0 THEN GOTO 4200
+4130 rem ' PRINT (7)lf$,"---> WARNING: This report is out of balance by ",BALANCE:GLM1$
+4140 gosub warningLine
+4150 if txt then PRINT (txt)lf$,"---> WARNING: This report is out of balance by ",BALANCE:GLM1$
+4190 GOTO 4800
+4200 REM " --- Any G/L transaction date errors detected in lead overlay?"
+4210 IF ERRORS=0 THEN GOTO 4900
+4800 REM " --- Register errors"
+4810 DIM MESSAGE$[2]
+4820 LET MESSAGE$[0]="Errors Were Reported During The Generation Of The G/L Summary"
+4830 LET MESSAGE$[1]="Report. The Update Will Not Be Run. Review The Register,"
+4840 LET MESSAGE$[2]="Correct The Errors And Reprint (<Enter>=Continue)"
+4850 CALL "SYC.XA",2,MESSAGE$[ALL],2,22,-1,V$,V3
+4890 IF V$<>"SPECIAL" THEN GOTO 9900
+4900 REM " --- Run update overlay"
+4910 rem ' CLOSE (7,ERR=4920)
+4920 CLOSE (GLM03_DEVTMP,ERR=4930)
+4930 LET GLM03_DEVTMP=0
+4940 if txt then gosub make_pdf
+4950 rem ' render the docout object
+4960 gosub showReport
+4990 RUN UPDATE$,ERR=9900
+5000 REM " --- Report Heading"
+5010 LET L=HEADINGS+1
+5020 rem ' CALL "SYC.HA",7,HEADINGS$[ALL],HEADINGS,PAGE,WIDTH,WHEN$,CLOCK$,STATUS
+5030 IF STATUS>0 THEN EXITTO 9900
+5040 if txt then p1=page-1;CALL "SYC.HA",txt,HEADINGS$[ALL],HEADINGS,P1,WIDTH,WHEN$,CLOCK$,STATUS
+5090 IF SEQUENCE$="D" THEN GOTO 5200
+5100 REM " --- By Audit Number"
+5105 IF REPORT$<>"Y" THEN GOTO 5190
+5110 rem ' PRINT (7)lf$,HDR$
+5120 if txt then PRINT (txt)lf$,HDR$
+5130 LET L=L+2
+5140 IF H2$<>"" THEN GOTO 5190
+5150 rem ' PRINT (7)""
+5155 if txt then print(txt)""
+5160 LET L=L+1
+5190 RETURN 
+5200 REM " --- By Date"
+5205 IF REPORT$<>"Y" THEN GOTO 5290
+5210 rem ' PRINT (7)lf$,HDR$
+5220 if txt then PRINT(txt)lf$,HDR$
+5230 LET L=L+2
+5240 IF H0$<>"" THEN GOTO 5290
+5250 rem ' PRINT (7)""
+5255 if txt then print(txt)""
+5260 LET L=L+1
+5290 RETURN 
+5300 REM " --- Date Heading"
+5305 IF REPORT$<>"Y" THEN GOTO 5390
+5310 IF L+7>L9 THEN GOSUB 5000
+5320 rem ' PRINT (7)lf$,H0$,lf$
+5325 gosub blankLine; gosub dateHeader; gosub blankLine
+5330 if txt then PRINT (txt)lf$,H0$,lf$
+5350 LET L=L+3,H0$=""
+5390 RETURN 
+5500 REM " --- Period Heading"
+5505 IF REPORT$<>"Y" THEN GOTO 5590
+5510 IF L+7>L9 THEN GOSUB 5000
+5520 rem ' PRINT (7)lf$,H2$,lf$
+5525 gosub blankLine; gosub periodHeader; gosub blankLine
+5530 if txt then PRINT (txt)lf$,H2$,lf$
+5550 LET L=L+3,H2$=""
+5590 RETURN 
+6000 REM " --- Date break"
+6010 IF SEQUENCE$="A" THEN GOTO 6190
+6020 IF T0$="" THEN GOTO 6100
+6025 GOSUB 6600
+6030 GOSUB 6200
+6040 LET TOTAL$="Totals For "+FNB6$(T0$)
+6050 LET DEBITS=DT[0],CREDITS=DT[1]
+6060 GOSUB 6800
+6100 REM 
+6110 IF DONE>0 THEN GOTO 6190
+6120 DIM DT[1]
+6130 LET T0$=C0$(16,6),H0$="Date "+FNB6$(T0$),XF$=""
+6190 RETURN 
+6200 REM " --- Journal break"
+6210 IF T1$="" THEN GOTO 6300
+6230 IF SEQUENCE$="A" THEN GOSUB 6400
+6300 REM 
+6310 IF DONE>0 THEN GOTO 6390
+6320 DIM JT[1],B[2]
+6330 LET B0$(1,4)=N0$+C0$(3,2),B0$(5)="(Not On File)",T1$=C0$(3,2),XF$=""
+6340 FIND (GLM03_DEVTMP,KEY=B0$(1,4),DOM=6350)IOL=GLM03A
+6350 IF JH$="" THEN LET HEADINGS$[2]="General Ledger Summary - Journal "+B0$(3,2)+" "+FNP$(B0$(5,20)),L=L9+1
+6390 RETURN 
+6400 REM " --- Period break"
+6410 IF SEQUENCE$="D" THEN GOTO 6590
+6420 IF T2$="" THEN GOTO 6500
+6430 GOSUB 6600
+6480 LET TOTAL$="Totals for "+PH$,DEBITS=AT[0],CREDITS=AT[1]
+6490 GOSUB 6800
+6500 REM 
+6510 IF DONE>0 THEN GOTO 6590
+6520 DIM AT[1]
+6530 LET T2$=C0$(14,2)+C0$(12,2)
+6540 LET PERIOD=NUM(T2$(1,2)),X$=FNYY21_YY$(T2$(3,2))
+6550 LET H2$="Period "+T2$(1,2)+" ("+G3$((PERIOD-1)*3+235,3)+" "+X$+")"
+6560 LET PH$=H2$,XF$=""
+6590 RETURN 
+6600 REM " --- Account break"
+6610 IF T3$="" THEN GOTO 6700
+6620 IF L1=1 THEN GOTO 6700
+6630 LET TOTAL$="Subtotal for Account "+FNF$(T3$(7,GL[3]),GLM0$)
+6640 LET DEBITS=GT[0],CREDITS=GT[1]
+6650 GOSUB 6800
+6700 REM 
+6710 IF DONE>0 THEN GOTO 6790
+6720 DIM GT[1],DESCRIPTION$(W)
+6730 LET A0$(1)=N0$+C0$(22,GL[4]),A1$(1,35)=A0$+" (Not On File)",GLSTATUS=104
+6740 FIND (GLM01_DEV,KEY=A0$,DOM=6760)IOL=GLM01A
+6750 LET GLSTATUS=0
+6760 LET DESCRIPTION$(1)=A1$(1,35),T3$=C0$(16,GL[4]+6),L1=0
+6770 IF NUMBER>0 THEN LET XF$="Y"
+6780 IF GLSTATUS>99 THEN LET ERRORS=ERRORS+1
+6790 RETURN 
+6800 REM " --- Print totals line"
+6810 IF REPORT$<>"Y" THEN GOTO 6890
+6820 LET DEBIT$=STR(DEBITS:GLM1$),CREDIT$=STR(ABS(CREDITS):GLM1$),UNIT$=""
+6830 IF LEN(CREDIT$)>M1 THEN LET CREDIT$=CREDIT$(2); GOTO 6830
+6835 IF L+1>L9 THEN GOSUB 5000
+6850 rem ' PRINT (7)@(O[4]-LEN(TOTAL$)-1),TOTAL$,@(O[4]),DEBIT$,@(O[5]),CREDIT$
+6855 gosub totalLine
+6860 if txt then PRINT (txt)@(O[4]-LEN(TOTAL$)-1),TOTAL$,@(O[4]),DEBIT$,@(O[5]),CREDIT$
+6870 LET L=L+2
+6890 RETURN 
+8000 REM " --- Functions"
+8025 DEF FNB6$(Q1$)=Q1$(3,2)+"/"+Q1$(5,2)+"/"+FNYY21_YY$(Q1$(1,2))
+8090 DEF FNP$(Q$)=CVS(Q$,2)
+8145 REM " --- FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+8150 DEF FNYY21_YY$(Q1$)
+8155 LET Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+8160 RETURN Q1$
+8165 FNEND
+8170 REM " --- FNYY_YEAR Convert 2-Char Year to 21st Century Numeric Year"
+8175 DEF FNYY_YEAR(Q1$)
+8180 LET Q=NUM(FNYY21_YY$(Q1$)); IF Q<20 THEN LET Q=Q+100
+8185 RETURN Q
+8190 FNEND
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF: 
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN 
+9800 REM " --- Display Parameter record error"
+9810 LET LINE_ERR$=LST(PGM(TCB(5)))
+9820 CALL "SYC.YA",LINE_ERR$,N2$,ERR
+9900 REM " --- Return To Menu"
+9950 RUN "SYS.AA"
+9999 END
+10000 make_pdf:
+10010 close(txt)
+10020 erase pdffile$,err=*next
+10030 call "PDF.01",txtfile$,pdffile$
+10040 a=scall("chmod 666 "+pdffile$)
+10050 erase txtfile$,err=*next
+10100 rem ' upload to google docs (failsafe)
+10110 call "ec_open::SYM02_GDOCS",err=upload_done
+10120 read record (sym02_gdocs,key="KP",err=upload_done)sym02_gdocs$
+10130 username$=sym02_gdocs.username$, password$=sym02_gdocs.password$, folder$="/BSE Cash Receipts/Daily Cash Receipts"
+10135 quiet = 1
+10140 call "gDocs_upload.bbj", err=upload_done, username$, password$, folder$, pdffile$, fl$, status, quiet
+10150 close(sym02_gdocs,err=upload_done)
+10160 upload_done:
+10200 return
+
+
+13000 rem ' *****************************************************
+13010 rem ' set up the DocOut object
+13020 rem ' *****************************************************
+13030 setup_docOut:
+13040 use ::sys/prog/bao_document.bbj::Document
+13060 declare Document doc!
+13080 declare BBjVector out!
+13090 doc! = new Document()
+13110 out! = bbjAPI().makeVector()
+13120 rem ' *****************************************************
+13130 rem ' * Prep docout
+13140 rem ' *****************************************************
+13150 xUserName$ = "guest"
+13160 xUserPwd$ = ""
+13180 doc!.setUserID(xUserName$)
+13190 doc!.setPassword(xUserPwd$)
+13200 doc!.setFirmID(N0$)
+13210 doc!.setLanguage("ENU")
+13220 doc!.setDocumentID("60GLSUMRY_" + N0$)
+
+13225 docname$ = n0$+"_GLSummary"
+13230 doc!.setReportTitle(docname$)
+
+13240 doc!.setSessionWait(1); rem ' processing stops until the report is dealt with
+13250 return
+
+
+13500 rem ' *****************************************************
+13510 rem ' * Set Report Headings
+13520 rem ' *****************************************************
+13530 setReportHeadings:
+13540 for headcnt = 0 to headings
+13550 	if cvs(headings$[headcnt],3) <> "" then
+13560		doc!.addReportHeading(headings$[headcnt])
+13570	fi
+13580 next headcnt
+13590 return
+
+
+14000 rem ' *****************************************************
+14010 rem ' * Set Report Columns
+14020 rem ' *****************************************************
+14030 rem ' column are set up here 
+14040 setReportColumns:
+14050 	doc!.addColumn("Account", "C", 9, 65, "", "E", "L", "")
+14060	doc!.addColumn("Description", "C", 30, 200, "", "E", "L", "")
+14070	doc!.addColumn("Memo / Reference", "C", 50, 250, "", "E", "L", "")
+14080	doc!.addColumn("Debits", "N", 12, 110, "-####,##0.00", "N", "R", "")
+14090	doc!.addColumn("Credits", "N", 12, 110, "-####,##0.00", "N", "R", "")
+14400	repCols = 5
+14410 return
+
+
+14600 rem ' *****************************************************
+14610 rem ' * add a blank line
+14620 rem ' *****************************************************
+14630 blankLine:
+14640 for columnItem = 1 to repCols
+14650	out!.addItem("")
+14660 next columnItem
+14670 return
+
+
+15000 rem ' *****************************************************
+15010 rem ' * add detail line
+15020 rem ' *****************************************************
+15030 detailLine:
+15040 if SEQUENCE$ = "A" then 
+15050	out!.addItem(FNB6$(C0$(16,6)) + " " + FNF$(C0$(22,GL[3]),GLM0$))
+15060 else
+15070	out!.addItem(FNF$(C0$(22,GL[3]),GLM0$))
+15080 fi
+15100 out!.addItem(DESCRIPTION$)
+15110 out!.addItem(MEMO$)
+15120 out!.addItem(DEBIT$)
+15130 out!.addItem(CREDIT$)
+15140 return
+
+
+15300 rem ' *****************************************************
+15310 rem ' * add special memo line
+15320 rem ' *****************************************************
+15330 memoLine:
+15340 out!.addItem("")
+15350 out!.addItem("")
+15360 out!.addItem(MEMO$)
+15370 out!.addItem("")
+15380 out!.addItem("")
+15390 return
+
+
+15500 rem ' *****************************************************
+15510 rem ' * add reference line
+15520 rem ' *****************************************************
+15530 refLine:
+15540 out!.addItem("")
+15550 out!.addItem("")
+15560 out!.addItem(REF$)
+15570 out!.addItem("")
+15580 out!.addItem("")
+15590 return
+
+
+15600 rem ' *****************************************************
+15610 rem ' * add warning line
+15620 rem ' *****************************************************
+15630 warningLine:
+15640 ltext$ = "---> WARNING: This report is out of balance by " + str(BALANCE:GLM1$)
+15650 out!.addItem(ltext$)
+15660 out!.addItem("")
+15670 out!.addItem("")
+15680 out!.addItem("")
+15690 out!.addItem("")
+15695 return
+
+
+15700 rem ' *****************************************************
+15710 rem ' * add date header
+15720 rem ' *****************************************************
+15730 dateHeader:
+15740 out!.addItem(H0$)
+15750 out!.addItem("")
+15760 out!.addItem("")
+15770 out!.addItem("")
+15780 out!.addItem("")
+15790 return
+
+
+15900 rem ' *****************************************************
+15910 rem ' * add period header
+15920 rem ' *****************************************************
+15930 periodHeader:
+15940 out!.addItem(H2$)
+15950 out!.addItem("")
+15960 out!.addItem("")
+15970 out!.addItem("")
+15980 out!.addItem("")
+15990 return
+
+
+16100 rem ' *****************************************************
+16110 rem ' * add total line
+16120 rem ' *****************************************************
+16130 totalLine:
+16140 out!.addItem("")
+16150 out!.addItem("")
+16160 out!.addItem(TOTAL$)
+16170 out!.addItem(DEBIT$)
+16180 out!.addItem(CREDIT$)
+16190 return
+
+
+16500 rem ' *****************************************************
+16510 rem ' * launch report
+16520 rem ' *****************************************************
+16530 showReport:
+16555 doc!.setOutputData(out!)
+16570 doc!.process()
+16670 return
+
+
+17000 rem ' *****************************************************
+17010 rem ' * Set Report Headings
+17020 rem ' *****************************************************
+17030 setReporHeadings:
+17040 for headcnt = 0 to headings
+17050 	if cvs(headings$[headcnt],3) <> "" then
+17060		doc!.addReportHeading(headings$[headcnt])
+17070	fi
+17080 next headcnt
+17090 return
+
