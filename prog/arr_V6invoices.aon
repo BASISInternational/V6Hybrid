@@ -125,7 +125,7 @@ rem --- Read next Invoice Header (are-05) record
 
     rem --- Skip voided invoices
 
-        if a1$(17,1)="V" then read(are05_dev); continue
+        if a1$(17,1)="V" then continue
 
     rem --- Make Document Archive Record and Get Document ID
 
