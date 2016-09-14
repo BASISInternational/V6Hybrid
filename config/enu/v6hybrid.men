@@ -216,9 +216,73 @@ Addon V6 Hybrid^AONV6^M^^^im_menua_miscellaneous.png^^00000000^V6H^^16.0^^^^^^^^
 		Sales Analysis Maintenance Menu^AONV6_SA_M^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
 			Parameter Maintenance^AONV6_SAPAA^A^^adx_v6leadin.aon - SAP.AA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
 	Bill of Materials^AONV6_BOM^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
+		Inventory Production Entry^AONV6_BMEAA^A^^adx_v6leadin.aon - BME.AA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+		Inventory Production Register^AONV6_BMRHA^A^^adx_v6leadin.aon - BMR.HA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+		Order/Production Entry^AONV6_BMEBA^A^^adx_v6leadin.aon - BME.BA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+		Order/Production Register^AONV6_BMRJA^A^^adx_v6leadin.aon - BMR.JA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+		Bill of Materials Packing List^AONV6_BMREA^A^^adx_v6leadin.aon - BMR.EA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+		Materials Where Used Listing^AONV6_BMRBA^A^^adx_v6leadin.aon - BMR.BA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+		Operations Where Used Listing^AONV6_BMRDA^A^^adx_v6leadin.aon - BMR.DA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+		Indented Bill of Materials Report^AONV6_BMRZA^A^^adx_v6leadin.aon - BMR.ZA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+		Bill of Materials Maintenance Menu^AONV6_BM_M^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
+			Bill Maintenance^AONV6_BMMMA^A^^adx_v6leadin.aon - BMM.MA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+			Bill of Materials Detail Listing^AONV6_BMRAA^A^^adx_v6leadin.aon - BMR.AA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			Bill of Materials Inventory Costing^AONV6_BMRFA^A^^adx_v6leadin.aon - BMR.FA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			Purge Obsolete Detail Lines^AONV6_BMUBA^A^^adx_v6leadin.aon - BMU.BA^im_menui_update.png^^00000000^V6H^^16.0^^^^^^^^
+			Component Item Replacement^AONV6_BMUDA^A^^adx_v6leadin.aon - BMU.DA^im_menui_update.png^^00000000^V6H^^16.0^^^^^^^^
+			Operation Code Maintenance^AONV6_BMMAA^A^^adx_v6leadin.aon - BMM.AA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+			Parameter Maintentance^AONV6_BMPAA^A^^adx_v6leadin.aon - BMP.AA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
 	Shop Floor Control^AONV6_SF^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
+		Work Order Entry^AONV6_WOEAA^A^^adx_v6leadin.aon - WOE.AA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+		Traveler Printing^AONV6_WORAA^A^^adx_v6leadin.aon - WOR.AA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+		Materials Commitment Entry^AONV6_WOECA^A^^adx_v6leadin.aon - WOE.CA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+		Pick List Printing^AONV6_WORBA^A^^adx_v6leadin.aon - WOR.BA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+		Dispatch Inquiry^AONV6_WOEHA^A^^adx_v6leadin.aon - WOE.HA^im_menui_view.png^^00000000^V6H^^16.0^^^^^^^^
+		Load Balance Inquiry^AONV6_WOMHA^A^^adx_v6leadin.aon - WOM.HA^im_menui_view.png^^00000000^V6H^^16.0^^^^^^^^
+		Transaction Processing Menu^AONV6_WO_T^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
+			Create Purchase Requisitions^AONV6_WOUIA^A^^adx_v6leadin.aon - WOU.IA^im_menui_update.png^^00000000^V6H^^16.0^^^^^^^^
+			Materials Issues Entry^AONV6_WOEDA^A^^adx_v6leadin.aon - WOE.DA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+			Materials Issues Register^AONV6_WORDA^A^^adx_v6leadin.aon - WOR.DA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			Time Sheet Entry^AONV6_WOEBA^A^^adx_v6leadin.aon - WOE.BA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+			Time Sheet Register^AONV6_WORCA^A^^adx_v6leadin.aon - WOR.CA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			Cost Adjustment Entry^AONV6_WOEFA^A^^adx_v6leadin.aon - WOE.FA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+			Cost Adjustment Register^AONV6_WORLA^A^^adx_v6leadin.aon - WOR.LA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			Work Order Close Data Entry^AONV6_WOEEA^A^^adx_v6leadin.aon - WOE.EA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+			Closed Work Order Detail Report^AONV6_WOREA^A^^adx_v6leadin.aon - WOR.EA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			Closed Work Order Summary Register^AONV6_WORKA^A^^adx_v6leadin.aon - WOR.KA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+		Shop Floor Reports Menu^AONV6_WO_R^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
+			Work Order Header Report^AONV6_WORGA^A^^adx_v6leadin.aon - WOR.GA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			Shop Floor Dispatch Report^AONV6_WORPA^A^^adx_v6leadin.aon - WOR.PA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			Production Exception Report^AONV6_WORSA^A^^adx_v6leadin.aon - WOR.SA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			Bottleneck Analysis Report^AONV6_WORTA^A^^adx_v6leadin.aon - WOR.TA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			Labor Effeciency Analysis Report^AONV6_WORFA^A^^adx_v6leadin.aon - WOR.FA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			Cost Variance Analysis Report^AONV6_WORHA^A^^adx_v6leadin.aon - WOR.HA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			Date Analysis Report^AONV6_WORNA^A^^adx_v6leadin.aon - WOR.NA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			Work Order Detail Report^AONV6_WORIA^A^^adx_v6leadin.aon - WOR.IA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			WO Transaction History Report^AONV6_WORJA^A^^adx_v6leadin.aon - WOR.JA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			WO Committed Materials Report^AONV6_WORMA^A^^adx_v6leadin.aon - WOR.MA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			Work Order Job Status Summary^AONV6_WORVA^A^^adx_v6leadin.aon - WOR.VA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+		Period End Processing Menu^AONV6_WO_P^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
+			Close Recurring Work Orders^AONV6_WOUDA^A^^adx_v6leadin.aon - WOU.DA^im_menui_update.png^^00000000^V6H^^16.0^^^^^^^^
+			Closed Recurring WO Detail Report^AONV6_WOREA2^A^^adx_v6leadin.aon - WOR.EA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			Closed Recurring WO Summary Report^AONV6_WORRA^A^^adx_v6leadin.aon - WOR.RA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			Closed Work Order Variance Report^AONV6_WOROA^A^^adx_v6leadin.aon - WOR.OA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			Period End Update^AONV6_WOUEA^A^^adx_v6leadin.aon - WOU.EA^im_menui_update.png^^00000000^V6H^^16.0^^^^^^^^
+			Closed Work Order Purge^AONV6_WOUFA^A^^adx_v6leadin.aon - WOU.FA^im_menui_update.png^^00000000^V6H^^16.0^^^^^^^^
+		Shop Floor Maintenance Menu^AONV6_WO_M^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
+			Work Order Type Maintenance^AONV6_WOMAA^A^^adx_v6leadin.aon - WOM.AA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+			Shop Floor Employee Maintenance^AONV6_WOMCA^A^^adx_v6leadin.aon - WOM.CA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+			Shop Floor Operation Maintenance^AONV6_WOMBA^A^^adx_v6leadin.aon - WOM.BA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+			Create Shop Floor Calendar^AONV6_WOMDA^A^^adx_v6leadin.aon - WOM.DA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+			Shop Floor Calendar Maintenance^AONV6_WOMFA^A^^adx_v6leadin.aon - WOM.FA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+			Copy Shop Floor Calendar^AONV6_WOMEA^A^^adx_v6leadin.aon - WOM.EA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+			Print Shop Floor Calendar^AONV6_WORQA^A^^adx_v6leadin.aon - WOR.QA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			Purge Shop Floor Calendar^AONV6_WOUHA^A^^adx_v6leadin.aon - WOU.HA^im_menui_update.png^^00000000^V6H^^16.0^^^^^^^^
+			Batch Rescheduling of Work Orders^AONV6_WORUA^A^^adx_v6leadin.aon - WOR.UA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+			Parameter Maintenance^AONV6_WOPAA^A^^adx_v6leadin.aon - WOP.AA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
 	Miscellaneous^AONV6_MISC^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
-		F1 Reports^AONV6_F1^A^^adx_v6leadin.aon - V6D.AA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+		F5 SpeedSearch^AONV6_F5^A^^adx_v6leadin.aon - V6D.AB^im_menui_view.png^^00000000^V6H^^16.0^^^^^^^^
+		F1 Reports^AONV6_F1^A^^adx_v6leadin.aon - V6D.AA^im_menui_view.png^^00000000^V6H^^16.0^^^^^^^^
 		Create Stored Procedure Definitions^AONV6_SPROCS^A^^[V6HYBRID_PROG]adx_V6build_sproc.aon^im_menui_utility.png^^00000000^V6H^^16.0^^^^^^^^
 		Addon V6 CUI^AONV6_CUI^P^^sys.za^im_menui_table.png^^00000000^V6H^^16.0^^^^-u%USERNAME% -m5160 -tT0 -q^C:/bbj/barista/sys/config/enu/barista.cfg^^^
 	Utilities^V6AON_UTIL^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
