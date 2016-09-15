@@ -1,0 +1,8 @@
+devs=100
+fcbs=100
+cibs=100
+stblen=12000
+prefix "C:/bbj/utils/translations/" "C:/bbj/utils/" "C:/bbj/utils/admin/" "C:/bbj/utils/email/" "C:/bbj/utils/reporting/bbjasper/" "C:/bbj/utils/gapps/" "C:/bbj/utils/gappsV3/" "C:/bbj/utils/std/" C:/bbj/apps/V6Hybrid/prog/ C:/bbj/apps/V6Hybrid/ADATA/ C:/bbj/apps/V6Hybrid/DLR/ C:/bbj/apps/V6Hybrid/SCN/ C:/bbj/apps/V6Hybrid/reports C:/bbj/apps/V6Hybrid/SPROCS/ C:/bbj/apps/V6Hybrid/ADM/ C:/bbj/apps/V6Hybrid/ACT/ C:/bbj/apps/V6Hybrid/DIS/ C:/bbj/apps/V6Hybrid/MFG/ C:/bbj/apps/V6Hybrid/PAY/ C:/bbj/apps/V6Hybrid/SHS/
+aliases=12
+alias T0 syswindow "" invisible
+

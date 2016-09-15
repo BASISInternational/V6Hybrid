@@ -21,9 +21,9 @@
 			<ASC_LICENSE_ID id="ddm_tables.arm10l"></ASC_LICENSE_ID>
 			<DD_EXPORT_DATA id="ddm_tables.arm10l">Y</DD_EXPORT_DATA>
 			<DD_CREATE_DATE id="ddm_tables.arm10l">2457638</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_tables.arm10l">20160906</DD_LSTREV_DATE>
-			<DD_LSTSYNC_DATE id="ddm_tables.arm10l">20160906</DD_LSTSYNC_DATE>
-			<DD_LSTSYNC_TIME id="ddm_tables.arm10l">180144</DD_LSTSYNC_TIME>
+			<DD_LSTREV_DATE id="ddm_tables.arm10l">20160915</DD_LSTREV_DATE>
+			<DD_LSTSYNC_DATE id="ddm_tables.arm10l">20160915</DD_LSTSYNC_DATE>
+			<DD_LSTSYNC_TIME id="ddm_tables.arm10l">113248</DD_LSTSYNC_TIME>
 			<DD_ATTR_ATAB id="ddm_tables.arm10l"></DD_ATTR_ATAB>
 			<DD_ATTR_CPGM id="ddm_tables.arm10l"></DD_ATTR_CPGM>
 			<DD_ATTR_DKNM id="ddm_tables.arm10l"></DD_ATTR_DKNM>
@@ -52,7 +52,7 @@
 		<RECORD id="ddm_table_tpls.arm10l">
 			<DD_TABLE_ALIAS id="ddm_table_tpls.arm10l">ARM10L          </DD_TABLE_ALIAS>
 			<DD_FILE_NAME id="ddm_table_tpls.arm10l">ARM-10</DD_FILE_NAME>
-			<DD_TABLE_TPL id="ddm_table_tpls.arm10l">v6_firm_id:c(2),v6_record_id_l:c(1),v6_cust_type:c(3),v6_code_desc:c(20*)</DD_TABLE_TPL>
+			<DD_TABLE_TPL id="ddm_table_tpls.arm10l">v6_firm_id:c(2),v6_record_id_l:c(1),v6_cust_type:c(3),v6_code_desc:c(200*)</DD_TABLE_TPL>
 		</RECORD>
 	</ALIAS>
 	<ALIAS id="ddm_keys">
@@ -243,7 +243,7 @@
 			<DD_SEQUENCE id="ddm_table_cols.arm10l004">004</DD_SEQUENCE>
 			<DD_DATA_NAME id="ddm_table_cols.arm10l004">V6_CODE_DESC    </DD_DATA_NAME>
 			<DD_DVAR_NAME id="ddm_table_cols.arm10l004">V6_CODE_DESC    </DD_DVAR_NAME>
-			<DD_COL_REPEATS id="ddm_table_cols.arm10l004">0</DD_COL_REPEATS>
+			<DD_COL_REPEATS id="ddm_table_cols.arm10l004">10</DD_COL_REPEATS>
 			<DD_COL_OCCURS id="ddm_table_cols.arm10l004">0</DD_COL_OCCURS>
 			<DD_FIELD_DELIM id="ddm_table_cols.arm10l004">Y</DD_FIELD_DELIM>
 			<DD_DELIM_CHAR id="ddm_table_cols.arm10l004">0A</DD_DELIM_CHAR>
@@ -251,7 +251,7 @@
 			<DD_SYSTEM_ID id="ddm_table_cols.arm10l004"></DD_SYSTEM_ID>
 			<DD_MASK_TYPE id="ddm_table_cols.arm10l004"></DD_MASK_TYPE>
 			<DD_CREATE_DATE id="ddm_table_cols.arm10l004">20160906</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_table_cols.arm10l004">20160906</DD_LSTREV_DATE>
+			<DD_LSTREV_DATE id="ddm_table_cols.arm10l004">20160915</DD_LSTREV_DATE>
 			<DD_ATTR_ABLC id="ddm_table_cols.arm10l004"></DD_ATTR_ABLC>
 			<DD_ATTR_ABLV id="ddm_table_cols.arm10l004"></DD_ATTR_ABLV>
 			<DD_ATTR_CPGM id="ddm_table_cols.arm10l004"></DD_ATTR_CPGM>

@@ -173,7 +173,7 @@ rem --- now add them back (i.e., drop, then add, in case anything has changed)
 	sproc_vw_name$="ARCMPSLS_BAR"
 	sqlprep$="CREATE PROCEDURE ARCMPSLS_BAR "
 	sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, CUSTOMER_NBR CHAR(6) IN, "
-	sqlprep$=sqlprep$+"SLSPSN_CODE CHAR(3) IN)"	
+	sqlprep$=sqlprep$+"SLSPSN_CODE CHAR(3) IN, BARISTA_WD VARCHAR(60) IN)"	
 	sqlprep$=sqlprep$+"'"+sproc_path$+"ARCMPSLS_BAR.prc' '"+barista_cfg_path$+"barista.cfg' "
 	sqlprep$=sqlprep$+"RESULT_SET "
 	sqlprep$=sqlprep$+"{_begin_}{_end_} 'Dashboard SA Sales Compare - Bar Widget'"

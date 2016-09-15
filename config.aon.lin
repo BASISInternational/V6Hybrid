@@ -1,0 +1,8 @@
+devs=100
+fcbs=100
+cibs=100
+stblen=12000
+prefix "/usr/local/basis/utils/translations/" "/usr/local/basis/utils/" "/usr/local/basis/utils/admin/" "/usr/local/basis/utils/email/" "/usr/local/basis/utils/reporting/bbjasper/" "/usr/local/basis/utils/gapps/" "/usr/local/basis/utils/gappsV3/" "/usr/local/basis/utils/std/" /usr/local/basis/apps/V6Hybrid/prog/ /usr/local/basis/apps/V6Hybrid/ADATA/ /usr/local/basis/apps/V6Hybrid/DLR/ /usr/local/basis/apps/V6Hybrid/SCN/ /usr/local/basis/apps/V6Hybrid/reports /usr/local/basis/apps/V6Hybrid/SPROCS/ /usr/local/basis/apps/V6Hybrid/ADM/ /usr/local/basis/apps/V6Hybrid/ACT/ /usr/local/basis/apps/V6Hybrid/DIS/ /usr/local/basis/apps/V6Hybrid/MFG/ /usr/local/basis/apps/V6Hybrid/PAY/ /usr/local/basis/apps/V6Hybrid/SHS/
+aliases=12
+alias T0 syswindow "" invisible
+
