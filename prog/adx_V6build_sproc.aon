@@ -59,7 +59,7 @@ rem --- init
     chdir wdir$
     sproc_path$=dsk("")+sproc_dir$
     barista_cfg_path$=dsk("")+dir("")+stbl("+DIR_CFG")
-    
+
 rem --- init progress meter
 
     total_recs=10;rem alter as more 'create procedure' statements are added - eventually will be table driven
@@ -150,7 +150,7 @@ rem --- first drop all std Addon SPROCs
 	sqlprep$=sql_action$+" "+sproc_vw_name$+" "
 	gosub create_sproc_def
 
-	sproc_vw_name$="SIMPLE_INVVOICE_DTL_60"
+	sproc_vw_name$="SIMPLE_INVOICE_DTL_60"
 	sqlprep$=sql_action$+" "+sproc_vw_name$+" "
 	gosub create_sproc_def
 	
