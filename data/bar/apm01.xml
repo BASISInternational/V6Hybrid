@@ -21,9 +21,9 @@
 			<ASC_LICENSE_ID id="ddm_tables.apm01"></ASC_LICENSE_ID>
 			<DD_EXPORT_DATA id="ddm_tables.apm01">Y</DD_EXPORT_DATA>
 			<DD_CREATE_DATE id="ddm_tables.apm01">20160819</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_tables.apm01">20160825</DD_LSTREV_DATE>
-			<DD_LSTSYNC_DATE id="ddm_tables.apm01">20160826</DD_LSTSYNC_DATE>
-			<DD_LSTSYNC_TIME id="ddm_tables.apm01">092826</DD_LSTSYNC_TIME>
+			<DD_LSTREV_DATE id="ddm_tables.apm01">20160928</DD_LSTREV_DATE>
+			<DD_LSTSYNC_DATE id="ddm_tables.apm01">20160831</DD_LSTSYNC_DATE>
+			<DD_LSTSYNC_TIME id="ddm_tables.apm01">183006</DD_LSTSYNC_TIME>
 			<DD_ATTR_ATAB id="ddm_tables.apm01"></DD_ATTR_ATAB>
 			<DD_ATTR_CPGM id="ddm_tables.apm01"></DD_ATTR_CPGM>
 			<DD_ATTR_DKNM id="ddm_tables.apm01"></DD_ATTR_DKNM>
@@ -51,7 +51,7 @@
 		<ID id="ddm_table_tpls">DDM_TABLE_TPLS</ID>
 		<RECORD id="ddm_table_tpls.apm01">
 			<DD_TABLE_ALIAS id="ddm_table_tpls.apm01">APM01           </DD_TABLE_ALIAS>
-			<DD_FILE_NAME id="ddm_table_tpls.apm01"></DD_FILE_NAME>
+			<DD_FILE_NAME id="ddm_table_tpls.apm01">APM-01</DD_FILE_NAME>
 			<DD_TABLE_TPL id="ddm_table_tpls.apm01">v6_firm_id:c(2),v6_vendor_nbr:c(6*),v6_vendor_name:c(30),v6_addr_line_1:c(24),v6_addr_line_2:c(24),v6_addr_line_3:c(24),v6_zip_code:c(9),v6_phone_number:c(10),v6_phone_exten:c(4),v6_contact_name:c(20),v6_alt_sequence:c(10),v6_opened_date:c(3),v6_hold_flag:c(1),v6_federal_id:c(15),v6_vend_1099:c(1),v6_vendor_acct:c(10),v6_fax_number:c(10),v6_fob:c(15),v6_ap_ship_via:c(15),v6_rsrvd_str:c(20*)</DD_TABLE_TPL>
 		</RECORD>
 	</ALIAS>
@@ -935,15 +935,15 @@
 			<DD_SEQUENCE id="ddm_table_cols.apm01020">020</DD_SEQUENCE>
 			<DD_DATA_NAME id="ddm_table_cols.apm01020">V6_RSRVD_STR    </DD_DATA_NAME>
 			<DD_DVAR_NAME id="ddm_table_cols.apm01020">V6_RSRVD_STR    </DD_DVAR_NAME>
-			<DD_COL_REPEATS id="ddm_table_cols.apm01020">0</DD_COL_REPEATS>
-			<DD_COL_OCCURS id="ddm_table_cols.apm01020">20</DD_COL_OCCURS>
+			<DD_COL_REPEATS id="ddm_table_cols.apm01020">20</DD_COL_REPEATS>
+			<DD_COL_OCCURS id="ddm_table_cols.apm01020">1</DD_COL_OCCURS>
 			<DD_FIELD_DELIM id="ddm_table_cols.apm01020">Y</DD_FIELD_DELIM>
 			<DD_DELIM_CHAR id="ddm_table_cols.apm01020">0A</DD_DELIM_CHAR>
 			<DD_SYSTEM_REC id="ddm_table_cols.apm01020"></DD_SYSTEM_REC>
 			<DD_SYSTEM_ID id="ddm_table_cols.apm01020"></DD_SYSTEM_ID>
 			<DD_MASK_TYPE id="ddm_table_cols.apm01020"></DD_MASK_TYPE>
 			<DD_CREATE_DATE id="ddm_table_cols.apm01020">20160819</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_table_cols.apm01020">20160825</DD_LSTREV_DATE>
+			<DD_LSTREV_DATE id="ddm_table_cols.apm01020">20160928</DD_LSTREV_DATE>
 			<DD_ATTR_ABLC id="ddm_table_cols.apm01020"></DD_ATTR_ABLC>
 			<DD_ATTR_ABLV id="ddm_table_cols.apm01020"></DD_ATTR_ABLV>
 			<DD_ATTR_CPGM id="ddm_table_cols.apm01020"></DD_ATTR_CPGM>
