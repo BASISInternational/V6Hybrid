@@ -1,0 +1,234 @@
+rem ==========================================================================
+rem --- adx_V6_initdemo.aon
+rem --- Auto-Launch task that initializes V6demo environment.
+rem --- 
+rem --- AddonSoftware Version 16.00
+rem --- Copyright BASIS International Ltd.  All Rights Reserved.
+rem ==========================================================================
+
+    use java.io.File
+    use ::ado_file.src::FileObject
+    
+    setesc std_error
+    seterr std_error
+
+rem --- Need to do the following for the V6demo to work properly
+rem --- update_DD:
+rem ---  1. Change opened_date field in ARM-01 to be character as binary
+rem ---  2. Set date type for ART-03 invoice_date to 'AON'
+rem --- uninstall_modules
+rem ---  3. Mark current Addon modules except for GL, AP, and PR as uninstalled
+rem --- rename_menus
+rem ---  4. Rename addon.men and prbabs.men so they're not used - only using v6hybrid.men 
+
+rem --- Get program arguments
+
+    if argc>1
+        for curr_argv=1 to argc-1
+            temp_argv$=argv(curr_argv)
+            if pos("-u"=temp_argv$)=1 user_id$=temp_argv$(3);rem User ID
+        next curr_argv
+    endif
+
+    if user_id$=""
+        use ::sys/prog/bao_security.bbj::Security
+        user_id$=Security.getURLUser()
+        if cvs(user_id$,2)="" then user_id$=stbl("+USER_ID",err=*next)
+        if cvs(user_id$,2)="" then user_id$="ADMIN"
+    endif
+
+rem --- Initializations
+
+    dir_syp$=stbl("+DIR_SYP")
+
+    rem --- Make sure needed STBLs are set
+    call stbl("+DIR_SYP")+"bas_process_beg.bbj",user_id$,rd_table_chans$[all]
+    sysinfo_template$=stbl("+SYSINFO_TPL",err=*next)
+    dim sysinfo$:sysinfo_template$
+    sysinfo$=stbl("+SYSINFO",err=*next)
+
+    rem --- Derive base directory path
+    baseDir$=stbl("V6HYBRID",err=std_exit)
+    baseDir$=FileObject.fixPath(baseDir$, "/")
+    strip_pos=pos("/V6HYBRID"=cvs(baseDir$,4))
+    if strip_pos
+        baseDir$=baseDir$(1,strip_pos)
+    else
+        goto std_exit
+    endif
+
+rem --- Open File(s)
+    
+    num_files=1
+    dim open_tables$[1:num_files],open_opts$[1:num_files],open_chans$[1:num_files],open_tpls$[1:num_files]
+    open_tables$[1]="ADS_AUTOLAUNCH",open_opts$[1]="OTA"
+
+    gosub open_tables
+
+    ads_autolaunch=num(open_chans$[1]);dim ads_autolaunch$:open_tpls$[1]
+
+rem --- Do the processing
+    gosub update_DD
+    gosub uninstall_modules
+    gosub rename_menus
+    
+    goto done
+
+
+update_DD:rem --- Make changes directly to BASIS DD for properties that can't be set/passed in from Barista
+
+    rem --- Get Admin Object
+    rdNSAdmin!=BBjAPI().getNamespace("adminobjects","barista",1)
+    rdAdmin!=rdNSAdmin!.getValue("+bar_admin_"+cvs(user_id$,11),err=*next)
+    rdNSAdmin!=null()
+
+    if rdAdmin!=null() then return
+    
+    rdDatabase!=rdAdmin!.getDatabase(stbl("+DBNAME_API"))
+
+    rem --- set opened dates on customer and vendor records to be type 'Character as Binary'
+    custTable!=rdDatabase!.getTable("ARM01")
+    custOpenedDate!=custTable!.getColumn("V6_OPENED_DATE")
+    custOpenedDate!.setInt(BBjAdminColumn.FLAG,8)
+    custOpenedDate!.setString(BBjAdminColumn.BBX_TYPE,"Z")
+    custTable!.commit(err=*next)
+
+    vendTable!=rdDatabase!.getTable("APM01")
+    vendOpenedDate!=vendTable!.getColumn("V6_OPENED_DATE")
+    vendOpenedDate!.setInt(BBjAdminColumn.FLAG,8)
+    vendOpenedDate!.setString(BBjAdminColumn.BBX_TYPE,"Z")
+    vendTable!.commit(err=*next)
+
+    rem --- set date type on AR Invoice Header to 'AON'
+    ARInvTable!=rdDatabase!.getTable("ART03")
+    invoiceDate!=ARInvTable!.getColumn("V6_INVOICE_DATE")
+    invoiceDate!.setString(BBjAdminBBjColumn.DATE_FORMAT,"AON")
+    ARInvTable!.commit(err=*next)
+
+    return
+
+uninstall_modules:rem --- Mark current Addon modules except AP, GL, and PRB as uninstalled
+
+    sql$="UPDATE ADM_MODULES SET SYS_INSTALL='N' WHERE ASC_COMP_ID='01007514' AND ASC_PROD_ID IN('AR','BM','CR','GM','IV','MP','OP','PO','SA','SF')"
+    sqlchan=sqlunt
+    sqlopen(sqlchan)stbl("+DBNAME_API",err=*return)
+    sqlprep(sqlchan,err=*return)sql$
+    sqlexec(sqlchan,err=*return)
+    sqlclose(sqlchan)
+
+    return
+  
+rename_menus:rem --- Rename Addon's menu (addon.men) and Payroll's menu (prbabs.men)
+             rem --- Use superset/customized V6Hybrid menu (v6hybrid.men) instead
+
+    rem --- Vector to store Addon and Payroll apps menu names
+    menuFiles!=BBjAPI().makeVector()
+    menuFiles!.add("aon/config/enu/addon.men")
+    menuFiles!.add("prbabs/config/enu/prbabs.men")
+
+    for syscnt=0 to menuFiles!.size()-1
+        menuFile!=new File(baseDir$+menuFiles!.get(syscnt),err=*next)
+        if menuFile!.exists()
+            rem --- Keep copy of original menus for Addon and Payroll
+            target_value$=baseDir$+menuFiles!.get(syscnt)+".bak1"
+            counter=0
+            while 1
+                rem --- find a target that doesn't exist
+                declare File aFile!
+                aFile! = new File(target_value$)
+                if !aFile!.exists() then break
+                counter=counter+1
+                target_value$=baseDir$+menuFiles!.get(syscnt)+".bak"+str(counter)
+            wend
+            rename menuFile!.getAbsolutePath() to aFile!.getAbsolutePath(), err=*next        
+        endif
+    next syscnt
+
+    rdGlobalSpace!=BBjAPI().getGlobalNamespace()
+    rdGlobalSpace!.setValue("+rebuild_menu","ALL")
+
+    return
+
+	
+done: rem --- All done
+
+    rem --- Update AutoLaunch Status
+    extractrecord(ads_autolaunch,key="V6INITDEMO")ads_autolaunch$; rem Advisory Locking
+    ads_autolaunch.process_status$="C"
+    ads_autolaunch.trans_date$=date(0:"%Yl%Mz%Dz")
+    ads_autolaunch.trans_time$=date(0:"%Hz%mz%sz")
+    ads_autolaunch$=field(ads_autolaunch$)
+    writerecord(ads_autolaunch)ads_autolaunch$
+
+	goto std_exit
+
+open_tables:rem -----<Open Tables
+
+    call stbl("+DIR_SYP")+"bac_open_tables.bbj",
+:       open_beg,
+:       open_end,
+:       open_tables$[all],
+:       open_opts$[all],
+:       open_chans$[all],
+:       open_tpls$[all],
+:       rd_table_chans$[all],
+:       open_batch,
+:       open_status$
+
+    if open_status$<>""
+        msg_id$="ENTRY_OPEN_ERROR"
+        dim msg_tokens$[1]
+            msg_tokens$[1]=open_status$
+        gosub disp_message
+        status=-1
+    endif
+
+    return
+
+disp_message: rem --- Display Message Dialog
+
+    call stbl("+DIR_SYP")+"bac_message.bbj",msg_id$,msg_tokens$[all],msg_opt$,table_chans$[all]
+
+    return
+
+rem #include std_error.src
+
+std_error: rem --- Standard error handler (18Nov2014)
+
+    if tcb(19)>0
+        rem --- Escape handler
+        if and(chr(tcb(19)),$08$)=$08$
+            release
+        else
+            setesc std_error
+            return
+        endif
+    endif
+
+    if err=0   
+        rem --- Get tcb(12) and tcb(10) to send into bac_error
+        lock_byte=tcb(10)
+        lock_chan=tcb(12)  
+    endif
+
+    rd_err_text$=""
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    call stbl("+DIR_SYP")+"bac_error.bbj",pgm(-2),str(tcb(5)),str(err),rd_err_text$,rd_err_act$,lock_byte,lock_chan
+    if pos("ESCAPE"=rd_err_act$) seterr 0; setesc 0
+    if pos("RETRY"=rd_err_act$) retry
+    if pgm(-1)<>pgm(-2) status=999; exit 
+    release
+
+
+rem #endinclude std_error.src
+
+rem #include std_end.src
+
+std_exit: rem --- Standard program end (01Mar2006)
+
+    run stbl("+DIR_SYP",err=*next)+"bas_process_end.bbj",err=*next
+    release
+
+rem #endinclude std_end.src
+
+    end

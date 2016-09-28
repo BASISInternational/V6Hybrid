@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<barista_admin_record>
+	<barista_record_table>ADS_AUTOLAUNCH</barista_record_table>
+	<PROCESS_ID>V6INITDEMO</PROCESS_ID>
+	<DESCRIPTION>Init for V6 demo environment</DESCRIPTION>
+	<PROGRAM_PATH>[V6HYBRID_PROG]adx_V6_initdemo.aon</PROGRAM_PATH>
+	<PROGRAM_ARGS>-u[+USER_ID]</PROGRAM_ARGS>
+	<PROCESS_TYPE>O</PROCESS_TYPE>
+	<PROCESS_STATUS>N</PROCESS_STATUS>
+	<TRANS_DATE>20160927</TRANS_DATE>
+	<TRANS_TIME>183824</TRANS_TIME>
+	<ASC_COMP_ID>00000000</ASC_COMP_ID>
+	<ASC_PROD_ID>V6H</ASC_PROD_ID>
+	<COMMENTS>This program switches to the V6Hybrid.men menu file, and makes some BASIS DD changes for V6 dates.[$0a$]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             </COMMENTS>
+</barista_admin_record>

@@ -1,5 +1,4 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<meta name='barista_version' content='16.0' />
 <barista_admin_record>
 	<barista_record_table>ADS_AUTOLAUNCH</barista_record_table>
 	<PROCESS_ID>V6BLDSPROC</PROCESS_ID>
@@ -8,8 +7,8 @@
 	<PROGRAM_ARGS>-u[+USER_ID]</PROGRAM_ARGS>
 	<PROCESS_TYPE>O</PROCESS_TYPE>
 	<PROCESS_STATUS>N</PROCESS_STATUS>
-	<TRANS_DATE>20160805</TRANS_DATE>
-	<TRANS_TIME>085614</TRANS_TIME>
+	<TRANS_DATE>20160825</TRANS_DATE>
+	<TRANS_TIME>152829</TRANS_TIME>
 	<ASC_COMP_ID>00000000</ASC_COMP_ID>
 	<ASC_PROD_ID>V6H</ASC_PROD_ID>
 	<COMMENTS>This program adds SPROC definitions for V6 demo to the BASIS DD (procedures.dd and proc_params.dd).[$0a$]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </COMMENTS>
