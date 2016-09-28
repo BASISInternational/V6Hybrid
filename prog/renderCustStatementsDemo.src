@@ -6,8 +6,8 @@ REM ========================================================================
 REM USE and Declares
 REM ========================================================================
 
-    use ::C:/bbj/utils/reporting/bbjasper/bbjasper.bbj::BBJasperReport
-    use ::C:/bbj/utils/reporting/bbjasper/bbjasper.bbj::BBJasperViewerWindow
+    use ::bbjasper.bbj::BBJasperReport
+    use ::bbjasper.bbj::BBJasperViewerWindow
     
     use ::./sys/prog/bao_utilities.bbj::BarUtils
 
