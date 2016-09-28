@@ -17,7 +17,7 @@ rem --- update_DD:
 rem ---  1. Change opened_date field in ARM-01 to be character as binary
 rem ---  2. Set date type for ART-03 invoice_date to 'AON'
 rem --- uninstall_modules
-rem ---  3. Mark current Addon modules except for GL, AP, and PR as uninstalled
+rem ---  3. Mark current Addon modules except for GL, AP, and ABS Payroll, as uninstalled
 rem --- rename_menus
 rem ---  4. Rename addon.men and prbabs.men so they're not used - only using v6hybrid.men 
 
@@ -114,6 +114,11 @@ uninstall_modules:rem --- Mark current Addon modules except AP, GL, and PRB as u
     sqlopen(sqlchan)stbl("+DBNAME_API",err=*return)
     sqlprep(sqlchan,err=*return)sql$
     sqlexec(sqlchan,err=*return)
+
+    sql$="UPDATE ADM_MODULES SET SYS_INSTALL='N' WHERE ASC_COMP_ID='01004419' AND ASC_PROD_ID='PRB'"
+    sqlprep(sqlchan,err=*return)sql$
+    sqlexec(sqlchan,err=*return)
+    
     sqlclose(sqlchan)
 
     return
