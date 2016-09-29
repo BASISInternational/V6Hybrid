@@ -1,0 +1,299 @@
+0010 REM "ARR - Aging Report"
+0020 REM "Program ARR.4A"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0050 BEGIN
+0085 SETESC 9000
+0090 SETERR 9000
+0100 REM " --- Open/Lock Files"
+0110 LET FILES=10
+0120 DIM FILES$[FILES],OPTIONS$[FILES],CHANNELS[FILES]
+0125 LET FILES$[1]="ARM-01",FILES$[2]="ARM-02",FILES$[3]="ARM-04"
+0130 LET FILES$[4]="ARM-05",FILES$[5]="ARM-10",FILES$[6]="ART-01"
+0135 LET FILES$[7]="ART-11",FILES$[8]="ART-03",FILES$[9]="SYS-01"
+0140 LET FILES$[10]="ARM-09"
+0160 CALL "SYC.DA",1,1,9,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STATUS
+0170 IF STATUS>0 THEN GOTO 9900
+0180 LET ARM01_DEV=CHANNELS[1],ARM02_DEV=CHANNELS[2],ARM04_DEV=CHANNELS[3]
+0185 LET ARM05_DEV=CHANNELS[4],ARM10_DEV=CHANNELS[5],ART01_DEV=CHANNELS[6]
+0190 LET ART11_DEV=CHANNELS[7],ART03_DEV=CHANNELS[8],SYS01_DEV=CHANNELS[9]
+0200 REM " --- IOLists
+0250 ARM01A: IOLIST *,X0$
+0260 SYS01T: IOLIST X$,F0$,X$,X$,X$,F4$,F5$
+0270 ARS01A: IOLIST P0$,P1$,P2$,P3$,P4$,M0$,M1$,M2$,M3$
+0280 GLS01A: IOLIST X$,G1$,G2$,G3$,G4$,G5$,G6$,G7$
+0400 REM " --- Parameters
+0410 FIND (SYS01_DEV,KEY="T"+FID(0),DOM=9800)IOL=SYS01T
+0420 LET N0$=F0$(16,2),N1$=F4$,N2$="AR",N3$=F5$,WHEN$=F0$(7,3)
+0430 FIND (SYS01_DEV,KEY=N0$+N2$+"00",DOM=9800)IOL=ARS01A
+0440 FIND (SYS01_DEV,KEY=N0$+"GL00",DOM=9800)IOL=GLS01A
+0450 DIM P[2],G[4]
+0460 FOR X=0 TO 4
+0470 LET G[X]=NUM(G2$(X*2+1,2),ERR=0480)
+0480 NEXT X
+0485 LET G[2]=FNYY_YEAR(G2$(5,2))
+0490 LET P[0]=NUM(P2$(1,2)),P[1]=NUM(P2$(3,2)),P[2]=FNYY_YEAR(P4$(3,2))
+0500 REM " --- Init Data
+0510 LET H0=65,H1=120,H=0,H1$=N1$,H2$=N3$
+0520 LET L9=59,L=L9+1
+0525 IF F0$(13,1)="T" THEN LET L9=L9-35
+0530 DIM J$(80,"-"),J0$(10,"0"),J1$(40," "),J2$(120,"-")
+0540 DIM A[1],W[1],U[5],T[5],X[5],C[10],Y[6]
+0545 CALL "SYC.RM",M1$,M1,8,12
+0580 LET M0=LEN(M0$),M1=LEN(M1$)
+0590 LET H9$="###-###-####"
+0600 REM " --- Other File Opens
+0630 IF P3$(12,1)<>"Y" THEN GOTO 0700
+0650 CALL "SYC.DA",1,10,10,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STATU
+0650:S
+0670 IF STATUS>0 THEN GOTO 9900
+0680 LET ARM09_DEV=CHANNELS[10]
+0700 REM " --- Background
+0710 FOR X=4 TO 20 STEP 2
+0720 CALL "SYC.WC",1,0,80,0,0,X,0
+0730 NEXT X
+0740 PRINT 'SB',@(28,3),"Aging Date:",@(1,5),"Age On Due Date Or Invoice Date 
+0740:(D/I):",@(20,7),"Future Aging (Y/N):",@(3,9),"Customer Or Salesperson Ord
+0740:er (C/S):",@(9,11),"Beginning Number (<F1>=First):",@(13,13),"Ending Numb
+0740:er (<F1>=Last):",@(8,15),"Update Customer Aging Summary?:",@(15,17),"Summ
+0740:ary Or Detail (S/D):",@(12,19),"Include Customer Comments?:",'SF',
+1000 REM " --- Beginning Date
+1010 PRINT @(0,0),'CF',
+1020 LET V0$="D",V1$="ER",V2$=F0$(7,3),V0=8,V1=40,V2=3,I0=0
+1040 GOSUB 7000
+1050 IF V3=4 THEN GOTO 9900
+1060 LET P9$=V$
+1100 REM " --- Period
+1120 LET P8$="D"
+1190 GOTO 3900
+1300 REM " --- Detail/Summary
+1320 LET V0$="S",V1$="R",V2$=P7$,V3$="SD",V0=1,V1=40,V2=17
+1330 IF POS(V2$="SD")=0 THEN LET V2$="D"
+1340 GOSUB 7000
+1360 LET P7$=V$
+1370 IF P7$="S" THEN PRINT @(V1,V2),"Summary",'CL', ELSE PRINT @(V1,V2),"Detai
+1370:l",'CL',
+1380 IF P7$="S" THEN LET R4$=""
+1390 GOTO 3900
+1400 REM " --- Age on Due or Invoice Date
+1420 LET V0$="S",V1$="R",V2$=P6$,V3$="DI",V0=1,V1=40,V2=5
+1430 IF POS(V2$="DI")=0 THEN LET V2$="I"
+1440 GOSUB 7000
+1450 LET P6$=V$
+1470 IF P6$="D" THEN PRINT @(V1,V2),"Due",'CL', ELSE PRINT @(V1,V2),"Invoice",
+1470:'CL',
+1490 GOTO 3900
+1500 REM " --- Future Aging Y/N
+1520 LET V0$="Y",V1$="R",V2$=P5$,V0=1,V1=40,V2=7
+1530 IF POS(V2$="YN")=0 THEN LET V2$="Y"
+1540 GOSUB 7000
+1550 LET P5$=V$
+1570 IF P5$="Y" THEN PRINT @(V1,V2),"Y",'CL', ELSE PRINT @(V1,V2),"N",'CL',
+1590 GOTO 3900
+1600 REM " --- Alpha/Numeric
+1602 IF R6$<>"C" THEN GOTO 3900
+1605 LET R8$="",R9$=""
+1610 LET V0$="S",V1$="RC",V2$=R7$,V3$="AN",V0=1,V1=40,V2=9,V4$="A=Alternate Se
+1610:q, N=Customer Number, <F2>=Re-Select Customer/Salesperson"
+1615 PRINT @(V1,V2),J1$(1,10)
+1617 IF POS(V2$="AN")=0 THEN LET V2$="N"
+1620 GOSUB 7000
+1630 LET R7$=V$
+1640 IF R7$="A" THEN PRINT @(V1,V2),"Alpha",'CL', ELSE PRINT @(V1,V2),"Numeric
+1640:",'CL',
+1650 GOTO 3900
+1700 REM " --- Begin With
+1702 IF R7$="A" THEN LET R8$="",R9$=""; PRINT @(40,11),"First",'CL',@(40,13),"
+1702:Last",'CL',
+1705 IF R7$="A" OR R6$="S" THEN GOTO 3900
+1708 PRINT @(0,11),'CL',@(0,13),'CL','SB',@(11,11),"Beginning With (<F1>=First
+1708:):",@(0,13),'CL',@(15,13),'SB',"Ending With (<F1>=Last):",'SF'
+1710 LET V0$="M",V1$="KC",V2$=R8$,V3$=P1$,V4$="Enter A Valid Customer Number, 
+1710:<F3>=Lookup",V0=6,V1=40,V2=11
+1715 IF R7$="A" THEN LET V0$="S",V1$="C",V3$="",V4$="Enter The Beginning Alter
+1715:nate Sequence",V0=10
+1720 GOSUB 7000
+1725 IF V3=2 THEN GOTO 3900
+1740 IF V3<>3 OR R7$="A" THEN GOTO 1750
+1742 CALL "SYC.LC",V$
+1744 IF V$="" THEN GOTO 1700
+1750 IF V3=1 THEN LET V$=""
+1755 IF V$="" THEN PRINT @(V1,V2),"First",'CL',
+1760 IF R7$="A" OR (R7$="N" AND V$="") THEN GOTO 1780
+1765 READ (ARM01_DEV,KEY=N0$+V$,DOM=1700)IOL=ARM01A
+1770 PRINT @(V1,V2),FNF$(V$(1,P[0]),M0$),"  ",X0$(1,30),'CL'
+1780 LET R8$=V$
+1790 GOTO 3900
+1800 REM " --- End With
+1805 IF R7$="A" OR R6$="S" THEN GOTO 3900
+1810 LET V0$="M",V1$="KC",V2$=R9$,V3$=P1$,V4$="Enter A Valid Customer Number, 
+1810:<F3>=Lookup",V0=6,V1=40,V2=13
+1815 IF R7$="A" THEN LET V0$="S",V1$="C",V3$="",V4$="Enter The Ending Alternat
+1815:e Sequence",V0=10
+1820 GOSUB 7000
+1840 IF V3<>3 OR R7$="A" THEN GOTO 1850
+1842 CALL "SYC.LC",V$
+1844 IF V$="" THEN GOTO 1800
+1850 IF V3=1 THEN LET V$=""
+1855 IF V$="" THEN PRINT @(V1,V2),"Last",'CL'
+1860 IF R7$="A" OR (R7$="N" AND V$="") THEN GOTO 1880
+1865 READ (ARM01_DEV,KEY=N0$+V$,DOM=1800)IOL=ARM01A
+1870 PRINT @(V1,V2),FNF$(V$(1,P[0]),M0$),"  ",X0$(1,30),'CL'
+1880 LET R9$=V$
+1885 IF R9$<>"" THEN IF R9$<R8$ THEN GOTO 1800
+1890 GOTO 3900
+1900 REM " --- Customer or Salesperson
+1902 IF V3=2 THEN PRINT @(0,9),'CL',@(0,11),'CL',@(0,13),'SB',@(3,9),"Customer
+1902: Or Salesperson Order (C/S):",'CL',@(9,11),"Beginning Number (<F1>=First)
+1902::",'CL',@(13,13),"Ending Number (<F1>=Last):",'SF'
+1904 LET R6$="",R7$=""
+1908 LET V0$="S",V1$="R",V2$=R6$,V3$="CS",V0=1,V1=40,V2=9,V4$=""
+1910 IF POS(V2$="CS")=0 THEN LET V2$="C"
+1912 GOSUB 7000
+1914 IF V3=2 THEN GOTO 3900
+1916 LET R6$=V$
+1920 IF R6$="C" THEN PRINT @(0,9),'CL','SB',@(2,9),"Alpha Or Numeric Sort Sequ
+1920:ence (A/N):",'SF', ELSE PRINT 'SF',@(V1,V2),"Salesperson",'CL',@(0,11),'C
+1920:L',@(0,13),'CL','SB',@(4,11),"Beginning Salesperson (<F1>=First):",@(8,13
+1920:),"Ending Salesperson (<F1>=Last):",'SF',; GOTO 3900
+1924 GOTO 3900
+1928 REM " --- Beginning Salesperson
+1932 IF R6$<>"S" THEN GOTO 3900
+1936 LET V0$="S",V1$="C",V2$=S3$,V3$="",V4$="Enter A Valid Salesperson ID",V0=
+1936:3,V1=40,V2=11
+1940 GOSUB 7000
+1944 LET S3$=V$
+1946 LET S3$=S3$+J1$(1,3-LEN(S3$))
+1948 IF V3=1 OR V$="" THEN LET S3$=""; PRINT @(V1,V2),"First",'CL',
+1952 GOTO 3900
+1956 REM " --- Ending Salesperson
+1960 IF R6$<>"S" THEN GOTO 3900
+1964 LET V0$="S",V1$="C",V2$=S4$,V3$="",V4$="Enter A Valid Salesperson ID",V0=
+1964:3,V1=40,V2=13
+1968 GOSUB 7000
+1972 LET S4$=V$
+1974 LET S4$=S4$+J1$(1,3-LEN(S4$))
+1976 IF V3=1 OR V$="" THEN LET S4$=""; PRINT @(V1,V2),"Last",'CL',
+1980 IF S4$<>"" THEN IF S4$<S3$ THEN GOTO 1964
+1984 GOTO 3900
+2000 REM " --- Update Customer Aging File?
+2020 LET V0$="Y",V1$="C",V2$="Y",V3$="",V4$="<Y>=Yes, <N>=No",V0=1,V1=40,V2=15
+2030 GOSUB 7000
+2040 LET R5$=V$
+2090 GOTO 3900
+2100 REM " --- Include Customer Comments
+2110 IF P7$="S" THEN GOTO 3900
+2120 LET V0$="Y",V1$="C",V2$="N",V3$="",V4$="<Y>=Yes, <N>=No",V0=1,V1=40,V2=19
+2130 GOSUB 7000
+2140 LET R4$=V$
+2190 GOTO 3900
+3900 REM " --- New Field
+3920 IF V3<>2 THEN GOTO 3950
+3930 IF I0>0 THEN LET I0=I0-1
+3940 GOTO 3960
+3950 LET I0=I0+1
+3960 ON I0 GOTO 1000,1400,1500,1900,1928,1956,1600,1700,1800,2000,1300,2100,40
+3960:00
+4000 REM " --- Correct
+4010 LET V0$="Y",V1$="CE",V2$="Y",V3$="",V4$="Is The Above Information Correct
+4010: (Y/N)?",V0=1,V1=FNV(V4$),V2=22
+4020 GOSUB 7000
+4040 IF V3=4 THEN GOTO 9900
+4045 IF V$="N" THEN PRINT @(0,9),'CL',@(0,11),'CL',@(0,13),'CL','SB',@(3,9),"C
+4045:ustomer Or Salesperson Order (C/S):",@(9,11),"Beginning Number (<F1>=Firs
+4045:t):",@(13,13),"Ending Number (<F1>=Last):",'SF'
+4050 ON POS(V$="YN") GOTO 4000,4100,1000
+4100 rem ' V6demo --- converting to use DocOut Object no need to open the printer
+4105 rem ' CALL "SYC.GA",7,1,"","",STATUS
+4110 rem ' IF STATUS THEN GOTO 9900
+4120 gosub setUp_docOut
+4200 RUN "ARR.4B"
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions
+8080 DEF FNV(Q$)=42+INT(LEN(Q$)/2)
+8145 REM " --- FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+8150 DEF FNYY21_YY$(Q1$)
+8155 LET Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABC
+8155:DEFGHIJ"))
+8160 RETURN Q1$
+8165 FNEND
+8170 REM " --- FNYY_YEAR Convert 2-Char Year to 21st Century Numeric Year"
+8175 DEF FNYY_YEAR(Q1$)
+8180 LET Q=NUM(FNYY21_YY$(Q1$)); IF Q<50 THEN LET Q=Q+100
+8185 RETURN Q
+8190 FNEND
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF:
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 SETERR 9000
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9800 REM " --- Display Parameter record error"
+9810 LET LINE_ERR$=LST(PGM(TCB(5)))
+9820 CALL "SYC.YA",LINE_ERR$,N2$,ERR
+9900 RUN "SYS.AA"
+9999 END
+
+10000 rem ' *****************************************************
+10010 rem ' set up the DocOut object
+10020 rem ' *****************************************************
+10030 setup_docOut:
+10040 use ::sys/prog/bao_document.bbj::Document
+10060 declare Document doc!
+10080 declare BBjVector out!
+10090 doc! = new Document()
+10110 out! = bbjAPI().makeVector()
+
+10120 rem ' *****************************************************
+10130 rem ' * Prep docout
+10140 rem ' *****************************************************
+10150 xUserName$ = "guest"
+10160 xUserPwd$ = ""
+10180 doc!.setUserID(xUserName$)
+10190 doc!.setPassword(xUserPwd$)
+10200 doc!.setFirmID(N0$)
+10210 doc!.setLanguage("ENU")
+10220 if P7$ = "S" then doc!.setDocumentID("AR_AGING_" + N0$) else doc!.setDocumentID("AR_AGING_DET_" + N0$)
+10222 docname$ = N0$+"_ARAging"+iff(P7$="S","","Detail")
+10230 doc!.setReportTitle(docname$)
+10240 return

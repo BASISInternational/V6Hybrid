@@ -135,9 +135,10 @@
 2220 IF L+1>L9 THEN GOSUB 5000
 2300 rem V6demo PRINT (7)@(40),W0$(26,7),@(48),W[0]:M1$,W[1]:M1$,W[0]+W[1]:M1$
 2305 gosub detailLineTwoInvoice
-2310 LET L=L+1
+2310 LET L=L+1;escape;rem set GLSTATUS to 1 to test GLC.GA  CAH
 2320 IF GLSTATUS>0 THEN CALL "GLC.GA",7,A0$(6,3),GLSTATUS,L,ERRORS,STATUS
 2330 LET GLSTATUS=0
+2340 gosub errorMessageLine
 2350 IF A0$(6,3)<=G9$ THEN LET N=0 ELSE LET N=3
 2360 FOR X=0 TO 1
 2370 LET CODE_T[X]=CODE_T[X]+W[X],DATE_T[X]=DATE_T[X]+W[X],V[X+N]=V[X+N]+W[X]
@@ -498,6 +499,19 @@
 15840 out!.addItem("")
 15850 return
 
+15900 rem ' *****************************************************
+15901 rem ' * add error message line
+15902 rem ' *****************************************************
+15910 errorMessageLine:
+15915 errMessage$=""
+15920 errMessage$=stbl("+V6_DTWARN",err=*next)
+15930 out!.addItem(errMessage$)
+15940 for columnItem = 2 to repCols
+15950     out!.addItem("")
+15960 next columnItem
+15970 gosub blankline
+15980 xwk$=stbl("+V6_DTWARN","")
+15990 return
 
 16000 rem ' *****************************************************
 16010 rem ' * add the receipt code line to the report

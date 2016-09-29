@@ -1,0 +1,85 @@
+0010 REM "GLC - Print Transaction Date Warning Message"
+0020 REM "Program GLC.GA"
+0021 REM CAH
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0045 REM "PRINTER: Printer Channel (Input)"
+0050 REM "WHEN$  : Transaction Date (Input)"
+0055 REM "NUMBER : Transaction Date Error Number (Input)"
+0060 REM "LINES  : Line Counter (Input)"
+0065 REM "ERRORS : Total number of errors (Returned)"
+0070 REM "STATUS : 0=No Error (Returned)"
+0075 REM 
+0080 SETESC 9900
+0085 SETERR 9000
+0090 ENTER PRINTER,WHEN$,NUMBER,LINES,ERRORS,STATUS
+0500 REM " --- Initializations"
+0550 LET YMD$="",E0=0
+0600 REM " --- Packed date?"
+0610 IF LEN(WHEN$)=3 THEN LET YMD$=WHEN$
+0620 IF LEN(WHEN$)=6 THEN LET YMD$=FND$(FNN$(WHEN$))
+0630 IF YMD$="" THEN GOTO 9200
+1000 REM " --- Print warning/error message"
+1010 IF NUMBER=0 THEN GOTO 4000
+1020 LET MESSAGE$="The "+FNB$(YMD$)+" Transaction Date ",PREFIX$="WARNING:"
+1030 IF NUMBER=1 THEN LET MESSAGE$=MESSAGE$+"Occurs Prior to The Current Period"
+1040 IF NUMBER=2 THEN LET MESSAGE$=MESSAGE$+"Occurs After The Next Period"
+1050 IF NUMBER=3 THEN LET MESSAGE$=MESSAGE$+"Falls Into A Prior G/L Period"
+1060 IF NUMBER=101 THEN LET MESSAGE$=MESSAGE$+"is not in the Prior, Current or Next G/L Year"
+1070 IF NUMBER=102 THEN LET MESSAGE$=MESSAGE$+"Falls Into A Locked G/L Period"
+1080 IF NUMBER=103 THEN LET MESSAGE$=MESSAGE$+"Fall Into A Closed Fiscal Year"
+1085 IF NUMBER=104 THEN LET MESSAGE$="This G/L Account Does Not Exist"
+1090 IF NUMBER>99 THEN LET ERRORS=ERRORS+1,PREFIX$="ERROR:"
+1100 REM --- V6demo; if called from a DocOut register, send back global w/ message text, otherwise print as usual
+1110 LET MESSAGE$="---> "+PREFIX$+" "+MESSAGE$
+1112 xwk$=stbl("+V6_DTWARN","")
+1115 xwk$=FID(PRINTER,err=*next);goto 1120
+1117 xwk$=stbl("+V6_DTWARN",MESSAGE$)
+1119 goto 4000
+1120 PRINT (PRINTER)MESSAGE$
+1130 LET LINES=LINES+1
+4000 REM " --- All done"
+4090 GOTO 9900
+8000 REM " --- Functions"
+8010 DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+8020 DEF FNB$(Q1$)=FNA$(Q1$(2),Q1$)+"/"+FNA$(Q1$(3),Q1$)+"/"+FNA$(Q1$(1),Q1$)
+8040 DEF FND$(Q$)=CHR(FNYY_YEAR(Q$(5,2))+32)+CHR(NUM(Q$(1,2))+32)+CHR(NUM(Q$(3,2))+32)
+8090 DEF FNN$(Q$)=Q$(3,4)+Q$(1,2)
+8145 REM " --- FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+8150 DEF FNYY21_YY$(Q1$)
+8155 LET Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+8160 RETURN Q1$
+8165 FNEND
+8170 REM " --- FNYY_YEAR Convert 2-Char Year to 21st Century Numeric Year"
+8175 DEF FNYY_YEAR(Q1$)
+8180 LET Q=NUM(FNYY21_YY$(Q1$)); IF Q<50 THEN LET Q=Q+100
+8185 RETURN Q
+8190 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9205 SETESC 9000
+9210 SETERR 9000
+9220 LET STATUS=E0
+9230 IF STATUS=0 THEN LET STATUS=256
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 REM " --- Return to Calling Program"
+9950 EXIT
+9999 END
