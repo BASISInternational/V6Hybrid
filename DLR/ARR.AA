@@ -135,10 +135,12 @@
 2220 IF L+1>L9 THEN GOSUB 5000
 2300 rem V6demo PRINT (7)@(40),W0$(26,7),@(48),W[0]:M1$,W[1]:M1$,W[0]+W[1]:M1$
 2305 gosub detailLineTwoInvoice
-2310 LET L=L+1;escape;rem set GLSTATUS to 1 to test GLC.GA  CAH
-2320 IF GLSTATUS>0 THEN CALL "GLC.GA",7,A0$(6,3),GLSTATUS,L,ERRORS,STATUS
+2310 LET L=L+1
+2320 IF GLSTATUS>0 
+2322     CALL "GLC.GA",7,A0$(6,3),GLSTATUS,L,ERRORS,STATUS
+2324     gosub errorMessageLine
+2326 ENDIF
 2330 LET GLSTATUS=0
-2340 gosub errorMessageLine
 2350 IF A0$(6,3)<=G9$ THEN LET N=0 ELSE LET N=3
 2360 FOR X=0 TO 1
 2370 LET CODE_T[X]=CODE_T[X]+W[X],DATE_T[X]=DATE_T[X]+W[X],V[X+N]=V[X+N]+W[X]
@@ -166,8 +168,11 @@
 2600 rem V6demo PRINT (7)@(48+3*M1),FNF$(W0$(26,G[3]),G5$),W[0]:M1$
 2502 gosub detailLineTwoGLAccount
 2605 LET L=L+1
-2610 IF GLSTATUS>0 THEN CALL "GLC.GA",7,A0$(6,3),GLSTATUS,L,ERRORS,STATUS
-2615 LET GLSTATUS=0
+2610 IF GLSTATUS>0
+2612     CALL "GLC.GA",7,A0$(6,3),GLSTATUS,L,ERRORS,STATUS
+2614     gosub errorMessageLine
+2616 ENDIF
+2618 LET GLSTATUS=0
 2620 IF A0$(6,3)<=G9$ THEN LET N=0 ELSE LET N=3
 2630 LET CODE_T[2]=CODE_T[2]+W[0],DATE_T[2]=DATE_T[2]+W[0],V[2+N]=V[2+N]+W[0]
 2640 GOSUB 6400; GOSUB 6500
@@ -400,9 +405,9 @@
 14050 	doc!.addColumn("Customer^Number And Name", "C", 35, 120, "", "E", "L", "")
 14060	doc!.addColumn("Rec^Code", "C", 8, 50, "", "E", "L", "")
 14070	doc!.addColumn("Check^Number", "C", 8, 50, "", "E", "L", "")
-14080	doc!.addColumn("Invoice^Number", "C", 7, 70, "", "E", "L", "")
-14090	doc!.addColumn("Cash^Amount", "N", 12, 110, "-####,##0.00", "N", "R", "")
-14100	doc!.addColumn("Discount^Amount", "N", 8, 110, "-##0.00", "N", "R", "")
+14080	doc!.addColumn("Invoice^Number", "C", 7, 100, "", "E", "L", "")
+14090	doc!.addColumn("Cash^Amount", "N", 12, 100, "-####,##0.00", "N", "R", "")
+14100	doc!.addColumn("Discount^Amount", "N", 8, 100, "-##0.00", "N", "R", "")
 14210	doc!.addColumn("Total^Credit", "N", 12, 110, "-####,##0.00", "N", "R", "")
 14320	doc!.addColumn("Miscellaneous^Acct", "C", 12, 90, "", "E", "L", "")
 14430	doc!.addColumn("Miscellaneous^Amount", "N", 12, 110, "-####,##0.00", "N", "R", "")
