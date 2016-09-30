@@ -31,7 +31,7 @@ barista_wd$ = sp!.getParameter("BARISTA_WD")
 chdir barista_wd$
 
 rem 'CAH
-goto CAH_end;rem to enable trace
+rem goto CAH_end;rem to enable trace
     tfl$="C:/temp_downloads/stmtTraceSPROC.txt"
     erase tfl$,err=*next
     string tfl$

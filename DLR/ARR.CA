@@ -161,9 +161,10 @@
 4040 IF V3=4 THEN GOTO 9900
 4050 ON POS(V$="YN") GOTO 4000,4100,1000
 4100 REM "V6Demo --- Run Overlay"
-4101 PRINT @(0,22),'CL',"Launching Jasper statement..."
+4101 PRINT @(0,22),'CL',"Launching Jasper statement(s)..."
 4110 REM  RUN "ARR.CB"
-4120 LET STMT_DATE$=FNB$(STMT$)
+4115 if opt$<>"S" then run "arr_V6statements.aon"
+4120 LET STMT_DATE$=FNB$(STMT$) 
 4140 CALL "renderCustStatementsDemo.src",N0$,STMT_DATE$,MSG$,AGE$,DATE$,M_BAL,
 4140:PRINT_DETAIL,OPT$,SEQ$,CUST$,STATEMENTS_PRODUCED
 4150 GOTO 9900

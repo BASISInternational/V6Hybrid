@@ -1,0 +1,790 @@
+rem --- Print Customer Statements
+rem --- Program arr_statements(arr_cb)
+rem --- Adapted from the original BBjForm-based version to use jasper
+
+rem --- AddonSoftware
+rem --- Copyright BASIS International Ltd.  All Rights Reserved.
+rem --- All Rights Reserved
+
+rem --- V6demo - create statements via Jasper reports
+rem --- TODO - look at Jaspers/SPROCs
+
+
+    setesc std_error
+    seterr std_error
+
+    use ::bbjasper.bbj::BBJasperReport
+    use ::bbjasper.bbj::BBJasperViewerWindow
+    use ::bbjasper.bbj::BBJasperViewerControl
+
+    use ::ado_rptControl.src::ReportControl
+    use ::sys/prog/bao_utilities.bbj::BarUtils
+
+	declare BBJasperReport BBjReport!
+
+    params! = new java.util.HashMap()
+
+    rem --- get SysGui
+    rd_num_files=1
+    dim rd_open_tables$[1:rd_num_files],rd_open_opts$[1:rd_num_files],rd_open_chans$[1:rd_num_files],rd_open_tpls$[1:rd_num_files]
+    rd_open_tables$[1]=stbl("+GUI_DEVICE"),rd_open_opts$[1]="O"
+    gosub open_tables
+    rd_gui_dev=num(rd_open_chans$[1])
+		
+    ScreenSize!   = bbjAPI().getSysGui().getSystemMetrics().getScreenSize()
+    screen_width  = ScreenSize!.width - 200; rem keep it in the MDI w/ no scroll bars
+    screen_height = ScreenSize!.height - 100
+
+rem --- Retrieve the program path
+
+    pgmdir$=stbl("+DIR_PGM",err=*next)
+
+rem --- Set document Directory
+
+    docdir$=stbl("+DOC_DIR_PDF",err=*next)
+
+rem --- Retrieve sysinfo data
+
+    sysinfo_template$=stbl("+SYSINFO_TPL",err=*next)
+    dim sysinfo$:sysinfo_template$
+    sysinfo$=stbl("+SYSINFO",err=*next)
+    firm_id$=sysinfo.firm_id$
+
+    milestone=50
+    milestone=num(stbl("+MILESTONE",err=*next),err=*next)
+
+rem --- Derive/set path and filename for logo to go on form
+
+    logo_file$=stbl("+V6_CUST_IMAGES",err=*next)+stbl("+V6_FORM_LOGO",err=*next)
+    logo_filenm$=""
+    if logo_file$<>""
+        logo_chn=unt
+        open (logo_chn,err=*endif)logo_file$
+        logo_filenm$=fid(logo_chn)(9)
+        close (logo_chn)
+    endif
+
+rem --- Set Report Name & Subreport directory
+
+    reportDir$ = stbl("+V6_DIR_REPORTS",err=*next)   
+    temp = unt
+    open (temp)reportDir$
+    reportDir$ = fid(temp)(9)+"/"
+    close (temp)
+    reportBaseName$ = "CustStatement"
+    filename$ = reportDir$ + reportBaseName$ + ".jasper"
+    masterBaseName$ = "StatementMaster"
+    master_filename$ = reportDir$ + masterBaseName$+".jasper"
+    printBaseName$ = "StatementPrint"
+    print_filename$ = reportDir$ + printBaseName$+".jasper"
+
+    declare BBJasperReport report!
+
+rem --- Open/Lock files
+
+    files=4,begfile=1,endfile=files
+    dim files$[files],options$[files],ids$[files],templates$[files],channels[files]
+    files$[1]="ARM-01",ids$[1]="ARM01"
+    files$[2]="ARM-02",ids$[2]="ARM02"
+    files$[3]="ART-01",ids$[3]="ART01"
+    files$[4]="ART-11",ids$[4]="ART11"
+    
+    call pgmdir$+"adc_fileopen.aon",action,begfile,endfile,files$[all],options$[all],ids$[all],templates$[all],channels[all],batch,status
+    if status goto std_exit
+
+    arm01_dev=channels[1]
+    arm02_dev=channels[2]
+    art01_dev=channels[3]
+    art11_dev=channels[4]
+
+rem --- Dimension string templates
+
+    dim arm01a$:templates$[1],arm02a$:templates$[2]
+    dim art01a$:templates$[3],art11a$:templates$[4]
+
+rem --- Assign form input values to local variables
+rem --- V6demo; From ARR.CA we have STMT$ (packed YMD),MSG$,AGE$,DATE$,M_BAL,TERR$,OPT$,SEQ$,CUST$ ( cust$ will be number or alt-seq depending on opt$ and seq$)
+
+    stmt_date$=fnv6dt$(stmt$)
+    message$=msg$
+    age_period$=age$
+    age_basis$=date$
+    minimum$=str(m_bal)
+    territory$=terr$
+    option$=opt$
+    sequence$=seq$
+    customer_id$=cust$
+    alt_sequence$=cust$
+
+    minimum=num(minimum$)
+    period=num(age_period$,err=*next)
+
+    if pos(option$="SR")
+        if sequence$="C"
+            begcust$=customer_id$
+            endcust$=customer_id$
+        else
+            begalt$=alt_sequence$
+            endalt$=alt_sequence$
+        endif
+    endif
+    if option$="R"
+        endcust$=""
+        endalt$=""
+    endif
+
+rem --- Initializations
+
+    artype$=fill(2)
+    keynum=0;rem keynum$="PRIMARY"
+    begvalue$=begcust$
+    endvalue$=endcust$
+
+
+    if sequence$="A" then 
+        keynum=2;rem keynum$="ALT_SEQ"
+        begvalue$=begalt$
+        endvalue$=endalt$
+    endif
+
+    call stbl("+DIR_PGM")+"adc_getmask.aon","CUSTOMER_ID","","","",m0$,0,customer_size
+    call stbl("+DIR_PGM")+"adc_getmask.aon","","AR","A","",m1$,0,0
+    
+    alias$ = "ARR_STATEMENTS";rem option!.getAlias() if launching via Barista Option Entry form
+    rptctl_alias$ = alias$
+    master_document=1
+    print_document=1
+
+    emailFax! = BBjAPI().makeVector()
+
+rem --- See if this document is set up in Addon Report Control
+
+    reportControl!=new ReportControl()
+    reportControl!.setDocExtension("pdf")
+    rpt_ctl$=reportControl!.getReportControl(rptctl_alias$)
+    rpt_ctl$=iff(rpt_ctl$="","NO","YES")
+    rpt_id$=iff(rpt_ctl$="YES",reportControl!.getReportID(),"")
+
+rem --- Determine 30 day aging period dates
+
+    for x=-5 to 0
+        enddate$=""
+        call pgmdir$+"adc_daydates.aon",stmt_date$,enddate$,x*30
+        period_dates$=enddate$+period_dates$
+    next x
+
+rem --- Start progress meter and position Customer Master (ARM-01) file
+
+    call pgmdir$+"adc_progress.aon","NC","ARM01","","","",0,arm01_dev,1,meter_num,status
+
+    read (arm01_dev,knum=keynum,key=firm_id$,dom=*proceed)
+
+rem --- Read next Customer Master (ARM-01) and Detail (ARM-02) record
+
+    while 1
+
+        if pos(option$="RS")
+            if first_pass=0
+                read (arm01_dev,knum=keynum,key=firm_id$+begvalue$,dir=0,dom=*next)            
+            endif   
+        endif
+ 
+        read record (arm01_dev,end=*break)arm01a$
+ 
+        first_pass=1
+        if firm_id$<>arm01a.v6_firm_id$ break
+        if mod(total_recs,milestone)=0 then call pgmdir$+"adc_progress.aon","S","","","","",0,0,milestone,meter_num,status
+        if sequence$="C" if endvalue$<>"" if arm01a.v6_customer_nbr$>endvalue$ break
+        if sequence$="A" if endvalue$<>"" if arm01a.v6_alt_sequence$>endvalue$ break
+        dim arm02a$:fattr(arm02a$)
+        k$=arm01a.v6_firm_id$+arm01a.v6_customer_nbr$+artype$
+        find record (arm02_dev,key=k$,dom=*continue) arm02a$
+
+    rem --- Does this customer meet the selection criteria?
+
+        if option$<>"S" then if arm02a.v6_statements$<>"Y" continue
+
+        if territory$<>"" if arm02a.v6_territory$<>territory$ continue
+
+    rem --- Position the Invoice Header (art-01) file for aging
+
+        dim aging[5]
+        customer$=arm01a.v6_firm_id$+artype$+arm01a.v6_customer_nbr$
+        read (art01_dev,key=customer$,dom=*next)
+
+    rem --- Read next Invoice Header record
+
+        while 1
+            art01_key$=key(art01_dev,end=*break)
+            if pos(customer$=art01_key$)<>1 break
+            read record (art01_dev) art01a$
+            if fnv6dt$(art01a.v6_invoice_date$)>stmt_date$ continue
+
+        rem --- Accumulate any adjustments made to this invoice
+
+            gosub adjustments
+            balance=art01a.v6_invoice_amt+applied
+
+        rem --- Age this invoice
+
+            agingdate$=fnv6dt$(art01a.v6_invoice_date$)
+            if age_basis$<>"I" agingdate$=fnv6dt$(art01a.v6_inv_due_date$)
+            invagepd=pos(agingdate$>period_dates$,8); rem determine invoice aging period for proper accumulation
+            if invagepd=0 invagepd=5 else invagepd=int(invagepd/8)
+            aging[invagepd]=aging[invagepd]+balance
+
+        wend
+
+    rem --- Above the minimum balance for printing?
+
+        balance=0
+
+        for x=period to 5
+            balance=balance+aging[x]
+        next x
+
+        if minimum <> 0 then if balance<minimum continue
+
+    rem --- Make Document Archive Record and Get Document ID
+
+        rep_date$=date(0:stbl("+DATE_MASK"))
+        rep_date_stamp$=date(0:"%Yd%Mz%Dz")
+        rep_time$=date(0:"%hz:%mz %p")
+        rep_time_stamp$=date(0:"%Hz%mz%sz")
+
+        new_doc_id$=""
+        new_doc_name$=""
+        doc_name$="V6_CustomerStatement_"+arm01a.v6_customer_nbr$
+        doc_keywords$="Stmt date: "+fndate$(stmt_date$)
+
+        rd_source_alias$=alias$
+        rd_source_type$="O"
+        rd_doc_source$="E"
+        rd_doc_ext$="PDF"
+        rd_source_id$="C"
+        rd_source_ref$=arm01a.v6_customer_nbr$
+        rd_doc_keywords$=doc_keywords$
+
+    rem --- Get Next Document Number and update Document Audit for individual pdf
+
+        call stbl("+DIR_SYP")+"bas_sequences.bbj","DOC_NO",new_doc_id$,rd_table_chans$[all] 
+        new_doc_name$=new_doc_id$+"_"+doc_name$+".pdf"        
+        
+        call stbl("+DIR_SYP")+"bac_documents.bbj",new_doc_id$,rep_date_stamp$,rep_time_stamp$,rd_doc_source$,rd_doc_ext$,docdir$,
+:           rd_source_type$,rd_source_alias$,rd_source_id$,rd_source_ref$,rd_table_chans$[all],"",new_doc_name$,doc_name$,doc_keywords$
+
+    rem --- Get Next Document Number and update Document Audit for JAS entry for Master doc, if first time thru
+
+        if master_document
+            rd_doc_ext$="JAS"
+            rd_archive_action$="DOC_ID-NOREPRINT"
+            rd_doc_id$=""
+            rd_source_id$="C"
+            rd_source_ref$=""
+            rd_doc_keywords$=""
+            gosub document_whse
+            rd_archive_action$=""
+            master_doc_id$=rd_doc_id$
+            master_doc_name$=master_doc_id$+"_"+masterBaseName$+".pdf"
+        endif
+
+    rem --- Get Next Document Number and update Document Audit for JAS entry for Print doc, if first time thru
+
+        if print_document
+            rd_doc_ext$="JAS"
+            rd_archive_action$="DOC_ID-NOREPRINT"
+            rd_doc_id$=""
+            rd_source_id$="C"
+            rd_source_ref$=""
+            rd_doc_keywords$=""
+            gosub document_whse
+            rd_archive_action$=""
+            print_doc_id$=rd_doc_id$
+            print_doc_name$=print_doc_id$+"_"+printBaseName$+".pdf"
+        endif
+
+    rem --- Use ReportControl object to see if customer wants print, email, or fax
+
+        add_to_print_report=1
+        if rpt_ctl$="YES"     
+            found=reportControl!.getRecipientInfo(rpt_id$,arm01a.v6_customer_nbr$,"")
+            if found         
+                if reportControl!.getPrintYN()<>"Y" then add_to_print_report=0
+                if reportControl!.getEmailYN()="Y" or reportControl!.getFaxYN()="Y"
+                    emailFax!.add(rpt_id$)
+                    emailFax!.add(arm01a.v6_customer_nbr$)
+                    emailFax!.add(new_doc_id$)
+                endif
+            endif
+        endif
+
+    rem --- Document Output Report Parameters
+
+        params!.put("DOC_NO",new_doc_id$)
+        params!.put("DATE_REP",rep_date$+"  "+rep_time$)
+
+    rem --- Other params
+
+        params!.put("BARISTA_WD",dir(""))
+        params!.put("LOGO_FILE",logo_filenm$)
+        params!.put("FIRM_ID",firm_id$)
+        params!.put("STATEMENT_DATE",stmt_date$)
+        params!.put("CUSTOMER_ID",arm01a.v6_customer_nbr$)
+        params!.put("MESSAGE",message$)
+        params!.put("AGE_BASIS",age_basis$)
+        params!.put("AMT_MASK",m1$)
+        params!.put("CUST_MASK",m0$)
+        params!.put("CUST_SIZE",str(customer_size))
+        params!.put("PERIOD_DATES",period_dates$)        
+
+    rem --- invoke jasper
+        
+        if master_document
+            master_report! = BarUtils.getBBJasperReport(master_filename$)
+            master_report!.fill()
+            master_document=0
+        endif
+
+        if print_document
+            print_report! = BarUtils.getBBJasperReport(print_filename$)
+            print_report!.fill()
+            print_document=0
+        endif
+
+        report! = BarUtils.getBBJasperReport(filename$)
+        report!.putParams(params!)
+
+        locale$ = stbl("!LOCALE")
+        locale$ = stbl("+USER_LOCALE",err=*next)
+        report!.setLocale(locale$)
+     
+        report!.fill()
+        report!.exportToPDF(BBjAPI().FALSE, docdir$+new_doc_name$)
+
+        master_report!.appendReport(report!)
+        if add_to_print_report then print_report!.appendReport(report!)
+    
+        report!.destroy()
+    
+    rem --- Loop back for next Customer Master
+
+        total_recs=total_recs+1
+		if option$="S" break
+
+    wend
+
+rem --- done
+
+    call pgmdir$+"adc_progress.aon","D","","","","",0,0,0,meter_num,status
+
+    if total_recs=0
+        msg_id$="DOC_OUTPUT_NODATA"
+        gosub disp_message
+        goto std_exit_no_report
+    endif
+
+    if master_report!=null() then goto std_exit
+
+rem --- bring up jasper viewers (Master doc and Print doc)
+
+    declare BBJasperViewerWindow masterViewerWindow!
+    declare BBJasperViewerWindow printViewerWindow!
+    declare BBjTopLevelWindow bbjWindowMaster!
+    declare BBjTopLevelWindow bbjWindowPrint!
+
+rem --- get a pdf path from +DOC_DIR_PDF
+rem --- this will eventually be replaced with code to get output formats/types based on doc group and/or print settings
+    gosub doc_path
+
+rem --- Master - contains ALL statements
+
+    repTitle$=masterBaseName$
+    rd_doc_name$=master_doc_name$
+    rd_doc_id$=master_doc_id$
+    
+    gosub OnMasterSaveMenuButton; rem --- always save to doc archive
+    
+    masterViewerWindow! = new BBJasperViewerWindow(master_report!,5,5,screen_width,screen_height,repTitle$,$00000093$)
+    masterViewerControl! = masterViewerWindow!.getViewerControl()
+    masterViewerControl!.setGoogleDefaultDocument(repTitle$)
+    masterViewerControl!.setDefaultSaveFolder(rd_doc_path$)
+    masterViewerControl!.setDefaultSaveFile(repTitle$)
+    masterViewerControl!.setFitWidth()
+
+    rem --- set callbacks for when user presses save or email buttons in jasper viewer
+    rem --- note: saveAs or saveAsGDoc not intercepted, just regular save
+    masterSaveMenuButton! = masterViewerControl!.getControl(BBJasperViewerControl.getSAVE_MENU_BUTTON_NAME())
+    masterSaveMenuButton!.setCallback(BBjMenuButton.ON_BUTTON_PUSH ,"OnMasterSaveMenuButton")
+    masterEmailToolButton! = masterViewerControl!.getControl(BBJasperViewerControl.getEMAIL_TOOL_BUTTON_NAME())
+    masterEmailToolButton!.setCallback(BBjMenuButton.ON_TOOL_BUTTON_PUSH ,"OnMasterEmailToolButton")
+
+    masterViewerWindow!.setReleaseOnClose(0)
+    masterViewerWindow!.show(0)
+
+    bbjWindowMaster!= masterViewerWindow!.getViewerWindow()
+    bbjWindowMaster!.setCallback(bbjWindowMaster!.ON_CLOSE,"close_win")
+
+rem --- Print - contains only those marked in rptctl file for print, or those not in rptctl file
+
+    repTitle$=printBaseName$
+    rd_doc_name$=print_doc_name$
+    rd_doc_id$=print_doc_id$
+
+    gosub OnPrintSaveMenuButton; rem --- always save to doc archive
+
+    printViewerWindow! = new BBJasperViewerWindow(print_report!,50,50,screen_width,screen_height,repTitle$,$00000093$)
+    printViewerControl! = printViewerWindow!.getViewerControl()
+    printViewerControl!.setGoogleDefaultDocument(repTitle$)
+    printViewerControl!.setDefaultSaveFolder(rd_doc_path$)
+    printViewerControl!.setDefaultSaveFile(repTitle$)
+    printViewerControl!.setFitWidth()
+
+    printSaveMenuButton! = printViewerControl!.getControl(BBJasperViewerControl.getSAVE_MENU_BUTTON_NAME())
+    printSaveMenuButton!.setCallback(BBjMenuButton.ON_BUTTON_PUSH ,"OnPrintSaveMenuButton")
+    printEmailToolButton! = printViewerControl!.getControl(BBJasperViewerControl.getEMAIL_TOOL_BUTTON_NAME())
+    printEmailToolButton!.setCallback(BBjMenuButton.ON_TOOL_BUTTON_PUSH ,"OnPrintEmailToolButton")
+
+    printViewerWindow!.setReleaseOnClose(0)
+    printViewerWindow!.show(0)
+
+    bbjWindowPrint!= printViewerWindow!.getViewerWindow()
+    bbjWindowPrint!.setCallback(bbjWindowPrint!.ON_CLOSE,"close_print_win")
+
+rem --- Event Control
+
+    process_events,err=*same
+
+    release
+
+ document_whse:rem --- Write record to Barista document warehouse (ads_documents)
+
+    call stbl("+DIR_SYP")+"bac_documents.bbj",
+:       rd_doc_id$,
+:       rep_date_stamp$,
+:       rep_time_stamp$,
+:       rd_doc_source$,
+:       rd_doc_ext$,
+:       rd_doc_path$,
+:       rd_source_type$,
+:       rd_source_alias$,
+:       rd_source_id$,
+:       rd_source_ref$,
+:       rd_table_chans$[all],
+:       rd_archive_action$,
+:       rd_doc_name$,
+:       rep_title$,
+:       rd_doc_keywords$
+
+    return
+
+doc_path:rem --- Get Document Path
+rem --- forcing a pdf save to this location for release 13.03
+rem --- eventually, want to make the save functionality mimic (as closely as possible) Barista
+rem --- so it can save based on user's doc group and doc settings
+
+    if rd_doc_path$="" then
+        rd_tmp_dir$=stbl("+DOC_DIR_PDF",err=*endif)
+        rd_temp_wd$=dsk("")+dir("")
+        if pos(":"=rd_tmp_dir$) setdrive rd_tmp_dir$(1,pos(":"=rd_tmp_dir$)-1),err=*next
+        chdir rd_tmp_dir$,err=*next
+        rd_doc_path$=dsk("")+dir("")
+        if pos(":"=rd_temp_wd$) setdrive rd_temp_wd$(1,pos(":"=rd_temp_wd$)-1)
+        chdir rd_temp_wd$
+    endif
+
+    return
+
+OnMasterSaveMenuButton:
+rem --- exportToPDF and record in doc warehouse
+
+    if rd_doc_path$<>"" and repTitle$<>""
+        rd_doc_ext$="PDF"
+        rep_title$=repTitle$
+        rd_source_id$="C"
+        rd_source_ref$=""
+        rd_doc_keywords$=""
+        
+        master_report!.exportToPDF(BBjAPI().FALSE, rd_doc_path$+rd_doc_name$)
+        
+        gosub document_whse
+    endif
+    return    
+
+OnMasterEmailToolButton:rem --- Add document to fax/email queue
+rem --- force exportToPDF first, in case it hasn't already been saved
+    
+    rem --- force exportToPDF in case not already saved
+    gosub OnMasterSaveMenuButton
+
+    if rd_doc_id$<>"" and rd_doc_ext$<>""
+        call stbl("+DIR_SYP")+"bac_faxemail_jasper.bbj",rd_doc_id$,rd_doc_ext$,rd_table_chans$[all]
+    endif
+
+    return
+
+OnPrintSaveMenuButton:
+rem --- exportToPDF and record in doc warehouse
+
+    if rd_doc_path$<>"" and repTitle$<>""
+        rd_doc_ext$="PDF"
+        rep_title$=repTitle$
+        rd_source_id$="C"
+        rd_source_ref$=""
+        rd_doc_keywords$=""
+        
+        print_report!.exportToPDF(BBjAPI().FALSE, rd_doc_path$+rd_doc_name$)
+
+        gosub document_whse
+    endif
+    return    
+
+OnPrintEmailToolButton:rem --- Add document to fax/email queue
+rem --- force exportToPDF first, in case it hasn't already been saved
+    
+    rem --- force exportToPDF in case not already saved
+    gosub OnPrintSaveMenuButton
+
+    if rd_doc_id$<>"" and rd_doc_ext$<>""
+        call stbl("+DIR_SYP")+"bac_faxemail_jasper.bbj",rd_doc_id$,rd_doc_ext$,rd_table_chans$[all]
+    endif
+    return
+
+close_win:rem --- Viewer Window Closed
+
+    ok_to_close=1
+    if !print_win_closed
+        msg_id$ = "CONF_CLOSE_PRINT"
+        gosub disp_message
+        if msg_opt$<>"Y" then ok_to_close=0 
+    endif
+
+    if !ok_to_close then return
+        
+    if emailFax!.size()
+        msg_id$ = "CONF_RPTCTL"
+        gosub disp_message
+        if msg_opt$="Y"
+            for email_fax=0 to emailFax!.size()-1 step 3
+                reportControl!.addToDocQueue(emailFax!.get(email_fax),emailFax!.get(email_fax+1),"",emailFax!.get(email_fax+2))    
+            next email_fax
+        endif
+    endif    
+    
+    reportControl!.destroy(err=*next)
+    masterViewerWindow!.destroy(err=*next)
+    printViewerWindow!.destroy(err=*next)
+
+    if tcb(13) then exit
+    release
+
+close_print_win: rem --- close the Print Copy; no updating, just close the print copy window
+
+    printViewerWindow!.destroy(err=*next)
+    print_win_closed=1
+    
+    return
+
+adjustments: rem --- Accumulate any adjustments for the current invoice
+
+rem --- Position Invoice Detail (art-11) file
+
+    art01_key$=art01a.v6_firm_id$+art01a.v6_ar_type$+art01a.v6_customer_nbr$+art01a.v6_ar_inv_nbr$
+    read (art11_dev,key=art01_key$,dom=*next)
+
+rem --- Read Invoice Detail (art-11) records
+
+    applied=0
+
+    while 1
+        k$=key(art11_dev,end=*break)
+        if pos(art01_key$=k$)<>1 break
+        read record (art11_dev) art11a$
+        if fnv6dt$(art11a.v6_trans_date$) <= stmt_date$ then applied = applied+art11a.v6_trans_amt+art11a.v6_adj_disc_amt
+    wend
+
+    return
+
+rem --- Functions
+
+rem --- fntestvalue: Return maximum numeric value for a given mask
+
+    def fntestvalue(q$)
+        q1$=""
+        for q=1 to len(q$)
+            if pos(q$(q,1)="#0") q1$=q1$+"9"
+            if q$(q,1)="." q1$=q1$+"."
+        next q
+        q=num(q1$)
+        return q
+    fnend
+
+rem --- Functions used to retrieve form values
+
+    def fnstr_pos(q0$,q1$,q1)=int((pos(q0$=q1$,q1)+q1-1)/q1)
+    def fnget_rec_date$(q0$)=rd_rec_data$[fnstr_pos(cvs(q0$,1+2+4)+"."+cvs(q0$,1+2+4),rd_rec_data$[0,0],40),0]
+    def fnget_fld_data$(q0$,q1$)=cvs(rd_rec_data$[fnstr_pos(cvs(q0$,1+2+4)+"."+cvs(q1$,1+2+4),rd_rec_data$[0,0],40),0],2)
+
+rem --- Date/time handling functions
+
+    def fndate$(q$)
+        q1$=""
+        q1$=date(jul(num(q$(1,4)),num(q$(5,2)),num(q$(7,2)),err=*next),err=*next)
+        if q1$="" q1$=q$
+        return q1$
+    fnend
+
+    def fnyy$(q$)=q$(3,2)
+    def fnclock$(q$)=date(0:"%hz:%mz %p")
+    def fntime$(q$)=date(0:"%Hz%mz")
+
+rem --- fnmask$: Alphanumeric Masking Function (formerly fnf$)
+
+    def fnmask$(q1$,q2$)
+        if q2$="" q2$=fill(len(q1$),"0")
+        return str(-num(q1$,err=*next):q2$,err=*next)
+        q=1
+        q0=0
+        while len(q2$(q))
+            if pos(q2$(q,1)="-()") q0=q0+1 else q2$(q,1)="X"
+            q=q+1
+        wend
+        if len(q1$)>len(q2$)-q0 q1$=q1$(1,len(q2$)-q0)
+        return str(q1$:q2$)
+    fnend
+
+rem --- V6demo date functions
+
+    rem --- takes in MM/DD/YY from V6; converts YY to 2-char year (e.g., 16 > B6), then to numeric year (e.g., B6 -> 116), then runs thru date(jul()) to return YYYYMMDD
+    def fnv6dt$(wq$)
+        wq1$=fnb$(wq$)
+        wq1$=date(jul(fnyy_year(fnyear_yy21$(num(wq1$(7,2)))),num(wq1$(1,2)),num(wq1$(4,2))):"%Y%Mz%Dz")
+        return wq1$
+    fnend
+    
+    def FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+    def FNB$(Q1$)=FNA$(Q1$(2),Q1$)+"/"+FNA$(Q1$(3),Q1$)+"/"+FNA$(Q1$(1),Q1$)
+    def FNB6$(Q1$)=Q1$(3,2)+"/"+Q1$(5,2)+"/"+FNYY21_YY$(Q1$(1,2)) 
+    def FNC$(Q1$)=FNA$(Q1$(2),Q1$)+FNA$(Q1$(3),Q1$)+FNA$(Q1$(1),Q1$)           
+    def FND$(Q$)=CHR(FNYY_YEAR(Q$(5,2))+32)+CHR(NUM(Q$(1,2))+32)+CHR(NUM(Q$(3,2))+32)
+
+    rem --- FNYEAR_YY21$ Convert Numeric Year to 21st Century 2-Char Year"   
+    def FNYEAR_YY21$(Q)=FNYY_YY21$(STR(MOD(Q,100):"00"))
+
+    rem --- FNYEAR_YY$ Un-Convert 21st Century Numeric Year to 2-Char Year" 
+    def FNYEAR_YY$(Q)=STR(MOD(Q,100):"00") 
+
+    rem --- FNYY_YEAR Convert 2-Char Year to 21st Century Numeric Year"
+	def FNYY_YEAR(Q1$)
+	Q=NUM(FNYY21_YY$(Q1$)); if Q<50 then Q=Q+100
+	return Q
+	fnend
+    
+    rem --- FNYY21_YY$ Un-Convert 21st Century 2-Char Year to 2-Char Year"
+	def FNYY21_YY$(Q1$)
+	Q3$=" 01234567890123456789",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+	return Q1$
+	fnend
+
+    rem --- FNYY_YY21$ Convert 2-Char Year to 21st Century 2-Char Year
+	def FNYY_YY21$(Q1$)
+	Q3$=" ABCDE56789ABCDEFGHIJ",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+	return Q1$
+	fnend
+
+open_tables:rem --- Open Tables
+
+    call stbl("+DIR_SYP")+"bac_open_tables.bbj",
+:       rd_open_beg,
+:       rd_open_end,
+:       rd_open_tables$[all],
+:       rd_open_opts$[all],
+:       rd_open_chans$[all],
+:       rd_open_tpls$[all],
+:       rd_table_chans$[all],
+:       rd_open_batch,
+:       rd_open_status$
+
+    if rd_open_status$<>""
+        msg_id$="ENTRY_OPEN_ERROR"
+        dim msg_tokens$[1]
+            msg_tokens$[1]=rd_open_status$
+        rd_setup_failure$="YES"
+        gosub disp_message
+        release
+    endif
+
+    return
+
+rem #include disp_message.src
+
+disp_message: rem --- Display Message Dialog
+
+    call stbl("+DIR_SYP")+"bac_message.bbj",msg_id$,msg_tokens$[all],msg_opt$,rd_table_chans$[all]
+    return
+
+rem #include std_error.src
+
+std_error: rem --- Standard error handler (22Feb2013)
+
+    if tcb(19)>0
+        rem --- Escape handler
+        if and(chr(tcb(19)),$08$)=$08$
+            release
+        else
+            setesc std_error
+            return
+        endif
+    endif
+
+    if err=0
+        lock_byte=tcb(10)
+        lock_chan=tcb(12)
+    endif
+
+    rd_err_text$=""
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    call stbl("+DIR_SYP")+"bac_error.bbj",pgm(-2),str(tcb(5)),str(err),rd_err_text$,rd_err_act$,lock_byte,lock_chan
+    if pos("ESCAPE"=rd_err_act$) seterr 0; setesc 0
+    if pos("RETRY"=rd_err_act$) retry
+    if pgm(-1)<>pgm(-2) status=999; exit 
+    release
+
+rem #endinclude std_error.src
+
+rem #include std_missing_params.src
+
+std_missing_params: rem --- Standard missing parameter handler (15Apr2006)
+
+    rd_err_text$=""
+    if tcb(5)<>0 and pgm(-1)=pgm(-2) rd_err_text$=pgm(tcb(5))
+    pgmdir$=stbl("+DIR_PGM",err=std_missing_params_exit)
+    call pgmdir$+"adc_noparams.aon",err=std_missing_params_exit,pgm(-2),str(tcb(5)),str(err),rd_err_text$,rd_err_act$
+std_missing_params_exit: 
+    master_user$=cvs(stbl("+MASTER_USER",err=std_missing_params_release),2)
+    sysinfo_template$=stbl("+SYSINFO_TPL",err=std_missing_params_release)
+    dim sysinfo$:sysinfo_template$
+    sysinfo$=stbl("+SYSINFO",err=std_missing_params_release)
+    if cvs(sysinfo.user_id$,2)=master_user$ escape
+std_missing_params_release: 
+    status=999
+    if pgm(-1)<>pgm(-2) exit
+    release
+
+rem #endinclude std_missing_params.src
+
+rem #include std_end.src
+
+std_exit: rem --- Standard program end (01Mar2006)
+
+    call pgmdir$+"adc_progress.aon","D","","","","",0,0,0,meter_num,status
+    run stbl("+DIR_SYP")+"bas_process_end.bbj",err=*next
+
+std_exit_no_report: 
+
+    call pgmdir$+"adc_progress.aon","D","","","","",0,0,0,meter_num,status
+    release
+
+rem #endinclude std_end.src
+
+    end
+

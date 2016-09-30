@@ -86,6 +86,10 @@ rem --- first drop all std Addon SPROCs
     sqlprep$=sql_action$+" "+sproc_vw_name$+" "
     gosub create_sproc_def
 
+	sproc_vw_name$="CUST_STATEMENTS_60"
+    sqlprep$=sql_action$+" "+sproc_vw_name$+" "
+    gosub create_sproc_def
+
 	sproc_vw_name$="ARCMPSLS_BAR"
 	sqlprep$=sql_action$+" "+sproc_vw_name$+" "
 	gosub create_sproc_def		
@@ -159,9 +163,10 @@ rem --- now add them back (i.e., drop, then add, in case anything has changed)
 	sql_action$="CREATE PROCEDURE"
 	abort_on_exec_err=1; rem OK if DROP fails to EXEC, but not OK if CREATE fails or if PREP fails
 	
+    rem --- Original test Cust Stmt - single stmt only
     sproc_vw_name$="CUST_STMTS"
 	sqlprep$="CREATE PROCEDURE CUST_STMTS "
-    sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, CUSTOMER_ID CHAR(6) IN, STATEMENT_DATE CHAR(6) IN, "
+    sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, STATEMENT_DATE CHAR(8) IN, CUSTOMER_ID CHAR(6) IN,  "
     sqlprep$=sqlprep$+"LOGO_FILE VARCHAR(60) IN, BARISTA_WD VARCHAR(50) IN) "
     sqlprep$=sqlprep$+"'"+sproc_path$+"custStatements.prc' '"+barista_cfg_path$+"barista.cfg' "
     sqlprep$=sqlprep$+"RESULT_SET "
@@ -169,6 +174,18 @@ rem --- now add them back (i.e., drop, then add, in case anything has changed)
 
     gosub create_sproc_def
 
+	rem --- Customer Statements
+    sproc_vw_name$="CUST_STATEMENTS_60"
+	sqlprep$="CREATE PROCEDURE CUST_STATEMENTS_60 "
+    sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, STATEMENT_DATE CHAR(8) IN, CUSTOMER_ID CHAR(6) IN, "
+    sqlprep$=sqlprep$+"AGE_BASIS CHAR(1) IN, AMT_MASK CHAR(20) IN, CUST_MASK CHAR(20) IN, CUST_SIZE CHAR(1) IN, PERIOD_DATES CHAR(40) IN, "
+    sqlprep$=sqlprep$+"BARISTA_WD VARCHAR(50) IN) "
+    sqlprep$=sqlprep$+"'"+sproc_path$+"CUSTSTATEMENTS_60.prc' '"+barista_cfg_path$+"barista.cfg' "
+    sqlprep$=sqlprep$+"RESULT_SET "
+    sqlprep$=sqlprep$+"{_begin_}{_end_} 'V6 Customer Statements'"
+
+    gosub create_sproc_def
+    
 	rem --- Dashboard: ARCMPSLS_BAR
 	sproc_vw_name$="ARCMPSLS_BAR"
 	sqlprep$="CREATE PROCEDURE ARCMPSLS_BAR "

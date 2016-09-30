@@ -59,7 +59,7 @@ REM ========================================================================
 REM Initialize
 REM ========================================================================
 rem 'CAH
-goto CAH_end;rem to enable trace
+rem goto CAH_end;rem to enable trace
     tfl$="C:/temp_downloads/renderStmts.txt"
     erase tfl$,err=*next
     string tfl$
@@ -74,7 +74,7 @@ rem ' ****************************************************
 rem ' * invoke jasper for given customer
 rem ' ****************************************************
     
-    reportName$ = "../apps/V6Hybrid/reports/custStatement.jasper"
+    reportName$ = "../apps/V6Hybrid/reports/custStatementSingle.jasper"
     
     BBjReport! = BarUtils.getBBJasperReport(reportName$)
 
