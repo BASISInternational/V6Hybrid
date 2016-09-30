@@ -59,7 +59,7 @@ REM ========================================================================
 REM Initialize
 REM ========================================================================
 rem 'CAH
-rem goto CAH_end;rem to enable trace
+    goto CAH_end;rem to enable trace
     tfl$="C:/temp_downloads/renderStmts.txt"
     erase tfl$,err=*next
     string tfl$

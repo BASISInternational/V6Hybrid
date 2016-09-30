@@ -10,7 +10,7 @@ rem --- V6demo --- altered to work against V6 database
 
 rem ----------------------------------------------------------------------------
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this out to do the trace
     tfl$="C:/temp_downloads/sproctrace.txt"
     erase tfl$,err=*next
     string tfl$

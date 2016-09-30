@@ -12,7 +12,7 @@ rem
 rem
 rem ----------------------------------------------------------------------------
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this out to do the trace
     tfl$="C:/temp_downloads/sproctrace1.txt"
     erase tfl$,err=*next
     string tfl$
