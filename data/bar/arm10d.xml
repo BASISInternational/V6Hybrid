@@ -21,11 +21,11 @@
 			<ASC_LICENSE_ID id="ddm_tables.arm10d">C629009E7C84C7BF74A3C71F7D54F37D</ASC_LICENSE_ID>
 			<DD_EXPORT_DATA id="ddm_tables.arm10d">Y</DD_EXPORT_DATA>
 			<DD_CREATE_DATE id="ddm_tables.arm10d">20160930</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_tables.arm10d">20160930</DD_LSTREV_DATE>
-			<DD_LSTSYNC_DATE id="ddm_tables.arm10d">20160930</DD_LSTSYNC_DATE>
-			<DD_LSTSYNC_TIME id="ddm_tables.arm10d">175024</DD_LSTSYNC_TIME>
+			<DD_LSTREV_DATE id="ddm_tables.arm10d">20161004</DD_LSTREV_DATE>
+			<DD_LSTSYNC_DATE id="ddm_tables.arm10d">20161004</DD_LSTSYNC_DATE>
+			<DD_LSTSYNC_TIME id="ddm_tables.arm10d">145540</DD_LSTSYNC_TIME>
 			<DD_ATTR_ATAB id="ddm_tables.arm10d"></DD_ATTR_ATAB>
-			<DD_ATTR_CPGM id="ddm_tables.arm10d">C:/dev_projects/aon_dev1/aon/;</DD_ATTR_CPGM>
+			<DD_ATTR_CPGM id="ddm_tables.arm10d">C:/aon_QCV6Hybrid/apps/V6Hybrid/;</DD_ATTR_CPGM>
 			<DD_ATTR_DKNM id="ddm_tables.arm10d"></DD_ATTR_DKNM>
 			<DD_ATTR_FIMG id="ddm_tables.arm10d"></DD_ATTR_FIMG>
 			<DD_ATTR_FTYP id="ddm_tables.arm10d">T</DD_ATTR_FTYP>
@@ -45,6 +45,17 @@
 			<SQL_TABLE id="ddm_tables.arm10d"></SQL_TABLE>
 			<DD_ATTR_FONT id="ddm_tables.arm10d"></DD_ATTR_FONT>
 			<DD_ATTR_STYL id="ddm_tables.arm10d"></DD_ATTR_STYL>
+		</RECORD>
+	</ALIAS>
+	<ALIAS id="ddm_table_cpro">
+		<ID id="ddm_table_cpro">DDM_TABLE_CPRO</ID>
+		<RECORD id="ddm_table_cpro.arm10dasho">
+			<DD_TABLE_ALIAS id="ddm_table_cpro.arm10dasho">ARM10D          </DD_TABLE_ALIAS>
+			<DD_ATTR_CPRO id="ddm_table_cpro.arm10dasho">ASHO</DD_ATTR_CPRO>
+		</RECORD>
+		<RECORD id="ddm_table_cpro.arm10dbdeq">
+			<DD_TABLE_ALIAS id="ddm_table_cpro.arm10dbdeq">ARM10D          </DD_TABLE_ALIAS>
+			<DD_ATTR_CPRO id="ddm_table_cpro.arm10dbdeq">BDEQ</DD_ATTR_CPRO>
 		</RECORD>
 	</ALIAS>
 	<ALIAS id="ddm_table_tpls">

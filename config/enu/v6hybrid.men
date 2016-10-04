@@ -113,6 +113,7 @@ Accounts Receivable^AONV6_AR^M^^^im_menua_accts_receivable.png^^00000000^V6H^^16
 		Tax Code Maintenance^AONV6_ARMJA^A^^adx_v6leadin.aon - ARM.JA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
 		Cash Receipts Code Maintenance^AONV6_ARMCA^A^^adx_v6leadin.aon - ARM.CA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
 		Distribution Code Maintenance^AONV6_ARMDA^A^^adx_v6leadin.aon - ARM.DA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+		Distribution Codes GUI^ARM10D^T^ARM10D^^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
 		Sales Discount Code Maintenance^AONV6_ARMIA^A^^adx_v6leadin.aon - ARM.IA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
 		Standard Message Code Maintenance^AONV6_ARMGA^A^^adx_v6leadin.aon - ARM.GA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
 		Parameter Maintenance^AONV6_ARPAA^A^^adx_v6leadin.aon - ARP.AA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
