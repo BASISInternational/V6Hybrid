@@ -1,0 +1,219 @@
+0010 REM "ARR - Customer Ranking Report - II"
+0020 REM "Program ARR.KB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM 
+0085 SETESC 0085
+0090 SETERR 9000
+0100 REM " --- Open/Lock Files"
+0110 rem ' V6Demo --- converted to DocOut
+0120 rem ' use the DocoutWrapper
+0130 use ::DocoutWrapper.bbj::DocoutWrapper
+0140 declare DocoutWrapper report!
+0142 xUserName$ = "guest"
+0144 xPassword$ = ""
+
+0146 docname$ = n0$+"_CustomerRanking"
+
+0150 report! = new DocoutWrapper(n0$, "CustRanking", docname$, xUserName$, xPassword$)
+
+0155 gosub addColumns
+0170 rem ' CALL "SYC.GA",7,1,"","",STATUS
+0175 rem ' IF STATUS THEN GOTO 9900
+0200 REM " --- IOLists"
+0210 ARM06A: IOLIST A0$,A1$,A[ALL]
+0220 ARM01A: IOLIST B0$,B1$
+0230 ARM10: IOLIST H3$(1)
+0500 REM " --- Init Data"
+0510 LET L9=59,L=L9+1,HEADINGS=4,WIDTH=132,PAGE=0,WHEN$=F0$(7,3),CLOCK$=""
+0520 DIM J$(80,"-"),J0$(10,"0"),J1$(40," "),J2$(H1,"-"),HEADINGS$[HEADINGS]
+0530 LET HEADINGS$[0]=N1$,HEADINGS$[1]=N3$,HEADINGS$[2]=H6$,HEADINGS$[3]=H7$
+0532 rem ' docout
+0534 gosub addHeadings
+
+0540 DIM T[9]
+0550 LET Z1=0,NUMBER=INT(LEN(CODES$)/3)*2
+0560 IF NUMBER<20 THEN LET NUMBER=20
+0570 DIM U0$(0),U[NUMBER,4]
+0580 CALL "SYC.RM",M1$,M1,8,11
+0900 REM " --- Background"
+0920 CALL "SYC.NB","Printing",12,COLUMN
+1000 REM " --- Init Read"
+1020 READ (ARW06_DEV,KEY=N0$,DOM=1021)
+1100 REM " --- Main Read"
+1110 LET K2$=KEY(ARW06_DEV,END=4020); READ (ARW06_DEV)
+1120 READ (ARM06_DEV,KEY=K2$(1,2)+K2$(19,6))IOL=ARM06A
+1180 PRINT @(COLUMN,11),K2$(3,3),"  ",A0$(3,6),
+1200 REM " --- Breaks"
+1270 IF R6$<>"N" THEN IF K2$(3,3)<>T0$ THEN GOSUB 6000
+1280 IF A0$(3,6)<>T1$ THEN GOSUB 6400
+2000 REM " --- Determine Balances"
+2510 IF L+1>L9 THEN GOSUB 5000
+2520 IF A[0]>0 THEN LET X=(A[0]-A[3])*100/A[0] ELSE LET X=0
+2530 IF A[1]>0 THEN LET X1=(A[1]-A[4])*100/A[1] ELSE LET X1=0
+2540 LET Z1=Z1+1
+2550 rem ' PRINT (7)@(0),A0$(3,6),@(7),X0$,@(38),A[0]:M1$,@(49),A[0]-A[3]:M1$,@(60),X:"-##0.00","%",@(71),A[1]:M1$,@(82),A[1]-A[4]:M1$,@(93),X1:"-##0.00","%",@(105),Z1:"0000"
+2551 rem ' docout
+2552 dim row$:rowTemplate$; row.column01$=A0$(3,6)+"  "+X0$, row.column02$=str(A[0]:M1$), row.column03$=str(A[0]-A[3]:M1$)
+2553 row.column04$=str(X:"-##0.00"), row.column05$=str(A[1]:M1$), row.column06$=str(A[1]-A[4]:M1$), row.column07$=str(X1:"-##0.00"), row.column08$=str(Z1:"0000") 
+2555 report!.addRow(row$)
+2560 LET L=L+1
+2600 REM " --- Accumulate"
+2610 LET L1=L1+1
+2620 FOR J=0 TO 9; LET T[J]=T[J]+A[J]; NEXT J
+2900 GOTO 1100
+4000 REM " --- Totals"
+4010 IF R6$="N" THEN GOTO 4040
+4020 LET T9$="E"
+4030 GOSUB 6000; GOSUB 4100
+4040 IF H=0 THEN GOSUB 5000
+4050 IF L+2>L9 THEN GOSUB 5000
+4055 LET X0$="Grand Total"
+4060 IF T[0]>0 THEN LET X=(T[0]-T[3])*100/T[0] ELSE LET X=0
+4065 IF T[1]>0 THEN LET X1=(T[1]-T[4])*100/T[1] ELSE LET X1=0
+4080 rem ' PRINT (7)'LF',@(0),@(7),X0$,@(38),T[0]:M1$,@(49),T[0]-T[3]:M1$,@(60),X:"-##0.00","%",@(71),T[1]:M1$,@(82),T[1]-T[4]:M1$,@(93),X1:"-##0.00","%"
+4081 rem ' docout
+4082 report!.addBlankRow()
+4083 dim row$:rowTemplate$; row.column01$=X0$, row.column02$=str(T[0]:M1$), row.column03$=str(T[0]-t[3]:M1$)
+4084 row.column04$=str(X:"-##0.00"), row.column05$=str(T[1]:M1$), row.column06$=str(T[1]-T[4]:M1$), row.column07$=str(X1:"-##0.00")
+4085 report!.addRow(row$)
+4085 LET L=L+2
+4089 report!.renderReport()
+4090 GOTO 9900
+4100 REM " --- Recap"
+4115 IF LEN(U0$)=0 THEN GOTO 4400
+4120 GOSUB 5000
+4125 DIM S[8]
+4130 rem ' PRINT (7)@(0),"RECAP by ",H9$
+4131 rem ' docout
+4132 report!.addBreak(); report!.addBlankRow(); dim row$:rowTemplate$; row.column01$="RECAP by " + H9$
+4133 report!.addRow(row$)
+4135 LET L=L+1
+4140 FOR J=1 TO LEN(U0$) STEP 3
+4150 LET X$=U0$(J,3),X1=INT(J/3)
+4160 DIM T[4]
+4170 IF X1<=NUMBER THEN FOR K=0 TO 4; LET T[K]=U[X1,K]; NEXT K
+4180 IF L+2>L9 THEN GOSUB 5000
+4190 IF T[1]>0 THEN LET X1=(T[1]-T[4])*100/T[1] ELSE LET X1=0
+4200 IF T[0]>0 THEN LET X=(T[0]-T[3])*100/T[0] ELSE LET X=0
+4205 DIM H3$(26); LET H3$(7)="Unknown Code"
+4210 FIND (ARM10_DEV,KEY=N0$+X9$+U0$(J,3),DOM=4220)IOL=ARM10
+4220 LET H3$=FNP$(H3$(7))
+4230 rem ' PRINT (7)'LF',@(0),U0$(J,3)," ",H3$,@(38),T[0]:M1$,@(49),T[0]-T[3]:M1$,@(60),X:"-##0.00","%",@(71),T[1]:M1$,@(82),T[1]-T[4]:M1$,@(93),X1:"-##0.00","%"
+4231 report!.addBlankRow()
+4232 rem ' docout
+4233 dim row$:rowTemplate$; row.column01$=U0$(J,3)+" "+H3$, row.column02$=str(T[0]:M1$), row.column03$=str(T[0]-T[3]:M1$)
+4234 row.column04$=str(X:"-##0.00"), row.column05$=str(T[1]:M1$), row.column06$=str(T[1]-T[4]:M1$), row.column07$=str(X1:"-##0.00")
+4235 report!.addRow(row$)
+4240 LET L=L+2
+4250 FOR X=0 TO 4; LET S[X]=S[X]+T[X]; NEXT X
+4290 NEXT J
+4300 FOR X=0 TO 4; LET T[X]=S[X]; NEXT X
+4410 RETURN
+5000 REM " --- Heading"
+5005 rem ' replaced by docout
+5010 rem ' LET L=HEADINGS+1
+5020 rem ' CALL "SYC.HA",7,HEADINGS$[ALL],HEADINGS,PAGE,WIDTH,WHEN$,CLOCK$,STATUS
+5030 rem ' IF STATUS>0 THEN EXITTO 9900
+5050 rem ' IF R6$<>"N" THEN IF T9$<>"E" THEN PRINT (7)@(0),H9$,": ",K2$(3,3)," ",H3$; LET L=L+1
+5060 rem ' PRINT (7)@(38+M1-4),"MTD",@(49+M1-4),"MTD",@(60+9-4),"MTD",@(71+M1-4),"YTD",@(82+M1-4),"YTD",@(93+9-4),"YTD"
+5070 rem ' PRINT (7)@(0),"Customer No. & Name",@(38+M1-6),"Sales",@(49+M1-7),"Profit",@(60+9-9),"Profit %",@(71+M1-6),"Sales",@(82+M1-7),"Profit",@(93+9-9),"Profit %   Ranking",'LF'
+5100 rem ' LET L=L+3
+5110 L=0
+5190 RETURN
+6000 REM " --- Sub Total Break"
+6010 IF T0$="" THEN GOTO 6100
+6045 IF L+2>L9 THEN GOSUB 5000
+6048 IF T[1]>0 THEN LET X1=(T[1]-T[4])*100/T[1] ELSE LET X1=0
+6050 IF T[0]>0 THEN LET X=(T[0]-T[3])*100/T[0] ELSE LET X=0
+6060 rem ' PRINT (7)'LF',@(0),"Total for "+H9$,@(38),T[0]:M1$,@(49),T[0]-T[3]:M1$,@(60),X:"-##0.00","%",@(71),T[1]:M1$,@(82),T[1]-T[4]:M1$,@(93),X1:"-##0.00","%"
+6061 report!.addBlankRow()
+6062 rem ' docout
+6063 dim row$:rowTemplate$; row.column01$="Total for "+ H9$ + " " + T0$ + " " + H3$, row.column02$=str(T[0]:M1$), row.column03$=str(T[0]-T[3]:M1$)
+6064 row.column04$=str(X:"-##0.00"), row.column05$=str(T[1]:M1$), row.column06$=str(T[1]-T[4]:M1$), row.column07$=str(X1:"-##0.00")
+6065 report!.addRow(row$)
+6067 LET L=L+2
+6070 LET X=POS(T0$=U0$,3); IF X=0 THEN LET U0$=U0$+T0$; GOTO 6070
+6080 LET X1=INT(X/3)
+6090 IF X1<=NUMBER THEN FOR J=0 TO 4; LET U[X1,J]=U[X1,J]+T[J]; NEXT J
+6100 IF T9$="E" THEN RETURN
+6120 DIM T[9]
+6140 LET T0$=K2$(3,3),L=L9+1,Z1=0
+6160 DIM H3$(26); LET H3$(7)="Missing"
+6170 FIND (ARM10_DEV,KEY=N0$+X9$+T0$,DOM=6180)IOL=ARM10
+6180 LET H3$=FNP$(H3$(7))
+6190 report!.addBreak()
+6191 rem ' docout
+6192 dim row$:rowTemplate$; row.column01$=T0$ + "  " + H3$
+6193 report!.addRow(row$)
+6194 report!.addBlankRow()
+6290 RETURN
+6400 REM " --- Customer Break"
+6420 LET X0$="Not On File",X2$="",T1$=A0$(3,6),X1$=FNF$(T1$(1,P[0]),M0$)
+6440 FIND (ARM01_DEV,KEY=N0$+T1$,DOM=6480)IOL=ARM01A
+6460 LET X0$=B1$(1,30),X2$=FNF$(B1$(112,10),H9$)
+6490 RETURN
+8000 REM " --- Functions"
+8080 DEF FNP$(Q$)=CVS(Q$,2)
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF:
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 SETERR 9000
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END
+16000 addColumns:
+16010 rem ' add columns to the Report
+16020 report!.addColumn("Customer Number & Name","C",35,0,"","L","")
+16030 report!.addColumn("MTD^Sales","N",11,0,M1$,"R^R","")
+16040 report!.addColumn("MTD^Profit","N",11,0,M1$,"R^R","")
+16050 report!.addColumn("MTD^Profit%","N",11,0,"-##0.00","R^R","")
+16060 report!.addColumn("YTD^Sales","N",11,0,M1$,"R^R","")
+16070 report!.addColumn("YTD^Profit","N",11,0,M1$,"R^R","")
+16080 report!.addColumn("YTD^Profit%","N",11,0,"-##0.00","R^R","")
+16090 report!.addColumn("MTD^Ranking","N",8,0,"0000","R^R","")
+16100 columnCount = report!.getColumnCount()
+16110 rowTemplate$ = report!.getRowTemplate()
+16120 dim row$:rowTemplate$
+16130 return
+
+16200 addHeadings:
+16210 report!.addHeading(N1$)
+16220 report!.addHeading(N3$)
+16230 report!.addHeading(H6$)
+16240 report!.addHeading(H7$)
+16250 return
+
+16300 setOutputAction:
+16310 rem ' indicates individual out put fields may contain special formatting
+16320 report!.setOutputAction("FORMAT")
+16330 return
