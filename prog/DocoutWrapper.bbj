@@ -1,0 +1,322 @@
+rem DocoutWrapper.bbj
+rem wraps the Barista Docout class to simplify the conversion of legacy print program to docout
+
+rem ----------------------------------------------------------------------
+rem DocoutWrapper Custom Class test/demo
+rem ----------------------------------------------------------------------
+
+begin
+
+rem ' use and declare the DocoutWrapper
+use ::DocoutWrapper.bbj::DocoutWrapper
+declare DocoutWrapper report!
+
+rem ' make a new DocoutWrapper in report!
+report! = new DocoutWrapper("01", "DocOutTest", "DocOut Test Report")
+
+rem ' add the report headings
+report!.addHeading("Test DocoutWapper Report")
+report!.addHeading("Wraps the Document class")
+report!.addHeading("found in sys/prog/bao_document.bbj")
+report!.addHeading("[HEADER]")
+
+rem ' set up the report columns
+report!.addColumn("Vendor^Number And Name", "C", 30, 100, "", "L", "L")
+report!.addColumn("Dept", "C", 4, 12, "", "L", "L")
+report!.addColumn("Check^Number", "C", 8, 24, "", "L", "L")
+report!.addColumn("Check^Amount", "N", 12, 110, "($####,##0.00)", "R", "R")
+
+columnCount = report!.getColumnCount()
+rowTemplate$ = report!.getRowTemplate()
+msg$ = "Column Count: " + str(columnCount) + $0A$
+msg$ = msg$ + "Print Row Template: " + rowTemplate$
+resp = msgbox(msg$, 0, "Col Count and Row Template")
+
+dim row$:rowTemplate$
+
+currentDept$ = ""
+
+while 1
+
+	dread vendor$, dept$, checkNbr$, chkAmt, err = *break
+
+	if currentDept$ <> dept$ then gosub insertbreak
+	
+	dim row$:fattr(row$)
+	row.column01$ = vendor$
+	row.column02$ = dept$
+	row.column03$ = checkNbr$
+	row.column04$ = str(chkAmt)
+	report!.addRow(row$)
+
+	total = total + chkAmt
+	subtotal = subtotal + chkamt
+	
+	rem ' one way to add a blank line, just add a row with a empty template
+	dim row$:fattr(row$)
+	report!.addRow(row$)
+	rem ' another way to add a blank line, just send a string of x line feeds where x = the number of columns
+	rem ' altrow$ = $0A0A0A0A$
+	rem ' report!.addRow(row$)
+	rem ' simplest way way to add a blank line, just call the addBlankRow() method
+	rem ' report!.addBlankRow()
+
+wend
+
+rem ' get the final department break
+dept$ = ""
+gosub insertbreak
+
+rem ' add the total
+
+report!.addBlankRow()
+
+dim row$:fattr(row$)
+row.column01$ = "Grand Total"
+row.column04$ = str(total)
+report!.addRow(row$)
+
+report!.renderReport()
+
+stop
+
+insertbreak:
+	if currentDept$ <> "" then
+		report!.addBlankRow()
+		report!.addBlankRow()
+		dim row$:fattr(row$)
+		row.column01$ = "Total for " + header$
+		row.column04$ = str(subtotal)
+		report!.addRow(row$)
+		subtotal = 0
+	fi
+	if dept$ <> "" then
+		header$ = "Departmen Number: " + dept$
+		report!.addBreak(header$)
+		currentDept$ = dept$
+	fi
+	return
+
+data "001000 Electric Company", "0100", "7567", 1256.67
+data "001010 Kroger", "0100", "7568", 129.75
+data "002176 Journal-Register", "0120", "7569", 75.00
+data "002193 Wilson CPAs", "0210", "7570", 1891.12
+
+end
+
+rem ----------------------------------------------------------------------
+rem DocoutWrapper Custom Class
+rem ----------------------------------------------------------------------
+
+class public DocoutWrapper
+
+	use ::sys/prog/bao_document.bbj::Document
+	use java.util.StringTokenizer
+
+	field private BBjString baristaloc!
+	field private Document doc!
+	field private BBjNumber colCount
+	field private BBjString rowTemplateDef$
+	field private BBjVector out!
+	field private BBjVector break!
+	field private BBjVector header!
+	
+	method public DocoutWrapper(BBjString firmId$, BBjString documentID$, BBjString reportTitle$)
+
+		seterr docoutWrapperGuestConstructorError
+		
+		rem ' use the guest account for the report
+		
+		#setPrefix()	
+		#doc! = new Document()
+		#doc!.setUserID("guest")
+		#doc!.setFirmID(firmID$)
+		#doc!.setLanguage("ENU")
+		#doc!.setDocumentID(documentID$ + firmID$)
+		#doc!.setReportTitle(reportTitle$)
+		
+		#colCount = 0
+		#rowTemplateDef$ = ""
+		#out! = bbjAPI().makeVector()
+		#break! = bbjAPI().makeVector()
+		#header! = bbjAPI().makeVector()
+
+		methodret
+
+		docoutWrapperGuestConstructorError:
+		    throw errmes(-1) + " : DocOutWrapper Contructor method with Guest account at " + str(tcb(5)), err
+		
+	methodend
+
+	method public DocoutWrapper(BBjString firmID$, BBjString documentID$, BBjString reportTitle$, BBjString username$, BBjString password$)
+	
+		seterr docoutWrapperConstructorError	
+		rem ' use a specific account for the report
+		
+		#setPrefix()	
+		#doc! = new Document()
+		#doc!.setUserID(username$)
+		#doc!.setPassword(password$)
+		#doc!.setFirmID(firmID$)
+		#doc!.setLanguage("ENU")
+		#doc!.setDocumentID(documentID$ + firmID$)
+		#doc!.setReportTitle(reportTitle$)
+		
+		#colCount = 0
+		#rowTemplateDef$ = ""
+		#out! = bbjAPI().makeVector()
+		#break! = bbjAPI().makeVector()
+		#header! = bbjAPI().makeVector()
+	
+		methodret
+
+		docoutWrapperConstructorError:
+		    throw errmes(-1) + " : DocOutWrapper Contructor method with specified account at " + str(tcb(5)), err
+
+	methodend
+	
+	method public void addHeading(BBjString heading$)
+	
+		#doc!.addReportHeading(heading$)
+		
+	methodend
+
+	method public void addColumn(BBjString colHeader$, BBjString dataType$, BBjNumber dataWidth, BBjNumber pixelWidth, BBjString outputMask$, BBjString colAlign$, BBjString flags$)
+	
+		#doc!.addColumn(colHeader$, dataType$, dataWidth, pixelWidth, outputMask$, "", colAlign$, flags$)
+		#colCount = #colCount + 1
+		if #colCount > 1 then
+			#rowTemplateDef$ = #rowTemplateDef$ + ",COLUMN" + str(#colCount:"00") + ":" + dataType$ + "("+ str(dataWidth) + "*)"
+		else
+			#rowTemplateDef$ = "COLUMN" + str(#colCount:"00") + ":" + dataType$ + "("+ str(dataWidth) + "*)"
+		fi
+		
+	methodend
+	
+	method public void addRow(BBjString row$)
+	
+		wRow$ = row$
+		while pos($0A$ = wRow$)
+			ppos = pos($0A$ = wRow$)
+			data$ = wRow$(1,ppos - 1)
+			wRow$ = wRow$(ppos + 1)
+			#out!.addItem(data$)
+		wend
+			
+	methodend
+	
+	method public void addBlankRow()
+	
+		for x = 1 to #colCount
+			#out!.addItem("")
+		next x
+		
+	methodend
+
+	method public void setOutputAction(BBjString action$)
+	
+		#doc!.setOutputAction(action$)
+		
+	methodend
+	
+	method public void renderReport()
+	
+		seterr renderReportError
+		
+		rem ' are we running inside of Barista Framework
+		inBarista = 0 
+		temp$ = stbl("+USER_ID", err=*next); inBarista = 1
+		
+		rem ' add the output vector to the docout object
+		#doc!.setOutputData(#out!)
+	
+		rem ' add the break and header vectors if needed
+		if #break!.size() > 0 then
+			#doc!.setBreakData(#break!)
+			#doc!.setHeaderData(#header!)
+		fi
+		
+		if inBarista then
+			#doc!.process()
+		else
+		 	declare BBjNamespace docNS!
+			documentTag$ = "D" + info(3,2) + date(0:"%Y%Mz%Dz%Hz%mz%sz")
+			docNS! = bbjAPI().getNamespace("basis.mis.document", documentTag$, 1)
+			docNS!.setValue(documentTag$, #doc!)
+		 	baristacfg! = #baristaloc! + "sys/config/enu/barista.cfg"
+		 	if baristacfg!.contains(" ") then
+				baristacfg! = chr(34) + baristacfg! + chr(34)
+			fi
+			cmd$ = System.getProperty("basis.BBjHome") + "/" + "bin/bbj -tT2 -d -c" + baristacfg! + " -q renderDocument.bbj - " + documentTag$ 
+			a = scall(cmd$)
+		fi
+
+	        methodret
+
+	        renderReportError:
+	            throw errmes(-1) + " : DocOutWrapper renderReport method at " + str(tcb(5)), err
+
+	methodend
+	
+	method public BBjString getRowTemplate()
+
+		methodret #rowTemplateDef$
+		
+	methodend
+	
+	method public BBjNumber getColumnCount()
+	
+		methodret #colCount
+		
+	methodend
+	
+	method public void addBreak()
+	
+		#break!.addItem(str(#out!.size()/#colCount))
+		#header!.addItem("")
+		
+	methodend
+	
+	method public void addBreak(BBjString header$)
+	
+		#break!.addItem(str(#out!.size()/#colCount))
+		#header!.addItem(header$)
+	
+	methodend
+	
+	method private void setPrefix()
+		
+		seterr setPrefixError
+		
+		rem ' need to ba able to find the bao_document.bbj file which is located in the barista sys/prog directory
+		rem ' an STBL called BARISTALOC can be set up with the path to the desired barista installation
+		rem ' c:/aonSandBox/barista/
+		rem ' /mnt/data/aon_prod/aon_prod_current/barista/
+		rem ' if BARISTA STBL is not set up the basis.BBjHome property will be used
+
+		found = 0
+		#baristaloc! = STBL("BARISTA",err = *next); found = 1
+		if !found then
+			#baristaloc! = System.getProperty("basis.BBjHome") + "/barista/"
+		fi		
+	
+		#baristaloc! = #baristaloc!.replace("\", "/")
+		
+		modpfx$ = pfx
+		if pos(#baristaloc! = modpfx$) = 0 then
+			if #baristaloc!.contains(" ") then
+				baristaloc$ = chr(34) + #baristaloc! + chr(34)
+			fi
+			modpfx$ = modpfx$ + " " + baristaloc$
+			prefix modpfx$
+		fi
+
+	        methodret
+
+	        setPrefixError:
+	            throw errmes(-1) + " : DocOutWrapper setPrefix method at " + str(tcb(5)),err
+
+	methodend
+
+
+classend
