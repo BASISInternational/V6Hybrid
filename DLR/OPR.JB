@@ -1,0 +1,490 @@
+0010 REM "OPR - Invoice Edit Report"
+0020 REM "Program OPR.JB"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.3 - 15May97 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0031 REM "29Oct96 WGH: When Item's warehouse unit cost is zero, report entered cost (2070,2150)"
+0032 REM "13May97 JWK: Possible Error 47 on lines 5790 & 5930 if item deleted from inventory (2100)
+0040 REM 
+0085 SETESC 9000
+0090 SETERR 9000
+0100 REM " --- Open/Lock Files"
+0110 rem ' converted to docout
+0120 rem ' use the DocoutWrapper
+0130 use ::DocoutWrapper.bbj::DocoutWrapper
+0140 declare DocoutWrapper report!
+0142 xUserName$ = "guest"
+0144 xPassword$ = ""
+
+0146 docname$ = n0$+"_InvoiceEdit"
+
+0150 report! = new DocoutWrapper(n0$, "InvoiceEdit", docname$, xUserName$, xPassword$)
+0155 gosub addColumns
+0156 gosub setOutputAction
+
+0170 rem 'CALL "SYC.GA",7,1,"","",STATUS
+0175 rem ' IF STATUS THEN GOTO 9900
+0200 REM " --- IOLists"
+0210 ARE03A: IOLIST A0$(1),A[ALL]
+0220 ARE13A: IOLIST W0$,W1$(1),W[ALL]
+0230 ARE23A: IOLIST R0$,R1$,R2$,R0,R1,R2
+0240 ARM01A: IOLIST B0$,B1$
+0250 ARM02A: IOLIST C0$,C1$,C[ALL]
+0260 ARM10A: IOLIST W$(1)
+0270 ARM10E: IOLIST X0$(1)
+0280 IVM01A: IOLIST D0$,D1$(1),D2$
+0290 IVM02A: IOLIST *,*,*,D[ALL]
+0300 IVM10A: IOLIST X0$(1)
+0500 REM " --- Initialize Data"
+0505 PRECISION I[1]
+0510 DIM J$(H0,"-"),J1$(30," "),J2$(H0,"=")
+0515 DIM A0$(117),A[10],W1$(64),W[14],LF_ITEM$[10],LF_CHANNELS[10]
+0520 DIM O[4],R[3,4],S[2],T[4],T9[100,3],U[3]
+0525 LET ORD=0,SHIP=0,BO=0,L9=50,L=L9+1,H=0,NF$="(Not On File)"
+0530 LET M8$="##0.00-",M9$="###.0%",CLOCK$="",WHEN$=F0$(7,3)
+0535 LET M1=LEN(M1$),M2=LEN(M2$),M3=LEN(M3$),M8=LEN(M8$),M9=LEN(M9$)
+0540 LET R9$="SPN",X2$="",H8$=X1$,H9$="Invoiced By: "+H9$
+0545 IF I3$(17,1)="S" THEN LET X2$="Ser#"
+0550 IF I3$(17,1)="L" THEN LET X2$="Lot#"
+0555 IF S0$="" THEN LET H4$="First"
+0560 IF S1$="" THEN LET H5$="Last"
+0565 IF S2$="" THEN LET H6$="First"
+0570 IF S3$="" THEN LET H7$="Last"
+0575 IF M2*3+M3*2+M1*3+27+I[0]<132 THEN GOTO 0600
+0580 CALL "SYC.RM",M1$,M1,MAX(10,M1-1),MAX(10,M1-1)
+0585 CALL "SYC.RM",M2$,M2,MAX(10,M2-1),MAX(10,M2-1)
+0590 CALL "SYC.RM",M3$,M3,MAX(10,M3-1),MAX(10,M3-1)
+0595 GOTO 0575
+0600 REM " --- Headings"
+0605 LET HEADINGS=5
+0610 DIM HEADINGS$[5],X0$(H0),X1$(H0)
+0620 LET HEADINGS$[0]=N1$,HEADINGS$[1]=N4$,RT$="Report Totals"
+0625 LET X0$(1)="Beginning Customer: "+H4$,X0$(FNC(H8$,H0))=H8$
+0630 LET X0$(H0-26)="Beginning Order #: "+H6$
+0635 LET X1$(1)="   Ending Customer: "+H5$,X1$(FNC(H9$,H0))=H9$
+0640 LET X1$(H0-26)="   Ending Order #: "+H7$
+0645 LET HEADINGS$[3]=X0$,HEADINGS$[4]=X1$
+
+0646 rem ' docout
+0647 gosub addHeadings
+
+0650 REM " --- Print positions"
+0660 LET LW=M1*3+M3*2+M2*3+M8+M9,O[0]=H0-M1*3-M3*2,O[1]=H0-M1*3-M3-M8
+0700 REM " --- Background"
+0710 CALL "SYC.NB","Printing",M0+8,COLUMN
+1000 REM " --- Initial Read"
+1020 READ (ARE03_DEV,KEY=N0$+"  "+S0$+S2$,DOM=1030)
+1100 REM " --- Main Read"
+1120 LET K1$=KEY(ARE03_DEV,END=4000)
+1125 IF POS(N0$+"  "=K1$)<>1 THEN GOTO 4000
+1130 IF S1$<>"" AND K1$(1,10)>N0$+"  "+S1$ THEN GOTO 4000
+1140 IF S3$<>"" AND K1$(11,7)>S3$ THEN GOTO 4000
+1150 PRINT @(COLUMN,11),FNF$(K1$(5,6),M0$)," ",K1$(11,7)
+1160 READ (ARE03_DEV,KEY=K1$)IOL=ARE03A
+1170 IF A0$(22,1)<>"I" OR A0$(42,7)=J1$(1,7) THEN GOTO 1300
+1200 IF S5$<>"" AND A0$(96,3)<>S5$ THEN GOTO 1300
+1210 IF S6$="A" THEN GOTO 1400
+1230 IF S6$="P" AND A0$(68,1)<>"Y" THEN GOTO 1300
+1240 IF S6$="U" AND A0$(68,1)="Y" THEN GOTO 1300
+1290 GOTO 1400
+1300 REM " --- Next Header Record"
+1320 GOTO 1100
+1400 REM " --- Heading"
+1410 IF A0$(21,1)<>"V" THEN GOTO 1900
+1420 REM " --- Void"
+1430 IF L>L9 THEN GOSUB 5000
+1435 GOSUB 6000
+1440 rem ' PRINT (7)""
+1445 report!.addBlankRow()
+1450 rem ' PRINT (7)FNF$(A0$(5,P[0]),M0$),@(8),B1$(1,30),@(40),A0$(11,7),@(48),A0$(42,7),@(57),FNB$(A0$(24,3)),@(66),A0$(96,3),@(70),A0$(59,3),@(74),"(Void)"
+1451 rem ' docout
+1452 dim row$:rowTemplate$; row.column01$=FNF$(A0$(5,P[0]),M0$) + " " + B1$(1,30), row.column02$=A0$(11,7), row.column03$=A0$(42,7)
+1453 row.column04$=FNB$(A0$(24,3)), row.column05$=A0$(96,3), row.column06$=A0$(59,3)
+1454 row.column07$="(Void)"
+1455 report!.addRow(row$)
+1460 rem ' LET L=L+2
+1490 GOTO 1100
+1900 REM " --- Print"
+1910 GOSUB 6000
+1920 GOSUB 5200
+2000 REM " --- Detail"
+2010 READ (ARE13_DEV,KEY=A0$(1,17),DOM=2020)
+2020 LET K$=KEY(ARE13_DEV,END=3000)
+2040 IF K$(1,17)<>A0$(1,17) THEN GOTO 3000
+2060 READ (ARE13_DEV)IOL=ARE13A
+2070 LET DESC$=W1$(1,40)
+2080 DIM X0$(32)
+2085 FIND (ARM10_DEV,KEY=N0$+"E"+W0$(21,1),DOM=2090)IOL=ARM10E
+2090 IF POS(X0$(25,1)="SP")=0 THEN GOTO 2190
+2100 DIM D1$(60),D2$(62),D[20]
+2110 FIND (IVM01_DEV,KEY=N0$+W0$(33,20),DOM=2190)IOL=IVM01A
+2120 IF X0$(27,1)="Y" AND P3$(28,1)="Y" THEN GOTO 2190
+2130 IF FNP$(DESC$)="" THEN LET DESC$=FNZ$(D1$,I[3],I[4],I[5])
+2140 FIND (IVM02_DEV,KEY=N0$+W0$(31,2)+W0$(33,20),DOM=2190)IOL=IVM02A
+2150 IF D[11]<>0 THEN LET W[0]=D[11]
+2160 IF I3$(3,1)="N" THEN GOTO 2190
+2170 GOSUB 6200
+2180 LET W[0]=RET_COST
+2190 GOSUB 5700
+2200 LET S[0]=S[0]+W[6],S[1]=S[1]+W[0]*W[4],S[2]=S[2]+W[9],S0=S0+1
+2220 LET U[0]=U[0]+W[6],U[1]=U[1]+W[0]*W[4],U[2]=U[2]+W[9]
+2230 LET ORD=ORD+W[2],BO=BO+W[3],SHIP=SHIP+W[4]
+2240 LET R9=0,R9=POS(X0$(25,1)=R9$)
+2250 IF R9=0 THEN GOTO 2260
+2253 LET X=R9-1,R[X,0]=R[X,0]+W[6],R[X,1]=R[X,1]+W[0]*W[4]
+2255 LET R[X,2]=R[X,2]+W[2],R[X,3]=R[X,3]+W[3],R[X,4]=R[X,4]+W[4]
+2260 IF X0$(25,1)="O" THEN LET R[3,0]=R[3,0]+W[6]
+2270 IF X0$(32,1)="N" THEN GOTO 2900
+2300 IF POS(W0$(23,3)=T9$,3)=0 THEN LET T9$=T9$+W0$(23,3)
+2320 LET X=POS(W0$(23,3)=T9$,3),X=INT(X/3)
+2340 LET T9[X,0]=T9[X,0]+W[6],T9[X,1]=T9[X,1]+W[0]*W[4]
+2350 LET T9[X,2]=T9[X,2]+W[9],T9[X,3]=T9[X,3]+W[4]
+2900 GOTO 2020
+3000 REM " --- Invioce Totals"
+3020 GOSUB 5400
+3100 DIM S[2]
+3120 LET S0=0,ORD=0,BO=0,SHIP=0
+3900 GOTO 1100
+4000 REM " --- Totals"
+4010 PRECISION 2
+4015 LET E9$="E"
+4020 rem ' IF L+7>L9 OR S4$="Y" THEN GOSUB 5000
+4023 rem ' PRINT (7)""
+4024 report!.addBlankRow()
+4025 rem ' PRINT (7)@(O[0]-M2*3-M8-M9),J2$(1,LW)
+4026 dim row$:rowTemplate$
+4027 row.column03$="----------"+$00$+"R"; row.column04$="----------"+$00$+"R"; row.column05$="---------"+$00$+"R"; row.column06$="---------"+$00$+"R"; row.column07$="------------"+$00$+"R"; row.column08$="------------"+$00$+"R"
+4028 row.column09$="------------"+$00$+"R"; row.column10$="---------------"+$00$+"R"; row.column11$="--------"+$00$+"R"; row.column12$="-------"+$00$+"R"; report!.addRow(row$)
+4030 rem ' PRINT (7)RT$,@(O[0]-M2*3-M8-M9),ORDT:M2$,@(O[0]-M2*2-M8-M9),BOT:M2$,@(O[0]-M2-M8-M9),SHIPT:M2$,@(O[0]-M8-4),"Sales Total: ",@(O[1]),U[0]:M1$,@(132-M1*2-M8),U[1]:M1$,@(132-M1-M8),U[0]-U[1]:M1$,@(132-M8),SGN(FND(U[0]-U[1],U[0]))*MIN(999.99,ABS(FND(U[0]-U[1],U[0]))):M8$
+4031 dim row$:rowTemplate$; row.column01$=RT$+$00$+"B"; row.column03$=str(ORDT:M2$)+$00$+"R"; row.column04$=str(BOT:M2$)+$00$+"R"; row.column05$=str(SHIPT:M2$)+$00$+"R"
+4032 row.column07$="Sales Total"+$00$+"R"; row.column08$=str(U[0]:M1$)+$00$+"R"; row.column09$=""; row.column10$=str(U[1]:M1$)+$00$+"R"; row.column11$=str(U[0]-U[1]:M1$)+$00$+"R"; row.column12$=str(SGN(FND(U[0]-U[1],U[0]))*MIN(999.99,ABS(FND(U[0]-U[1],U[0]))):M8$)+$00$+"R"
+4033 report!.addRow(row$)
+4035 rem ' PRINT (7)@(O[0]-M8-7),"Sales Discount",@(O[1]),-T[2]:M1$
+4036 dim row$:rowTemplate$
+4037 row.column07$="Sales Discount"+$00$+"R"; row.column08$=str(-T[2]:M1$)+$00$+"R"; report!.addRow(row$)
+4040 rem ' PRINT (7)@(O[0]-M8),"Freight",@(O[1]),T[1]:M1$
+4041 dim row$:rowTemplate$
+4042 row.column07$="Freight"+$00$+"R"; row.column08$=str(T[1]:M1$)+$00$+"R"
+4043 report!.addRow(row$)
+4045 rem ' PRINT (7)@(O[0]-M8-2),"Sales Tax",@(O[1]),T[4]:M1$
+4046 dim row$:rowTemplate$
+4047 row.column07$="Sales Tax"+$00$+"R"; row.column08$=str(T[4]:M1$)+$00$+"R"
+4048 report!.addRow(row$)
+4050 rem ' PRINT (7)@(O[1]),J$(1,M1)
+4051 dim row$:rowTemplate$
+4052 row.column08$="------------"+$00$+"R"
+4053 report!.addRow(row$)
+4055 rem ' PRINT (7)U2:"###0"," Total Invoices",@(O[0]-M8-5),RT$,@(O[1]),U[0]+T[1]-T[2]+T[4]:M1$
+4056 dim row$:rowTemplate$
+4057 row.column01$=str(U2:"###0") + " Total Invoices"+$00$+"B"; row.column07$=RT$+$00$+"B", row.column08$=str(U[0]+T[1]-T[2]+T[4]:M1$)+$00$+"R"
+4058 report!.addRow(row$)
+4070 rem ' LET L=L+8
+4100 REM " --- Totals By Product"
+4120 DIM T[3]
+4140 rem ' IF INT(LEN(T9$)/3)+7+L>L9 THEN GOSUB 5000
+4145 rem ' PRINT (7)""
+4146 report!.addBlankRow()
+4150 rem ' PRINT (7)"Product Type Totals"
+4151 dim row$:rowTemplate$
+4152 row.column01$="Product Type Totals"+$00$+"B"
+4153 report!.addRow(row$)
+4155 rem ' PRINT (7)""
+4156 report!.addBlankRow()
+4160 rem ' PRINT (7)"Product",@(30+M2-6),"Units",@(30+M2+M1-6),"Sales",@(30+M2+M1*2-5),"Cost",@(30+M2+M1*3-6),"G.P.",@(30+M2+M1*4-7),"  GP %",'LF',
+4161 dim row$:rowTemplate$
+4162 row.column01$="Product"+$00$+"B"; row.column07$="Units"+$00$+"BR"
+4163 row.column08$="Sales"+$00$+"BR"; row.column09$="Cost"+$00$+"BR"
+4164 row.column11$="G.P."+$00$+"BR"
+4165 row.column12$="GP %"+$00$+"BR"; report!.addRow(row$)
+4170 IF LEN(T9$)=0 THEN GOTO 4400
+4200 FOR X=1 TO LEN(T9$) STEP 3
+4210 LET X0=INT(X/3)
+4220 DIM X0$(32)
+4230 LET X0$(7)=NF$
+4240 FIND (IVM10_DEV,KEY=N0$+"A"+T9$(X,3),DOM=4260)IOL=IVM10A
+4260 IF T9[X0,0]=0 AND T9[X0,1]=0 THEN GOTO 4390
+4300 rem ' PRINT (7)T9$(X,3)," ",X0$(7,20),@(30),T9[X0,3]:M2$,T9[X0,0]:M1$,T9[X0,1]:M1$,T9[X0,0]-T9[X0,1]:M1$,FND(T9[X0,0]-T9[X0,1],T9[X0,0]):M1$
+4301 dim row$:rowTemplate$
+4302 row.column01$=T9$(X,3)+" "+X0$(7,20); row.column07$=str(T9[X0,3]:M2$)+$00$+"R"
+4303 row.column08$=str(T9[X0,0]:M1$)+$00$+"R"; row.column09$=str(T9[X0,1]:M1$)+$00$+"R"
+4304 row.column11$=str(T9[X0,0]-T9[X0,1]:M1$)+$00$+"R"
+4305 row.column12$=cvs(str(FND(T9[X0,0]-T9[X0,1],T9[X0,0]):M1$)+$00$+"R",3); report!.addRow(row$)
+4320 LET T[0]=T[0]+T9[X0,0],T[1]=T[1]+T9[X0,1],T[2]=T[2]+T9[X0,2]
+4330 LET T[3]=T[3]+T9[X0,3],L=L+1
+4390 NEXT X
+4400 rem ' PRINT (7)@(30),J$(1,M2+M1*4)
+4410 dim row$:rowTemplate$
+4412 row.column07$="------------"+$00$+"R"; row.column08$="------------"+$00$+"R"
+4413 row.column09$="------------"+$00$+"R"; row.column11$="--------"+$00$+"R"; row.column12$="-------"+$00$+"R"; report!.addRow(row$)
+4420 rem ' PRINT (7)RT$,@(30),T[3]:M2$,T[0]:M1$,T[1]:M1$,T[0]-T[1]:M1$,FND(T[0]-T[1],T[0]):M1$
+4421 dim row$:rowTemplate$
+4422 row.column01$=RT$+$00$+"B"; row.column07$=str(T[3]:M2$)+$00$+"R"
+4423 row.column08$=str(T[0]:M1$)+$00$+"R"; row.column09$=str(T[1]:M1$)+$00$+"R"
+4424 row.column11$=str(T[0]-T[1]:M1$)+$00$+"R"
+4425 row.column12$=str(FND(T[0]-T[1],T[0]):M1$)+$00$+"R"; report!.addRow(row$)
+4430 rem ' LET L=L+2
+4500 REM " --- Total By Line Type"
+4505 rem ' IF L+9>L9 THEN GOSUB 5000
+4510 DIM T[1]
+4515 rem ' PRINT (7)""
+4516 report!.addBlankRow()
+4520 rem ' PRINT (7)"Line Type Total",'LF','LF',@(0),"Description",@(29),"Ord",@(39),"B/O",@(48),"Ship",@(61),"Sales",@(75),"Cost",'LF'
+4521 dim row$:rowTemplate$
+4522 row.column01$="Line Type Totals"+$00$+"B"
+4523 report!.addRow(row$)
+4524 report!.addBlankRow()
+4525 dim row$:rowTemplate$
+4526 row.column01$="Description"+$00$+"B"
+4527 row.column03$="Ord"+$00$+"BR"
+4528 row.column04$="B/O"+$00$+"BR"; row.column05$="Ship"+$00$+"BR"
+4529 row.column06$="Sales"+$00$+"BR"; row.column07$="Cost"+$00$+"BR"; report!.addRow(row$)
+4530 IF R[0,0]<>0 OR R[0,1]<>0 OR R[0,2]<>0 OR R[0,3]<>0 OR R[0,4]<>0 THEN dim row$:rowTemplate$;row.column01$="Standard Items"; row.column03$=str(R[0,2]:M2$)+$00$+"R"; row.column04$=str(R[0,3]:M2$)+$00$+"R"; row.column05$=str(R[0,4]:M2$)+$00$+"R"; row.column06$=str(R[0,0]:M3$)+$00$+"R"; row.column07$=str(R[0,1]:M3$)+$00$+"R"; report!.addRow(row$)
+4531 rem ' IF R[0,0]<>0 OR R[0,1]<>0 OR R[0,2]<>0 OR R[0,3]<>0 OR R[0,4]<>0 THEN PRINT (7)@(0),"Standard Items",@(33-M2),R[0,2]:M2$,@(43-M2),R[0,3]:M2$,@(53-M2),R[0,4]:M2$,@(67-M3),R[0,0]:M3$,@(80-M3),R[0,1]:M3$
+4540 IF R[1,0]<>0 OR R[1,1]<>0 OR R[1,2]<>0 OR R[1,3]<>0 OR R[1,4]<>0 THEN dim row$:rowTemplate$;row.column01$="Promotional Items"; row.column03$=str(R[1,2]:M2$)+$00$+"R"; row.column04$=str(R[1,3]:M2$)+$00$+"R"; row.column05$=str(R[1,4]:M2$)+$00$+"R"; row.column06$=str(R[1,0]:M3$)+$00$+"R"; row.column07$=str(R[1,1]:M3$)+$00$+"R"; report!.addRow(row$)
+4541 rem ' IF R[1,0]<>0 OR R[1,1]<>0 OR R[1,2]<>0 OR R[1,3]<>0 OR R[1,4]<>0 THEN PRINT (7)@(0),"Promotional Items",@(33-M2),R[1,2]:M2$,@(43-M2),R[1,3]:M2$,@(53-M2),R[1,4]:M2$,@(67-M3),R[1,0]:M3$,@(80-M3),R[1,1]:M3$
+4550 IF R[2,1]<>0 OR R[2,0]<>0 OR R[2,2]<>0 OR R[2,3]<>0 OR R[2,4]<>0 THEN dim row$:rowTemplate$;row.column01$="Non-Stock Items"; row.column03$=str(R[2,2]:M2$)+$00$+"R"; row.column04$=str(R[2,3]:M2$)+$00$+"R"; row.column05$=str(R[2,4]:M2$)+$00$+"R"; row.column06$=str(R[2,0]:M3$)+$00$+"R"; row.column07$=str(R[2,1]:M3$)+$00$+"R"; report!.addRow(row$)
+4551 rem ' IF R[2,1]<>0 OR R[2,0]<>0 OR R[2,2]<>0 OR R[2,3]<>0 OR R[2,4]<>0 THEN PRINT (7)@(0),"Non-Stock Items",@(33-M2),R[2,2]:M2$,@(43-M2),R[2,3]:M2$,@(53-M2),R[2,4]:M2$,@(67-M3),R[2,0]:M3$,@(80-M3),R[2,1]:M3$
+4560 IF R[3,0]<>0 THEN dim row$:rowTemplate$;row.column01$="Other Charges"; row.column06$=str(R[3,0]:M3$)+$00$+"R"; report!.addRow(row$)
+4561 rem ' IF R[3,0]<>0 THEN PRINT (7)@(0),"Other Charges",@(67-M3),R[3,0]:M3$
+4570 FOR X=0 TO 3
+4580 LET T[0]=T[0]+R[X,0]
+4590 LET T[1]=T[1]+R[X,1]
+4600 NEXT X
+4610 rem ' PRINT (7)@(67-M3),J$(1,M3),@(80-M3),J$(1,M3)
+4611 dim row$:rowTemplate$
+4612 row.column06$="---------"+$00$+"R"; row.column07$="------------"+$00$+"R"; row.column08$="------------"+$00$+"R"
+4613 report!.addRow(row$)
+4620 rem ' PRINT (7)RT$,@(67-M3),T[0]:M3$,@(80-M3),T[1]:M3$
+4621 dim row$:rowTemplate$; row.column01$=RT$+$00$+"B"
+4622 row.column06$=str(T[0]:M3$)+$00$+"R"; row.column07$=str(T[1]:M3$)+$00$+"R"
+4623 report!.addRow(row$)
+4630 LET L=L+2
+4700 report!.renderReport()
+4990 GOTO 9900
+5000 REM " --- Report Heading"
+5005 rem ' V6Demo --- replaced by docout
+5010 rem ' LET L=HEADINGS+1
+5020 rem ' CALL "SYC.HA",7,HEADINGS$[ALL],HEADINGS,H,H0,WHEN$,CLOCK$,STATUS
+5030 rem ' IF STATUS>0 THEN EXITTO 9900
+5070 rem ' IF E9$="E" THEN GOTO 5180
+5100 rem ' PRINT (7)@(2),"-- Customer --",@(41),"Order",@(48),"Invoice",@(57),"Invoice",@(75),"P.O.",@(97),"Dist",@(120),"Tax"
+5110 rem ' PRINT (7)@(0),"Number",@(8),"Name",@(40),"Number",@(48),"Number",@(58),"Date",@(66),"By",@(70),"Sls",@(74),"Number",@(85),"Ship Via",@(97),"Code",@(103),"Terms",@(120),"Code",@(126),"Prntd?"
+5180 rem ' LET L=L+2
+5190 RETURN
+5200 REM " --- Order Header"
+5210 rem ' IF L+7>L9 OR S4$="Y" THEN GOSUB 5000
+5215 GOSUB 6900
+5217 rem ' PRINT (7)""
+5218 report!.addBlankRow()
+rem ' 5220 PRINT (7)FNF$(A0$(5,P[0]),M0$),@(8),B1$(1,30),@(40),A0$(11,7),@(48),A0$(42,7),@(57),FNB$(A0$(24,3)),@(66),A0$(96,3),@(70),A0$(59,3),@(74),A0$(49,10),@(85),A0$(32,10),@(98),A0$(66,2),@(103),W$,@(120),A0$(80,2),@(128),A0$(68,1)
+5221 rem ' docout
+5222 dim row$:rowTemplate$; row.column01$=FNF$(A0$(5,P[0]),M0$) + " " + B1$(1,30), row.column02$=A0$(11,7), row.column03$=A0$(42,7)
+5223 row.column04$=FNB$(A0$(24,3)), row.column05$=A0$(96,3), row.column06$=A0$(59,3), row.column07$=A0$(49,10) , row.column08$=A0$(32,10) 
+5224 row.column09$=A0$(66,2), row.column10$=W$ , row.column11$=A0$(80,2), row.column12$=A0$(68,1)+$00$+"C"; report!.addRow(row$)
+5225 IF A0$(69,1)<>"N" THEN dim row$:rowTemplate$; row.column02$="Lock Flag = " + A0$(69,1); report!.addRow(row$); rem ' PRINT (7)@(40),"Lock Flag = ",A0$(69,1); LET L=L+1
+5227 rem ' PRINT (7)""
+5228 report!.addBlankRow()
+5230 rem ' PRINT (7)@(132-M1*2-M3-M8-6),"Gross",@(132-M8-M1-9),"Extended"
+5231 dim row$:rowTemplate$; row.column08$="Gross"+$00$+"BR";row.column10$="Extended"+$00$+"BR"; report!.addRow(row$)
+5235 rem ' PRINT (7)@(1),"Ln Cd",@(7),"Prd Whs Item",
+5236 dim row$:rowTemplate$; row.column01$=" Ln Cd Prd Whs Item"+$00$+"B"
+5240 rem ' PRINT (7)@(O[0]-M2*2-M8-M9-4),"Ord",@(O[0]-M2-M8-M9-4),"B/O",@(O[0]-M8-M9-5),"Ship",@(O[0]-M8-4),"Disc",@(O[1]-6),"Price",@(132-M1*2-M3-M8-6),"Sales",@(132-M1*2-M8-5),"Cost",@(132-M8-M1-5),"Cost",@(132-M8-7),"Profit",@(132-5),"GP %"
+5252 row.column03$="Ord"+$00$+"BR", row.column04$="B/O"+$00$+"BR", row.column05$="Ship"+$00$+"BR", row.column06$="Disc"+$00$+"BR", row.column07$="Price"+$00$+"BR"
+5253 row.column08$="Sales"+$00$+"BR", row.column09$="Cost"+$00$+"BR", row.column10$="Cost"+$00$+"BR", row.column11$="Profit"+$00$+"BR", row.column12$="GP %"+$00$+"BR"
+5254 report!.addRow(row$)
+5280 rem ' LET L=L+5
+5290 RETURN
+5400 REM " --- Sales Total/Freight/Sales Tax/Invoice Total"
+5405 PRECISION 2
+5410 rem ' IF L+7>L9 THEN GOSUB 5200
+5420 rem ' PRINT (7)@(O[0]-M2*3-M9-M8),J$(1,LW)
+5421 dim row$:rowTemplate$
+5422 row.column03$="----------"+$00$+"R"; row.column04$="----------"+$00$+"R"
+5423 row.column05$="---------"+$00$+"R"; row.column06$="---------"+$00$+"R"
+5424 row.column07$="------------"+$00$+"R"; row.column08$="------------"+$00$+"R"
+5425 row.column09$="------------"+$00$+"R"; row.column10$="---------------"+$00$+"R"
+5426 row.column11$="--------"+$00$+"R"; row.column12$="-------"+$00$+"R"
+5427 report!.addRow(row$)
+5430 rem ' PRINT (7)@(O[0]-M8-4),"Sales Total",@(O[0]-M2*3-M8-M9),ORD:M2$,@(O[0]-M2*2-M8-M9),BO:M2$,@(O[0]-M2-M8-M9),SHIP:M2$,@(O[1]),S[0]:M1$,@(132-M1*2-M8),S[1]:M1$,@(132-M1-M8),S[0]-S[1]:M1$,@(132-M8),SGN(FND(S[0]-S[1],S[0]))*MIN(999.99,ABS(FND(S[0]-S[1],S[0]))):M8$
+5431 dim row$:rowTemplate$
+5432 row.column03$=str(ORD:M2$)+$00$+"R"; row.column04$=str(BO:M2$)+$00$+"R"
+5433 row.column05$=str(SHIP:M2$)+$00$+"R"
+5434 row.column07$="Sales Total"+$00$+"R"; row.column08$=str(S[0]:M1$)+$00$+"R"
+5435 row.column10$=str(S[1]:M1$)+$00$+"R"
+5436 row.column11$=str(S[0]-S[1]:M1$)+$00$+"R"; row.column12$=str(SGN(FND(S[0]-S[1],S[0]))*MIN(999.99,ABS(FND(S[0]-S[1],S[0]))):M8$)+$00$+"R"
+5437 report!.addRow(row$)
+5440 rem ' PRINT (7)@(O[0]-M8-7),"Sales Discount",@(O[1]),-A[2]:M1$
+5441 dim row$:rowTemplate$
+5442 row.column07$="Sales Discount"+$00$+"R"; row.column08$=str(-A[2]:M1$)+$00$+"R"
+5443 report!.addRow(row$)
+5445 rem ' PRINT (7)@(O[0]-M8),"Freight",@(O[1]),A[1]:M1$
+5446 dim row$:rowTemplate$
+5447 row.column07$="Freight"+$00$+"R"; row.column08$=str(A[1]:M1$)+$00$+"R"
+5448 report!.addRow(row$)
+5450 rem ' PRINT (7)@(O[0]-M8-2),"Sales Tax",@(O[1]),A[0]:M1$
+5451 dim row$:rowTemplate$
+5452 row.column07$="Sales Tax"+$00$+"R"; row.column08$=str(A[0]:M1$)+$00$+"R"
+5453 report!.addRow(row$)
+5460 rem ' PRINT (7)@(O[1]),J$(1,M1)
+5461 dim row$:rowTemplate$
+5462 row.column08$="------------"+$00$+"R"
+5463 report!.addRow(row$)
+5470 rem ' PRINT (7)@(O[0]-M8-9),"   Invoice Total",@(O[1]),S[0]+A[1]-A[2]+A[0]:M1$
+5471 dim row$:rowTemplate$
+5472 row.column07$="Invoice Total"+$00$+"R"; row.column08$=str(S[0]+A[1]-A[2]+A[0]:M1$)+$00$+"R"
+5473 report!.addRow(row$)
+5480 LET U[3]=U[3]+S[0],T2=T2+1,U2=U2+1,L=L+7,ORDT=ORDT+ORD,BOT=BOT+BO,SHIPT=SHIPT+SHIP,T[2]=T[2]+A[2],T[1]=T[1]+A[1],T[4]=T[4]+A[0]
+5485 PRECISION I[1]
+5490 RETURN
+5500 REM " --- Serialized/Lotted Inventory"
+5501 RETURN;rem V6demo - lot/serial routine not yet converted to DocOut
+5520 READ (ARE23_DEV,KEY=K$(1,20),DOM=5530)
+5530 LET K2$=KEY(ARE23_DEV,END=5590)
+5540 IF K2$(1,20)<>K$(1,20) THEN GOTO 5590
+5550 READ (ARE23_DEV,KEY=K2$)IOL=ARE23A
+5555 IF L+1>L9 THEN GOSUB 5000
+5560 PRINT (7)@(MAX(O[0]-M8-M9-M2*3-I[2]-9,0)),X2$," ",K2$(21,3)," ",R1$,
+5570 PRINT (7)@(O[0]-M2*3-M8-M9),R0:M2$,@(O[0]-M2-M8-M9),R1:M2$,@(132-M1*2-M3-M8),R2:M3$
+5575 LET L=L+1
+5580 GOTO 5530
+5590 RETURN
+5700 REM " --- Print Detail"
+5720 rem ' IF L>L9 THEN GOSUB 5000; GOSUB 5200
+5730 rem ' PRINT (7)@(1),W0$(18,3)," ",W0$(21,1),@(11),W0$(31,2),
+5735 dim row$:rowTemplate$; row.column01$=W0$(18,3) + " " + W0$(21,1)
+5740 IF POS(X0$(25,1)="M")>0 THEN GOTO 5900
+5760 IF POS(X0$(25,1)="O")>0 THEN GOTO 5820
+5770 rem ' PRINT (7)@(7),W0$(23,3),
+5771 row.column01$=row.column01$ + "  " + W0$(23,3) + "   " + W0$(31,2)
+5780 IF POS(X0$(25,1)="SP")<>0 THEN row.column01$=row.column01$ + " " + W0$(33); rem 'PRINT (7)@(15),W0$(33),
+5790 IF POS(X0$(25,1)="SP")<>0 AND POS(I3$(17,1)="SL")<>0 AND D2$(19,1)="Y" THEN GOSUB 6300; IF SER_QTY<>0 THEN LET W[0]=SER_COST/SER_QTY
+5810 rem ' PRINT (7)@(O[0]-M2*3-M8-M9),W[2]:M2$,W[3]:M2$,W[4]:M2$,
+5812 row.column03$=str(W[2]:M2$)+$00$+"R"
+5813 row.column04$=str(W[3]:M2$)+$00$+"R"
+5814 row.column05$=str(W[4]:M2$)+$00$+"R"
+5820 rem ' PRINT (7)@(O[0]-M8-M9),W[8]:M9$,@(O[0]-M8),W[1]:M3$,@(O[0]-M8+M3),W[6]:M1$,@(O[0]-M8+M1+M3),W[0]:M3$,@(O[0]-M8+M1+M3*2),W[0]*W[4]:M1$,@(O[0]-M8+M1*2+M3*2),W[6]-W[0]*W[4]:M1$,@(H0-M8),SGN(FND(W[6]-W[0]*W[4],W[6]))*MIN(999.99,ABS(FND(W[6]-W[0]*W[4],W[6]))):M8$,
+5822 row.column06$=str(W[8]:M9$)+$00$+"R"
+5823 row.column07$=str(W[1]:M3$)+$00$+"R"
+5824 row.column08$=str(W[6]:M1$)+$00$+"R"
+5825 row.column09$=str(W[0]:M3$)+$00$+"R"
+5826 row.column10$=str(W[0]*W[4]:M1$)+$00$+"R"
+5827 row.column11$=str(W[6]-W[0]*W[4]:M1$)+$00$+"R"
+5828 row.column12$=str(SGN(FND(W[6]-W[0]*W[4],W[6]))*MIN(999.99,ABS(FND(W[6]-W[0]*W[4],W[6]))):M8$)+$00$+"R"
+5840 IF X0$(25,1)="O" THEN GOTO 5900
+5870 rem ' PRINT (7)""
+5871 report!.addRow(row$)
+5880 rem ' LET L=L+1
+5900 rem ' PRINT (7)@(17),DESC$
+5901 dim row$:rowTemplate$; row.column01$=desc$; report!.addRow(row$)
+5920 rem ' LET L=L+1
+5930 IF POS(X0$(25,1)="SP")<>0 AND POS(I3$(17,1)="SL")<>0 AND D2$(19,1)="Y" THEN GOSUB 5500
+5990 RETURN
+6000 REM " --- Find Customer
+6020 DIM B1$(30),C[6]
+6040 LET B0$=N0$+A0$(5,6),B1$(1)=NF$
+6060 FIND (ARM01_DEV,KEY=B0$,DOM=6070)IOL=ARM01A
+6070 FIND (ARM02_DEV,KEY=B0$+"  ",DOM=6080)IOL=ARM02A
+6090 RETURN
+6200 REM " --- LIFO/FIFO"
+6210 IF W[4]=0 THEN GOTO 6290
+6220 LET RET_COST=W[0]
+6230 IF X0$(27,1)="Y" OR POS(X0$(25,1)="SP")=0 THEN GOTO 6290
+6232 LET LF_CHANNELS[0]=IVM04_DEV,LF_CHANNELS[1]=IVW04_DEV,LF_CHANNELS[2]=IVM02_DEV
+6240 LET LF_ACTION$=I3$(3,1)+"I",LF_DATE$=A0$(24,3)
+6250 IF W[4]<0 THEN LET LF_ACTION$(2,1)="R"
+6260 LET LF_ITEM$[0]=N0$,LF_ITEM$[1]=W0$(31,2),LF_ITEM$[2]=W0$(33,20)
+6270 CALL "IVC.LF",LF_ACTION$,"R",LF_DATE$,LF_CHANNELS[ALL],LF_ITEM$[ALL],I[1],ABS(W[4]),W[0],RET_COST,STATUS
+6290 RETURN
+6300 REM " --- Get Average Of Serialized/Lotted Item Cost"
+6305 LET SER_QTY=0,SER_COST=0
+6310 READ (ARE23_DEV,KEY=K$(1,20),DOM=6320)
+6320 LET K4$=KEY(ARE23_DEV,END=6390)
+6330 IF K4$(1,20)<>K$(1,20) THEN GOTO 6390
+6340 READ (ARE23_DEV,KEY=K4$)IOL=ARE23A
+6350 LET SER_COST=SER_COST+R1*R2,SER_QTY=SER_QTY+R1
+6360 GOTO 6320
+6390 RETURN
+6900 REM " --- Terms Code"
+6910 DIM W$(30)
+6920 LET W$(6)=NF$
+6930 FIND (ARM10_DEV,KEY=N0$+"A"+A0$(62,2),DOM=6940)IOL=ARM10A
+6940 LET W$=W$(6,15)
+6950 RETURN
+8000 REM " --- Functions"
+8010 DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+8020 DEF FNB$(Q1$)=FNA$(Q1$(2),Q1$)+"/"+FNA$(Q1$(3),Q1$)+"/"+FNA$(Q1$(1),Q1$)
+8050 DEF FNC(Q$,Q)=INT((Q-LEN(Q$))/2)
+8060 DEF FND(Q1,Q2)=SGN(Q2)*Q1*100/(Q2+ABS(SGN(Q2))-1)
+8080 DEF FNP$(Q$)=CVS(Q$,2)
+8090 DEF FNZ$(Q$,Q1,Q2,Q3)=CVS(Q$(1,Q1)+" "+Q$(Q1+1,Q2)+" "+Q$(Q1+Q2+1,Q3),32)
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF:
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9060 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9120 RETRY
+9190 RETRY
+9200 REM " --- Return"
+9210 SETERR 9000
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END
+16000 addColumns:
+16010 rem ' add columns to the Report
+16020 report!.addColumn("Customer^Number  Name","C",23,0,"","L","")
+16030 report!.addColumn("Order^Number","C",10,0,"","L","")
+16040 report!.addColumn("Invoice^Number","C",10,0,"","L","")
+16050 report!.addColumn("Invoice^Date","C",10,0,"","L","")
+16060 report!.addColumn("By","C",9,0,"","L","")
+16070 report!.addColumn("Sls","C",12,0,"","L","")
+16080 report!.addColumn("PO^Number","C",12,0,"","L","")
+16090 report!.addColumn("Ship Via","C",12,0,"","L","")
+16100 report!.addColumn("Dist^Code","C",12,0,"","L","")
+16110 report!.addColumn("Terms","C",15,0,"","L","")
+16120 report!.addColumn("Tax^Code","C",8,0,"","L","")
+16130 report!.addColumn("Prntd?","C",7,0,"","C","")
+16140 columnCount = report!.getColumnCount()
+16150 rowTemplate$ = report!.getRowTemplate()
+16160 dim row$:rowTemplate$
+16170 return
+
+16200 addHeadings:
+16210 report!.addHeading(N1$)
+16220 report!.addHeading(N4$)
+16222 report!.addHeading(H8$)
+16224 report!.addHeading(H9$)
+16230 report!.addHeading(x0$)
+16240 report!.addHeading(X1$)
+16250 rem ' report!.addHeading("Beginning Customer: " + H4$ + " Beginning Order #: " + H6$)
+16260 rem ' report!.addHeading("Ending Customer: " + H5$ + " Ending Order #: " + H7$)
+16270 return
+
+16300 setOutputAction:
+16310 rem ' indicates individual out put fields may contain special formatting
+16320 report!.setOutputAction("FORMAT")
+16330 return
