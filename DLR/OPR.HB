@@ -8,7 +8,6 @@
 0040 REM 
 0085 SETESC 9000
 0090 SETERR 9000
-0100 RUN "OPR.HC";rem V6Demo --- Cash Sale report not converted for DocOut
 0200 REM " --- IOLists"
 0210 ARE03A: IOLIST A0$,A[ALL]
 0220 ARE20A: IOLIST D0$,D1$,D[0]
@@ -20,6 +19,17 @@
 0520 DIM D[1],R[2,1]
 0540 LET L=L9+1,HEADINGS$[3]="Cash Receipts Summary"
 0550 LET T0$="",T9$=""
+
+0600 rem 'V6Demo --- set up docout; use DocoutWrapper
+0610 use ::DocoutWrapper.bbj::DocoutWrapper
+0620 declare DocoutWrapper report!
+0630 xUserName$ = "guest", xPassword$ = ""
+
+0640 docname$ = n0$+"_CashSales"
+
+0650 report! = new DocoutWrapper(n0$, "SlsRegCashSls", docname$, xUserName$, xPassword$)
+0660 gosub addColumns; gosub addHeadings; gosub setOutputAction
+
 0700 REM " --- Background"
 0720 IF P3$(15,1)="N" THEN GOTO 4100
 0780 PRINT @(40,5),"Sorting Cash Sales",'CL',@(0,10),'CL',@(0,11),'CL',@(0,12),'CL',
@@ -58,9 +68,16 @@
 2500 REM " --- Print"
 2510 PRINT @(COLUMN,11),FNB$(T0$)," ",FNF$(D0$(5,P[0]),M0$)," ",D0$(50,7),
 2520 IF L+1>L9 THEN GOSUB 5000
-2540 PRINT (7)FNF$(D0$(5,P[0]),M0$),@(8),B1$(1,30),@(40),D0$(50,7),@(49),FNB$(D0$(18,3)),@(60),D0$(21,3),
-2550 IF X1$(21,1)="P" THEN PRINT (7)@(64),D0$(31,16),@(81),FNB$(D0$(47,3)),@(90),D[0]:M1$; GOTO 2600
-2560 PRINT (7)@(104),D0$(31,16),@(120),D[0]:M1$
+
+2540 rem ' PRINT (7)FNF$(D0$(5,P[0]),M0$),@(8),B1$(1,30),@(40),D0$(50,7),@(49),FNB$(D0$(18,3)),@(60),D0$(21,3),
+2545 dim row$:rowTemplate$; row.column01$=FNF$(D0$(5,P[0]),M0$) + " " + B1$(1,30); row.column02$=D0$(50,7); row.column03$=FNB$(D0$(18,3)); row.column04$=D0$(21,3)
+
+2550 rem ' IF X1$(21,1)="P" THEN PRINT (7)@(64),D0$(31,16),@(81),FNB$(D0$(47,3)),@(90),D[0]:M1$; GOTO 2600
+2555 IF X1$(21,1)="P" then row.column05$=D0$(31,16); row.column06$=FNB$(D0$(47,3)); row.column07$=str(D[0]:M1$)+$00$+"R"; report!.addRow(row$); goto 2600
+
+2560 rem ' PRINT (7)@(104),D0$(31,16),@(120),D[0]:M1$
+2565 row.column08$=D0$(31,16); row.column09$=str(D[0]:M1$)+$00$+"R"; report!.addRow(row$)
+
 2600 LET L=L+1
 2700 REM " --- Totals"
 2710 FOR I=0 TO 1
@@ -74,22 +91,29 @@
 4030 FOR I=0 TO 1
 4040 GOSUB 6000
 4050 NEXT I
+4060 report!.renderReport()
 4100 RUN "OPR.HC"
 5000 REM " --- Heading"
-5010 CALL "SYC.HA",7,HEADINGS$[ALL],HEADINGS,PAGE,WIDTH,WHEN$,CLOCK$,STATUS
-5015 IF STATUS>0 THEN EXITTO 9900
-5020 LET L=HEADINGS+1
-5040 PRINT (7)""
-5050 PRINT (7)"Customer",@(40),"Invoice",@(49),"Invoice",@(59),"Pay",@(67),"***  Credit Card Deposit  ***",@(106),"***  Cash Deposit  ***"
-5060 PRINT (7)@(0),"No.     Name",@(40),"Number",@(51),"Date",@(59),"Type",@(66),"Number",@(84),"Exp",@(93),"Amount",@(103),"Memo",@(125),"Amount"
-5080 LET L=L+3
+5005 rem ' replaced by docout 
+5010 rem ' CALL "SYC.HA",7,HEADINGS$[ALL],HEADINGS,PAGE,WIDTH,WHEN$,CLOCK$,STATUS
+5015 rem ' IF STATUS>0 THEN EXITTO 9900
+5020 rem ' LET L=HEADINGS+1
+5040 rem ' PRINT (7)""
+5050 rem ' PRINT (7)"Customer",@(40),"Invoice",@(49),"Invoice",@(59),"Pay",@(67),"***  Credit Card Deposit  ***",@(106),"***  Cash Deposit  ***"
+5060 rem ' PRINT (7)@(0),"No.     Name",@(40),"Number",@(51),"Date",@(59),"Type",@(66),"Number",@(84),"Exp",@(93),"Amount",@(103),"Memo",@(125),"Amount"
+5080 rem ' LET L=L+3
 5090 RETURN
 6000 REM " --- Date Break"
 6010 IF T0$="" THEN GOTO 6100
 6020 LET X$="Total For "+FNB$(T0$)
 6040 IF I=1 THEN LET X$="Total All Cash Receipts"
 6045 IF L+4>L9 THEN GOSUB 5000
-6050 PRINT (7)@(90),FILL(M1,"-"),@(120),FILL(M1,"-"),'LF',@(39),X$,@(66),"Credit Cards:",@(90),R[2,1]:M1$,@(103),"Cash:",@(120),R[0,I]:M1$,'LF',@(103),"Checks:",@(120),R[1,I]:M1$,'LF'
+
+6050 rem ' PRINT (7)@(90),FILL(M1,"-"),@(120),FILL(M1,"-"),'LF',@(39),X$,@(66),"Credit Cards:",@(90),R[2,1]:M1$,@(103),"Cash:",@(120),R[0,I]:M1$,'LF',@(103),"Checks:",@(120),R[1,I]:M1$,'LF'
+6052 dim row$:rowTemplate$; row.column07$=FILL(15,"-"); row.column09$=FILL(15,"-");report!.addRow(row$)
+6053 dim row$:rowTemplate$; row.column02$=X$; row.column05$="Credit Cards:"; row.column07$=str(R[2,1]:M1$)+$00$+"R"; row.column08$="Cash:"+$00$+"R"; row.column09$=str(R[0,I]:M1$)+$00$+"R"; report!.addRow(row$)
+6054 dim row$:rowTemplate$; row.column08$="Checks:"+$00$+"R"; row.column09$=str(R[1,I]:M1$)+$00$+"R"; report!.addRow(row$)
+
 6055 LET L=L+4
 6100 IF T9$<>"" THEN RETURN
 6110 LET T0$=K$(5,3)
@@ -136,3 +160,30 @@
 9390 RETURN
 9900 RUN "SYS.AA"
 9999 END
+
+16000 addColumns:
+16010 rem ' add columns to the Report
+16020 report!.addColumn("Customer^No./Name","C",30,0,"","L","L")
+16030 report!.addColumn("Invoice^Number","C",8,0,"","L","L")
+16040 report!.addColumn("Invoice^Date","C",8,0,"","L","L")
+16050 report!.addColumn("Pay^Type","C",5,0,"","L","L")
+16060 report!.addColumn("Credit Card^Number","C",20,0,"","L^L","")
+16070 report!.addColumn("Card^Expires","C",8,0,"","L^L","")
+16080 report!.addColumn("Credit^Amount","C",10,0,"","R^R","")
+16090 report!.addColumn("Cash^Memo","C",15,0,"","R^R","")
+16100 report!.addColumn("Cash^Amount","C",10,0,"","R^R","R")
+16140 columnCount = report!.getColumnCount()
+16150 rowTemplate$ = report!.getRowTemplate()
+16160 dim row$:rowTemplate$
+16170 return
+
+16200 addHeadings:
+16210 report!.addHeading(HEADINGS$[0])
+16220 report!.addHeading(HEADINGS$[1])
+16230 report!.addHeading(HEADINGS$[3])
+16240 return
+
+16300 setOutputAction:
+16310 rem ' indicates individual out put fields may contain special formatting
+16320 report!.setOutputAction("FORMAT")
+16330 return

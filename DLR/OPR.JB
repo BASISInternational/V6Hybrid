@@ -254,7 +254,7 @@
 4600 NEXT X
 4610 rem ' PRINT (7)@(67-M3),J$(1,M3),@(80-M3),J$(1,M3)
 4611 dim row$:rowTemplate$
-4612 row.column06$="---------"+$00$+"R"; row.column07$="------------"+$00$+"R"; row.column08$="------------"+$00$+"R"
+4612 row.column06$="---------"+$00$+"R"; row.column07$="------------"+$00$+"R"
 4613 report!.addRow(row$)
 4620 rem ' PRINT (7)RT$,@(67-M3),T[0]:M3$,@(80-M3),T[1]:M3$
 4621 dim row$:rowTemplate$; row.column01$=RT$+$00$+"B"
