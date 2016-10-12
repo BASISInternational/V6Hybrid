@@ -14,7 +14,7 @@ rem ==========================================================================
 
 rem --- Need to do the following for the V6demo to work properly
 rem --- update_DD:
-rem ---  1. Change opened_date field in ARM-01 to be character as binary
+rem ---  1. Change opened_date field data type in ARM-01 to be Character as Binary
 rem ---  2. Set date type for ART-03 invoice_date to 'AON'
 rem --- uninstall_modules
 rem ---  3. Mark current Addon modules except for GL, AP, and ABS Payroll, as uninstalled
@@ -112,10 +112,6 @@ uninstall_modules:rem --- Mark current Addon modules except AP, GL, and PRB as u
     sql$="UPDATE ADM_MODULES SET SYS_INSTALL='N' WHERE ASC_COMP_ID='01007514' AND ASC_PROD_ID IN('AR','BM','CR','GM','IV','MP','OP','PO','SA','SF')"
     sqlchan=sqlunt
     sqlopen(sqlchan)stbl("+DBNAME_API",err=*return)
-    sqlprep(sqlchan,err=*return)sql$
-    sqlexec(sqlchan,err=*return)
-
-    sql$="UPDATE ADM_MODULES SET SYS_INSTALL='N' WHERE ASC_COMP_ID='01004419' AND ASC_PROD_ID='PRB'"
     sqlprep(sqlchan,err=*return)sql$
     sqlexec(sqlchan,err=*return)
     
