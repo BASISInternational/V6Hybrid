@@ -466,8 +466,8 @@ rem ' 5220 PRINT (7)FNF$(A0$(5,P[0]),M0$),@(8),B1$(1,30),@(40),A0$(11,7),@(48),A
 16090 report!.addColumn("Ship Via","C",12,0,"","L","")
 16100 report!.addColumn("Dist^Code","C",12,0,"","L","")
 16110 report!.addColumn("Terms","C",15,0,"","L","")
-16120 report!.addColumn("Tax^Code","C",8,0,"","L","")
-16130 report!.addColumn("Prntd?","C",7,0,"","C","")
+16120 report!.addColumn("Tax^Code","C",10,0,"","L","")
+16130 report!.addColumn("Prntd?","C",10,0,"","C","")
 16140 columnCount = report!.getColumnCount()
 16150 rowTemplate$ = report!.getRowTemplate()
 16160 dim row$:rowTemplate$

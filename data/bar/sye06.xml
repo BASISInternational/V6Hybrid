@@ -4,7 +4,7 @@
 		<ID id="ddm_tables">DDM_TABLES</ID>
 		<RECORD id="ddm_tables.sye06">
 			<DD_TABLE_ALIAS id="ddm_tables.sye06">SYE06           </DD_TABLE_ALIAS>
-			<DD_ALIAS_DESC id="ddm_tables.sye06">Purchase Order Record</DD_ALIAS_DESC>
+			<DD_ALIAS_DESC id="ddm_tables.sye06">V6 Purchase Order Record</DD_ALIAS_DESC>
 			<DD_FILE_NAME id="ddm_tables.sye06">SYE-06</DD_FILE_NAME>
 			<DD_TABLE_PATH id="ddm_tables.sye06">[+V6DATA]</DD_TABLE_PATH>
 			<DD_ALIAS_TYPE id="ddm_tables.sye06">K</DD_ALIAS_TYPE>
@@ -21,9 +21,9 @@
 			<ASC_LICENSE_ID id="ddm_tables.sye06">F2CE62125B726BDAA67EE78A34319F08</ASC_LICENSE_ID>
 			<DD_EXPORT_DATA id="ddm_tables.sye06">Y</DD_EXPORT_DATA>
 			<DD_CREATE_DATE id="ddm_tables.sye06">20160923</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_tables.sye06">20160923</DD_LSTREV_DATE>
-			<DD_LSTSYNC_DATE id="ddm_tables.sye06">20160824</DD_LSTSYNC_DATE>
-			<DD_LSTSYNC_TIME id="ddm_tables.sye06">112204</DD_LSTSYNC_TIME>
+			<DD_LSTREV_DATE id="ddm_tables.sye06">20161007</DD_LSTREV_DATE>
+			<DD_LSTSYNC_DATE id="ddm_tables.sye06">20160923</DD_LSTSYNC_DATE>
+			<DD_LSTSYNC_TIME id="ddm_tables.sye06">151542</DD_LSTSYNC_TIME>
 			<DD_ATTR_ATAB id="ddm_tables.sye06"></DD_ATTR_ATAB>
 			<DD_ATTR_CPGM id="ddm_tables.sye06"></DD_ATTR_CPGM>
 			<DD_ATTR_DKNM id="ddm_tables.sye06"></DD_ATTR_DKNM>
@@ -38,7 +38,7 @@
 			<DD_ATTR_PRUN id="ddm_tables.sye06"></DD_ATTR_PRUN>
 			<DD_ATTR_PTAB id="ddm_tables.sye06"></DD_ATTR_PTAB>
 			<DD_ATTR_SLEV id="ddm_tables.sye06">zzzz</DD_ATTR_SLEV>
-			<DD_ATTR_WINT id="ddm_tables.sye06">Purchase Order Record</DD_ATTR_WINT>
+			<DD_ATTR_WINT id="ddm_tables.sye06">V6 Purchase Order Record</DD_ATTR_WINT>
 			<SQL_DB_ALIAS id="ddm_tables.sye06"></SQL_DB_ALIAS>
 			<SQL_CATALOG id="ddm_tables.sye06"></SQL_CATALOG>
 			<SQL_SCHEMA id="ddm_tables.sye06"></SQL_SCHEMA>

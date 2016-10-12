@@ -157,6 +157,18 @@ rem --- first drop all std Addon SPROCs
 	sproc_vw_name$="SIMPLE_INVOICE_DTL_60"
 	sqlprep$=sql_action$+" "+sproc_vw_name$+" "
 	gosub create_sproc_def
+
+	sproc_vw_name$="OPINVOICE_HDR_60"
+    sqlprep$=sql_action$+" "+sproc_vw_name$+" "
+    gosub create_sproc_def
+	
+	sproc_vw_name$="OPINVOICE_DET_60"
+    sqlprep$=sql_action$+" "+sproc_vw_name$+" "
+    gosub create_sproc_def
+		
+	sproc_vw_name$="OPINVOICE_DET_LOTSER_60"
+    sqlprep$=sql_action$+" "+sproc_vw_name$+" "
+    gosub create_sproc_def
 	
 rem --- now add them back (i.e., drop, then add, in case anything has changed)
 
@@ -367,6 +379,42 @@ rem --- now add them back (i.e., drop, then add, in case anything has changed)
 	sqlprep$=sqlprep$+"{_begin_}{_end_} 'V6 AR Simple Invoice Detail'"
 
 	gosub create_sproc_def
+
+	rem --- OPINVOICE_HDR_60
+    sproc_vw_name$="OPINVOICE_HDR_60"
+	sqlprep$="CREATE PROCEDURE OPINVOICE_HDR_60 "
+    sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, AR_TYPE CHAR(2) IN, CUSTOMER_ID CHAR(6) IN, ORDER_NO CHAR(7) IN, AR_INV_NO CHAR(7) IN, "
+	sqlprep$=sqlprep$+"CUST_MASK CHAR(20) IN, CUST_SIZE CHAR(1) IN, "
+	sqlprep$=sqlprep$+"BARISTA_WD VARCHAR(50) IN)"
+    sqlprep$=sqlprep$+"'"+sproc_path$+"OPINVOICE_HDR_60.prc' '"+barista_cfg_path$+"barista.cfg' "
+    sqlprep$=sqlprep$+"RESULT_SET "
+    sqlprep$=sqlprep$+"{_begin_}{_end_} 'V6 OP Invoice Header'"
+
+    gosub create_sproc_def
+
+	rem --- OPINVOICE_DET_60
+    sproc_vw_name$="OPINVOICE_DET_60"
+	sqlprep$="CREATE PROCEDURE OPINVOICE_DET_60 "
+    sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, AR_TYPE CHAR(2) IN, CUSTOMER_ID CHAR(6) IN, ORDER_NO CHAR(7) IN, AR_INV_NO CHAR(7) IN, "
+	sqlprep$=sqlprep$+"QTY_MASK CHAR(20) IN, AMT_MASK CHAR(20) IN, PRICE_MASK CHAR(20) IN, EXT_MASK CHAR(20) IN, "
+	sqlprep$=sqlprep$+"BARISTA_WD VARCHAR(50) IN)"	
+    sqlprep$=sqlprep$+"'"+sproc_path$+"OPINVOICE_DET_60.prc' '"+barista_cfg_path$+"barista.cfg' "
+    sqlprep$=sqlprep$+"RESULT_SET "
+    sqlprep$=sqlprep$+"{_begin_}{_end_} 'V6 OP Invoice Detail'"
+
+    gosub create_sproc_def
+
+	rem --- OPINVOICE_DET_LOTSER_60
+    sproc_vw_name$="OPINVOICE_DET_LOTSER_60"
+	sqlprep$="CREATE PROCEDURE OPINVOICE_DET_LOTSER_60 "
+    sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, AR_TYPE CHAR(2) IN, CUSTOMER_ID CHAR(6) IN, ORDER_NO CHAR(7) IN, AR_INV_NO CHAR(7) IN, "
+	sqlprep$=sqlprep$+"INTERNAL_SEQ_NO CHAR(12) IN, OPE11_QTY_SHIPPED CHAR(20) IN, QTY_MASK CHAR(20) IN, "
+	sqlprep$=sqlprep$+"IVS_LOTSER_FLAG CHAR(1) IN, BARISTA_WD VARCHAR(50) IN)"	
+    sqlprep$=sqlprep$+"'"+sproc_path$+"OPINVOICE_DET_LOTSER_60.prc' '"+barista_cfg_path$+"barista.cfg' "
+    sqlprep$=sqlprep$+"RESULT_SET "
+    sqlprep$=sqlprep$+"{_begin_}{_end_} 'V6 OP Invoice Lot/Serial Detail'"
+
+    gosub create_sproc_def
 
 done:
 

@@ -73,7 +73,7 @@
 2545 dim row$:rowTemplate$; row.column01$=FNF$(D0$(5,P[0]),M0$) + " " + B1$(1,30); row.column02$=D0$(50,7); row.column03$=FNB$(D0$(18,3)); row.column04$=D0$(21,3)
 
 2550 rem ' IF X1$(21,1)="P" THEN PRINT (7)@(64),D0$(31,16),@(81),FNB$(D0$(47,3)),@(90),D[0]:M1$; GOTO 2600
-2555 IF X1$(21,1)="P" then row.column05$=D0$(31,16); row.column06$=FNB$(D0$(47,3)); row.column07$=str(D[0]:M1$)+$00$+"R"; report!.addRow(row$); goto 2600
+2555 IF X1$(21,1)="P" then row.column05$=fill(12,"X")+D0$(43,4); row.column06$=FNB$(D0$(47,3)); row.column07$=str(D[0]:M1$)+$00$+"R"; report!.addRow(row$); goto 2600
 
 2560 rem ' PRINT (7)@(104),D0$(31,16),@(120),D[0]:M1$
 2565 row.column08$=D0$(31,16); row.column09$=str(D[0]:M1$)+$00$+"R"; report!.addRow(row$)
