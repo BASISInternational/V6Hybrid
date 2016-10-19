@@ -55,7 +55,7 @@ rem --- Open File(s)
 
 rem --- init progress meter
 
-    total_recs=0
+    total_recs=10
     curr_rec=0
     task_val$="BUILDTRIGGERS"
     task_desc$="Create Trigger Defs"
