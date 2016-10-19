@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<meta name='barista_version' content='16.0' />
+<barista_admin_record>
+	<barista_record_table>ADS_AUTOLAUNCH</barista_record_table>
+	<PROCESS_ID>V6BLDTRGRS</PROCESS_ID>
+	<DESCRIPTION>Init for V6 demo Trigger defs</DESCRIPTION>
+	<PROGRAM_PATH>[V6HYBRID_PROG]adx_V6build_triggers.aon</PROGRAM_PATH>
+	<PROGRAM_ARGS>-u[+USER_ID]</PROGRAM_ARGS>
+	<PROCESS_TYPE>O</PROCESS_TYPE>
+	<PROCESS_STATUS>C</PROCESS_STATUS>
+	<TRANS_DATE>20161019</TRANS_DATE>
+	<TRANS_TIME>140103</TRANS_TIME>
+	<ASC_COMP_ID>00000000</ASC_COMP_ID>
+	<ASC_PROD_ID>V6H</ASC_PROD_ID>
+	<COMMENTS>This program adds Trigger definitions for V6 demo to the BASIS DD.[$0a$]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             </COMMENTS>
+</barista_admin_record>

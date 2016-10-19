@@ -55,7 +55,7 @@
 0460 CALL "SYC.PA",SYS01_DEV,P[2],P[3],X$,G9$,STATUS
 0485 FIND (ARS10_DEV,KEY=N0$+"C",DOM=0490)IOL=ARS10C
 0500 REM " --- Initializations"
-0510 LET L9=59,L=L9+1,H=0,PAGE=H,WIDTH=132,HEADINGS=2,UNITS=0,CODE_T$="",DATE_T$=""
+0510 LET L9=59,L=L9+1,H=0,PAGE=H,WIDTH=132,HEADINGS=4,UNITS=0,CODE_T$="",DATE_T$=""
 0520 DIM A[1],W[1],CODE_T[2],DATE_T[2],V[5],HEADINGS$[HEADINGS]
 0530 LET CLOCK$="",WHEN$=F0$(7,3),HEADINGS$[0]=N1$,HEADINGS$[1]=N3$
 0540 LET G5=LEN(G5$),M0=LEN(M0$),M2=LEN(M2$)
@@ -386,9 +386,11 @@
 
 
 13500 rem ' *****************************************************
-13510 rem ' * Set Report Headings
-13520 rem ' *****************************************************
-13530 setReportHeadings:
+13501 rem ' * Set Report Headings
+13502 rem ' *****************************************************
+13505 setReportHeadings:
+13510 tmp$=cvs(stbl("!PROCESS",err=*next),3); if tmp$<>"" headings$[3]="Batch: "+str(num(tmp$(13,3)))
+13520 tmp1$=cvs(stbl("!GLCONTROL",err=*next),3); if tmp1$<>"" then headings$[4]="Audit#: "+tmp1$(20,7)
 13540 for headcnt = 0 to headings
 13550 	if cvs(headings$[headcnt],3) <> "" then
 13560		doc!.addReportHeading(headings$[headcnt])
@@ -688,3 +690,6 @@
 18570 doc!.process()
 
 18690 return
+
+    
+    

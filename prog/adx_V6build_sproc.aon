@@ -178,7 +178,7 @@ rem --- now add them back (i.e., drop, then add, in case anything has changed)
     rem --- Original test Cust Stmt - single stmt only
     sproc_vw_name$="CUST_STMTS"
 	sqlprep$="CREATE PROCEDURE CUST_STMTS "
-    sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, STATEMENT_DATE CHAR(8) IN, CUSTOMER_ID CHAR(6) IN,  "
+    sqlprep$=sqlprep$+"(FIRM_ID CHAR(2) IN, CUSTOMER_ID CHAR(6) IN, STATEMENT_DATE CHAR(8) IN, "
     sqlprep$=sqlprep$+"LOGO_FILE VARCHAR(60) IN, BARISTA_WD VARCHAR(50) IN) "
     sqlprep$=sqlprep$+"'"+sproc_path$+"custStatements.prc' '"+barista_cfg_path$+"barista.cfg' "
     sqlprep$=sqlprep$+"RESULT_SET "

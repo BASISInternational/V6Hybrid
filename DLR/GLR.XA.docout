@@ -72,7 +72,7 @@
 0750 CALL "SYC.NB","Printing",M0+9,COLUMN
 0800 REM " --- Report Headings"
 0810 DIM WORK$[1]
-0820 LET WORK$[0]=HEADINGS$[0],WORK$[1]=HEADINGS$[1],HEADINGS=2
+0820 LET WORK$[0]=HEADINGS$[0],WORK$[1]=HEADINGS$[1],HEADINGS=4;rem V6demo --- add 2 more headings for batch/audit info
 0830 DIM HEADINGS$[HEADINGS]
 0840 LET HEADINGS$[0]=WORK$[0],HEADINGS$[1]=WORK$[1]
 0850 LET HEADINGS$[2]="General Ledger Summary"
@@ -383,9 +383,11 @@
 
 
 13500 rem ' *****************************************************
-13510 rem ' * Set Report Headings
-13520 rem ' *****************************************************
-13530 setReportHeadings:
+13501 rem ' * Set Report Headings
+13502 rem ' *****************************************************
+13505 setReportHeadings:
+13510 tmp$=cvs(stbl("!PROCESS",err=*next),3); if tmp$<>"" headings$[3]="Batch: "+str(num(tmp$(13,3)))
+13520 tmp1$=cvs(stbl("!GLCONTROL",err=*next),3); if tmp1$<>"" then headings$[4]="Audit#: "+tmp1$(20,7)
 13540 for headcnt = 0 to headings
 13550 	if cvs(headings$[headcnt],3) <> "" then
 13560		doc!.addReportHeading(headings$[headcnt])

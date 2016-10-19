@@ -12,7 +12,7 @@ rem
 rem
 rem ----------------------------------------------------------------------------
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this out to do the trace
     tfl$="C:/temp_downloads/sproctrace2.txt"
     erase tfl$,err=*next
     string tfl$
@@ -20,8 +20,6 @@ rem ----------------------------------------------------------------------------
     open(tfl)tfl$
     settrace(tfl,MODE="UNTIMED")
 skip_trace:
-
-rem --- TODO --- straighten out file access
 
     seterr sproc_error
 

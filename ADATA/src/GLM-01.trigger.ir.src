@@ -1,0 +1,59 @@
+rem AddonSoftware
+rem Copyright BASIS International Ltd.
+rem 
+rem instead of read
+rem This trigger assumes that it is being used in a non-modified Barista and Addon
+rem Version 6 environment. If there have been any modifications to these systems,
+rem be sure to thoroughly examine this trigger and test changes.
+
+	setopts $080872202c2e$
+
+	seterr trigger_error
+	
+rem ---  Get the Trigger object from the BBj File System
+
+    td! = BBjAPI().getFileSystem().getTriggerData()
+
+	ky$=td!.getKey()
+	
+	myns!=BBjAPI().getGlobalNamespace()
+	wkdir$ = myns!.getValue("work_dir")
+	gldir$ = myns!.getValue("gldata")
+
+rem --- Template for the GLM-01 record being caught
+
+ 	intemp$="firm_id:c(2),gl_account:c(10*=10),gl_acct_desc:c(35),gl_acct_type:c(1),detail_flag:c(1),"
+	intemp$=intemp$+"reserved_str:c(3*=10)"
+
+	dim inRec$:intemp$
+	
+rem --- Open Barista Journal ID Code table
+
+	glm01_dev=unt
+	open (glm01_dev,err=trigger_error)gldir$+"glm-01"
+	tpl_dev=unt
+	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
+	read (tpl_dev,key=pad("GLM_ACCT",16),dom=trigger_error) *,*,glm_acct_tpl$
+	dim glm_acct$:glm_acct_tpl$
+	
+rem --- Get the data
+
+	read record (glm01_dev,key=ky$,dom=trigger_error) glm_acct$
+	inRec.firm_id$ = glm_acct.firm_id$
+	inRec.gl_account$ = glm_acct.gl_account$
+	inRec.gl_acct_desc$ = glm_acct.gl_acct_desc$
+	inRec.gl_acct_type$ = glm_acct.gl_acct_type$
+	inRec.detail_flag$ = glm_acct.detail_flag$
+	inRec.reserved_str$ = glm_acct.reserved_str$
+
+	td!.setReadBuffer(inRec$)
+
+	goto std_exit
+
+trigger_error:
+
+    rd_err_text$="", err_num=err
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+	
+std_exit:

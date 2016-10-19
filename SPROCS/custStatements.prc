@@ -3,6 +3,8 @@ rem ' * SPROC to drive customer statements
 rem ' ****************************************************
 rem ' program name: custStatements.prc
 
+seterr sproc_error
+
 rem ' ****************************************************
 rem ' * declares
 rem ' ****************************************************
@@ -30,8 +32,8 @@ wend
 barista_wd$ = sp!.getParameter("BARISTA_WD")
 chdir barista_wd$
 
-rem 'CAH
-rem goto CAH_end;rem to enable trace
+rem 'set up trace if desired
+    goto trace_end;rem to enable trace
     tfl$="C:/temp_downloads/stmtTraceSPROC.txt"
     erase tfl$,err=*next
     string tfl$
@@ -39,7 +41,7 @@ rem goto CAH_end;rem to enable trace
     open(tchan)tfl$
     settrace (tchan,MODE="UNTIMED")
 
-CAH_end:
+trace_end:
 
 rem ' ****************************************************
 rem ' * create the in memory recordset for return
@@ -57,9 +59,6 @@ files=4
 dim files$[files],options$[files],channels[files]
 files$[1]="ARM-01",files$[2]="ARM-02"
 files$[3]="ART-01",files$[4]="ART-11"
-
-print (tchan)"prefix is: "+pfx
-print (tchan)"working dir is: ",dir("")
 
 call "SYC.DA",1,1,files,files$[all],options$[all],channels[all],batch,status
 
@@ -234,7 +233,6 @@ rem ' ****************************************************
 build_list_of_aging_dates:
 
 	aging_dates$ = ""
-
 	statement_date = jul(num(statement_date$(1,2)), num(statement_date$(3,2)), num(statement_date$(5,2)))
 
 	for x = -5 TO 0
@@ -243,6 +241,12 @@ build_list_of_aging_dates:
 	next x
 
 return
+
+sproc_error:rem --- SPROC error trap/handler
+    rd_err_text$="", err_num=err
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    x$=stbl("+THROWN_ERR","TRUE")
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
 
 REM " --- Functions
 DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")

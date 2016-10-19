@@ -1,0 +1,223 @@
+rem --- build_triggers.aon
+rem --- Copyright BASIS International Ltd.  All Rights Reserved.
+
+rem --- Delete and re-define triggers used for V6Hybrid demo project.
+rem --- Design plan is to ship demo project with trigger source code files in ADATA/src/ directory.
+rem --- This program will iterate through each file in that directory, removing and then re-creating definitions using current install location and barista.cfg.
+
+    seterr std_error
+    setesc std_error
+
+    use ::ado_file.src::FileObject
+
+    if argc>1
+        for curr_argv=1 to argc-1
+            temp_argv$=argv(curr_argv)
+            if pos("-u"=temp_argv$)=1 user_id$=temp_argv$(3);rem User ID
+            if pos("-l"=temp_argv$)=1 launch_source$=temp_argv$(3);rem Launch source
+        next curr_argv
+    endif
+
+    if user_id$=""
+        use ::sys/prog/bao_security.bbj::Security
+        user_id$=Security.getURLUser()
+    endif
+
+    if cvs(user_id$,3)<>""
+        user_id$=stbl("+USER_ID",cvs(user_id$,4))
+    else
+        release;rem couldn't get user id?
+    endif
+
+rem --- Retrieve the program path
+
+    pgmdir$=stbl("+DIR_PGM",err=*next)
+
+rem --- Retrieve sysinfo data
+
+    call stbl("+DIR_SYP")+"bas_process_beg.bbj",stbl("+USER_ID"),rd_table_chans$[all]
+
+    sysinfo_template$=stbl("+SYSINFO_TPL",err=*next)
+    dim sysinfo$:sysinfo_template$
+    sysinfo$=stbl("+SYSINFO",err=*next)
+    firm_id$=sysinfo.firm_id$
+    milestone=1
+    
+rem --- Open File(s)
+    
+    num_files=1
+    dim open_tables$[1:num_files],open_opts$[1:num_files],open_chans$[1:num_files],open_tpls$[1:num_files]
+    open_tables$[1]="ADS_AUTOLAUNCH",open_opts$[1]="OTA"
+
+    gosub open_tables
+
+    ads_autolaunch=num(open_chans$[1]);dim ads_autolaunch$:open_tpls$[1]
+
+rem --- init progress meter
+
+    total_recs=0
+    curr_rec=0
+    task_val$="BUILDTRIGGERS"
+    task_desc$="Create Trigger Defs"
+
+    progress! = bbjAPI().getGroupNamespace()
+    progress!.setValue("+process_task",task_val$+"^C^"+task_desc$+"^CNC^"+str(total_recs)+"^")
+
+rem --- Get Admin Object
+    NSAdmin!=BBjAPI().getNamespace("adminobjects","barista",1)
+    admin!=NSAdmin!.getValue("+bar_admin_"+cvs(user_id$,11),err=*next)
+    NSAdmin!=null()
+
+    if admin!=null() then goto std_exit 
+
+rem --- Look in ADATA directory for trigger definition (.trigger) files
+rem --- Replace working dir, config, and all trigger source paths with those from current install location
+
+    baristaWD$=dsk("")+dir("")
+    triggerDir$=stbl("+V6DATA",err=std_exit)
+    trgEvents!=BBjAPI().makeVector()
+    trgTypes!=BBjAPI().makeVector()
+    
+    trgTypes!.add("before-")
+    trgTypes!.add("after-")
+    trgTypes!.add("insteadof-")
+    
+    trgEvents!.add("close-")
+    trgEvents!.add("erase-")
+    trgEvents!.add("key-")
+    trgEvents!.add("open-")
+    trgEvents!.add("read-")
+    trgEvents!.add("remove-")
+    trgEvents!.add("write-")
+    
+    trgProp$="source"
+
+    tdir=unt
+    triggerDir$=FileObject.fixPath(triggerDir$,"/")
+    if triggerDir$(len(triggerDir$),1)<>"/" then triggerDir$=triggerDir$+"/"
+    open (tdir)triggerDir$
+    
+    while 1
+        readrecord(tdir,end=*break)fileName$
+        if len(fileName$)<9 or fileName$(len(fileName$)-7,8)<>".trigger" then continue         
+        trgFile$=fileName$(1,len(fileName$)-8)       
+        trigger! = admin!.getTriggers(triggerDir$+trgFile$,err=*continue)
+        trigger!.setString(BBjAdminTriggers.WORKING_DIR, baristaWD$)
+        trigger!.setString(BBjAdminTriggers.CONFIG, baristaWD$+stbl("+DIR_CFG")+"barista.cfg")
+        
+rem --- now loop thru before/after/instead-of (outer loop) + close, erase, key, open, read, remove, write + _source (inner loop)
+rem --- get the path to the source file, flip slashes, look for /src
+rem --- replace what's in front of /src with current ADATA location
+rem --- then set it back and commit
+
+        for tt=0 to trgTypes!.size()-1
+            for te=0 to trgEvents!.size()-1
+                tprop$=trgTypes!.get(tt)+trgEvents!.get(te)+trgProp$
+                currSource$=trigger!.getString(tprop$,err=*continue)
+                currSource$=FileObject.fixPath(currSource$, "/")
+                tpos=pos("/src"=currSource$)
+                if tpos
+                    currSource$=triggerDir$+currSource$(tpos+1)
+                else
+                    currSource$=""
+                endif
+                trigger!.setString(tprop$,currSource$)
+            next te
+        next tt
+       
+        trigger!.commit()
+
+        curr_rec=curr_rec+1
+        progress!.setValue("+process_task",task_val$+"^U^"+str(curr_rec)+"^")
+
+    wend
+
+update_status:rem --- Update AutoLaunch Status
+
+    extractrecord(ads_autolaunch,key="V6BLDTRGRS")ads_autolaunch$; rem Advisory Locking
+    ads_autolaunch.process_status$="C"
+    ads_autolaunch.trans_date$=date(0:"%Yl%Mz%Dz")
+    ads_autolaunch.trans_time$=date(0:"%Hz%mz%sz")
+    ads_autolaunch$=field(ads_autolaunch$)
+    writerecord(ads_autolaunch)ads_autolaunch$
+
+goto std_exit
+
+open_tables:rem -----<Open Tables
+
+    call stbl("+DIR_SYP")+"bac_open_tables.bbj",
+:       open_beg,
+:       open_end,
+:       open_tables$[all],
+:       open_opts$[all],
+:       open_chans$[all],
+:       open_tpls$[all],
+:       rd_table_chans$[all],
+:       open_batch,
+:       open_status$
+
+    if open_status$<>""
+        msg_id$="ENTRY_OPEN_ERROR"
+        dim msg_tokens$[1]
+            msg_tokens$[1]=open_status$
+        gosub disp_message
+        goto std_exit
+    endif
+
+    return
+
+disp_message:rem --- Display Message Dialog
+
+    call stbl("+DIR_SYP")+"bac_message.bbj",msg_id$,msg_tokens$[all],msg_opt$,table_chans$[all]
+
+    return
+
+rem #include std_error.src
+
+std_error: rem --- Standard error handler (18Nov2014)
+
+    if tcb(19)>0
+        rem --- Escape handler
+        if and(chr(tcb(19)),$08$)=$08$
+            release
+        else
+            setesc std_error
+            return
+        endif
+    endif
+
+    if err=0   
+        rem --- Get tcb(12) and tcb(10) to send into bac_error
+        lock_byte=tcb(10)
+        lock_chan=tcb(12)  
+    endif
+
+    rd_err_text$=""
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    call stbl("+DIR_SYP")+"bac_error.bbj",pgm(-2),str(tcb(5)),str(err),rd_err_text$,rd_err_act$,lock_byte,lock_chan
+    if pos("ESCAPE"=rd_err_act$) seterr 0; setesc 0
+    if pos("RETRY"=rd_err_act$) retry
+    if pgm(-1)<>pgm(-2) status=999; exit 
+    release
+
+
+rem #endinclude std_error.src
+
+rem #include std_end.src
+
+std_exit: rem --- Standard program end (01Mar2006)
+
+    if errored_sqlverb$="" 
+		if pos("SPROC_UPDT"=sysinfo.menu_option_id$)<>0
+			msg_id$="AD_SPROC_UPDT"
+			gosub disp_message;rem only display message if running stand-alone
+		endif
+    endif
+    
+    progress!.setValue("+process_task",task_val$+"^D^")
+    run stbl("+DIR_SYP",err=*next)+"bas_process_end.bbj",err=*next
+	release
+
+rem #endinclude std_end.src
+
+    end
