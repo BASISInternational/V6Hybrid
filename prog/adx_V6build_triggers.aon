@@ -80,7 +80,7 @@ rem --- Replace working dir, config, and all trigger source paths with those fro
     
     trgTypes!.add("before-")
     trgTypes!.add("after-")
-    trgTypes!.add("insteadof-")
+    trgTypes!.add("instead-of-")
     
     trgEvents!.add("close-")
     trgEvents!.add("erase-")
@@ -115,7 +115,7 @@ rem --- then set it back and commit
                 tprop$=trgTypes!.get(tt)+trgEvents!.get(te)+trgProp$
                 currSource$=trigger!.getString(tprop$,err=*continue)
                 currSource$=FileObject.fixPath(currSource$, "/")
-                tpos=pos("/src"=currSource$)
+                tpos=pos("/src/"=currSource$)
                 if tpos
                     currSource$=triggerDir$+currSource$(tpos+1)
                 else
