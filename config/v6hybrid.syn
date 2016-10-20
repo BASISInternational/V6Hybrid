@@ -18,6 +18,7 @@ SYSSTBL=SET +V6_DIR_SPROCS=../apps/V6Hybrid/SPROCS/
 SYSSTBL=SET +V6_DIR_REPORTS=../apps/V6Hybrid/reports/
 SYSSTBL=SET +V6_CUST_IMAGES=../apps/V6Hybrid/cust_images/
 SYSSTBL=SET +V6_FORM_LOGO=basislogo.jpg
+SYSSTBL=SET +MDI_TITLE=AddonSoftware V6Hybrid
 SYSPFX=../apps/V6Hybrid/prog/
 SYSPFX=../apps/V6Hybrid/ADATA/
 SYSPFX=../apps/V6Hybrid/DLR/
