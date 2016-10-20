@@ -81,7 +81,7 @@ rem ' ****************************************************
     BBjReport!.putParam("P_FIRM_ID",firm$)
     BBjReport!.putParam("P_CUSTOMER",current_cust$)
     BBjReport!.putParam("P_STATEMENT_DATE",statement_date$(7,2)+statement_date$(1,2)+statement_date$(4,2))
-    BBjReport!.putParam("P_LOGO_FILE",stbl("V6HYBRID_IMAGE")+"basislogo.jpg")
+    BBjReport!.putParam("P_LOGO_FILE",stbl("+V6_CUST_IMAGES")+stbl("+V6_FORM_LOGO"))
     BBjReport!.putParam("P_BARISTA_WD",dir(""))
 
     BBjReport!.fill()

@@ -80,7 +80,7 @@ ars01b: iolist r0$,r1$
     read (sys01_dev,key=firm_id$+"AR02",err=*next)iol=ars01b
     ar_phone_no$=""
     if len(r1$)>=112
-        call stbl("+DIR_SYP")+"bac_getmask.bbj","T","10","",phone_mask$ 
+        call stbl("+DIR_SYP")+"bac_getmask.bbj","T",cvs(r1$(103,10),2),"",phone_mask$ 
         ar_phone_no$=str(cvs(r1$(103,10),2):phone_mask$)
     endif
 
