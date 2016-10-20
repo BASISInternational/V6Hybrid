@@ -71,7 +71,7 @@ rem --- Set Report Name & Subreport directory
     open (temp)reportDir$
     reportDir$ = fid(temp)(9)+"/"
     close (temp)
-    reportBaseName$ = "CustStatement"
+    reportBaseName$ = "custStatement"
     filename$ = reportDir$ + reportBaseName$ + ".jasper"
     masterBaseName$ = "StatementMaster"
     master_filename$ = reportDir$ + masterBaseName$+".jasper"
