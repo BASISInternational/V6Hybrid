@@ -69,7 +69,7 @@ if (firmID$ <> "" and custNum$ <> "")
             
             rem Create the widget
             widgetName$ = "ARAging"
-            title$ = "Aging for "+custName$
+            title$ = "Customer: "+custName$
             previewText$ = ""
             previewImage$ = ""
             chartTitle$ = ""
@@ -105,21 +105,45 @@ if (firmID$ <> "" and custNum$ <> "")
             
             rem Create a window
             sysgui! = BBjAPI().openSysGui("X0")
+            ScreenSize! = sysgui!.getSystemMetrics().getScreenBounds()
             width=400
             height=300
-            window! = sysgui!.addWindow(400,400,width,height,"Aging report for " + custName$,$01000012$)
+            winx=ScreenSize!.x+ScreenSize!.width-width-50
+            winy=ScreenSize!.y+ScreenSize!.height-height-50
+
+            window! = sysgui!.addWindow(winx,winy,width,height,"Aging Pie Chart",$20000012$)
             widgetControl! = new WidgetControl(dashboardWidget!,window!,0,0,width,height,$$)
             widgetControl!.setMoveParentWindow(1)
             
             closeButton! = widgetControl!.getBBjControl(WidgetControl.getDASHBOARD_WIDGET_CLOSE_BUTTON_NAME())
             closeButton!.setCallback(BBjToolButton.ON_TOOL_BUTTON_PUSH,"Finished")
+            window!.setCallback(window!.ON_CLOSE,"Finished")
+            window!.setCallback(window!.ON_KEYPRESS,"window_keypress")
             
-            BBWindowUtils.centerWindow(window!)
+            rem BBWindowUtils.centerWindow(window!)
             window!.setVisible(1)
+            window!.focus()
+
             process_events
        endif
     endif
     
+
+window_keypress:rem --- Keypress event
+
+    winEvent! = sysgui!.getLastEvent()
+    key_code = winEvent!.getKeyCode()
+
+    switch key_code
+        case 334; rem <F4>
+        case 27; rem <Escape>
+            goto Finished
+        break
+        case default
+        break
+    swend
+
+    return
 
 Finished:
     REM Clean up
