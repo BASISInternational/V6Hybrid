@@ -69,7 +69,7 @@ if (firmID$ <> "" and custNum$ <> "")
             
             rem Create the widget
             widgetName$ = "ARAging"
-            title$ = "Customer: "+custName$
+            title$ = "Aging for "+custName$
             previewText$ = ""
             previewImage$ = ""
             chartTitle$ = ""
@@ -108,10 +108,10 @@ if (firmID$ <> "" and custNum$ <> "")
             ScreenSize! = sysgui!.getSystemMetrics().getScreenBounds()
             width=400
             height=300
-            winx=ScreenSize!.x+ScreenSize!.width-width-50
-            winy=ScreenSize!.y+ScreenSize!.height-height-50
+            winx=ScreenSize!.x+ScreenSize!.width-width-150
+            winy=ScreenSize!.y+ScreenSize!.height-height-150
 
-            window! = sysgui!.addWindow(winx,winy,width,height,"Aging Pie Chart",$20000012$)
+            window! = sysgui!.addWindow(winx,winy,width,height,"",$21000012$)
             widgetControl! = new WidgetControl(dashboardWidget!,window!,0,0,width,height,$$)
             widgetControl!.setMoveParentWindow(1)
             
