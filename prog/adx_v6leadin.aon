@@ -90,16 +90,31 @@ rem --- Open/Lock files
     open (sys01_dev)"SYS-01"
     sym02_dev = unt
     open (sym02_dev)"SYM-02"
+    sym04_dev = unt
+    open (sym04_dev)"SYM-04"
+    sym06_dev = unt
+    open (sym06_dev)"SYM-06"
+    sym09_dev = unt
+    open (sym09_dev)"SYM-09"
+    sym19_dev = unt
+    open (sym19_dev)"SYM-19"
+    sym29_dev = unt
+    open (sym29_dev)"SYM-29"
 
 rem --- IOLists
 
 sym02a: iolist sym02_0$(1),sym02_1$(1),sym02[all]
 sys01t: iolist terminal$,sys01_0$(1),sys01_1$,sys01_2$,sys01_3$,sys01_4$,sys01_5$,sys01_6$,sys01_7$
 sys01s: iolist s0$,s1$,s2$,s3$,s4$,s5$,s6$
+sym04a: iolist c0$(1),c1$(1),c2$(1),c3$(1),c[all]
+sym06a: iolist d0$(1),d1$(1),d2$(1)
+sym09a: iolist *,*,y2$
+sym19a: iolist *,*,x2$
 
 rem --- Initialize variables
 
     dim screen$(32),color$(160),sym02_0$(3),sym02_1$(128),sym02[4],sys01_0$(25)
+    dim c0$(2),c1$(64),c2$(50),c3$(50),c[2],d0$(2),d1$(40),d2$(16)
 
 rem --- Save BBx Standard !EDIT Parameters
 
@@ -218,9 +233,9 @@ rem --- Set function keys
 
 rem --- print header boxes
 
-        bg$=cvs(color$(1,10), 2)
-        fg$=cvs(color$(11,10), 2)
-        PRINT (0,ERR=*next)'BACKGR',bg$,fg$,'DEFAULT','CS',
+    bg$=cvs(color$(1,10), 2)
+    fg$=cvs(color$(11,10), 2)
+    PRINT (0,ERR=*next)'BACKGR',bg$,fg$,'DEFAULT','CS',
 
 	call "SYC.WC",0,0,47,3,0,0,0
 	call "SYC.WC",0,0,33,3,47,0,0
@@ -237,6 +252,24 @@ rem --- Run next program
 
     x$=stbl("!CLEAR","!PROCESS",err=*next)
     x$=stbl("+LEGACY","Y")
+
+rem --- set !PROCESS global variable
+
+    read (sym29_dev,key=program$,dom=*next)
+
+    while 1
+        let sym29_k$=key(sym29_dev,end=*break)
+        if cvs(sym29_k$(1,8),2)<>program$ then break
+        find (sym09_dev,key=sym29_k$(9,10),dom=*break)iol=sym09a
+        if y2$(3,1)<>"Y" then break
+        find (sym04_dev,key=y2$(1,2),dom=*break)iol=sym04a
+        if c1$(47,1)<>"Y" then break
+        find (sym06_dev,key=sys01_0$(16,2),dom=*break)iol=sym06a
+        if d2$(2,1)<>"Y" then break
+        find (sym19_dev,key=sym29_k$(9,10)+sym29_k$(1,8),dom=*break)iol=sym19a
+        let x$=stbl("!PROCESS",sym29_k$(9,10)+sys01_0$(16,2)+fill(3,"0")+x2$(1,1)+sys01_0$(4,3)+sys01_0$(18,6),err=*break)
+        break
+    wend
 
     run program$,err=*next
     release
