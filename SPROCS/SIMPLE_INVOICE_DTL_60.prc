@@ -36,8 +36,10 @@ skip_trace:
     amt_mask$ = sp!.getParameter("AMT_MASK")
     unit_mask$ = sp!.getParameter("UNIT_MASK")
     barista_wd$ = sp!.getParameter("BARISTA_WD")
+    process_info$ = sp!.getParameter("PROCESS_INFO")
 
     chdir barista_wd$
+    if process_info$<>"" then xwk$=stbl("!PROCESS",process_info$)
 
 rem V6demo - iolists
 are15a: iolist w0$,w1$,w[all]

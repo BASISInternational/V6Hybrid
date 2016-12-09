@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-09-09T11:14:14 -->
+<!-- 2016-12-09T09:45:57 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SimpleInvoice" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" resourceBundle="addon" uuid="815b46ba-2f77-4228-b6b5-6b147c6e0a44">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -22,6 +22,7 @@
 	<parameter name="CUSTOMER_ID" class="java.lang.String"/>
 	<parameter name="TERMS_CD" class="java.lang.String"/>
 	<parameter name="UNIT_MASK" class="java.lang.String"/>
+	<parameter name="PROCESS_INFO" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[CALL SIMPLE_INVOICE_60($P{FIRM_ID},$P{AMT_MASK},$P{CUST_MASK},$P{CUST_SIZE},$P{CUSTOMER_ID},$P{TERMS_CD},$P{UNIT_MASK},$P{AR_INV_NO},$P{BARISTA_WD})]]>
 	</queryString>
@@ -321,6 +322,9 @@
 				</subreportParameter>
 				<subreportParameter name="UNIT_MASK">
 					<subreportParameterExpression><![CDATA[$P{UNIT_MASK}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="PROCESS_INFO">
+					<subreportParameterExpression><![CDATA[$P{PROCESS_INFO}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<returnValue subreportVariable="TOT_PRICE" toVariable="TOT_PRICE"/>

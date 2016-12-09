@@ -373,7 +373,7 @@ rem --- now add them back (i.e., drop, then add, in case anything has changed)
 	rem --- Dashboard: SIMPLE_INVOICE_DTL_60
 	sproc_vw_name$="SIMPLE_INVOICE_DTL_60"
 	sqlprep$="CREATE PROCEDURE SIMPLE_INVOICE_DTL_60 "
-	sqlprep$=sqlprep$+"(FIRM_ID VARCHAR(2) IN, AR_INV_NO VARCHAR(10) IN, AMT_MASK VARCHAR(20) IN, UNIT_MASK VARCHAR(20) IN, BARISTA_WD VARCHAR(50) IN)"	
+	sqlprep$=sqlprep$+"(FIRM_ID VARCHAR(2) IN, AR_INV_NO VARCHAR(10) IN, AMT_MASK VARCHAR(20) IN, UNIT_MASK VARCHAR(20) IN, PROCESS_INFO VARCHAR(50) IN, BARISTA_WD VARCHAR(50) IN)"	
 	sqlprep$=sqlprep$+"'"+sproc_path$+"SIMPLE_INVOICE_DTL_60.prc' '"+barista_cfg_path$+"barista.cfg' "
 	sqlprep$=sqlprep$+"RESULT_SET "
 	sqlprep$=sqlprep$+"{_begin_}{_end_} 'V6 AR Simple Invoice Detail'"
