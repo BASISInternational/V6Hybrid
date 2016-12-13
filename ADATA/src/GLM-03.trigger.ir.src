@@ -6,6 +6,8 @@ rem This trigger assumes that it is being used in a non-modified Barista and Add
 rem Version 6 environment. If there have been any modifications to these systems,
 rem be sure to thoroughly examine this trigger and test changes.
 
+rem --- Reads Barista Addon GL Journal ID Code file instead of V6
+
 	setopts $080872202c2e$
 
 	seterr trigger_error
@@ -27,7 +29,7 @@ rem --- Template for the GLM-03 record being caught
 	intemp$=intemp$+"reserved_1:n(7*=10),reserved_2:n(7*=10),reserved_3:n(7*=10)"
 	dim inRec$:intemp$
 	
-rem --- Open Barista Journal ID Code table
+rem --- Open Barista Addon's Journal ID Code table
 
 	glm03_dev=unt
 	open (glm03_dev,err=trigger_error)gldir$+"glm-03"

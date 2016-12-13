@@ -6,6 +6,9 @@ rem This trigger assumes that it is being used in a non-modified Barista and Add
 rem Version 6 environment. If there have been any modifications to these systems,
 rem be sure to thoroughly examine this trigger and test changes.
 
+rem --- Takes in Daily Detail (GLT-04) record that's about to be written in V6 and writes it to Barista Addon file instead
+rem --- Consults Barista Addon GL Accounts file to determine if posting Detail for this account
+
     rem ' trace
     goto skip_trace;rem this out to do the trace
     tfl$="C:/temp_downloads/GLT-04_triggertrace.txt"

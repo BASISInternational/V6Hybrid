@@ -6,6 +6,8 @@ rem This trigger assumes that it is being used in a non-modified Barista and Add
 rem Version 6 environment. If there have been any modifications to these systems,
 rem be sure to thoroughly examine this trigger and test changes.
 
+rem --- Reads Barista Addon GL Accounts file instead of V6
+
 	setopts $080872202c2e$
 
 	seterr trigger_error
@@ -27,7 +29,7 @@ rem --- Template for the GLM-01 record being caught
 
 	dim inRec$:intemp$
 	
-rem --- Open Barista Journal ID Code table
+rem --- Open Barista Addon's GL Accounts table
 
 	glm01_dev=unt
 	open (glm01_dev,err=trigger_error)gldir$+"glm-01"
