@@ -189,7 +189,7 @@
 3030 rem --- V6Demo - create vector of customers/orders to be processed in Jasper report
 3080 IF O9=1 THEN LET A0$(68,1)="B"; WRITE (ARE03_DEV,KEY=A0$(1,20))IOL=ARE03A; custIds!.addItem(A0$(5,6)); orderNos!.addItem(A0$(11,7)); GOTO 1100
 4000 REM " --- Totals"
-4002 if O9=1 then call "opc_V6invoice.aon",custIds!,orderNos!,P7$,P5$,MESSAGE$; goto 4190;rem --- V6Demo calls public to create Jasper invoices
+4002 if O9=1 then read (are03_dev);call "opc_V6invoice.aon",custIds!,orderNos!,P7$,P5$,MESSAGE$; goto 4190;rem --- V6Demo releases final extract, if applicable, and then calls public to create Jasper invoices
 4005 CLOSE (PRTR_DEV,ERR=4010)
 4010 IF O9=2 THEN GOSUB 4500; GOTO 4085
 4015 IF O9=3 THEN GOTO 4100

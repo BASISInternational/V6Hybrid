@@ -380,7 +380,7 @@ rem --- Main Read
         locale$ = stbl("!LOCALE")
         locale$ = stbl("+USER_LOCALE",err=*next)
         report!.setLocale(locale$)
-     
+
         report!.fill()
         report!.exportToPDF(BBjAPI().FALSE, docdir$+new_doc_name$)
 
@@ -392,6 +392,7 @@ rem --- Main Read
     rem --- Loop back for next Customer/Order
 
     next next_item
+    read (are03_dev);rem release final extract
 
 rem --- bring up jasper viewers (master doc and print doc for Batch Invoices)
 
@@ -587,12 +588,14 @@ close_win:rem --- Master or On-demand viewer closed - do post-processing for bat
         call pgmdir$+"adc_progress.aon","S","","","","",0,0,1,0,status
         if status = 999 then exitto all_done
 
-        extract record (are03_dev,key=are04ky$(1,2)+are04ky$(4)+"000", dom=*endif) are03a$
+        extract record (are03_dev,key=are04ky$(1,2)+are04ky$(4)+"000", dom=*continue) are03a$
         if are03a.v6_print_status$="B"
             are03a.v6_print_status$="Y"
             are03a.v6_lock_status$="N"
             are03a$=field(are03a$)
             write record (are03_dev,key=are03a.v6_firm_id$+are03a.v6_ar_type$+are03a.v6_customer_nbr$+are03a.v6_order_number$+"000")are03a$
+        else
+            read record (are03_dev);rem release extract
         endif
         
     wend
