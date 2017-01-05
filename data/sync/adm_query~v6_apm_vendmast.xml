@@ -2,9 +2,9 @@
 <meta name='barista_version' content='16.0' />
 <barista_admin_record>
 	<barista_record_table>ADM_QUERY</barista_record_table>
-	<QUERY_ID>V6_APM01        </QUERY_ID>
-	<DESC>V6 Vendor Query</DESC>
-	<DD_TABLE_ALIAS>APM01           </DD_TABLE_ALIAS>
+	<QUERY_ID>V6_APM_VENDMAST </QUERY_ID>
+	<DESC>Vendor Query from V6</DESC>
+	<DD_TABLE_ALIAS>APM_VENDMAST    </DD_TABLE_ALIAS>
 	<COLUMN_MOVE>Y</COLUMN_MOVE>
 	<QUERY_TYPE>S</QUERY_TYPE>
 	<DEFAULT_VALUE>N</DEFAULT_VALUE>
