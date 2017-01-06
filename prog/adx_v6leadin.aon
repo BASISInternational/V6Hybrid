@@ -33,57 +33,20 @@ rem --- Retrieve sysinfo data
     program$=argv(argc - 1)
  
 rem --- Hybrid Payroll is not available with BUI
-if info(3,6)="5" then
-    msg_id$ = "AD_TASK_NOT_BUI"
-    gosub disp_message
-    goto std_exit
-endif
+    if info(3,6)="5" then
+        msg_id$ = "AD_TASK_NOT_BUI"
+        gosub disp_message
+        goto std_exit
+    endif
 
-rem --- Set Namespace variables for use in triggers
+rem --- Settings (globals) needed for running w/in Barista are accessed in trigger code by virtue of specifying barista.cfg in the trigger definitions.
+rem --- Have tried to use global namespace with a key of user+database name, but that doesn't always work.
+rem ---    For example, if the V6 program accesses a file that hits a trigger, all is well.
+rem ---    But, if the V6 code invokes a Jasper which uses a SPROC, the user won't be the Barista user, but the BBj (machine name) user.
+rem ---    So avoid making calls to publics from w/in trigger code that need SYSINFO, USER_ID, etc., i.e., the "derived" globals that aren't specified in barista.cfg.
+    
+    BBjAPI().setStbl("+BBJ","1");rem --- this global is used for error handling in V6 code to determine if programs are BBj vs BBx; set it to prevent possible loop between SYC.EA and SYC.UB if an error is encountered
 
-	myns!=BBjAPI().getGlobalNamespace()
-	myns!.setValue("work_dir",dir(""))
-	myns!.setValue("addata",stbl("+ADDATA"))
-	myns!.setValue("apdata",stbl("+APDATA"))
-	myns!.setValue("ardata",stbl("+ARDATA"))
-	myns!.setValue("bmdata",stbl("+BMDATA"))
-	myns!.setValue("crdata",stbl("+CRDATA"))
-	myns!.setValue("gldata",stbl("+GLDATA"))
-	myns!.setValue("ivdata",stbl("+IVDATA"))
-	myns!.setValue("mpdata",stbl("+MPDATA"))
-	myns!.setValue("opdata",stbl("+OPDATA"))
-	myns!.setValue("podata",stbl("+PODATA"))
-	myns!.setValue("prdata",stbl("+PRDATA"),err=*next)
-	myns!.setValue("sadata",stbl("+SADATA"))
-	myns!.setValue("sfdata",stbl("+SFDATA"))
-	myns!.setValue("sydata",stbl("+SYDATA"))
-	myns!.setValue("pgmdir",pgmdir$)
-	myns!.setValue("sysinfo_tpl",sysinfo_template$)
-	myns!.setValue("sysinfo",sysinfo$)
-	myns!.setValue("v6data",stbl("+V6DATA"))
-	
-rem --- Misc Variables
-
-    rd_dir_syp$=stbl("+DIR_SYP")
-    rd_dir_img$=stbl("+DIR_IMG")
-    rd_dir_sys$=stbl("+DIR_SYS")
-    rd_gui_dev$=stbl("+GUI_DEVICE")
-    rd_file_usr$=stbl("+FILE_USR")
-	rd_file_usr$=stbl("+DIR_USR",err=*next)+"bar_"+cvs(stbl("+USER_ID",err=*next),138)+".usr"
-    rd_file_set$=stbl("+FILE_SET")
-    rd_user_id$=stbl("+USER_ID")
-
-	myns!.setValue("rd_dir_syp",rd_dir_syp$)
-	myns!.setValue("rd_dir_img",rd_dir_img$)
-	myns!.setValue("rd_dir_sys",rd_dir_sys$)
-	myns!.setValue("rd_gui_dev",rd_gui_dev$)
-	myns!.setValue("rd_file_usr",rd_file_usr$)
-	myns!.setValue("rd_file_set",td_file_set$)
-	myns!.setValue("rd_user_id",rd_user_id$)
-	myns!.setValue("rd_dir_usr",stbl("+DIR_USR"))
-	myns!.setValue("aon_appcompany",stbl("+AON_APPCOMPANY"))
-	myns!.setValue("master_user",stbl("+MASTER_USER"))
-	
 rem --- Open/Lock files
 
     sys01_dev = unt

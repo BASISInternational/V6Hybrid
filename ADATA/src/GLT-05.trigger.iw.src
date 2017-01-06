@@ -6,8 +6,7 @@ rem This trigger assumes that it is being used in a non-modified Barista and Add
 rem Version 6 environment. If there have been any modifications to these systems,
 rem be sure to thoroughly examine this trigger and test changes.
 
-rem --- GLT-05 is Daily Detail Sort in V6, but is the Bank Rec Check file in Barista Addon.
-rem --- This trigger skips the write to V6 and does nothing in Barista Addon.
+rem --- GLT-05 is Daily Detail Sort in V6. Sort files in general aren't used in current versions, so this trigger effectively just skips the write
 
 	setopts $080872202c2e$
 

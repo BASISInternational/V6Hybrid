@@ -1,0 +1,153 @@
+rem AddonSoftware
+rem Copyright BASIS International Ltd.
+rem 
+rem instead of read
+rem This trigger assumes that it is being used in a non-modified Barista and Addon
+rem Version 6 environment. If there have been any modifications to these systems,
+rem be sure to thoroughly examine this trigger and test changes.
+
+rem --- Read Barista Addon's apm_vendrepl instead of V6 apm-06
+
+	setopts $080872202c2e$
+	seterr trigger_error
+
+    info!=BBjAPI().getCurrentSessionInfo()
+    grpID$=str(info!.getGroupID())   
+    sessionID$=str(info!.getSessionID())
+    nskey$="APM05"+"_"+grpID$+"_"+sessionID$
+
+    rem ' trace
+    goto skip_trace;rem this out to do the trace
+    tfl$="C:/temp_downloads/apm06.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
+	
+rem ---  Get the Trigger object from the BBj File System
+
+    td! = BBjAPI().getFileSystem().getTriggerData()
+
+    keyed_read=0
+	ky$=td!.getKey(err=non_keyed_read)
+    keyed_read=1
+    
+non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
+    if !keyed_read
+        rem --- get partial/trip-read or last full key from namespace
+        gns!=BBjAPI().getGroupNamespace()
+        ky$ = gns!.getValue(nskey$,err=*next)
+        rem --- if previous key read took us to EOF, namespace will contain special value to indicate that
+        if ky$=nskey$+"**EOF"
+            err_num=2
+            goto trigger_error_forced
+        endif
+    endif
+	
+	wkdir$ = dir("")
+	apdir$ = stbl("+APDATA")
+
+rem --- Template for the APM-06 record being caught
+
+    intemp$="firm_id:c(2),vendor_nbr:c(6),buyer_code:c(3*=10),pri_rev_date:c(3),nxt_rev_date:c(3),"
+    intemp$=intemp$+"purch_addr:c(2),pur_tgt_type:c(1),lstrec_date:c(3),reserved_str:c(12*=10),"
+    intemp$=intemp$+"rev_days:n(3*=10),pur_targ_amt:n(7*=10),pur_targ_lbs:n(710),pur_tgt_unit:n(7*=10),"
+    intemp$=intemp$+"ytd_rec_amt:n(7*=10),ytd_rec_lbs:n(7*=10),ytd_rec_unts:n(7*=10),"
+    intemp$=intemp$+"nyr_rec_amt:n(7*=10),nyr_rec_lbs:n(7*=10),nyr_rec_unit:n(7*=10),reserved_num:n(1*=10),reserved_num_02:n(1*=10)"
+
+	dim inRec$:intemp$
+
+rem --- Open Barista Vendor Replenishment Detail table
+
+	apm_vendrepl=unt
+	open (apm_vendrepl,err=trigger_error)apdir$+"apm-06"
+	tpl_dev=unt
+	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
+	read (tpl_dev,key=pad("APM_VENDREPL",16),dom=trigger_error) *,*,apm_vendrepl_tpl$
+	dim apm_vendrepl$:apm_vendrepl_tpl$
+	
+rem --- Get the data
+
+    dom_flag=1
+
+    if ky$="" and keyed_read=0
+        read record (apm_vendrepl,end=trigger_error) apm_vendrepl$; dom_flag=0
+    else
+        read record (apm_vendrepl,key=ky$,dom=*next) apm_vendrepl$; dom_flag=0
+    endif
+    
+    if dom_flag=0
+        inRec.firm_id$ = apm_vendrepl.firm_id$
+        inRec.vendor_nbr$=apm_vendrepl.vendor_id$
+        inRec.buyer_code$=apm_vendrepl.buyer_code$
+        inRec.pri_rev_date$=fnd$(apm_vendrepl.pri_rev_date$)
+        inRec.nxt_rev_date$=fnd$(apm_vendrepl.nxt_rev_date$)
+        inRec.purch_addr$=apm_vendrepl.purch_addr$
+        inRec.pur_tgt_type$=apm_vendrepl.pur_tgt_type$
+        inRec.lstrec_date$=fnd$(apm_vendrepl.lstrec_date$)
+        inRec.rev_days=apm_vendrepl.rev_days
+        inRec.pur_targ_amt=apm_vendrepl.pur_targ_amt
+        inRec.pur_targ_lbs=apm_vendrepl.pur_targ_lbs
+        inRec.pur_tgt_unit=apm_vendrepl.pur_tgt_unit
+        inRec.ytd_rec_amt=apm_vendrepl.ytd_rec_amt
+        inRec.ytd_rec_lbs=apm_vendrepl.ytd_rec_lbs
+        inRec.ytd_rec_unts=apm_vendrepl.ytd_rec_unts
+        inRec.nyr_rec_amt=apm_vendrepl.nyr_rec_amt
+        inRec.nyr_rec_lbs=apm_vendrepl.nyr_rec_lbs
+        inRec.nyr_rec_unit=apm_vendrepl.nyr_rec_unit
+    endif
+
+    next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
+    next_ky$=key(apm_vendrepl,end=*next)
+
+    rem --- store next key in group namespace
+    gns!=BBjAPI().getGroupNamespace()
+    gns!.setValue(nskey$,next_ky$)
+
+    if dom_flag=1
+        err_num=11
+        goto trigger_error_forced
+    else
+        td!.setReadBuffer(inRec$)
+        goto std_exit
+    endif
+
+trigger_error:
+
+    rd_err_text$="", err_num=err
+    
+trigger_error_forced:
+
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    if err_num=11
+        rem --- if we took the DOM above, store the next key in group namespace
+        gns!=BBjAPI().getGroupNamespace()
+        gns!.setValue(nskey$,next_ky$)
+	endif
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+	
+rem --- Functions
+
+	rem --- fnyy$ returns a 2 character year (A0-E9) from a 4 character year
+	def fnyy$(q1$)
+		q3$=" ABCDE56789ABCDEFGHIJ"
+		q1$(1,1)=q3$(pos(q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+		return q1$
+	fnend
+
+	rem --- returns a 3 character packed date from an 8 character year/month/day
+	def fnd$(q$)
+		q$=pad(q$,8)
+		if cvs(q$,2)="" return "   "
+		q1$=chr(num(q$(5,2))+32)+chr(num(q$(7,2))+32)
+		if q$(1,2)="19"
+			q2$=chr(num(q$(3,2))+32)
+		else
+			q2$=chr(num(q$(3,2))+132)
+		endif
+		return q2$+q1$
+	fnend
+	
+std_exit:

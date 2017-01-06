@@ -1,0 +1,197 @@
+rem AddonSoftware
+rem Copyright BASIS International Ltd.
+rem 
+rem instead-of read
+rem This trigger assumes that it is being used in a non-modified Barista and Addon
+rem Version 6 environment. If there have been any modifications to these systems,
+rem be sure to thoroughly examine this trigger and test changes.
+
+rem --- This trigger reads from Barista Addon's apc_typecode, apc_distribution, apc_termscode, or apc_paymentgroup files
+rem --- instead of the V6 APM-10 file's A, B, C, or D records.
+
+	setopts $080872202c2e$
+	seterr trigger_error
+
+    info!=BBjAPI().getCurrentSessionInfo()
+    grpID$=str(info!.getGroupID())
+    sessionID$=str(info!.getSessionID())
+    nskey$="APM10"+"_"+grpID$+"_"+sessionID$
+
+    rem ' trace
+    rem goto skip_trace;rem this out to do the trace
+    tfl$="C:/temp_downloads/apm10.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
+
+rem ---  Get the Trigger object from the BBj File System
+
+    td! = BBjAPI().getFileSystem().getTriggerData()
+
+	ky$=td!.getKey(err=*next)
+	rec_data$=td!.getReadBuffer()
+
+	wkdir$ = dir("")
+	apdir$ = stbl("+APDATA")
+print (tfl)"*****ky$ is: "+ky$	
+rem --- Open template and masks files for use in getting Barista template for correct file, and masks for params
+
+	tpl_dev=unt
+	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
+
+    switch pos(ky$(3,1)="ABCD")
+        case 1; rem A - AP Types
+            apm10a_tpl$="firm_id:c(2),record_id_a:c(1),ap_type:c(2),code_desc:c(20),dist_code:c(2*=10)"
+            dim inRec$:apm10a_tpl$
+            alias$="APC_TYPECODE"
+            filename$="apc_typecode"
+            gosub get_template
+            code_dev=unt
+            open (code_dev,err=trigger_error)apdir$+filename$
+            dom_flag=1
+            read record(code_dev,key=ky$,dom=*break)tpl$;dom_flag=0
+
+            inRec.firm_id$=tpl.firm_id$
+            inRec.record_id_a$=tpl.record_id_a$
+            inRec.ap_type$=tpl.ap_type$
+            inRec.code_desc$=tpl.code_desc$
+            inRec.dist_code$=tpl.ap_dist_code$
+        break
+        case 2; rem B - Distribution Codes
+            apm10b_tpl$="firm_id:c(2),record_id_b:c(1),dist_code:c(2),code_desc:c(20*=10),"
+            apm10b_tpl$=apm10b_tpl$+"gl_ap_acct:c(10),gl_cash_acct:c(10),gl_disc_acct:c(10),gl_ret_acct:c(10),gl_purc_acct:c(10*=10)"
+            dim inRec$:apm10b_tpl$
+            alias$="APC_DISTRIBUTION"
+            filename$="apc_distribution"
+            gosub get_template
+            code_dev=unt
+            open (code_dev,err=trigger_error)apdir$+filename$
+            dom_flag=1
+            read record(code_dev,key=ky$,dom=*break)tpl$;dom_flag=0
+
+            inRec.firm_id$=tpl.firm_id$
+            inRec.record_id_b$=tpl.record_id_b$
+            inRec.dist_code$=tpl.ap_dist_code$
+            inRec.code_desc$=tpl.code_desc$
+            inRec.gl_ap_acct$=tpl.gl_ap_acct$
+            inRec.gl_cash_acct$=tpl.gl_cash_acct$
+            inRec.gl_disc_acct$=tpl.gl_disc_acct$
+            inRec.gl_ret_acct$=tpl.gl_ret_acct$
+            inRec.gl_purc_acct$=tpl.gl_purc_acct$
+        break
+        case 3; rem C - Terms Codes
+            apm10c_tpl$="firm_id:c(2),record_id_c:c(1),terms_code:c(2),code_desc:c(20*=10),"
+            apm10c_tpl$=apm10c_tpl$+"prox_or_days:n(7*=10),disc_percent:n(7*=10),due_days:n(7*=10),disc_days:n(7*=10)"
+            dim inRec$:apm10c_tpl$
+            alias$="APC_TERMSCODE"
+            filename$="apc_termscode"
+            gosub get_template
+            code_dev=unt
+            open (code_dev,err=trigger_error)apdir$+filename$
+            dom_flag=1
+            read record(code_dev,key=ky$,dom=*break)tpl$;dom_flag=0
+
+            inRec.firm_id$=tpl.firm_id$
+            inRec.record_id_c$=tpl.record_id_c$
+            inRec.terms_code$=tpl.terms_codeap$
+            inRec.code_desc$=tpl.code_desc$
+            inRec.prox_or_days$=tpl.prox_or_days$
+            inRec.disc_percent$=tpl.disc_percent$
+            inRec.due_days$=tpl.due_days$
+            inRec.disc_days$=tpl.disc_days$
+        break
+        case 4; rem D - Payment Groups
+            apm10d_tpl$="firm_id:c(2),record_id_d:c(1),payment_grp:c(2),code_desc:c(20*=10)"
+            dim inRec$:apm10d_tpl$
+            alias$="APC_PAYMENTGROUP"
+            filename$="apc_paymentgroup"
+            gosub get_template
+            code_dev=unt
+            open (code_dev,err=trigger_error)apdir$+filename$
+            dom_flag=1
+            read record(code_dev,key=ky$,dom=*break)tpl$;dom_flag=0
+
+            inRec.firm_id$=tpl.firm_id$
+            inRec.record_id_c$=tpl.record_id_d$
+            inRec.payment_grp$=tpl.payment.grp$
+            inRec.code_desc$=tpl.code_desc$
+        break
+        case default
+        break
+    swend
+
+    next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
+    next_ky$=key(code_dev,end=*next)
+
+    rem --- store next key in group namespace
+    gns!=BBjAPI().getGroupNamespace()
+    gns!.setValue(nskey$,next_ky$)
+
+    if dom_flag=1
+        err_num=11
+        goto trigger_error_forced
+    else
+        td!.setReadBuffer(inRec$)
+        goto std_exit
+    endif
+
+    
+rem --- Subroutines
+
+get_template:
+
+	read (tpl_dev,key=pad(alias$,16),dom=trigger_error) *,*,tpl$
+	dim tpl$:tpl$
+	
+	return
+	
+trigger_error:
+
+    rd_err_text$="", err_num=err
+    
+trigger_error_forced:
+
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    if err_num=11
+        rem --- if we took the DOM above, store the next key in group namespace
+        gns!=BBjAPI().getGroupNamespace()
+        gns!.setValue(nskey$,next_ky$)
+	endif
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+
+rem --- Functions
+
+	rem --- fnyy$ returns a 2 character year (A0-E9) from a 4 character year
+	def fnyy$(q1$)
+		q3$=" ABCDE56789ABCDEFGHIJ"
+		q1$(1,1)=q3$(pos(q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+		return q1$
+	fnend
+
+	rem --- returns a 2 character period/year from a 4 character period/year
+	def fni$(q$)
+		q$=pad(q$,4)
+		q1$=chr(num(q$(1,2))+32)
+		q2$=chr(num(q$(3,2))+32)
+		return q1$+q2$
+	fnend
+	
+	rem --- returns a 3 character packed date from an 8 character year/month/day
+	def fnd$(q$)
+		q$=pad(q$,8)
+		if cvs(q$,2)="" return "   "
+		q1$=chr(num(q$(5,2))+32)+chr(num(q$(7,2))+32)
+		if q$(1,2)="19"
+			q2$=chr(num(q$(3,2))+32)
+		else
+			q2$=chr(num(q$(3,2))+132)
+		endif
+		return q2$+q1$
+	fnend
+
+std_exit:
+
+  

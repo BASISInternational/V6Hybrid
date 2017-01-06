@@ -1,0 +1,132 @@
+rem AddonSoftware
+rem Copyright BASIS International Ltd.
+rem 
+rem instead of write
+rem This trigger assumes that it is being used in a non-modified Barista and Addon
+rem Version 6 environment. If there have been any modifications to these systems,
+rem be sure to thoroughly examine this trigger and test changes.
+
+rem --- Write Barista Addon's glt_bankother instead of V6 apm-12
+rem --- This interface uses V6's trans_number format of "C"+the date, rather than Barista Addon's new Deposit ID
+
+	setopts $080872202c2e$
+	seterr trigger_error
+
+    info!=BBjAPI().getCurrentSessionInfo()
+    grpID$=str(info!.getGroupID())   
+    sessionID$=str(info!.getSessionID())
+    nskey$="APM12"+"_"+grpID$+"_"+sessionID$
+
+    rem ' trace
+    goto skip_trace;rem this out to do the trace
+    tfl$="C:/temp_downloads/apm12.iw."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
+	
+rem ---  Get the Trigger object from the BBj File System
+
+    td! = BBjAPI().getFileSystem().getTriggerData()
+
+    ky$=td!.getKey()
+    
+	wkdir$ = dir("")
+	apdir$ = stbl("+GLDATA")
+
+rem --- Template for the APM-12 record being caught
+
+    intemp$="firm_id:c(2),gl_cash_acct:c(10),trans_number:c(7*),trans_type:c(1),posted_code:c(1),"
+    intemp$=intemp$+"trns_date:c(6),description:c(30),reserved_str:c(12*),trans_amt:n(7*),reserved_num:n(1*)"
+
+	dim inRec$:intemp$
+    inRec$=td!.getWriteBuffer()
+
+rem --- Open Barista Bank Rec Other table
+
+	glt_bankother=unt
+	open (glt_bankother,err=trigger_error)apdir$+"glt-15"
+	tpl_dev=unt
+	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
+	read (tpl_dev,key=pad("GLT_BANKOTHER",16),dom=trigger_error) *,*,glt_bankother_tpl$
+	dim glt_bankother$:glt_bankother_tpl$
+	
+rem --- Write the data
+
+    glt_bankother.firm_id$=	inRec.firm_id$
+    glt_bankother.gl_account$=inRec.gl_cash_acct$
+    glt_bankother.trans_no$=inRec.trans_number$
+    glt_bankother.trans_type$=inRec.trans_type$
+    glt_bankother.posted_code$=inRec.posted_code$
+    glt_bankother.description$=inRec.description$
+    glt_bankother.trans_amt$=inRec.trans_amt$
+    
+    value$=inRec.trns_date$
+    gosub fix_yymmdd_date
+    glt_bankother.trns_date$=value$
+    
+    glt_bankother$=field(glt_bankother$)
+    writerecord (glt_bankother)glt_bankother$
+
+	goto std_exit
+
+fix_yymmdd_date: rem --- Convert yy dates to yyyy, and yymmdd dates to yyyymmdd
+    rem ---     Input/Out: value$
+    if len(cvs(value$,3)) then
+        value$=fnyy_yy21$(value$)
+        if asc(value$)>=65 then
+            value$=str(200+asc(value$)-65)+value$(2)
+        else
+            value$="19"+value$
+        endif
+        value$=str(num(value$(1,4),err=*next))+value$(5)
+    else
+        value$=pad("",8)
+    endif
+    return
+
+trigger_error:
+
+    rd_err_text$="", err_num=err
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    if err_num=11
+        rem -- if we took the DOM above, store the partial key in group namespace for upcoming k$=key in calling code
+        gns!=BBjAPI().getGroupNamespace()
+        gns!.setValue("APM12"+"_"+grpID$+"_"+sessionID$,ky$)
+	endif
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+	
+rem --- Functions
+
+	rem --- fnyy$ returns a 2 character year (A0-E9) from a 4 character year
+	def fnyy$(q1$)
+		q3$=" ABCDE56789ABCDEFGHIJ"
+		q1$(1,1)=q3$(pos(q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+		return q1$
+	fnend
+
+    rem --- FNYEAR_YY21$ Convert Numeric Year to 21st Century 2-Char Year"   
+    def FNYEAR_YY21$(Q)=FNYY_YY21$(STR(MOD(Q,100):"00"))
+   
+    rem --- FNYY_YY21$ Convert 2-Char Year to 21st Century 2-Char Year
+	def FNYY_YY21$(Q1$)
+	Q3$=" ABCDE56789ABCDEFGHIJ",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+	return Q1$
+	fnend
+
+	rem --- returns a 3 character packed date from an 8 character year/month/day
+	def fnd$(q$)
+		q$=pad(q$,8)
+		if cvs(q$,2)="" return "   "
+		q1$=chr(num(q$(5,2))+32)+chr(num(q$(7,2))+32)
+		if q$(1,2)="19"
+			q2$=chr(num(q$(3,2))+32)
+		else
+			q2$=chr(num(q$(3,2))+132)
+		endif
+		return q2$+q1$
+	fnend
+	
+std_exit:

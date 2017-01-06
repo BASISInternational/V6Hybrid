@@ -1,0 +1,156 @@
+rem AddonSoftware
+rem Copyright BASIS International Ltd.
+rem 
+rem instead of read
+rem This trigger assumes that it is being used in a non-modified Barista and Addon
+rem Version 6 environment. If there have been any modifications to these systems,
+rem be sure to thoroughly examine this trigger and test changes.
+
+rem --- Read Barista Addon's apt_invoicehdr instead of V6 apt-01
+
+	setopts $080872202c2e$
+	seterr trigger_error
+
+    info!=BBjAPI().getCurrentSessionInfo()
+    grpID$=str(info!.getGroupID())   
+    sessionID$=str(info!.getSessionID())
+    nskey$="APT01"+"_"+grpID$+"_"+sessionID$
+
+    rem ' trace
+    rem goto skip_trace;rem this out to do the trace
+    tfl$="C:/temp_downloads/apt01.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
+	
+rem ---  Get the Trigger object from the BBj File System
+
+    td! = BBjAPI().getFileSystem().getTriggerData()
+
+    keyed_read=0
+	ky$=td!.getKey(err=non_keyed_read)
+    keyed_read=1
+    
+non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
+    if !keyed_read
+        rem --- get partial/trip-read or last full key from namespace
+        gns!=BBjAPI().getGroupNamespace()
+        ky$ = gns!.getValue(nskey$,err=*next)
+        rem --- if previous key read took us to EOF, namespace will contain special value to indicate that
+        if ky$=nskey$+"**EOF"
+            err_num=2
+            goto trigger_error_forced
+        endif
+    endif
+	
+	wkdir$ = dir("")
+	apdir$ = stbl("+APDATA")
+print (tfl)"***** partial key is: "+ky$
+rem --- Template for the APT-01 record being caught
+
+    intemp$="firm_id:c(2),ap_type:c(2),vendor_nbr:c(6),ap_inv_nbr:c(10),sequence_00:c(2),dist_code:c(2),"
+    intemp$=intemp$+"payment_grp:c(2),terms_code:c(2),invoice_date:c(3),accting_date:c(3),inv_due_date:c(3),disc_date:c(3),"
+    intemp$=intemp$+"reference:c(10),ap_inv_memo:c(16),hold_flag:c(1),mc_inv_flag:c(1),mc_inv_adj:c(1),mc_inv_rev:c(1),"
+    intemp$=intemp$+"reserved_str:c(1*=10),invoice_amt:n(7*=10),discount_amt:n(7*=10),retention:n(7*=10)"
+
+	dim inRec$:intemp$
+
+rem --- Open Barista Vendor Master table
+
+	apt_invoicehdr=unt
+	open (apt_invoicehdr,err=trigger_error)apdir$+"apt-01"
+	tpl_dev=unt
+	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
+	read (tpl_dev,key=pad("APT_INVOICEHDR",16),dom=trigger_error) *,*,apt_invoicehdr_tpl$
+	dim apt_invoicehdr$:apt_invoicehdr_tpl$
+	
+rem --- Get the data
+
+    dom_flag=1
+
+    if ky$="" and keyed_read=0
+        read record (apt_invoicehdr,end=trigger_error) apt_invoicehdr$; dom_flag=0
+    else
+        read record (apt_invoicehdr,key=ky$,dom=*next) apt_invoicehdr$; dom_flag=0
+    endif
+    
+    if dom_flag=0
+        inRec.firm_id$ = apt_invoicehdr.firm_id$
+        inRec.ap_type$=apt_invoicehdr.ap_type$
+        inRec.vendor_nbr$=apt_invoicehdr.vendor_id$
+        inRec.ap_inv_nbr$=apt_invoicehdr.ap_inv_no$
+        inRec.sequence_00$=apt_invoicehdr.sequence_00$
+        inRec.dist_code$=apt_invoicehdr.ap_dist_code$
+        inRec.payment_grp$=apt_invoicehdr.payment_grp$
+        inRec.terms_code$=apt_invoicehdr.ap_terms_code$
+        inRec.invoice_date$=fnd$(apt_invoicehdr.invoice_date$)
+        inRec.accting_date$=fnd$(apt_invoicehdr.accting_date$)
+        inRec.inv_due_date$=fnd$(apt_invoicehdr.inv_due_date$)
+        inRec.disc_date$=fnd$(apt_invoicehdr.disc_date$)
+        inRec.reference$=apt_invoicehdr.reference$
+        inRec.ap_inv_memo$=apt_invoicehdr.ap_inv_memo$
+        inRec.hold_flag$=apt_invoicehdr.hold_flag$
+        inRec.mc_inv_flag$=apt_invoicehdr.mc_inv_flag$
+        inRec.mc_inv_adj$=apt_invoicehdr.mc_inv_adj$
+        inRec.mc_inv_rev$=apt_invoicehdr.mc_inv_rev$
+        inRec.invoice_amt=apt_invoicehdr.invoice_amt
+        inRec.discount_amt=apt_invoicehdr.discount_amt
+        inRec.retention=apt_invoicehdr.retention
+print (tfl)"*****hta of dates: "+hta(inrec.invoice_date$)+" "+hta(inrec.accting_date$)+" "+hta(inrec.inv_due_date$)
+    endif
+
+    next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
+    next_ky$=key(apt_invoicehdr,end=*next)
+
+    rem --- store next key in group namespace
+    gns!=BBjAPI().getGroupNamespace()
+    gns!.setValue(nskey$,next_ky$)
+
+    if dom_flag=1
+        err_num=11
+        goto trigger_error_forced
+    else
+        td!.setReadBuffer(inRec$)
+        goto std_exit
+    endif
+
+trigger_error:
+
+    rd_err_text$="", err_num=err
+    
+trigger_error_forced:
+
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    if err_num=11
+        rem --- if we took the DOM above, store the next key in group namespace
+        gns!=BBjAPI().getGroupNamespace()
+        gns!.setValue(nskey$,next_ky$)
+	endif
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+	
+rem --- Functions
+
+	rem --- fnyy$ returns a 2 character year (A0-E9) from a 4 character year
+	def fnyy$(q1$)
+		q3$=" ABCDE56789ABCDEFGHIJ"
+		q1$(1,1)=q3$(pos(q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+		return q1$
+	fnend
+
+	rem --- returns a 3 character packed date from an 8 character year/month/day
+	def fnd$(q$)
+		q$=pad(q$,8)
+		if cvs(q$,2)="" return "   "
+		q1$=chr(num(q$(5,2))+32)+chr(num(q$(7,2))+32)
+		if q$(1,2)="19"
+			q2$=chr(num(q$(3,2))+32)
+		else
+			q2$=chr(num(q$(3,2))+132)
+		endif
+		return q2$+q1$
+	fnend
+	
+std_exit:

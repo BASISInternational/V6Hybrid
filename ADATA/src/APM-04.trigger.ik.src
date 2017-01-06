@@ -1,0 +1,75 @@
+rem AddonSoftware
+rem Copyright BASIS International Ltd.
+rem 
+rem instead of key
+rem This trigger assumes that it is being used in a non-modified Barista and Addon
+rem Version 6 environment. If there have been any modifications to these systems,
+rem be sure to thoroughly examine this trigger and test changes.
+
+rem --- When reading V6 APM-04 Vendor Xref, read Barista Addon apm_vendmast instead, using appropriate knum
+rem --- A for Alt Seq, B for Zip Code
+
+	setopts $080872202c2e$
+	seterr trigger_error
+
+    info!=BBjAPI().getCurrentSessionInfo()
+    grpID$=str(info!.getGroupID())
+    sessionID$=str(info!.getSessionID())
+    nskey$="APM04"+"_"+grpID$+"_"+sessionID$
+
+    rem ' trace
+    rem goto skip_trace;rem this out to do the trace
+    tfl$="C:/temp_downloads/apm-04.ik."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
+	
+rem ---  Get the Trigger object from the BBj File System, and globals needed for current Barista Addon environment
+
+    td! = BBjAPI().getFileSystem().getTriggerData()
+
+	wkdir$ = dir("")
+	apdir$ = stbl("+APDATA")
+
+    rem --- get key (stored in instead-of-read trigger) from namespace
+    gns!=BBjAPI().getGroupNamespace()
+    have_key=0
+    ky$ = gns!.getValue(nskey$,err=*next);have_key=1
+
+    if ky$=nskey$+"**EOF"
+        err_num=2
+        goto trigger_error_forced
+    else
+        if have_key=0
+            rem --- have_key should always be 1 for this trigger, since V6 would be reading the apm-04 rec with either the A or B record ID
+            rem --- throw err 2 if have_key manages to be 0 somehow
+            ky$=nskey$+"**EOF"
+            err_num=2
+            goto trigger_error_forced
+        endif
+        td!.setReadBuffer(ky$)
+        goto std_exit
+    endif
+
+trigger_error:
+
+    rd_err_text$="", err_num=err
+
+trigger_error_forced:
+
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+	
+rem --- Functions
+
+	rem --- fnyy$ returns a 2 character year (A0-E9) from a 4 character year
+	def fnyy$(q1$)
+		q3$=" ABCDE56789ABCDEFGHIJ"
+		q1$(1,1)=q3$(pos(q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+		return q1$
+	fnend
+	
+std_exit:

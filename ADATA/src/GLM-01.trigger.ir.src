@@ -6,7 +6,15 @@ rem This trigger assumes that it is being used in a non-modified Barista and Add
 rem Version 6 environment. If there have been any modifications to these systems,
 rem be sure to thoroughly examine this trigger and test changes.
 
-rem --- Reads Barista Addon GL Accounts file instead of V6
+    rem ' trace
+    goto skip_trace;rem this out to do the trace
+    tfl$="C:/temp_downloads/GLM-01_triggertrace.txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
 
 	setopts $080872202c2e$
 
@@ -18,9 +26,8 @@ rem ---  Get the Trigger object from the BBj File System
 
 	ky$=td!.getKey()
 	
-	myns!=BBjAPI().getGlobalNamespace()
-	wkdir$ = myns!.getValue("work_dir")
-	gldir$ = myns!.getValue("gldata")
+	wkdir$ = dir("")
+	gldir$ = stbl("+GLDATA")
 
 rem --- Template for the GLM-01 record being caught
 
@@ -29,7 +36,7 @@ rem --- Template for the GLM-01 record being caught
 
 	dim inRec$:intemp$
 	
-rem --- Open Barista Addon's GL Accounts table
+rem --- Open Barista GL Accounts table
 
 	glm01_dev=unt
 	open (glm01_dev,err=trigger_error)gldir$+"glm-01"

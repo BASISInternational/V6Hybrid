@@ -1,35 +1,35 @@
 rem AddonSoftware
 rem Copyright BASIS International Ltd.
 rem 
-rem instead of read
+rem instead of write
 rem This trigger assumes that it is being used in a non-modified Barista and Addon
 rem Version 6 environment. If there have been any modifications to these systems,
 rem be sure to thoroughly examine this trigger and test changes.
 
-rem --- Takes in Daily Detail (GLT-04) record that's about to be written in V6 and writes it to Barista Addon file instead
-rem --- Consults Barista Addon GL Accounts file to determine if posting Detail for this account
+	setopts $080872202c2e$
+	seterr trigger_error
+
+    info!=BBjAPI().getCurrentSessionInfo()
+    grpID$=str(info!.getGroupID())
+    sessionID$=str(info!.getSessionID())
+    nskey$="GLT04"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
     goto skip_trace;rem this out to do the trace
-    tfl$="C:/temp_downloads/GLT-04_triggertrace.txt"
+    tfl$="C:/temp_downloads/glt04.iw."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
     tfl=unt
     open(tfl)tfl$
     settrace(tfl,MODE="UNTIMED")
 skip_trace:
-
-	setopts $080872202c2e$
-
-	seterr trigger_error
 	
 rem ---  Get the Trigger object from the BBj File System
 
     td! = BBjAPI().getFileSystem().getTriggerData()
 
-	myns!=BBjAPI().getGlobalNamespace()
-	wkdir$ = myns!.getValue("work_dir")
-	gldir$ = myns!.getValue("gldata")
+	wkdir$ = dir("")
+	gldir$ = stbl("+GLDATA")
 
 rem --- Template for the GLT-04 record being caught
 

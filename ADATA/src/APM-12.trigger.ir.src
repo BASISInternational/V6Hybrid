@@ -1,0 +1,141 @@
+rem AddonSoftware
+rem Copyright BASIS International Ltd.
+rem 
+rem instead of read
+rem This trigger assumes that it is being used in a non-modified Barista and Addon
+rem Version 6 environment. If there have been any modifications to these systems,
+rem be sure to thoroughly examine this trigger and test changes.
+
+rem --- Read Barista Addon's glt_bankother instead of V6 apm-12
+rem --- This interface uses V6's trans_number format of "C"+the date, rather than Barista Addon's new Deposit ID
+
+	setopts $080872202c2e$
+	seterr trigger_error
+
+    info!=BBjAPI().getCurrentSessionInfo()
+    grpID$=str(info!.getGroupID())   
+    sessionID$=str(info!.getSessionID())
+    nskey$="APM12"+"_"+grpID$+"_"+sessionID$
+
+    rem ' trace
+    goto skip_trace;rem this out to do the trace
+    tfl$="C:/temp_downloads/apm12.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
+	
+rem ---  Get the Trigger object from the BBj File System
+
+    td! = BBjAPI().getFileSystem().getTriggerData()
+
+    keyed_read=0
+	ky$=td!.getKey(err=non_keyed_read)
+    keyed_read=1
+    
+non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
+    if !keyed_read
+        rem --- get partial/trip-read or last full key from namespace
+        gns!=BBjAPI().getGroupNamespace()
+        ky$ = gns!.getValue(nskey$,err=*next)
+        rem --- if previous key read took us to EOF, namespace will contain special value to indicate that
+        if ky$=nskey$+"**EOF"
+            err_num=2
+            goto trigger_error_forced
+        endif
+    endif
+	
+	wkdir$ = dir("")
+	apdir$ = stbl("+GLDATA")
+
+rem --- Template for the APM-12 record being caught
+
+    intemp$="firm_id:c(2),gl_cash_acct:c(10),trans_number:c(7*),trans_type:c(1),posted_code:c(1),"
+    intemp$=intemp$+"trns_date:c(6),description:c(30),reserved_str:c(12*),trans_amt:n(7*),reserved_num:n(1*)"
+
+	dim inRec$:intemp$
+
+rem --- Open Barista Bank Rec Other table
+
+	glt_bankother=unt
+	open (glt_bankother,err=trigger_error)apdir$+"glt-15"
+	tpl_dev=unt
+	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
+	read (tpl_dev,key=pad("GLT_BANKOTHER",16),dom=trigger_error) *,*,glt_bankother_tpl$
+	dim glt_bankother$:glt_bankother_tpl$
+	
+rem --- Get the data
+
+    dom_flag=1
+
+    if ky$="" and keyed_read=0
+        read record (glt_bankother,end=trigger_error) glt_bankother$; dom_flag=0
+    else
+        read record (glt_bankother,key=ky$,dom=*next) glt_bankother$; dom_flag=0
+    endif
+    
+    if dom_flag=0
+        inRec.firm_id$ = glt_bankother.firm_id$
+        inRec.gl_cash_acct$=glt_bankother.gl_account$
+        inRec.trans_number$=glt_bankother.trans_no$
+        inRec.trans_type$=glt_bankother.trans_type$
+        inRec.posted_code$=glt_bankother.posted_code$
+        inRec.trns_date$=glt_bankother.trans_no$(2)
+        inRec.description$=glt_bankother.description$
+        inRec.trans_amt$=glt_bankother.trans_amt$
+    endif
+
+    next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
+    next_ky$=key(glt_bankother,end=*next)
+
+    rem --- store next key in group namespace
+    gns!=BBjAPI().getGroupNamespace()
+    gns!.setValue(nskey$,next_ky$)
+
+    if dom_flag=1
+        err_num=11
+        goto trigger_error_forced
+    else
+        td!.setReadBuffer(inRec$)
+        goto std_exit
+    endif
+
+trigger_error:
+
+    rd_err_text$="", err_num=err
+    
+trigger_error_forced:
+
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    if err_num=11
+        rem --- if we took the DOM above, store the next key in group namespace
+        gns!=BBjAPI().getGroupNamespace()
+        gns!.setValue(nskey$,next_ky$)
+	endif
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+	
+rem --- Functions
+
+	rem --- fnyy$ returns a 2 character year (A0-E9) from a 4 character year
+	def fnyy$(q1$)
+		q3$=" ABCDE56789ABCDEFGHIJ"
+		q1$(1,1)=q3$(pos(q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+		return q1$
+	fnend
+
+	rem --- returns a 3 character packed date from an 8 character year/month/day
+	def fnd$(q$)
+		q$=pad(q$,8)
+		if cvs(q$,2)="" return "   "
+		q1$=chr(num(q$(5,2))+32)+chr(num(q$(7,2))+32)
+		if q$(1,2)="19"
+			q2$=chr(num(q$(3,2))+32)
+		else
+			q2$=chr(num(q$(3,2))+132)
+		endif
+		return q2$+q1$
+	fnend
+	
+std_exit:

@@ -1,0 +1,158 @@
+rem AddonSoftware
+rem Copyright BASIS International Ltd.
+rem 
+rem instead of read
+rem This trigger assumes that it is being used in a non-modified Barista and Addon
+rem Version 6 environment. If there have been any modifications to these systems,
+rem be sure to thoroughly examine this trigger and test changes.
+
+rem --- Read Barista Addon's apm_vendhist instead of V6 apm-02
+
+	setopts $080872202c2e$
+	seterr trigger_error
+
+    info!=BBjAPI().getCurrentSessionInfo()
+    grpID$=str(info!.getGroupID())   
+    sessionID$=str(info!.getSessionID())
+    nskey$="APM02"+"_"+grpID$+"_"+sessionID$
+
+    rem ' trace
+    rem goto skip_trace;rem this out to do the trace
+    tfl$="C:/temp_downloads/apm02.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
+	
+rem ---  Get the Trigger object from the BBj File System
+
+    td! = BBjAPI().getFileSystem().getTriggerData()
+
+    keyed_read=0
+	ky$=td!.getKey(err=non_keyed_read)
+    keyed_read=1
+    
+non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
+    if !keyed_read
+        rem --- get partial/trip-read or last full key from namespace
+        gns!=BBjAPI().getGroupNamespace()
+        ky$ = gns!.getValue(nskey$,err=*next)
+        rem --- if previous key read took us to EOF, namespace will contain special value to indicate that
+        if ky$=nskey$+"**EOF"
+            err_num=2
+            goto trigger_error_forced
+        endif
+    endif
+	
+	wkdir$ = dir("")
+	apdir$ = stbl("+APDATA")
+
+rem --- Template for the APM-02 record being caught
+
+    intemp$="firm_id:c(2),vendor_nbr:c(6),ap_type:c(2*=10),dist_code:c(2),payment_grp:c(2),terms_code:c(2),"
+    intemp$=intemp$+"lstinv_date:c(3),lstpay_date:c(3),reserved_str:c(12*=10),gl_account:c(10*=10),"
+    intemp$=intemp$+"open_invs:n(7*=10),open_ret:n(7*=10),ytd_purch:n(7*=10),pyr_purch:n(7*=10),nyr_purch:n(7*=10),"
+    intemp$=intemp$+"ytd_discs:n(7*=10),pri_yr_discs:n(7*=10),nyr_disc:n(7*=10),ytd_payments:n(7*=10),pyr_payments:n(7*=10),"
+    intemp$=intemp$+"nyr_payments:n(7*=10),cur_cal_pmts:n(7*=10),pri_cal_pmt:n(7*=10),nxt_cyr_pmts:n(7*=10)"
+
+	dim inRec$:intemp$
+
+rem --- Open Barista Vendor Codes and History table
+
+	apm_vendhist=unt
+	open (apm_vendhist,err=trigger_error)apdir$+"apm-02"
+	tpl_dev=unt
+	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
+	read (tpl_dev,key=pad("APM_VENDHIST",16),dom=trigger_error) *,*,apm_vendhist_tpl$
+	dim apm_vendhist$:apm_vendhist_tpl$
+	
+rem --- Get the data
+
+    dom_flag=1
+
+    if ky$="" and keyed_read=0
+        read record (apm_vendhist,end=trigger_error) apm_vendhist$; dom_flag=0
+    else
+        read record (apm_vendhist,key=ky$,dom=*next) apm_vendhist$; dom_flag=0
+    endif
+    
+    if dom_flag=0
+        inRec.firm_id$ = apm_vendhist.firm_id$
+        inRec.vendor_nbr$=apm_vendhist.vendor_id$
+        inRec.ap_type$=apm_vendhist.ap_type$
+        inRec.dist_code$=apm_vendhist.ap_dist_code$
+        inRec.payment_grp$=apm_vendhist.payment_grp$
+        inRec.terms_code$=apm_vendhist.ap_terms_code$
+        inRec.lstinv_date$=fnd$(apm_vendhist.lstinv_date$)
+        inRec.lstpay_date$=fnd$(apm_vendhist.lstpay_date$)
+        inRec.gl_account$=apm_vendhist.gl_account$
+        inRec.open_invs=apm_vendhist.open_invs
+        inRec.open_ret=apm_vendhist.open_ret
+        inRec.ytd_purch=apm_vendhist.ytd_purch
+        inRec.pyr_purch=apm_vendhist.pyr_purch
+        inRec.nyr_purch=apm_vendhist.nyr_purch
+        inRec.ytd_discs=apm_vendhist.ytd_discs
+        inRec.pri_yr_discs=apm_vendhist.pri_yr_discs
+        inRec.nyr_disc=apm_vendhist.nyr_disc
+        inRec.ytd_payments=apm_vendhist.ytd_payments
+        inRec.pyr_payments=apm_vendhist.pyr_payments
+        inRec.nyr_payments=apm_vendhist.nyr_payments
+        inRec.cur_cal_pmts=apm_vendhist.cur_cal_pmts
+        inRec.pri_cal_pmt=apm_vendhist.pri_cal_pmt
+        inRec.nxt_cyr_pmts=apm_vendhist.nxt_cyr_pmts
+    endif
+
+    next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
+    next_ky$=key(apm_vendhist,end=*next)
+    
+    rem --- store next key in group namespace
+    gns!=BBjAPI().getGroupNamespace()
+    gns!.setValue(nskey$,next_ky$)
+
+    if dom_flag=1
+        err_num=11
+        goto trigger_error_forced
+    else
+        td!.setReadBuffer(inRec$)
+        goto std_exit
+    endif
+
+trigger_error:
+
+    rd_err_text$="", err_num=err
+    
+trigger_error_forced:
+
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    if err_num=11
+        rem --- if we took the DOM above, store the next key in group namespace
+        gns!=BBjAPI().getGroupNamespace()
+        gns!.setValue(nskey$,next_ky$)
+	endif
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+	
+rem --- Functions
+
+	rem --- fnyy$ returns a 2 character year (A0-E9) from a 4 character year
+	def fnyy$(q1$)
+		q3$=" ABCDE56789ABCDEFGHIJ"
+		q1$(1,1)=q3$(pos(q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+		return q1$
+	fnend
+
+	rem --- returns a 3 character packed date from an 8 character year/month/day
+	def fnd$(q$)
+		q$=pad(q$,8)
+		if cvs(q$,2)="" return "   "
+		q1$=chr(num(q$(5,2))+32)+chr(num(q$(7,2))+32)
+		if q$(1,2)="19"
+			q2$=chr(num(q$(3,2))+32)
+		else
+			q2$=chr(num(q$(3,2))+132)
+		endif
+		return q2$+q1$
+	fnend
+	
+std_exit:

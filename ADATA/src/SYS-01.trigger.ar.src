@@ -1,0 +1,371 @@
+rem AddonSoftware
+rem Copyright BASIS International Ltd.
+rem 
+rem after read
+rem This trigger assumes that it is being used in a non-modified Barista and Addon
+rem Version 6 environment. If there have been any modifications to these systems,
+rem be sure to thoroughly examine this trigger and test changes.
+
+rem --- This trigger reads from Barista Addon's database *after* reading params from V6. If AP or GL, sends back the Barista Addon info
+rem --- If a terminal record, or param rec from other module, simply returns back to the caller
+
+	setopts $080872202c2e$
+	seterr trigger_error
+
+    rem ' trace
+    goto skip_trace;rem this out to do the trace
+    tfl$="C:/temp_downloads/sys01.txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
+
+rem ---  Get the Trigger object from the BBj File System
+
+    td! = BBjAPI().getFileSystem().getTriggerData()
+
+	ky$=td!.getKey(err=*next)
+	rec_data$=td!.getReadBuffer()
+
+	wkdir$ = dir("")
+	apdir$ = stbl("+APDATA")
+	ardir$ = stbl("+ARDATA")
+	gldir$ = stbl("+GLDATA")
+	ivdir$ = stbl("+IVDATA")
+	pgmdir$ = stbl("+DIR_PGM")
+	
+	return_default$="Y"
+	
+rem --- Open template and masks files for use in getting Barista template for correct file, and masks for params
+
+	tpl_dev=unt
+	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
+    ads_masks_dev=unt
+    open (ads_masks_dev,err=trigger_error) wkdir$+"sys/data/ads_masks.dat"
+    
+	read (tpl_dev,key=pad("ADS_MASKS",16),dom=trigger_error) *,*,ads_masks_tpl$
+	dim ads_masks$:ads_masks_tpl$
+
+    if len(ky$)=6
+    rem --- Parameter record of some sort
+        switch (BBjAPI().TRUE)
+            case ky$(3,2) = "AP"
+                switch (BBjAPI().TRUE)
+                    case ky$(5,2)="00"
+                        sys01$="firm_id:c(2),type:c(2),zero:c(2*=10),vend_in_mask:c(10*=10),"
+                        sys01$=sys01$+"vend_size:c(2),max_size:c(2*=10),mult_types:c(1),"
+                        sys01$=sys01$+"mult_dist:c(1),ret:c(1),cash:c(1),hold_zero:c(1),"
+                        sys01$=sys01$+"check_seq:c(1),check_memo:c(1),stub_dist:c(1),"
+                        sys01$=sys01$+"zip_size:c(1),labels:c(6),misc:c(1),bank_rec:c(1),"
+                        sys01$=sys01$+"post_closed:c(1),auto_num:c(1),reserved_1:c(1),"
+                        sys01$=sys01$+"repl:c(1),comm_start:c(2),comm_end:c(2),reserved_2:c(10*=10),"
+                        sys01$=sys01$+"cur_per:c(2),cur_yr:c(2*=10),vend_mask:c(10*=10),"
+                        sys01$=sys01$+"amt_mask:c(15*=10),unit_mask:c(12*=10),rate_mask:c(12*=10)"
+                        dim sys01$:sys01$
+                        alias$="APS_PARAMS"
+                        filename$="aps_params"
+                        gosub get_template
+                        system_dev=unt
+                        open (system_dev,err=trigger_error)apdir$+filename$
+                        read record(system_dev,key=ky$,dom=return_default)tpl$
+
+                        rem --- get masks from Barista ads_masks table
+                        rem --- using inline gosub rather than calling adc_getmask.aon, as the latter needs +SYSINFO_TPL, etc.,
+                        rem --- and those globals aren't accessible to triggers/sprocs
+
+                        prod_id$="AP"
+                        mask_type$="I"
+                        gosub get_mask
+                        acct_mask_in$=i_mask$
+                        acct_mask$=o_mask$
+                        acctlen=o_mask_len
+
+                        mask_type$="A"
+                        gosub get_mask
+                        amt_mask$=o_mask$
+
+                        mask_type$="U"
+                        gosub get_mask
+                        unit_mask$=o_mask$
+
+                        mask_type$="R"
+                        gosub get_mask
+                        rate_mask$=o_mask$
+
+                        sys01.firm_id$=tpl.firm_id$
+                        sys01.type$=tpl.ap$
+                        sys01.zero$=tpl.sequence_00$
+                        sys01.vend_in_mask$=acct_mask_in$
+                        sys01.vend_size$=str(acctlen:"00")
+                        sys01.max_size$=str(max(6,acctlen):"00")
+                        sys01.mult_types$=tpl.multi_types$
+                        sys01.mult_dist$=tpl.multi_dist$
+                        sys01.ret$=tpl.ret_flag$
+                        sys01.cash$=tpl.cash_basis$
+                        sys01.hold_zero$=tpl.hold_zero$
+                        sys01.check_seq$=tpl.ap_check_seq$
+                        sys01.check_memo$=tpl.ap_chk_memo$
+                        sys01.stub_dist$=tpl.ap_chk_dist$
+                        sys01.zip_size$=tpl.zip_length$
+                        sys01.labels$=tpl.label_across$+tpl.label_length$+tpl.label_width$
+                        sys01.misc$=tpl.misc_entry$
+                        sys01.bank_rec$=tpl.br_interface$
+                        sys01.post_closed$=tpl.post_closed$
+                        sys01.auto_num$=tpl.auto_no$
+                        sys01.repl$=tpl.use_replen$
+                        sys01.comm_start$=tpl.beg_cmt_line$
+                        sys01.comm_end$=tpl.end_cmt_line$
+                        sys01.cur_per$=tpl.current_per$
+                        sys01.cur_yr$=fnyy$(tpl.current_year$(3,2))
+                        sys01.vend_mask$=acct_mask$
+                        sys01.amt_mask$=amt_mask$
+                        sys01.unit_mask$=unit_mask$
+                        sys01.rate_mask$=rate_mask$
+                        return_default$="N"
+                    break
+                    case ky$(5,2)="01"
+                    break
+                    case ky$(5,2)="02"
+                    rem --- report params
+                        sys01$="firm_id:c(2),type:c(2),sequence_02:c(2*=10),name:c(30),"
+                        sys01$=sys01$+"addr_line_1:c(24),addr_line_2:c(24),addr_line_3:c(24),"
+                        sys01$=sys01$+"phone_number:c(10*=10),federal_id:c(15*=10)"
+                        
+                        dim sys01$:sys01$
+                        alias$="APS_REPORT"
+                        filename$="aps_report"
+                        gosub get_template
+                        system_dev=unt
+                        open (system_dev,err=trigger_error)apdir$+filename$
+                        read record(system_dev,key=ky$,dom=return_default)tpl$
+                        
+                        sys01.firm_id$=tpl.firm_id$
+                        sys01.type$=tpl.ap$
+                        sys01.sequence_02$=tpl.sequence_02$
+                        sys01.name$=tpl.name$
+                        sys01.addr_line_1$=tpl.addr_line_1$
+                        sys01.addr_line_2$=tpl.addr_line_2$
+                        sys01.addr_line_3$=iff(cvs(tpl.city$,2)="","",cvs(tpl.city$,2)+", "+tpl.state_code$+" "+tpl.zip_code$)
+                        sys01.phone_number$=tpl.phone_no$
+                        sys01.federal_id$=tpl.federal_id$
+                        return_default$="N"
+                    break
+                    case default
+                    break
+                swend
+            break
+            case ky$(3,2) = "GL"
+                switch (BBjAPI().TRUE)
+                    case ky$(5,2)="00"
+                        sys01$="firm_id:c(2),type:c(2),zero:c(2*=10),gl_acct_mask_in:c(15*=10),"
+                        sys01$=sys01$+"acct_pers:c(2),curr_per:c(2),curr_year:c(2),"
+                        sys01$=sys01$+"acct_no_len:c(2),max_acct_no:c(2*=10),per_01:c(2),per_02:c(2),"
+                        sys01$=sys01$+"per_03:c(2),per_04:c(2),per_05:c(2),per_06:c(2),"
+                        sys01$=sys01$+"per_07:c(2),per_08:c(2),per_09:c(2),per_10:c(2),"
+                        sys01$=sys01$+"per_11:c(2),per_12:c(2),per_13:c(2),per_name_01:c(16),per_name_02:c(16),"
+                        sys01$=sys01$+"per_name_03:c(16),per_name_04:C(16),per_name_05:C(16),"
+                        sys01$=sys01$+"per_name_06:c(16),per_name_07:C(16),per_name_08:C(16),"
+                        sys01$=sys01$+"per_name_09:c(16),per_name_10:C(16),per_name_11:C(16),"
+                        sys01$=sys01$+"per_name_12:c(16),per_name_13:c(16),abbr_name_01:c(3),"
+                        sys01$=sys01$+"abbr_name_02:c(3),abbr_name_03:c(3),abbr_name_04:c(3),"
+                        sys01$=sys01$+"abbr_name_05:c(3),abbr_name_06:c(3),abbr_name_07:c(3),abbr_name_08:c(3),"
+                        sys01$=sys01$+"abbr_name_09:c(3),abbr_name_10:c(3),abbr_name_11:c(3),abbr_name_12:c(3),"
+                        sys01$=sys01$+"abbr_name_13:c(3),locked_01:c(1),locked_02:c(1),locked_03:c(1),"
+                        sys01$=sys01$+"locked_04:c(1),locked_05:c(1),locked_06:c(1),locked_07:c(1),"
+                        sys01$=sys01$+"locked_08:c(1),locked_09:c(1),locked_10:c(1),locked_11:c(1),"
+                        sys01$=sys01$+"locked_12:c(1),locked_13:c(1),date_locked_01:c(3),date_locked_02:C(3),"
+                        sys01$=sys01$+"date_locked_03:c(3),date_locked_04:c(3),date_locked_05:c(3),"
+                        sys01$=sys01$+"date_locked_06:c(3),date_locked_07:c(3),date_locked_08:c(3),"
+                        sys01$=sys01$+"date_locked_09:c(3),date_locked_10:c(3),date_locked_11:c(3),"
+                        sys01$=sys01$+"date_locked_12:c(3),date_locked_13:c(3*=10),post_detail:c(1),"
+                        sys01$=sys01$+"use_budgets:c(1),use_units:c(1),retain_det:c(1),reserved_addon:c(1),"
+                        sys01$=sys01$+"fiscal_closed:c(1),post_method:c(1),acct_col_01:c(1),"
+                        sys01$=sys01$+"acct_col_02:c(1),acct_col_03:c(1),acct_col_04:c(1),acct_type_01:c(1),"
+                        sys01$=sys01$+"acct_type_02:c(1),acct_type_03:c(1),acct_type_04:c(1),bud_col_01:c(1),"
+                        sys01$=sys01$+"bud_col_02:c(1),bud_col_03:c(1),bud_col_04:c(1),bud_type_01:c(1),"
+                        sys01$=sys01$+"bud_type_02:c(2),bud_type_03:c(2),bud_type_04:c(2),reserved_addon_1:c(9*=10),"
+                        sys01$=sys01$+"gl_acct_mask_out:c(16*=10),amt_mask:c(16*=10),unit_mask:c(16*=10),"
+                        sys01$=sys01$+"pct_mask:c(16*=10)"
+                        dim sys01$:sys01$
+                        alias$="GLS_PARAMS"
+                        filename$="gls_params"
+                        gosub get_template
+                        system_dev=unt
+                        open (system_dev,err=trigger_error)gldir$+filename$
+                        read record(system_dev,key=ky$,dom=return_default)tpl$
+
+                        rem --- get masks from Barista ads_masks table
+
+                        prod_id$="GL"
+                        mask_type$="I"
+                        gosub get_mask
+                        acct_mask_in$=i_mask$
+                        acct_mask$=o_mask$
+                        acctlen=o_mask_len
+
+                        mask_type$="A"
+                        gosub get_mask
+                        amt_mask$=o_mask$
+
+                        mask_type$="U"
+                        gosub get_mask
+                        unit_mask$=o_mask$
+
+                        mask_type$="%"
+                        gosub get_mask
+                        pct_mask$=o_mask$
+
+                        sys01.firm_id$=tpl.firm_id$
+                        sys01.type$=tpl.gl$
+                        sys01.zero$=tpl.sequence_00$
+                        sys01.gl_acct_mask_in$=acct_mask_in$
+                        sys01.acct_pers$=tpl.total_pers$
+                        sys01.curr_per$=tpl.current_per$
+                        sys01.curr_year$=fnyy$(tpl.current_year$(3,2))
+                        sys01.acct_no_len$=str(acctlen)
+                        sys01.max_acct_no$="10"
+                        for x=1 to 13
+                            field sys01$,"per_"+str(x:"00") = fni$(field(tpl$,"per_ending_"+str(x:"00")))
+                            field sys01$,"per_name_"+str(x:"00") = field(tpl$,"period_name_"+str(x:"00"))
+                            field sys01$,"abbr_name_"+str(x:"00") = field(tpl$,"abbr_name_"+str(x:"00"))
+                            field sys01$,"locked_"+str(x:"00") = field(tpl$,"locked_flag_"+str(x:"00"))
+                            field sys01$,"date_locked_"+str(x:"00") = fnd$(field(tpl$,"locked_date_"+str(x:"00")))
+                        next x
+                        sys01.post_detail$=tpl.detail_flag$
+                        sys01.use_budgets$=tpl.budget_flag$
+                        sys01.use_units$=tpl.units_flag$
+                        sys01.retain_det$=tpl.retain_det$
+                        sys01.fiscal_closed$=tpl.gl_yr_closed$
+                        sys01.post_method$=tpl.gl_post_code$
+                        sys01.acct_col_01$=tpl.acct_mn_cols_01$
+                        sys01.acct_col_02$=tpl.acct_mn_cols_02$
+                        sys01.acct_col_03$=tpl.acct_mn_cols_03$
+                        sys01.acct_col_04$=tpl.acct_mn_cols_04$
+                        sys01.acct_type_01$=tpl.acct_mn_type_01$
+                        sys01.acct_type_02$=tpl.acct_mn_type_02$
+                        sys01.acct_type_03$=tpl.acct_mn_type_03$
+                        sys01.acct_type_04$=tpl.acct_mn_type_04$
+                        sys01.bud_col_01$=tpl.bud_mn_cols_01$
+                        sys01.bud_col_02$=tpl.bud_mn_cols_02$
+                        sys01.bud_col_03$=tpl.bud_mn_cols_03$
+                        sys01.bud_col_04$=tpl.bud_mn_cols_04$
+                        sys01.bud_type_01$=tpl.bud_mn_type_01$
+                        sys01.bud_type_02$=tpl.bud_mn_type_02$
+                        sys01.bud_type_03$=tpl.bud_mn_type_03$
+                        sys01.bud_type_04$=tpl.bud_mn_type_04$
+                        sys01.gl_acct_mask_out$=acct_mask$
+                        sys01.amt_mask$=amt_mask$
+                        sys01.unit_mask$=unit_mask$
+                        sys01.pct_mask$=pct_mask$
+                        return_default$="N"
+                    break
+                    case default
+                    break
+                swend
+            break
+            case default
+            break
+        swend
+    endif
+
+    if return_default$="N"
+        td!.setReadBuffer(sys01$)
+        goto std_exit
+    endif
+    
+return_default:
+
+    goto std_exit
+
+    
+rem --- Subroutines
+
+get_template:
+
+	read (tpl_dev,key=pad(alias$,16),dom=trigger_error) *,*,tpl$
+	dim tpl$:tpl$
+	
+	return
+
+get_mask:
+
+    i_mask$=""
+    o_mask$=""
+    i_mask_len=0
+    o_mask_len=0
+    comp_id$="01007514"
+    prod_id$=pad(prod_id$,3)
+
+    readrecord(ads_masks_dev,key=tpl.firm_id$+comp_id$+prod_id$+mask_type$,err=*next)ads_masks$
+
+    i_mask$=ads_masks.dd_attr_mski$
+    o_mask$=ads_masks.dd_attr_msko$
+
+    if cvs(i_mask$,3)<>""
+        mask$=i_mask$
+        gosub mask_len
+        i_mask_len=size
+    else
+        i_mask$=""
+        i_mask_len=0
+    endif
+    if cvs(o_mask$,3)<>""
+        mask$=o_mask$
+        gosub mask_len
+        o_mask_len=size
+    else
+        o_mask$=""
+        o_mask_len=0
+    endif
+    
+    return
+
+mask_len:
+
+    size=0
+    for x=1 to len(mask$)
+        if pos(mask$(x,1)="#0AU")>0 size=size+1
+    next x
+    return  
+	
+trigger_error:
+
+    rd_err_text$="", err_num=err
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+
+rem --- Functions
+
+	rem --- fnyy$ returns a 2 character year (A0-E9) from a 4 character year
+	def fnyy$(q1$)
+		q3$=" ABCDE56789ABCDEFGHIJ"
+		q1$(1,1)=q3$(pos(q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+		return q1$
+	fnend
+
+	rem --- returns a 2 character period/year from a 4 character period/year
+	def fni$(q$)
+		q$=pad(q$,4)
+		q1$=chr(num(q$(1,2))+32)
+		q2$=chr(num(q$(3,2))+32)
+		return q1$+q2$
+	fnend
+	
+	rem --- returns a 3 character packed date from an 8 character year/month/day
+	def fnd$(q$)
+		q$=pad(q$,8)
+		if cvs(q$,2)="" return "   "
+		q1$=chr(num(q$(5,2))+32)+chr(num(q$(7,2))+32)
+		if q$(1,2)="19"
+			q2$=chr(num(q$(3,2))+32)
+		else
+			q2$=chr(num(q$(3,2))+132)
+		endif
+		return q2$+q1$
+	fnend
+
+std_exit:
+
+  
