@@ -116,7 +116,7 @@ rem --- Open template and masks files for use in getting Barista template for co
 
             inRec.firm_id$=tpl.firm_id$
             inRec.record_id_c$=tpl.record_id_d$
-            inRec.payment_grp$=tpl.payment.grp$
+            inRec.payment_grp$=tpl.payment_grp$
             inRec.code_desc$=tpl.code_desc$
         break
         case default

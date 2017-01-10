@@ -53,7 +53,7 @@ rem --- Open Barista Vendor Codes and History table
 	tpl_dev=unt
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("APM_VENDHIST",16),dom=trigger_error) *,*,apm_vendhist_tpl$
-	dim apm_vendhist$:apm_vendhist_tpl$rem --- Template for the APM-12 record being caught
+	dim apm_vendhist$:apm_vendhist_tpl$; rem --- Template for the APM-12 record being caught
 	
 rem --- Write the data
 
