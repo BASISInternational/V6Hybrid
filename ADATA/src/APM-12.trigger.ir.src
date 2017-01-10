@@ -48,7 +48,7 @@ non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from n
     endif
 	
 	wkdir$ = dir("")
-	apdir$ = stbl("+GLDATA")
+	gldir$ = stbl("+GLDATA")
 
 rem --- Template for the APM-12 record being caught
 
@@ -60,7 +60,7 @@ rem --- Template for the APM-12 record being caught
 rem --- Open Barista Bank Rec Other table
 
 	glt_bankother=unt
-	open (glt_bankother,err=trigger_error)apdir$+"glt-15"
+	open (glt_bankother,err=trigger_error)gldir$+"glt-15"
 	tpl_dev=unt
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("GLT_BANKOTHER",16),dom=trigger_error) *,*,glt_bankother_tpl$

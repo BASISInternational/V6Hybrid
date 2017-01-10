@@ -17,7 +17,7 @@ rem --- Get key from Barista Addon's apt_invoicehdr instead of V6 apt-01
     nskey$="APT01"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this out to do the trace
     tfl$="C:/temp_downloads/apt01.ik."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -43,7 +43,7 @@ rem ---  Get the Trigger object from the BBj File System
         goto trigger_error_forced
     else
         if have_key=0
-            rem --- Open Barista Vendor Purchase Address table and get first key
+            rem --- Open Barista AP Invoice Header table and get first key
             apt_invoicehdr=unt
             open (apt_invoicehdr,err=trigger_error)apdir$+"apt-01"
             ky$=key(apt_invoicehdr,err=trigger_error)

@@ -17,7 +17,7 @@ rem --- Get key from Barista Addon's apm_vendrepl instead of V6 apm-06
     nskey$="APM06"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this out to do the trace
     tfl$="C:/temp_downloads/apm06.ik."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -43,7 +43,7 @@ rem ---  Get the Trigger object from the BBj File System
         goto trigger_error_forced
     else
         if have_key=0
-            rem --- Open Barista Vendor Purchase Address table and get first key
+            rem --- Open Barista Vendor Replenishment Detail table and get first key
             apm_vendrepl=unt
             open (apm_vendrepl,err=trigger_error)apdir$+"apm-06"
             ky$=key(apm_vendrepl,err=trigger_error)

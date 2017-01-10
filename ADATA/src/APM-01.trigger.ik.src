@@ -17,7 +17,7 @@ rem --- Get key from Barista Addon's apm_vendmast instead of V6 apm-01
     nskey$="APM01"+"_"+grpID$+"_"+sessionID$    
 
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this out to do the trace
     tfl$="C:/temp_downloads/apm01.ik."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -43,7 +43,7 @@ rem --- get key (stored in instead-of-read trigger) from namespace
         goto trigger_error_forced
     else
         if have_key=0
-            rem --- Open Barista Vendor Purchase Address table and get first key
+            rem --- Open Barista Vendor Master table and get first key
             apm_vendmast=unt
             open (apm_vendmast,err=trigger_error)apdir$+"apm-01"
             ky$=key(apm_vendmast,err=trigger_error)

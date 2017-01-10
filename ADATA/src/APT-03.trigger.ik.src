@@ -6,7 +6,8 @@ rem This trigger assumes that it is being used in a non-modified Barista and Add
 rem Version 6 environment. If there have been any modifications to these systems,
 rem be sure to thoroughly examine this trigger and test changes.
 
-rem --- Get key from Barista Addon's apm_vendhist instead of V6 apm-02
+rem --- When reading V6 APT-03 Open Invoice Xref, read Barista Addon apt_invoicehdr instead, using appropriate knum
+rem --- A for AO_VEND_INVDATE, B for AO_VEND_REF, C for AO_INV_TYPE_VEND
 
 	setopts $080872202c2e$
 	seterr trigger_error
@@ -14,18 +15,18 @@ rem --- Get key from Barista Addon's apm_vendhist instead of V6 apm-02
     info!=BBjAPI().getCurrentSessionInfo()
     grpID$=str(info!.getGroupID())   
     sessionID$=str(info!.getSessionID())
-    nskey$="APM02"+"_"+grpID$+"_"+sessionID$
+    nskey$="APT03"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
     goto skip_trace;rem this out to do the trace
-    tfl$="C:/temp_downloads/apm02.ik."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    tfl$="C:/temp_downloads/apt03.ik."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
     tfl=unt
     open(tfl)tfl$
     settrace(tfl,MODE="UNTIMED")
 skip_trace:
-	
+
 rem ---  Get the Trigger object from the BBj File System
 
     td! = BBjAPI().getFileSystem().getTriggerData()
@@ -43,11 +44,11 @@ rem ---  Get the Trigger object from the BBj File System
         goto trigger_error_forced
     else
         if have_key=0
-            rem --- Open Barista Vendor Vendor Codes and History table and get first key
-            apm_vendhist=unt
-            open (apm_vendhist,err=trigger_error)apdir$+"apm-02"
-            ky$=key(apm_vendhist,err=trigger_error)
-            gns!.setValue(nskey$,ky$)
+            rem --- have_key should always be 1 for this trigger, since V6 would be reading the apt-03 rec using the A, B, or C record ID
+            rem --- throw err 2 if have_key manages to be 0 somehow
+            ky$=nskey$+"**EOF"
+            err_num=2
+            goto trigger_error_forced
         endif
         td!.setReadBuffer(ky$)
         goto std_exit
@@ -60,7 +61,7 @@ trigger_error:
 trigger_error_forced:
 
     if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
-    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num	
 	
 rem --- Functions
 

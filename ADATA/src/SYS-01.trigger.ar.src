@@ -186,8 +186,8 @@ rem --- Open template and masks files for use in getting Barista template for co
                         sys01$=sys01$+"acct_type_02:c(1),acct_type_03:c(1),acct_type_04:c(1),bud_col_01:c(1),"
                         sys01$=sys01$+"bud_col_02:c(1),bud_col_03:c(1),bud_col_04:c(1),bud_type_01:c(1),"
                         sys01$=sys01$+"bud_type_02:c(2),bud_type_03:c(2),bud_type_04:c(2),reserved_addon_1:c(9*=10),"
-                        sys01$=sys01$+"gl_acct_mask_out:c(16*=10),amt_mask:c(16*=10),unit_mask:c(16*=10),"
-                        sys01$=sys01$+"pct_mask:c(16*=10)"
+                        sys01$=sys01$+"gl_acct_mask_out:c(15*=10),amt_mask:c(15*=10),unit_mask:c(12*=10),"
+                        sys01$=sys01$+"pct_mask:c(10*=10)"
                         dim sys01$:sys01$
                         alias$="GLS_PARAMS"
                         filename$="gls_params"

@@ -18,7 +18,7 @@ rem --- instead of the V6 APM-10 file's A, B, C, or D records.
     nskey$="APM10"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this out to do the trace
     tfl$="C:/temp_downloads/apm10.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$

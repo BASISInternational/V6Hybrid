@@ -17,7 +17,7 @@ rem --- Read Barista Addon's apm_vendcmts (Comments) instead of V6 apm-09
     nskey$="APM09"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this out to do the trace
     tfl$="C:/temp_downloads/apm09.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -54,7 +54,7 @@ rem --- Template for the APM-01 record being caught
     intemp$="firm_id:c(2),vendor_nbr:c(6),sequence_num:c(2*=10),std_comments:c(48*=10)"
 	dim inRec$:intemp$
 
-rem --- Open Barista Vendor Purchase Address table
+rem --- Open Barista Vendor Comments table
 
 	apm_vendcmts=unt
 	open (apm_vendcmts,err=trigger_error)apdir$+"apm-09"

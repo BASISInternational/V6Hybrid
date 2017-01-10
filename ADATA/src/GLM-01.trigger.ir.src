@@ -6,26 +6,47 @@ rem This trigger assumes that it is being used in a non-modified Barista and Add
 rem Version 6 environment. If there have been any modifications to these systems,
 rem be sure to thoroughly examine this trigger and test changes.
 
+rem --- Read Barista Addon's glm_acct file instead of V6 GLM-01
+
+	setopts $080872202c2e$
+	seterr trigger_error
+
+    info!=BBjAPI().getCurrentSessionInfo()
+    grpID$=str(info!.getGroupID())   
+    sessionID$=str(info!.getSessionID()) 
+    nskey$="GLM01"+"_"+grpID$+"_"+sessionID$
+
     rem ' trace
     goto skip_trace;rem this out to do the trace
-    tfl$="C:/temp_downloads/GLM-01_triggertrace.txt"
+    tfl$="C:/temp_downloads/glm-01.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
     tfl=unt
     open(tfl)tfl$
     settrace(tfl,MODE="UNTIMED")
 skip_trace:
-
-	setopts $080872202c2e$
-
-	seterr trigger_error
 	
 rem ---  Get the Trigger object from the BBj File System
 
     td! = BBjAPI().getFileSystem().getTriggerData()
 
-	ky$=td!.getKey()
-	
+    keyed_read=0
+	ky$=td!.getKey(err=non_keyed_read)
+print (tfl)"*****td!.getKey(): "+ky$
+    keyed_read=1
+    
+non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
+    if !keyed_read
+        rem --- get partial/trip-read or last full key from namespace
+        gns!=BBjAPI().getGroupNamespace()
+        ky$ = gns!.getValue(nskey$,err=*next)
+        rem --- if previous key read took us to EOF, namespace will contain special value to indicate that
+        if ky$=nskey$+"**EOF"
+            err_num=2
+            goto trigger_error_forced
+        endif
+    endif
+
 	wkdir$ = dir("")
 	gldir$ = stbl("+GLDATA")
 
@@ -47,22 +68,60 @@ rem --- Open Barista GL Accounts table
 	
 rem --- Get the data
 
-	read record (glm01_dev,key=ky$,dom=trigger_error) glm_acct$
-	inRec.firm_id$ = glm_acct.firm_id$
-	inRec.gl_account$ = glm_acct.gl_account$
-	inRec.gl_acct_desc$ = glm_acct.gl_acct_desc$
-	inRec.gl_acct_type$ = glm_acct.gl_acct_type$
-	inRec.detail_flag$ = glm_acct.detail_flag$
-	inRec.reserved_str$ = glm_acct.reserved_str$
+    dom_flag=1
 
-	td!.setReadBuffer(inRec$)
+    if ky$="" and keyed_read=0
+        read record (glm01_dev,end=trigger_error) glm_acct$; dom_flag=0
+    else
+        read record (glm01_dev,key=ky$,dom=*next) glm_acct$; dom_flag=0
+    endif
+    
+    if dom_flag=0
+    	inRec.firm_id$ = glm_acct.firm_id$
+        inRec.gl_account$ = glm_acct.gl_account$
+        inRec.gl_acct_desc$ = glm_acct.gl_acct_desc$
+        inRec.gl_acct_type$ = glm_acct.gl_acct_type$
+        inRec.detail_flag$ = glm_acct.detail_flag$
+        inRec.reserved_str$ = glm_acct.reserved_str$
+    endif
 
-	goto std_exit
+    next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
+    next_ky$=key(glm01_dev,end=store_key)
+
+store_key:    
+    rem --- store next key in group namespace
+    gns!=BBjAPI().getGroupNamespace()
+    gns!.setValue(nskey$,next_ky$)
+
+    if dom_flag=1
+        err_num=11
+        goto trigger_error_forced
+    else
+        td!.setReadBuffer(inRec$)
+        goto std_exit
+    endif
 
 trigger_error:
 
     rd_err_text$="", err_num=err
+
+trigger_error_forced:
+
     if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    if err_num=11
+        rem --- if we took the DOM above, store the next key in group namespace
+        gns!=BBjAPI().getGroupNamespace()
+        gns!.setValue(nskey$,next_ky$)
+	endif
     throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+    
+rem --- Functions
+
+	rem --- fnyy$ returns a 2 character year (A0-E9) from a 4 character year
+	def fnyy$(q1$)
+		q3$=" ABCDE56789ABCDEFGHIJ"
+		q1$(1,1)=q3$(pos(q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+		return q1$
+	fnend
 	
 std_exit:

@@ -6,8 +6,7 @@ rem This trigger assumes that it is being used in a non-modified Barista and Add
 rem Version 6 environment. If there have been any modifications to these systems,
 rem be sure to thoroughly examine this trigger and test changes.
 
-rem --- Write Barista Addon's glt_bankother instead of V6 apm-12
-rem --- This interface uses V6's trans_number format of "C"+the date, rather than Barista Addon's new Deposit ID
+rem --- Write Barista Addon's apt_invoicehdr instead of V6 apt-01
 
 	setopts $080872202c2e$
 	seterr trigger_error
@@ -15,11 +14,11 @@ rem --- This interface uses V6's trans_number format of "C"+the date, rather tha
     info!=BBjAPI().getCurrentSessionInfo()
     grpID$=str(info!.getGroupID())   
     sessionID$=str(info!.getSessionID())
-    nskey$="APM12"+"_"+grpID$+"_"+sessionID$
+    nskey$="APT01"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
     goto skip_trace;rem this out to do the trace
-    tfl$="C:/temp_downloads/apm12.iw."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    tfl$="C:/temp_downloads/apt01.iw."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
     tfl=unt
@@ -34,41 +33,61 @@ rem ---  Get the Trigger object from the BBj File System
     ky$=td!.getKey()
     
 	wkdir$ = dir("")
-	gldir$ = stbl("+GLDATA")
+	apdir$ = stbl("+APDATA")
 
-rem --- Template for the APM-12 record being caught
+rem --- Template for the APT-01 record being caught
 
-    intemp$="firm_id:c(2),gl_cash_acct:c(10),trans_number:c(7*),trans_type:c(1),posted_code:c(1),"
-    intemp$=intemp$+"trns_date:c(6),description:c(30),reserved_str:c(12*),trans_amt:n(7*),reserved_num:n(1*)"
+    intemp$="firm_id:c(2),ap_type:c(2),vendor_nbr:c(6),ap_inv_nbr:c(10),sequence_00:c(2),dist_code:c(2),"
+    intemp$=intemp$+"payment_grp:c(2),terms_code:c(2),invoice_date:c(3),accting_date:c(3),inv_due_date:c(3),disc_date:c(3),"
+    intemp$=intemp$+"reference:c(10),ap_inv_memo:c(16),hold_flag:c(1),mc_inv_flag:c(1),mc_inv_adj:c(1),mc_inv_rev:c(1),"
+    intemp$=intemp$+"reserved_str:c(1*=10),invoice_amt:n(7*=10),discount_amt:n(7*=10),retention:n(7*=10)"
 
 	dim inRec$:intemp$
     inRec$=td!.getWriteBuffer()
 
-rem --- Open Barista Bank Rec Other table
+rem --- Open Barista AP Invoice Header table
 
-	glt_bankother=unt
-	open (glt_bankother,err=trigger_error)gldir$+"glt-15"
+	apt_invoicehdr=unt
+	open (apt_invoicehdr,err=trigger_error)apdir$+"apt-01"
 	tpl_dev=unt
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
-	read (tpl_dev,key=pad("GLT_BANKOTHER",16),dom=trigger_error) *,*,glt_bankother_tpl$
-	dim glt_bankother$:glt_bankother_tpl$
+	read (tpl_dev,key=pad("APT_INVOICEHDR",16),dom=trigger_error) *,*,apt_invoicehdr_tpl$
+	dim apt_invoicehdr$:apt_invoicehdr_tpl$
 	
 rem --- Write the data
 
-    glt_bankother.firm_id$=	inRec.firm_id$
-    glt_bankother.gl_account$=inRec.gl_cash_acct$
-    glt_bankother.trans_no$=inRec.trans_number$
-    glt_bankother.trans_type$=inRec.trans_type$
-    glt_bankother.posted_code$=inRec.posted_code$
-    glt_bankother.description$=inRec.description$
-    glt_bankother.trans_amt$=inRec.trans_amt$
-    
-    value$=inRec.trns_date$
+    apt_invoicehdr.firm_id$=inRec.firm_id$
+    apt_invoicehdr.ap_type$=inRec.ap_type$
+    apt_invoicehdr.vendor_id$=inRec.vendor_nbr$
+    apt_invoicehdr.ap_inv_no$=inRec.ap_inv_nbr$
+    apt_invoicehdr.sequence_00$=inRec.sequence_00$
+    apt_invoicehdr.ap_dist_code$=inRec.dist_code$
+    apt_invoicehdr.payment_grp$=inRec.payment_grp$
+    apt_invoicehdr.ap_terms_code$=inRec.terms_code$
+    value$=inRec.invoice_date$
     gosub fix_yymmdd_date
-    glt_bankother.trns_date$=value$
+    apt_invoicehdr.invoice_date$=value$
+    value$=inRec.accting_date$
+    gosub fix_yymmdd_date
+    apt_invoicehdr.accting_date$=value$
+    value$=inRec.inv_due_date$
+    gosub fix_yymmdd_date
+    apt_invoicehdr.inv_due_date$=value$
+    value$=inRec.disc_date$
+    gosub fix_yymmdd_date
+    apt_invoicehdr.disc_date$=value$
+    apt_invoicehdr.reference$=inRec.reference$
+    apt_invoicehdr.ap_inv_memo$=inRec.ap_inv_memo$
+    apt_invoicehdr.hold_flag$=inRec.hold_flag$
+    apt_invoicehdr.mc_inv_flag$=inRec.mc_inv_flag$
+    apt_invoicehdr.mc_inv_adj$=inRec.mc_inv_adj$
+    apt_invoicehdr.mc_inv_rev$=inRec.mc_inv_rev$
+    apt_invoicehdr.invoice_amt=inRec.invoice_amt
+    apt_invoicehdr.discount_amt=inRec.discount_amt
+    apt_invoicehdr.retention=inRec.retention
     
-    glt_bankother$=field(glt_bankother$)
-    writerecord (glt_bankother)glt_bankother$
+    apt_invoicehdr$=field(apt_invoicehdr$)
+    writerecord (apt_invoicehdr)apt_invoicehdr$
 
 	goto std_exit
 
@@ -94,7 +113,7 @@ trigger_error:
     if err_num=11
         rem -- if we took the DOM above, store the partial key in group namespace for upcoming k$=key in calling code
         gns!=BBjAPI().getGroupNamespace()
-        gns!.setValue("APM12"+"_"+grpID$+"_"+sessionID$,ky$)
+        gns!.setValue(nskey$,ky$)
 	endif
     throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
 	

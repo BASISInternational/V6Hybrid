@@ -1,0 +1,25 @@
+rem AddonSoftware
+rem Copyright BASIS International Ltd.
+rem 
+rem instead of write
+rem This trigger assumes that it is being used in a non-modified Barista and Addon
+rem Version 6 environment. If there have been any modifications to these systems,
+rem be sure to thoroughly examine this trigger and test changes.
+
+rem --- APT-03 contains Open Invoice X-refs in V6. These additional keys have been added to the apt_invoicehdr (apt-01) file in Barista Addon
+rem --- No action needed in this trigger - effectively just bypasses writing anything to the V6 APT-03 file
+
+	setopts $080872202c2e$
+
+	seterr trigger_error
+
+	goto std_exit
+	
+
+trigger_error:
+
+    rd_err_text$="", err_num=err
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+
+	std_exit:    

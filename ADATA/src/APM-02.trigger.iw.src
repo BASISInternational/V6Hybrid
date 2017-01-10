@@ -6,8 +6,7 @@ rem This trigger assumes that it is being used in a non-modified Barista and Add
 rem Version 6 environment. If there have been any modifications to these systems,
 rem be sure to thoroughly examine this trigger and test changes.
 
-rem --- Write Barista Addon's glt_bankother instead of V6 apm-12
-rem --- This interface uses V6's trans_number format of "C"+the date, rather than Barista Addon's new Deposit ID
+rem --- Write Barista Addon's apm_vendhist instead of V6 apm-02
 
 	setopts $080872202c2e$
 	seterr trigger_error
@@ -15,11 +14,11 @@ rem --- This interface uses V6's trans_number format of "C"+the date, rather tha
     info!=BBjAPI().getCurrentSessionInfo()
     grpID$=str(info!.getGroupID())   
     sessionID$=str(info!.getSessionID())
-    nskey$="APM12"+"_"+grpID$+"_"+sessionID$
+    nskey$="APM02"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
     goto skip_trace;rem this out to do the trace
-    tfl$="C:/temp_downloads/apm12.iw."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    tfl$="C:/temp_downloads/apm02.iw."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
     tfl=unt
@@ -34,41 +33,60 @@ rem ---  Get the Trigger object from the BBj File System
     ky$=td!.getKey()
     
 	wkdir$ = dir("")
-	gldir$ = stbl("+GLDATA")
+	apdir$ = stbl("+APDATA")
 
-rem --- Template for the APM-12 record being caught
+rem --- Template for the APM-02 record being caught
 
-    intemp$="firm_id:c(2),gl_cash_acct:c(10),trans_number:c(7*),trans_type:c(1),posted_code:c(1),"
-    intemp$=intemp$+"trns_date:c(6),description:c(30),reserved_str:c(12*),trans_amt:n(7*),reserved_num:n(1*)"
+    intemp$="firm_id:c(2),vendor_nbr:c(6),ap_type:c(2*=10),dist_code:c(2),payment_grp:c(2),terms_code:c(2),"
+    intemp$=intemp$+"lstinv_date:c(3),lstpay_date:c(3),reserved_str:c(12*=10),gl_account:c(10*=10),"
+    intemp$=intemp$+"open_invs:n(7*=10),open_ret:n(7*=10),ytd_purch:n(7*=10),pyr_purch:n(7*=10),nyr_purch:n(7*=10),"
+    intemp$=intemp$+"ytd_discs:n(7*=10),pri_yr_discs:n(7*=10),nyr_disc:n(7*=10),ytd_payments:n(7*=10),pyr_payments:n(7*=10),"
+    intemp$=intemp$+"nyr_payments:n(7*=10),cur_cal_pmts:n(7*=10),pri_cal_pmt:n(7*=10),nxt_cyr_pmts:n(7*=10)"
 
 	dim inRec$:intemp$
     inRec$=td!.getWriteBuffer()
 
-rem --- Open Barista Bank Rec Other table
+rem --- Open Barista Vendor Codes and History table
 
-	glt_bankother=unt
-	open (glt_bankother,err=trigger_error)gldir$+"glt-15"
+	apm_vendhist=unt
+	open (apm_vendhist,err=trigger_error)apdir$+"apm-02"
 	tpl_dev=unt
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
-	read (tpl_dev,key=pad("GLT_BANKOTHER",16),dom=trigger_error) *,*,glt_bankother_tpl$
-	dim glt_bankother$:glt_bankother_tpl$
+	read (tpl_dev,key=pad("APM_VENDHIST",16),dom=trigger_error) *,*,apm_vendhist_tpl$
+	dim apm_vendhist$:apm_vendhist_tpl$rem --- Template for the APM-12 record being caught
 	
 rem --- Write the data
 
-    glt_bankother.firm_id$=	inRec.firm_id$
-    glt_bankother.gl_account$=inRec.gl_cash_acct$
-    glt_bankother.trans_no$=inRec.trans_number$
-    glt_bankother.trans_type$=inRec.trans_type$
-    glt_bankother.posted_code$=inRec.posted_code$
-    glt_bankother.description$=inRec.description$
-    glt_bankother.trans_amt$=inRec.trans_amt$
-    
-    value$=inRec.trns_date$
+    apm_vendhist.firm_id$=inRec.firm_id$
+    apm_vendhist.vendor_id$=inRec.vendor_nbr$
+    apm_vendhist.ap_type$=inRec.ap_type$
+    apm_vendhist.ap_dist_code$=inRec.dist_code$
+    apm_vendhist.payment_grp$=inRec.payment_grp
+    apm_vendhist.ap_terms_code$=inRec.terms_code$
+    value$=inRec.lstinv_date$
     gosub fix_yymmdd_date
-    glt_bankother.trns_date$=value$
+    apm_vendhist.lstinv_date$=value$
+    value$=inRec.lstpay_date$
+    gosub fix_yymmdd_date    
+    apm_vendhist.lstpay_date$=value$
+    apm_vendhist.gl_account$=inRec.gl_account$
+    apm_vendhist.open_invs=inRec.open_invs
+    apm_vendhist.open_ret=inRec.open_ret
+    apm_vendhist.ytd_purch=inRec.ytd_purch
+    apm_vendhist.pyr_purch=inRec.pyr_purch
+    apm_vendhist.nyr_purch=inRec.nyr_purch
+    apm_vendhist.ytd_discs=inRec.ytd_discs
+    apm_vendhist.pri_yr_discs=inRec.pri_yr_discs
+    apm_vendhist.nyr_disc=inRec.nyr_disc
+    apm_vendhist.ytd_payments=inRec.ytd_payments
+    apm_vendhist.pyr_payments=inRec.pyr_payments
+    apm_vendhist.nyr_payments=inRec.nyr_payments
+    apm_vendhist.cur_cal_pmts=inRec.cur_cal_pmts
+    apm_vendhist.pri_cal_pmt=inRec.pri_cal_pmt
+    apm_vendhist.nxt_cyr_pmts=inRec.nxt_cyr_pmts
     
-    glt_bankother$=field(glt_bankother$)
-    writerecord (glt_bankother)glt_bankother$
+    apm_vendhist$=field(apm_vendhist$)
+    writerecord (apm_vendhist)apm_vendhist$
 
 	goto std_exit
 
@@ -94,7 +112,7 @@ trigger_error:
     if err_num=11
         rem -- if we took the DOM above, store the partial key in group namespace for upcoming k$=key in calling code
         gns!=BBjAPI().getGroupNamespace()
-        gns!.setValue("APM12"+"_"+grpID$+"_"+sessionID$,ky$)
+        gns!.setValue(nskey$,ky$)
 	endif
     throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
 	

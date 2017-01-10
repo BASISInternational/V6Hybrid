@@ -17,7 +17,7 @@ rem --- Read Barista Addon's apt_invoicehdr instead of V6 apt-01
     nskey$="APT01"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this out to do the trace
     tfl$="C:/temp_downloads/apt01.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -58,7 +58,7 @@ rem --- Template for the APT-01 record being caught
 
 	dim inRec$:intemp$
 
-rem --- Open Barista Vendor Master table
+rem --- Open Barista AP Invoice Header table
 
 	apt_invoicehdr=unt
 	open (apt_invoicehdr,err=trigger_error)apdir$+"apt-01"

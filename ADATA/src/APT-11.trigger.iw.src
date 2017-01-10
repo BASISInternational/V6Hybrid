@@ -1,12 +1,12 @@
 rem AddonSoftware
 rem Copyright BASIS International Ltd.
 rem 
-rem instead of read
+rem instead of write
 rem This trigger assumes that it is being used in a non-modified Barista and Addon
 rem Version 6 environment. If there have been any modifications to these systems,
 rem be sure to thoroughly examine this trigger and test changes.
 
-rem --- Read Barista Addon's apt_invoicedet instead of V6 apt-11
+rem --- Write Barista Addon's apt_invoicedet instead of V6 apt-11
 
 	setopts $080872202c2e$
 	seterr trigger_error
@@ -18,7 +18,7 @@ rem --- Read Barista Addon's apt_invoicedet instead of V6 apt-11
 
     rem ' trace
     goto skip_trace;rem this out to do the trace
-    tfl$="C:/temp_downloads/apt11.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    tfl$="C:/temp_downloads/apt11.iw."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
     tfl=unt
@@ -30,22 +30,8 @@ rem ---  Get the Trigger object from the BBj File System
 
     td! = BBjAPI().getFileSystem().getTriggerData()
 
-    keyed_read=0
-	ky$=td!.getKey(err=non_keyed_read)
-    keyed_read=1
+    ky$=td!.getKey()
     
-non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
-    if !keyed_read
-        rem --- get partial/trip-read or last full key from namespace
-        gns!=BBjAPI().getGroupNamespace()
-        ky$ = gns!.getValue(nskey$,err=*next)
-        rem --- if previous key read took us to EOF, namespace will contain special value to indicate that
-        if ky$=nskey$+"**EOF"
-            err_num=2
-            goto trigger_error_forced
-        endif
-    endif
-	
 	wkdir$ = dir("")
 	apdir$ = stbl("+APDATA")
 
@@ -55,6 +41,7 @@ rem --- Template for the APT-11 record being caught
     intemp$=intemp$+"trans_type:c(1),trans_date:c(3),trans_ref:c(7*),trans_amt:n(7*),trans_disc:n(7*),trans_ret:n(7*)"
 
 	dim inRec$:intemp$
+    inRec$=td!.getWriteBuffer()
 
 rem --- Open Barista AP Invoice Detail table
 
@@ -65,56 +52,50 @@ rem --- Open Barista AP Invoice Detail table
 	read (tpl_dev,key=pad("apt_invoicedet",16),dom=trigger_error) *,*,apt_invoicedet_tpl$
 	dim apt_invoicedet$:apt_invoicedet_tpl$
 	
-rem --- Get the data
+rem --- Write the data
 
-    dom_flag=1
-
-    if ky$="" and keyed_read=0
-        read record (apt_invoicedet,end=trigger_error) apt_invoicedet$; dom_flag=0
-    else
-        read record (apt_invoicedet,key=ky$,dom=*next) apt_invoicedet$; dom_flag=0
-    endif
+    apt_invoicedet.firm_id$=inRec.firm_id$
+    apt_invoicedet.ap_type$=inRec.ap_type$
+    apt_invoicedet.vendor_id$=inRec.vendor_nbr$
+    apt_invoicedet.ap_inv_no$=inRec.ap_inv_nbr$
+    apt_invoicedet.sequence_no$=inRec.sequence_num$
+    apt_invoicedet.trans_type$=inRec.trans_type$
+    value$=inRec.trans_date$
+    gosub fix_yymmdd_date    
+    apt_invoicedet.trans_date$=value$
+    apt_invoicedet.trans_ref$=inRec.trans_ref$
+    apt_invoicedet.trans_amt$=inRec.trans_amt$
+    apt_invoicedet.trans_disc$=inRec.trans_disc$
+    apt_invoicedet.trans_ret$=inRec.trans_ret$
     
-    if dom_flag=0
-        inRec.firm_id$ = apt_invoicedet.firm_id$
-        inRec.ap_type$=apt_invoicedet.ap_type$
-        inRec.vendor_nbr$=apt_invoicedet.vendor_id$
-        inRec.ap_inv_nbr$=apt_invoicedet.ap_inv_no$
-        inRec.sequence_num$=apt_invoicedet.sequence_no$
-        inRec.trans_type$=apt_invoicedet.trans_type$
-        inRec.trans_date$=fnd$(apt_invoicedet.trans_date$)
-        inRec.trans_ref$=apt_invoicedet.trans_ref$
-        inRec.trans_amt$=apt_invoicedet.trans_amt$
-        inRec.trans_disc$=apt_invoicedet.trans_disc$
-        inRec.trans_ret$=apt_invoicedet.trans_ret$
-    endif
+    apt_invoicedet$=field(apt_invoicedet$)
+    writerecord (apt_invoicedet)apt_invoicedet$
 
-    next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
-    next_ky$=key(apt_invoicedet,end=*next)
+	goto std_exit
 
-    rem --- store next key in group namespace
-    gns!=BBjAPI().getGroupNamespace()
-    gns!.setValue(nskey$,next_ky$)
-
-    if dom_flag=1
-        err_num=11
-        goto trigger_error_forced
+fix_yymmdd_date: rem --- Convert yy dates to yyyy, and yymmdd dates to yyyymmdd
+    rem ---     Input/Out: value$
+    if len(cvs(value$,3)) then
+        value$=fnyy_yy21$(value$)
+        if asc(value$)>=65 then
+            value$=str(200+asc(value$)-65)+value$(2)
+        else
+            value$="19"+value$
+        endif
+        value$=str(num(value$(1,4),err=*next))+value$(5)
     else
-        td!.setReadBuffer(inRec$)
-        goto std_exit
+        value$=pad("",8)
     endif
+    return
 
 trigger_error:
 
     rd_err_text$="", err_num=err
-    
-trigger_error_forced:
-
     if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
     if err_num=11
-        rem --- if we took the DOM above, store the next key in group namespace
+        rem -- if we took the DOM above, store the partial key in group namespace for upcoming k$=key in calling code
         gns!=BBjAPI().getGroupNamespace()
-        gns!.setValue(nskey$,next_ky$)
+        gns!.setValue(nskey$,ky$)
 	endif
     throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
 	
@@ -125,6 +106,15 @@ rem --- Functions
 		q3$=" ABCDE56789ABCDEFGHIJ"
 		q1$(1,1)=q3$(pos(q1$(1,1)=" 0123456789ABCDEFGHIJ"))
 		return q1$
+	fnend
+
+    rem --- FNYEAR_YY21$ Convert Numeric Year to 21st Century 2-Char Year"   
+    def FNYEAR_YY21$(Q)=FNYY_YY21$(STR(MOD(Q,100):"00"))
+   
+    rem --- FNYY_YY21$ Convert 2-Char Year to 21st Century 2-Char Year
+	def FNYY_YY21$(Q1$)
+	Q3$=" ABCDE56789ABCDEFGHIJ",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+	return Q1$
 	fnend
 
 	rem --- returns a 3 character packed date from an 8 character year/month/day

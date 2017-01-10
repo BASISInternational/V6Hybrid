@@ -17,7 +17,7 @@ rem --- Get key from Barista Addon's apt_invoicedet instead of V6 apt-11
     nskey$="APT11"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this out to do the trace
     tfl$="C:/temp_downloads/apt11.ik."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -43,7 +43,7 @@ rem --- get key (stored in instead-of-read trigger) from namespace
         goto trigger_error_forced
     else
         if have_key=0
-            rem --- Open Barista Vendor Purchase Address table and get first key
+            rem --- Open Barista AP Invoice Detail table and get first key
             apt_invoicedet=unt
             open (apt_invoicedet,err=trigger_error)apdir$+"apt-11"
             ky$=key(apt_invoicedet,err=trigger_error)
