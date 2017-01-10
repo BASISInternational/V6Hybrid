@@ -14,7 +14,7 @@ rem --- Read Barista Addon's apm_vendrepl instead of V6 apm-06
     info!=BBjAPI().getCurrentSessionInfo()
     grpID$=str(info!.getGroupID())   
     sessionID$=str(info!.getSessionID())
-    nskey$="APM05"+"_"+grpID$+"_"+sessionID$
+    nskey$="APM06"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
     goto skip_trace;rem this out to do the trace
