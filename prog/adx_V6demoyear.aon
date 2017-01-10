@@ -321,9 +321,7 @@ process_table:
                             field v6rec$, "DAYS_IN_MTH"=str(daysInFeb)
                         endif
                     break
-                    case 4;rem TODO YYYY - need to do anything here?
-                        escape;rem 4? only used for old PR mag media output?
-                    break
+                    case 4;rem not needed
                     case default;rem date field is empty
                     break
 

@@ -7,8 +7,6 @@ rem --- Copyright BASIS International Ltd.  All Rights Reserved.
 rem --- All Rights Reserved
 
 rem --- V6demo - create statements via Jasper reports
-rem --- TODO - look at Jaspers/SPROCs
-
 
     setesc std_error
     seterr std_error
@@ -71,7 +69,7 @@ rem --- Set Report Name & Subreport directory
     open (temp)reportDir$
     reportDir$ = fid(temp)(9)+"/"
     close (temp)
-    reportBaseName$ = "custStatement"
+    reportBaseName$ = "CustStatement"
     filename$ = reportDir$ + reportBaseName$ + ".jasper"
     masterBaseName$ = "StatementMaster"
     master_filename$ = reportDir$ + masterBaseName$+".jasper"
