@@ -148,17 +148,21 @@ rem --- Get the data
 
 rem --- Get next key
 
-    next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
-    
-    switch (BBjAPI().TRUE)
-        case keyName$="PRIMARY"
-        case default
-            next_ky$=key(pot25_dev,end=*next)
-            break
-        case keyName$="INVBYPO"
-            next_ky$=key(pot35_dev,end=*next)
-            break
-    swend
+    if !td!.getExtract() then
+        next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
+        
+        switch (BBjAPI().TRUE)
+            case keyName$="PRIMARY"
+            case default
+                next_ky$=key(pot25_dev,end=*next)
+                break
+            case keyName$="INVBYPO"
+                next_ky$=key(pot35_dev,end=*next)
+                break
+        swend
+    else
+        next_ky$=ky$
+    endif
 
     rem --- store key info in group namespace (for looping back to k$=key() in calling code)
     gns!=BBjAPI().getGroupNamespace()
