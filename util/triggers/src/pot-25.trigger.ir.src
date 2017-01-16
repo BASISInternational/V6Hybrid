@@ -1,0 +1,189 @@
+rem AddonSoftware
+rem Copyright BASIS International Ltd.
+rem 
+rem instead of key
+rem This trigger assumes that it is being used in a non-modified Barista and Addon
+rem with a non-modified Version 6 Addon. If there have been any modifications to
+rem these systems, be sure to thoroughly examine this trigger and test changes.
+
+rem --- Read V6 POT-25 instead of Barista Addon's pot_invdet
+
+	setopts $080872202c2e$
+	seterr trigger_error
+
+    info!=BBjAPI().getCurrentSessionInfo()
+    grpID$=str(info!.getGroupID())   
+    sessionID$=str(info!.getSessionID())
+    nskey$="POT25"+"_"+grpID$+"_"+sessionID$
+
+    rem ' trace
+    goto skip_trace;rem this out to do the trace
+    tfl$="C:/temp_downloads/pot25.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
+	
+rem ---  Get the Trigger object from the BBj File System
+
+    td! = BBjAPI().getFileSystem().getTriggerData()
+	
+	wkdir$ = dir("")
+	v6data_dir$=stbl("+V6DATA",err=std_exit)
+    
+    keyed_read=0
+	ky$=td!.getKey(err=non_keyed_read)
+    keyed_read=1
+    
+non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
+    keyName$=td!.getKeyName()
+    if !keyed_read
+        rem --- get partial/trip-read or last full key from namespace
+        gns!=BBjAPI().getGroupNamespace()
+        ky$ = gns!.getValue(nskey$,err=*next)
+        xPos=pos("::"=ky$)
+        if xPos>1 then keyName$=ky$(1,xPos-1)
+        if xPos>0 then ky$=ky$(xPos+2)
+        
+        rem --- if previous key read took us to EOF, namespace will contain special value to indicate that
+        if ky$=nskey$+"**EOF"
+            err_num=2
+            goto trigger_error_forced
+        endif
+    endif
+
+rem --- Template for the V6 POT-25 record being read
+
+	intemp$="firm_id:c(2),ap_type:c(2),vendor_nbr:c(6),ap_inv_nbr:c(10),sequence_nbr:c(3),line_number:c(3*=10),"
+    intemp$=intemp$+"po_number:c(7),po_line_nbr:c(3),receiver_nbr:c(7),po_line_code:c(2),order_memo:c(40*=10),"
+	intemp$=intemp$+"dealer_str:c(1*=10),"
+	intemp$=intemp$+"unit_cost:n(7*=10),qty_received:n(7*=10),receipt_cost:n(7*=10),rsrvd_num:n(1*=10),dealer_num:n(1*=10)"
+	dim pot25a$:intemp$
+
+rem --- Get template for Barista Addon's POT_INVDET table
+
+	tpl_dev=unt
+	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
+	read (tpl_dev,key=pad("POT_INVDET",16),dom=trigger_error) *,*,pot_invdet_tpl$
+	dim pot_invdet$:pot_invdet_tpl$
+
+rem --- Open V6 POT-25 file
+
+	pot25_dev=unt
+	open (pot25_dev,err=trigger_error)v6data_dir$+"POT-25"
+	
+rem --- Get the data
+
+    next_ky$=nskey$+"**EOF";rem --- set default in case we take an end= error branch
+    dom_flag=1
+
+    if ky$="" and keyed_read=0
+        switch (BBjAPI().TRUE)
+            case keyName$="PRIMARY"
+            case default
+                read record (pot25_dev,end=trigger_error) pot25a$; dom_flag=0
+                break
+            case keyName$="INVBYPO"
+                pot35_dev=unt
+                open (pot35_dev,err=trigger_error)v6data_dir$+"POT-35"
+                dim pot35a$(40)
+                read(pot35_dev,end=trigger_error)pot35a$
+                dim this_ky$(26)
+                this_ky$(1,2)=pot35a$(1,2); rem --- firm id
+                this_ky$(3,2)=pot35a$(23,2); rem --- ap type
+                this_ky$(5,6)=pot35a$(3,6); rem --- vendor nbr
+                this_ky$(11,10)=pot35a$(25,10); rem --- ap inv nbr
+                this_ky$(21,3)=pot35a$(35,3); rem --- sequence nbr
+                this_ky$(24,3)=pot35a$(38,3); rem --- line number
+                read record (pot25_dev,key=this_ky$,dom=*next) pot25a$; dom_flag=0
+                break
+        swend
+    else
+        switch (BBjAPI().TRUE)
+            case keyName$="PRIMARY"
+            case default
+                read record (pot25_dev,key=ky$,dom=*next) pot25a$; dom_flag=0
+                break
+            case keyName$="INVBYPO"
+                pot35_dev=unt
+                open (pot35_dev,err=trigger_error)v6data_dir$+"POT-35"
+                dim pot35a$(40)
+                read(pot35_dev,key=ky$,dom=*next)pot35a$; dom_flag=0
+                if dom_flag=0 then
+                    dim this_ky$(26)
+                    this_ky$(1,2)=pot35a$(1,2); rem --- firm id
+                    this_ky$(3,2)=pot35a$(23,2); rem --- ap type
+                    this_ky$(5,6)=pot35a$(3,6); rem --- vendor nbr
+                    this_ky$(11,10)=pot35a$(25,10); rem --- ap inv nbr
+                    this_ky$(21,3)=pot35a$(35,3); rem --- sequence nbr
+                    this_ky$(24,3)=pot35a$(38,3); rem --- line number
+                    read record (pot25_dev,key=this_ky$,dom=*next) pot25a$
+                endif
+                break
+        swend
+    endif
+
+    if dom_flag=0
+        pot_invdet.firm_id$=pot25a.firm_id$
+        pot_invdet.ap_type$=pot25a.ap_type$
+        pot_invdet.vendor_id$=pot25a.vendor_nbr$
+        pot_invdet.ap_inv_no$=pot25a.ap_inv_nbr$
+        pot_invdet.sequence_no$=pot25a.sequence_nbr$
+        pot_invdet.line_no$=pot25a.line_number$
+        pot_invdet.po_no$=pot25a.po_number$
+        pot_invdet.po_int_seq_ref$=""
+        pot_invdet.po_line_no$=pot25a.po_line_nbr$
+        pot_invdet.receiver_no$=pot25a.receiver_nbr$
+        pot_invdet.po_line_code$=pot25a.po_line_code$
+        pot_invdet.order_memo$=pot25a.order_memo$
+        pot_invdet.dealer_str$=pot25a.dealer_str$
+        pot_invdet.unit_cost=pot25a.unit_cost
+        pot_invdet.qty_received=pot25a.qty_received
+        pot_invdet.receipt_cost=pot25a.receipt_cost
+        pot_invdet.reserved_num=pot25a.rsrvd_num
+        pot_invdet.dealer_num=pot25a.dealer_num
+    endif
+
+rem --- Get next key
+
+    next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
+    
+    switch (BBjAPI().TRUE)
+        case keyName$="PRIMARY"
+        case default
+            next_ky$=key(pot25_dev,end=*next)
+            break
+        case keyName$="INVBYPO"
+            next_ky$=key(pot35_dev,end=*next)
+            break
+    swend
+
+    rem --- store key info in group namespace (for looping back to k$=key() in calling code)
+    gns!=BBjAPI().getGroupNamespace()
+    gns!.setValue(nskey$,keyName$+"::"+next_ky$)
+    
+    if dom_flag=1
+        err_num=11
+        goto trigger_error_forced
+    else
+        td!.setReadBuffer(pot_invdet$)
+        goto std_exit
+    endif
+
+trigger_error:
+
+    rd_err_text$="", err_num=err
+    
+trigger_error_forced:
+
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    if err_num=11
+        rem -- if we took the DOM above, store the partial key in group namespace for upcoming k$=key in calling code
+        gns!=BBjAPI().getGroupNamespace()
+        gns!.setValue(nskey$,keyName$+"::"+next_ky$)
+	endif
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+	
+std_exit:

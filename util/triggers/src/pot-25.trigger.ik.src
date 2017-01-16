@@ -1,0 +1,79 @@
+rem AddonSoftware
+rem Copyright BASIS International Ltd.
+rem 
+rem instead of key
+rem This trigger assumes that it is being used in a non-modified Barista and Addon
+rem with a non-modified Version 6 Addon. If there have been any modifications to
+rem these systems, be sure to thoroughly examine this trigger and test changes.
+
+rem --- Get key from V6 POT-25 instead of Barista Addon's pot_invdet
+
+	setopts $080872202c2e$
+	seterr trigger_error
+
+    info!=BBjAPI().getCurrentSessionInfo()
+    grpID$=str(info!.getGroupID())   
+    sessionID$=str(info!.getSessionID())
+    nskey$="POT25"+"_"+grpID$+"_"+sessionID$    
+
+    rem ' trace
+    goto skip_trace;rem this out to do the trace
+    tfl$="C:/temp_downloads/pot25.ik."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
+	
+rem ---  Get the Trigger object from the BBj File System
+
+    td! = BBjAPI().getFileSystem().getTriggerData()
+	
+	wkdir$ = dir("")
+	v6data_dir$=stbl("+V6DATA",err=std_exit)
+
+rem --- get key (stored in instead-of-read trigger) from namespace
+    gns!=BBjAPI().getGroupNamespace()
+    have_key=0
+    ky$ = gns!.getValue(nskey$,err=*next);have_key=1
+    keyName$=td!.getKeyName()
+    xPos=pos("::"=ky$)
+    if xPos>1 then keyName$=ky$(1,xPos-1)
+    if xPos>0 then ky$=ky$(xPos+2)
+
+    if ky$=nskey$+"**EOF"
+        err_num=2
+        goto trigger_error_forced
+    else
+        if have_key=0
+            rem --- Open file and get first key
+            switch (BBjAPI().TRUE)
+                case keyName$="PRIMARY"
+                case default
+                    pot25_dev=unt
+                    open (pot25_dev,err=trigger_error)v6data_dir$+"POT-25"
+                    ky$=key(pot25_dev,err=trigger_error)
+                    break
+                case keyName$="INVBYPO"
+                    pot35_dev=unt
+                    open (pot35_dev,err=trigger_error)v6data_dir$+"POT-35"
+                    ky$=key(pot35_dev,end=*next)
+                    break
+            swend
+        endif
+        gns!.setValue(nskey$,keyName$+"::"+ky$)
+        td!.setReadBuffer(ky$)
+        goto std_exit
+    endif
+
+trigger_error:
+
+    rd_err_text$="", err_num=err
+    
+trigger_error_forced:
+
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+	
+std_exit:
