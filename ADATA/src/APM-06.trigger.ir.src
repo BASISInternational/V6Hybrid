@@ -17,7 +17,7 @@ rem --- Read Barista Addon's apm_vendrepl instead of V6 apm-06
     nskey$="APM06"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    goto skip_trace;rem this out to do the trace
+    rem goto skip_trace;rem this out to do the trace
     tfl$="C:/temp_downloads/apm06.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -32,6 +32,7 @@ rem ---  Get the Trigger object from the BBj File System
 
     keyed_read=0
 	ky$=td!.getKey(err=non_keyed_read)
+print (tfl)"*****keyed read...ky$: "+ky$
     keyed_read=1
     
 non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
@@ -53,7 +54,7 @@ rem --- Template for the APM-06 record being caught
 
     intemp$="firm_id:c(2),vendor_nbr:c(6),buyer_code:c(3*=10),pri_rev_date:c(3),nxt_rev_date:c(3),"
     intemp$=intemp$+"purch_addr:c(2),pur_tgt_type:c(1),lstrec_date:c(3),reserved_str:c(12*=10),"
-    intemp$=intemp$+"rev_days:n(3*=10),pur_targ_amt:n(7*=10),pur_targ_lbs:n(710),pur_tgt_unit:n(7*=10),"
+    intemp$=intemp$+"rev_days:n(3*=10),pur_targ_amt:n(7*=10),pur_targ_lbs:n(7*=10),pur_tgt_unit:n(7*=10),"
     intemp$=intemp$+"ytd_rec_amt:n(7*=10),ytd_rec_lbs:n(7*=10),ytd_rec_unts:n(7*=10),"
     intemp$=intemp$+"nyr_rec_amt:n(7*=10),nyr_rec_lbs:n(7*=10),nyr_rec_unit:n(7*=10),reserved_num:n(1*=10),reserved_num_02:n(1*=10)"
 
@@ -67,7 +68,57 @@ rem --- Open Barista Vendor Replenishment Detail table
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("APM_VENDREPL",16),dom=trigger_error) *,*,apm_vendrepl_tpl$
 	dim apm_vendrepl$:apm_vendrepl_tpl$
-	
+
+rem --- V6 extracts this record when updating (IV Period End, or PO Replenishment Reg/Updt)
+rem --- if doing an extract, place a soft lock in a namespace, remove the soft lock after write
+rem --- analogous triggers exist on the Barista Addon side
+
+    extract_flag=td!.getExtract()
+    exns_prefix$=stbl("+DBNAME_API",err=trigger_error)
+    exns_suffix$="apm-06"
+    exns!=BBjAPI().getNamespace(exns_prefix$,exns_suffix$,1)
+    ns_info$="V6 namespace lock: "+info!.getUser()+": "+td!.getIDString()
+    
+print (tfl)"ns prefix.suffix: "+exns_prefix$+"."+exns_suffix$
+print (tfl)"*****extract_flag is: "+str(extract_flag)
+
+    if extract_flag
+        set_lock=0
+        exns!.setLock(ky$,5000,err=*next);set_lock=1
+        if set_lock
+            ex_info$=exns!.getValue(ky$,err=*next)
+            if ex_info$<>"" and ex_info$<>ns_info$
+                rd_err_text$=ex_info$+" (Key: "+ky$+")."
+                err_num=0
+                goto trigger_error_forced
+            else
+                exns!.setValue(ky$,ns_info$)
+            endif
+            exns!.removeLock(ky$)
+        else
+            ex_info$=exns!.getValue(ky$,err=*next)
+            rd_err_text$=ex_info$+" (Key: "+ky$+")."
+            err_num=0
+            goto trigger_error_forced
+        endif
+    else
+        set_lock=0
+        exns!.setLock(ky$,5000,err=*next);set_lock=1
+        if set_lock        
+            ex_info$=exns!.getValue(ky$,err=*next)
+            if ex_info$="" or ex_info$=ns_info$
+                exns!.removeLock(ky$)
+                exns!.removeValue(ky$,err=*endif)
+            endif
+            exns!.removeLock(ky$)
+        else
+            ex_info$=exns!.getValue(ky$,err=*next)
+            rd_err_text$=ex_info$+" (Key: "+ky$+")."
+            err_num=0
+            goto trigger_error_forced
+        endif
+    endif
+
 rem --- Get the data
 
     dom_flag=1
@@ -99,13 +150,17 @@ rem --- Get the data
         inRec.nyr_rec_unit=apm_vendrepl.nyr_rec_unit
     endif
 
-    next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
-    next_ky$=key(apm_vendrepl,end=*next)
+    if extract_flag=0
+        next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
+        next_ky$=key(apm_vendrepl,end=*next)
+    else
+        next_ky$=ky$
+    endif
 
     rem --- store next key in group namespace
     gns!=BBjAPI().getGroupNamespace()
     gns!.setValue(nskey$,next_ky$)
-
+print (tfl)"*****next_ky$: "+next_ky$
     if dom_flag=1
         err_num=11
         goto trigger_error_forced
