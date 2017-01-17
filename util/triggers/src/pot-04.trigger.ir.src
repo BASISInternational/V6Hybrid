@@ -1,0 +1,266 @@
+rem AddonSoftware
+rem Copyright BASIS International Ltd.
+rem 
+rem instead of key
+rem This trigger assumes that it is being used in a non-modified Barista and Addon
+rem with a non-modified Version 6 Addon. If there have been any modifications to
+rem these systems, be sure to thoroughly examine this trigger and test changes.
+
+rem --- Read V6 POT-04 instead of Barista Addon's pot_rechdr
+
+	setopts $080872202c2e$
+	seterr trigger_error
+
+    info!=BBjAPI().getCurrentSessionInfo()
+    grpID$=str(info!.getGroupID())   
+    sessionID$=str(info!.getSessionID())
+    nskey$="POT04"+"_"+grpID$+"_"+sessionID$
+
+    rem ' trace
+    goto skip_trace;rem this out to do the trace
+    tfl$="C:/temp_downloads/pot04.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
+	
+rem ---  Get the Trigger object from the BBj File System
+
+    td! = BBjAPI().getFileSystem().getTriggerData()
+	
+	wkdir$ = dir("")
+	v6data_dir$=stbl("+V6DATA",err=std_exit)
+    
+    keyed_read=0
+	ky$=td!.getKey(err=non_keyed_read)
+    keyed_read=1
+    
+non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
+    keyName$=td!.getKeyName()
+    if !keyed_read
+        rem --- get partial/trip-read or last full key from namespace
+        gns!=BBjAPI().getGroupNamespace()
+        ky$ = gns!.getValue(nskey$,err=*next)
+        xPos=pos("::"=ky$)
+        if xPos>1 then keyName$=ky$(1,xPos-1)
+        if xPos>0 then ky$=ky$(xPos+2)
+        
+        rem --- if previous key read took us to EOF, namespace will contain special value to indicate that
+        if ky$=nskey$+"**EOF"
+            err_num=2
+            goto trigger_error_forced
+        endif
+    endif
+
+rem --- Template for the V6 POT-04 record being read
+
+	intemp$="firm_id:c(2),vendor_nbr:c(6),po_number:c(7),receiver_nbr:c(7*),"
+    intemp$=intemp$+"warehouse_id:c(2),purch_addr:c(2),ord_date:c(6),promise_date:c(6),not_b4_date:c(6),reqd_date:c(6),recpt_date:c(6),hold_flag:c(1),"
+    intemp$=intemp$+"rsrvd_str:c(1),rsrvd_str_02:c(1),terms_code:c(2),rsrvd_str_03:c(4),po_frt_terms:c(15),ap_ship_via:c(15),acknowledge:c(20),fob:c(15),"
+    intemp$=intemp$+"po_msg_code:c(3),req_number:c(7),packing_list:c(15),rec_complete:c(1),rsrvd_str_04:c(26*),rsrvd_str_05:c(1*),dealer_str:c(1*),"
+    intemp$=intemp$+"rsrvd_num_01:n(1*),rsrvd_num_02:n(1*),rsrvd_num_03:n(1*),rsrvd_num_04:n(1*),rsrvd_num_05:n(1*),rsrvd_num_06:n(1*),"
+    intemp$=intemp$+"dealer_num_01:n(1*),dealer_num_02:n(1*),dealer_num_03:n(1*)"
+	dim pot04a$:intemp$
+
+rem --- Get template for Barista Addon's POT_RECHDR table
+
+	tpl_dev=unt
+	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
+	read (tpl_dev,key=pad("POT_RECHDR",16),dom=trigger_error) *,*,pot_rechdr_tpl$
+	dim pot_rechdr$:pot_rechdr_tpl$
+
+rem --- Open V6 POT-04 file
+
+	pot04_dev=unt
+	open (pot04_dev,err=trigger_error)v6data_dir$+"POT-04"
+	
+rem --- Get the data
+
+    next_ky$=nskey$+"**EOF";rem --- set default in case we take an end= error branch
+    dom_flag=1
+
+    if ky$="" and keyed_read=0
+        switch (BBjAPI().TRUE)
+            case keyName$="PRIMARY"
+            case default
+                read record (pot04_dev,end=trigger_error) pot04a$; dom_flag=0
+                break
+            case keyName$="VEND_PO_REC"
+                read record (pot04_dev,end=trigger_error) pot04a$; dom_flag=0
+                break
+       swend
+    else
+        switch (BBjAPI().TRUE)
+            case keyName$="PRIMARY"
+            case default
+                ky_firm_id$=""
+                ky_po_no$=""
+                ky_receiver_no$=""
+                ky_len=len(ky$)
+                if ky_len>2 then
+                    ky_firm_id$=ky$(1,2)
+                    if ky_len>9 then
+                        ky_po_no$=ky$(3,7)
+                        ky_receiver_no$=ky$(10)
+                    else
+                        ky_po_no$=ky$(3)
+                    endif
+                else
+                    ky_firm_id$=ky$
+                endif
+
+                rem --- Find vendor nbr for this v16 PRIMARY key (firm_id+po_no+receiver_no)
+                vendor_nbr$=""
+                read(pot04_dev,key=ky_firm_id$,dom=*next)
+                while 1
+                    pot04_key$=key(pot04_dev,end=*break)
+                    readrecord(pot04_dev,end=*break)pot04a$
+                    if pot04a.firm_id$<>ky_firm_id$ then break
+                    if pot04a.po_no$+pot04a.receiver_no$<>ky_po_no$+ky_receiver_no$ then continue
+                    vendor_nbr$=pot04a.vendor_nbr$
+                    break
+                wend
+                if vendor_nbr$<>"" then
+                    read record (pot04_dev,key=ky_firm_id$+vendor_nbr$+ky_po_no$+ky_receiver_no$,dom=*next) pot04a$; dom_flag=0
+                endif
+                break
+            case keyName$="VEND_PO_REC"
+                read record (pot04_dev,key=ky$,dom=*next) pot04a$; dom_flag=0
+                break
+        swend
+    endif
+
+    if dom_flag=0
+        pot_rechdr.firm_id$=pot04a.firm_id$
+        pot_rechdr.po_no$=pot04a.po_number$
+        pot_rechdr.receiver_no$=pot04a.receiver_nbr$
+        pot_rechdr.vendor_id$=pot04a.vendor_nbr$
+        pot_rechdr.warehouse_id$=pot04a.warehouse_id$
+        pot_rechdr.purch_addr$=pot04a.purch_addr$
+        pot_rechdr.reserved_str$=pot04a.rsrvd_str$
+        pot_rechdr.hold_flag$=pot04a.hold_flag$
+        pot_rechdr.reserved_str_02$=pot04a.rsrvd_str_02$
+        pot_rechdr.ap_terms_code$=pot04a.terms_code$
+        pot_rechdr.reserved_str_03$=pot04a.rsrvd_str_03$
+        pot_rechdr.po_frt_terms$=pot04a.po_frt_terms$
+        pot_rechdr.ap_ship_via$=pot04a.ap_ship_via$
+        pot_rechdr.acknowledge$=pot04a.acknowledge$
+        pot_rechdr.fob$=pot04a.fob$
+        pot_rechdr.po_msg_code$=pot04a.po_msg_code$
+        pot_rechdr.req_no$=pot04a.req_number$
+        pot_rechdr.packing_list$=pot04a.packing_list$
+        pot_rechdr.rec_complete$=pot04a.rec_complete$
+        pot_rechdr.reserved_str_04$=pot04a.rsrvd_str_04$
+        value$=pot04a.ord_date$
+        gosub fix_yymmdd_date
+        pot_rechdr.ord_date$=value$
+        value$=pot04a.promise_date$
+        gosub fix_yymmdd_date
+        pot_rechdr.promise_date$=value$
+        value$=pot04a.not_b4_date$
+        gosub fix_yymmdd_date
+        pot_rechdr.not_b4_date$=value$
+        value$=pot04a.reqd_date$
+        gosub fix_yymmdd_date
+        pot_rechdr.reqd_date$=value$
+        value$=pot04a.recpt_date$
+        gosub fix_yymmdd_date
+        pot_rechdr.recpt_date$=value$
+        pot_rechdr.dropship$=""
+        pot_rechdr.customer_id$=""
+        pot_rechdr.order_no$=""
+        pot_rechdr.shipto_no$=""
+        pot_rechdr.ds_name$=""
+        pot_rechdr.ds_addr_line_1$=""
+        pot_rechdr.ds_addr_line_2$=""
+        pot_rechdr.ds_addr_line_3$=""
+        pot_rechdr.ds_addr_line_4$=""
+        pot_rechdr.ds_city$=""
+        pot_rechdr.ds_state_code$=""
+        pot_rechdr.ds_zip_code$=""
+        pot_rechdr.reserved_str_05$=pot04a.rsrvd_str_05$
+        pot_rechdr.dealer_str$=pot04a.dealer_str$
+        pot_rechdr.reserved_num_01=pot04a.rsrvd_num_01
+        pot_rechdr.reserved_num_02=pot04a.rsrvd_num_02
+        pot_rechdr.reserved_num_03=pot04a.rsrvd_num_03
+        pot_rechdr.reserved_num_04=pot04a.rsrvd_num_04
+        pot_rechdr.reserved_num_05=pot04a.rsrvd_num_05
+        pot_rechdr.reserved_num_06=pot04a.rsrvd_num_06
+        pot_rechdr.dealer_num_01=pot04a.dealer_num_01
+        pot_rechdr.dealer_num_02=pot04a.dealer_num_02
+        pot_rechdr.dealer_num_03=pot04a.dealer_num_03
+    endif
+
+rem --- Get next key
+
+    if !td!.getExtract() then
+        next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
+        
+        switch (BBjAPI().TRUE)
+            case keyName$="PRIMARY"
+            case default
+                this_key$=key(pot04_dev,end=*break)
+                dim next_key$(16)
+                next_key$(1,2)=this_key$(1,2); rem --- firm id
+                next_key$(3,7)=this_key$(9,7); rem --- po number
+                next_key$(10,7)=this_key$(16,7); rem --- receiver nbr
+                break
+            case keyName$="VEND_PO_REC"
+                next_ky$=key(pot04_dev,end=*next)
+                break
+        swend
+    else
+        next_ky$=ky$
+    endif
+
+    rem --- store key info in group namespace (for looping back to k$=key() in calling code)
+    gns!=BBjAPI().getGroupNamespace()
+    gns!.setValue(nskey$,keyName$+"::"+next_ky$)
+    
+    if dom_flag=1
+        err_num=11
+        goto trigger_error_forced
+    else
+        td!.setReadBuffer(pot_rechdr$)
+        goto std_exit
+    endif
+
+trigger_error:
+
+    rd_err_text$="", err_num=err
+    
+trigger_error_forced:
+
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    if err_num=11
+        rem -- if we took the DOM above, store the partial key in group namespace for upcoming k$=key in calling code
+        gns!=BBjAPI().getGroupNamespace()
+        gns!.setValue(nskey$,keyName$+"::"+next_ky$)
+	endif
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+    
+fix_yymmdd_date: rem --- Convert yy dates to yyyy, and yymmdd dates to yyyymmdd
+    rem ---     Input/Out: value$
+    if len(cvs(value$,3)) then
+        value$=fnyy_yy21$(value$)
+        if asc(value$)>=65 then
+            value$=str(200+asc(value$)-65)+value$(2)
+        else
+            value$="19"+value$
+        endif
+        value$=str(num(value$(1,4),err=*next)+add_year)+value$(5)
+    else
+        value$=pad("",8)
+    endif
+    return
+
+rem --- Convert 2-Char Year to 21st Century 2-Char Year
+    def fnyy_yy21$(q$)
+        q3$=" ABCDE56789ABCDEFGHIJ"
+        q$(1,1)=q3$(pos(q$(1,1)=" 0123456789ABCDEFGHIJ"))
+        return q$
+    fnend
+	
+std_exit:
