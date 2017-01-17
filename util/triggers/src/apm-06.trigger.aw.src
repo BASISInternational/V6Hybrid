@@ -38,7 +38,6 @@ print (tfl)"***** user: "+td!.getUser()
 print (tfl)"***** ID string: "+td!.getIDString()
 non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
     if !keyed_read
-        rem --- get partial/trip-read or last full key from namespace
         gns!=BBjAPI().getGroupNamespace()
         ky$ = gns!.getValue(nskey$,err=*next)
         rem --- if previous key read took us to EOF, namespace will contain special value to indicate that
@@ -64,6 +63,8 @@ non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from n
         if ex_info$="" or ex_info$=ns_info$
             exns!.removeLock(ky$)
             exns!.removeValue(ky$,err=*endif)
+        else
+            exns!.removeLock(ky$)
         endif
     else
         ex_info$=exns!.getValue(ky$,err=*next)

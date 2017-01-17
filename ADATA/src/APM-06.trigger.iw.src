@@ -110,6 +110,9 @@ rem --- Write the data
         if ex_info$="" or ex_info$=ns_info$
             exns!.removeLock(ky$)
             exns!.removeValue(ky$,err=*endif)
+        else
+            exns!.removeLock(ky$)
+        endif
     else
         ex_info$=exns!.getValue(ky$,err=*next)
         rd_err_text$=ex_info$+" (Key: "+ky$+")."

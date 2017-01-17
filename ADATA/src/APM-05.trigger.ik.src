@@ -37,7 +37,7 @@ rem --- get key (stored in instead-of-read trigger) from namespace
     gns!=BBjAPI().getGroupNamespace()
     have_key=0
     ky$ = gns!.getValue(nskey$,err=*next);have_key=1
-
+print (tfl)"*****ky$ is: "+ky$
     if ky$=nskey$+"**EOF"
         err_num=2
         goto trigger_error_forced

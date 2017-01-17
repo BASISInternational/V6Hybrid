@@ -38,7 +38,6 @@ print (tfl)"***** user: "+td!.getUser()
 print (tfl)"***** ID string: "+td!.getIDString()
 non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
     if !keyed_read
-        rem --- get partial/trip-read or last full key from namespace
         gns!=BBjAPI().getGroupNamespace()
         ky$ = gns!.getValue(nskey$,err=*next)
         rem --- if previous key read took us to EOF, namespace will contain special value to indicate that
@@ -71,12 +70,13 @@ print (tfl)"*****extract_flag is: "+str(extract_flag)
         if set_lock
             ex_info$=exns!.getValue(ky$,err=*next)
             if ex_info$<>"" and ex_info$<>ns_info$
+                exns!.removeLock(ky$)
                 rd_err_text$=ex_info$+" (Key: "+ky$+")."
                 err_num=0
                 goto trigger_error_forced
             else
                 exns!.setValue(ky$,ns_info$)
-print (tfl)"*****setting soft lock for: "+ky$
+                exns!.removeLock(ky$)
             endif
         else
             ex_info$=exns!.getValue(ky$,err=*next)
@@ -94,6 +94,8 @@ print (tfl)"*****and ex_info$: "+ex_info$
             if ex_info$="" or ex_info$=ns_info$
                 exns!.removeLock(ky$)
                 exns!.removeValue(ky$,err=*endif)
+            else
+                exns!.removeLock(ky$)
             endif
         else
             ex_info$=exns!.getValue(ky$,err=*next)
@@ -109,9 +111,6 @@ print (tfl)"*****and ex_info$: "+ex_info$
         gns!=BBjAPI().getGroupNamespace()
         gns!.setValue(nskey$,next_ky$)
     endif
-
-
-        
 
     goto std_exit
 

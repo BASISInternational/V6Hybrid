@@ -37,7 +37,6 @@ print (tfl)"*****keyed read...ky$: "+ky$
     
 non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
     if !keyed_read
-        rem --- get partial/trip-read or last full key from namespace
         gns!=BBjAPI().getGroupNamespace()
         ky$ = gns!.getValue(nskey$,err=*next)
         rem --- if previous key read took us to EOF, namespace will contain special value to indicate that
@@ -88,13 +87,14 @@ print (tfl)"*****extract_flag is: "+str(extract_flag)
         if set_lock
             ex_info$=exns!.getValue(ky$,err=*next)
             if ex_info$<>"" and ex_info$<>ns_info$
+                exns!.removeLock(ky$)
                 rd_err_text$=ex_info$+" (Key: "+ky$+")."
                 err_num=0
                 goto trigger_error_forced
             else
                 exns!.setValue(ky$,ns_info$)
+                exns!.removeLock(ky$)
             endif
-            exns!.removeLock(ky$)
         else
             ex_info$=exns!.getValue(ky$,err=*next)
             rd_err_text$=ex_info$+" (Key: "+ky$+")."
@@ -109,8 +109,9 @@ print (tfl)"*****extract_flag is: "+str(extract_flag)
             if ex_info$="" or ex_info$=ns_info$
                 exns!.removeLock(ky$)
                 exns!.removeValue(ky$,err=*endif)
+            else
+                exns!.removeLock(ky$)
             endif
-            exns!.removeLock(ky$)
         else
             ex_info$=exns!.getValue(ky$,err=*next)
             rd_err_text$=ex_info$+" (Key: "+ky$+")."
