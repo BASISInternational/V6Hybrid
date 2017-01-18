@@ -1,9 +1,7 @@
 rem --- build_triggers.aon
 rem --- Copyright BASIS International Ltd.  All Rights Reserved.
 
-rem --- Delete and re-define triggers used for V6Hybrid demo project.
-rem --- Design plan is to ship demo project with trigger source code files in ADATA/src/ directory.
-rem --- This program will iterate through each file in that directory, removing and then re-creating definitions using current install location and barista.cfg.
+rem --- This program will looks for all .trigger files in the ADATA directory and changes working dir, config file, and all trigger source paths using current install location.
 
     seterr std_error
     setesc std_error

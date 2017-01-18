@@ -16,8 +16,6 @@ rem --- Need to do the following for the V6demo to work properly
 rem --- update_DD:
 rem ---  1. Change opened_date field data type in ARM-01 to be Character as Binary
 rem ---  2. Set date type for ART-03 invoice_date to 'AON'
-rem --- uninstall_modules
-rem ---  3. Mark current Addon modules except for GL, AP, and ABS Payroll, as uninstalled
 rem --- rename_menus
 rem ---  4. Rename addon.men and prbabs.men so they're not used - only using v6hybrid.men 
 
@@ -69,10 +67,7 @@ rem --- Open File(s)
 
 rem --- Do the processing
     gosub update_DD
-    gosub uninstall_modules
     gosub rename_menus
-    gosub update_v6hybrid_menu
-    gosub refresh_menu
     
     goto done
 
@@ -95,29 +90,11 @@ update_DD:rem --- Make changes directly to BASIS DD for properties that can't be
     custOpenedDate!.setString(BBjAdminColumn.BBX_TYPE,"Z")
     custTable!.commit(err=*next)
 
-    vendTable!=rdDatabase!.getTable("APM01")
-    vendOpenedDate!=vendTable!.getColumn("V6_OPENED_DATE")
-    vendOpenedDate!.setInt(BBjAdminColumn.FLAG,8)
-    vendOpenedDate!.setString(BBjAdminColumn.BBX_TYPE,"Z")
-    vendTable!.commit(err=*next)
-
     rem --- set date type on AR Invoice Header to 'AON'
     ARInvTable!=rdDatabase!.getTable("ART03")
     invoiceDate!=ARInvTable!.getColumn("V6_INVOICE_DATE")
     invoiceDate!.setString(BBjAdminBBjColumn.DATE_FORMAT,"AON")
     ARInvTable!.commit(err=*next)
-
-    return
-
-uninstall_modules:rem --- Mark current Addon modules except AP, GL, and PRB as uninstalled
-
-    sql$="UPDATE ADM_MODULES SET SYS_INSTALL='N' WHERE ASC_COMP_ID='01007514' AND ASC_PROD_ID IN('AR','BM','CR','GM','IV','MP','OP','PO','SA','SF')"
-    sqlchan=sqlunt
-    sqlopen(sqlchan)stbl("+DBNAME_API",err=*return)
-    sqlprep(sqlchan,err=*return)sql$
-    sqlexec(sqlchan,err=*return)
-    
-    sqlclose(sqlchan)
 
     return
   
@@ -147,70 +124,12 @@ rename_menus:rem --- Rename Addon's menu (addon.men) and Payroll's menu (prbabs.
         endif
     next syscnt
 
-    return
-
-update_v6hybrid_menu:rem --- The V6Hybrid menu contains an entry for launching V6 into it's main login/menu (rather than launching a specific task)
-                   rem --- Need to change the 16th element in each line ('^' is the separator)to specify the location of the current install's barista.cfg
-                   rem --- Set the location path based on OS
-
-    rem --- rename/keep original menu as a backup
-    v6menu$="V6Hybrid/config/enu/v6hybrid.men"
-    menuFile!=new File(baseDir$+v6menu$,err=*next)
-    if menuFile!.exists()
-        backupCopy$=baseDir$+v6menu$+".bak1"
-        counter=0
-        while 1
-            rem --- find a target that doesn't exist
-            declare File aFile!
-            aFile! = new File(backupCopy$)
-            if !aFile!.exists() then break
-            counter=counter+1
-            backupCopy$=baseDir$+v6menu$+".bak"+str(counter)
-        wend
-        
-        rename menuFile!.getAbsolutePath() to aFile!.getAbsolutePath(), err=*endif        
-
-        rem --- now open the backup and copy back into new v6hybrid.men, changing the AONV6_CUI line
-        srcChan=unt
-        open(srcChan,isz=-1)backupCopy$
-        trgChan=unt
-        open(trgChan,isz=-1,mode="O_CREATE,O_TRUNC")baseDir$+v6menu$
-
-        rem --- set path to barista.cfg for this install
-        if pos("Windows"=info(0,0))=1
-            baristaCfg$=dsk("")+dir("")+stbl("+DIR_CFG")+"barista.cfg"
-        else
-            baristaCfg$=dir("")+stbl("+DIR_CFG")+"barista.cfg"
-        endif
-
-        while 1
-            read(srcChan,end=*break)menuRec$
-            if pos("AONV6_CUI"=menuRec$)
-                sep15=pos("^"=menuRec$,1,15)
-                sep16=pos("^"=menuRec$,1,16)
-                if sep15 and sep16
-                    if pos("barista.cfg"=menuRec$(sep15+1,sep16-(sep15+1)))<>0
-                        menuRec$=menuRec$(1,sep15)+baristaCfg$+menuRec$(sep16) 
-                    endif
-                endif
-            endif
-            write(trgChan)menuRec$
-        wend
-    endif
-    
-    close(srcChan,err=*next)
-    close(trgChan,err=*next)
-    
-    return
-
-refresh_menu:rem --- after renaming aon and payroll menus and altering V6Hybrid menu, use namespace to refresh display
-
     rdGlobalSpace!=BBjAPI().getGlobalNamespace()
     rdGlobalSpace!.setValue("+rebuild_menu","ALL")
-    
+
     return
 
-
+	
 done: rem --- All done
 
     rem --- Update AutoLaunch Status
