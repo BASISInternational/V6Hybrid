@@ -17,7 +17,7 @@ rem --- Get key from Barista Addon's apt_invoicedet instead of V6 apt-11
     nskey$="APT11"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    goto skip_trace;rem this out to do the trace
+    rem goto skip_trace;rem this out to do the trace
     tfl$="C:/temp_downloads/apt11.ik."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -49,6 +49,7 @@ rem --- get key (stored in instead-of-read trigger) from namespace
             ky$=key(apt_invoicedet,err=trigger_error)
             gns!.setValue(nskey$,ky$)
         endif
+print (tfl)"*****ky$ being returned is: "+ky$+":"
         td!.setReadBuffer(ky$)
         goto std_exit
     endif

@@ -17,7 +17,7 @@ rem --- Read Barista Addon's apt_invoicehdr instead of V6 apt-01
     nskey$="APT01"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    goto skip_trace;rem this out to do the trace
+    rem goto skip_trace;rem this out to do the trace
     tfl$="C:/temp_downloads/apt01.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -48,7 +48,7 @@ non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from n
 	
 	wkdir$ = dir("")
 	apdir$ = stbl("+APDATA")
-print (tfl)"***** partial key is: "+ky$
+print (tfl)"***** partial key is: "+ky$+":"
 rem --- Template for the APT-01 record being caught
 
     intemp$="firm_id:c(2),ap_type:c(2),vendor_nbr:c(6),ap_inv_nbr:c(10),sequence_00:c(2),dist_code:c(2),"
@@ -70,6 +70,7 @@ rem --- Open Barista AP Invoice Header table
 rem --- Get the data
 
     dom_flag=1
+    if len(ky$)>20 then ky$=ky$(1,20);rem V6 key to apt-01 contains sequence 00, but that's not in the Barista Addon key
 
     if ky$="" and keyed_read=0
         read record (apt_invoicehdr,end=trigger_error) apt_invoicehdr$; dom_flag=0
@@ -104,6 +105,7 @@ print (tfl)"*****hta of dates: "+hta(inrec.invoice_date$)+" "+hta(inrec.accting_
 
     next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
     next_ky$=key(apt_invoicehdr,end=*next)
+    if pos("**EOF"=next_ky$)=0 then next_ky$=next_ky$+"00";rem put sequence 00 on the key when sending back to V6
 
     rem --- store next key in group namespace
     gns!=BBjAPI().getGroupNamespace()

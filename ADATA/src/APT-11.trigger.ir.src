@@ -17,7 +17,7 @@ rem --- Read Barista Addon's apt_invoicedet instead of V6 apt-11
     nskey$="APT11"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    goto skip_trace;rem this out to do the trace
+    rem goto skip_trace;rem this out to do the trace
     tfl$="C:/temp_downloads/apt11.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -48,7 +48,7 @@ non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from n
 	
 	wkdir$ = dir("")
 	apdir$ = stbl("+APDATA")
-
+print (tfl)"*****incoming ky$ is: "+ky$+":"
 rem --- Template for the APT-11 record being caught
 
     intemp$="firm_id:c(2),ap_type:c(2),vendor_nbr:c(6),ap_inv_nbr:c(10),sequence_num:c(2*),"
@@ -62,12 +62,13 @@ rem --- Open Barista AP Invoice Detail table
 	open (apt_invoicedet,err=trigger_error)apdir$+"apt-11"
 	tpl_dev=unt
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
-	read (tpl_dev,key=pad("apt_invoicedet",16),dom=trigger_error) *,*,apt_invoicedet_tpl$
+	read (tpl_dev,key=pad("APT_INVOICEDET",16),dom=trigger_error) *,*,apt_invoicedet_tpl$
 	dim apt_invoicedet$:apt_invoicedet_tpl$
 	
 rem --- Get the data
 
     dom_flag=1
+    if len(ky$)>20 then ky$=ky$(1,20)+str(num(ky$(21)):"000");rem V6 key to apt-11 contains 2-char seq#, but incoming from Barista Addon is 3-char.
 
     if ky$="" and keyed_read=0
         read record (apt_invoicedet,end=trigger_error) apt_invoicedet$; dom_flag=0
@@ -91,7 +92,15 @@ rem --- Get the data
 
     next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
     next_ky$=key(apt_invoicedet,end=*next)
-
+    if pos("**EOF"=next_ky$)=0 then
+        if num(next_ky$(21,3))>99
+            next_ky$=nskey$+"**EOF";rem --- since V6 can only accommodate up to 99 detail lines, force EOF if there are more on the Barista Addon side
+        else
+            seq$=str(num(next_ky$(21,3)):"00")
+            next_ky$=next_ky$(1,20)+seq$;rem --- in V6, seq# is 2 char, but it's 3 in Barista Addon, so need to send back as 2 char.
+        endif
+    endif
+print (tfl)"*****next_ky$ going out of ir is: "+next_ky$+":"
     rem --- store next key in group namespace
     gns!=BBjAPI().getGroupNamespace()
     gns!.setValue(nskey$,next_ky$)

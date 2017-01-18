@@ -17,7 +17,7 @@ rem --- Write Barista Addon's apt_invoicehdr instead of V6 apt-01
     nskey$="APT01"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    goto skip_trace;rem this out to do the trace
+    rem goto skip_trace;rem this out to do the trace
     tfl$="C:/temp_downloads/apt01.iw."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
