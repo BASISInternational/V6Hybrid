@@ -17,7 +17,7 @@ rem --- Read Barista Addon's apt_invoicedist instead of V6 apt-02
     nskey$="APT02"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    goto skip_trace;rem this out to do the trace
+    rem goto skip_trace;rem this out to do the trace
     tfl$="C:/temp_downloads/apt02.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -36,7 +36,6 @@ rem ---  Get the Trigger object from the BBj File System
     
 non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
     if !keyed_read
-        rem --- get partial/trip-read or last full key from namespace
         gns!=BBjAPI().getGroupNamespace()
         ky$ = gns!.getValue(nskey$,err=*next)
         rem --- if previous key read took us to EOF, namespace will contain special value to indicate that
@@ -64,6 +63,58 @@ rem --- Open Barista AP Invoice GL Distribution table
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("APT_INVOICEDIST",16),dom=trigger_error) *,*,apt_invoicedist_tpl$
 	dim apt_invoicedist$:apt_invoicedist_tpl$
+
+rem --- V6 extracts this record when updating (PO Invoice Reg/Updt)
+rem --- if doing an extract, place a soft lock in a namespace, remove the soft lock after write
+rem --- analogous triggers exist on the Barista Addon side
+
+    extract_flag=td!.getExtract()
+    exns_prefix$=stbl("+DBNAME_API",err=trigger_error)
+    exns_suffix$="apt-02"
+    exns!=BBjAPI().getNamespace(exns_prefix$,exns_suffix$,1)
+    ns_info$="V6 namespace lock: "+info!.getUser()+": "+td!.getIDString()
+    
+print (tfl)"ns prefix.suffix: "+exns_prefix$+"."+exns_suffix$
+print (tfl)"*****extract_flag is: "+str(extract_flag)
+
+    if extract_flag
+        set_lock=0
+        exns!.setLock(ky$,5000,err=*next);set_lock=1
+        if set_lock
+            ex_info$=exns!.getValue(ky$,err=*next)
+            if ex_info$<>"" and ex_info$<>ns_info$
+                exns!.removeLock(ky$)
+                rd_err_text$=ex_info$+" (Key: "+ky$+")."
+                err_num=0
+                goto trigger_error_forced
+            else
+                exns!.setValue(ky$,ns_info$)
+                exns!.removeLock(ky$)
+            endif
+        else
+            ex_info$=exns!.getValue(ky$,err=*next)
+            rd_err_text$=ex_info$+" (Key: "+ky$+")."
+            err_num=0
+            goto trigger_error_forced
+        endif
+    else
+        set_lock=0
+        exns!.setLock(ky$,5000,err=*next);set_lock=1
+        if set_lock        
+            ex_info$=exns!.getValue(ky$,err=*next)
+            if ex_info$="" or ex_info$=ns_info$
+                exns!.removeLock(ky$)
+                exns!.removeValue(ky$,err=*endif)
+            else
+                exns!.removeLock(ky$)
+            endif
+        else
+            ex_info$=exns!.getValue(ky$,err=*next)
+            rd_err_text$=ex_info$+" (Key: "+ky$+")."
+            err_num=0
+            goto trigger_error_forced
+        endif
+    endif
 	
 rem --- Get the data
 
@@ -87,8 +138,12 @@ rem --- Get the data
         inRec.units=apt_invoicedist.units
     endif
 
-    next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
-    next_ky$=key(apt_invoicedist,end=*next)
+    if extract_flag=0
+        next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
+        next_ky$=key(apt_invoicedist,end=*next)
+    else
+        next_ky$=ky$
+    endif
 
     rem --- store next key in group namespace
     gns!=BBjAPI().getGroupNamespace()
