@@ -1,7 +1,8 @@
 rem --- build_triggers.aon
 rem --- Copyright BASIS International Ltd.  All Rights Reserved.
 
-rem --- This program will looks for all .trigger files in the ADATA directory and changes working dir, config file, and all trigger source paths using current install location.
+rem --- This program looks for all .trigger files in the V6 ADATA directory and changes working dir, config file, and all trigger source paths relative to the current install location.
+rem --- TODO --- Since a production hybrid installation also requires triggers on the Barista Addon side, the .trigger definition files and corresponding source code will be in the V6Hybrid/util/triggers and triggers/src folders. This program needs to copy them to aon/data and aon/data/src.
 
     seterr std_error
     setesc std_error
