@@ -1,0 +1,174 @@
+rem AddonSoftware
+rem Copyright BASIS International Ltd.
+rem 
+rem instead of key
+rem This trigger assumes that it is being used in a non-modified Barista and Addon
+rem with a non-modified Version 6 Addon. If there have been any modifications to
+rem these systems, be sure to thoroughly examine this trigger and test changes.
+
+rem --- Read V6 POM-02 instead of Barista Addon's poc_linecode
+
+	setopts $080872202c2e$
+	seterr trigger_error
+
+    info!=BBjAPI().getCurrentSessionInfo()
+    grpID$=str(info!.getGroupID())   
+    sessionID$=str(info!.getSessionID())
+    nskey$="POM02"+"_"+grpID$+"_"+sessionID$
+
+    rem ' trace
+    goto skip_trace;rem this out to do the trace
+    tfl$="C:/temp_downloads/pom02.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
+	
+rem ---  Get the Trigger object from the BBj File System
+
+    td! = BBjAPI().getFileSystem().getTriggerData()
+	
+	wkdir$ = dir("")
+	v6data_dir$=stbl("+V6DATA",err=std_exit)
+    
+    keyed_read=0
+	ky$=td!.getKey(err=non_keyed_read)
+    keyed_read=1
+    
+non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
+    keyName$=td!.getKeyName()
+    if !keyed_read
+        rem --- get partial/trip-read or last full key from namespace
+        gns!=BBjAPI().getGroupNamespace()
+        ky$ = gns!.getValue(nskey$,err=*next)
+        xPos=pos("::"=ky$)
+        if xPos>1 then keyName$=ky$(1,xPos-1)
+        if xPos>0 then ky$=ky$(xPos+2)
+        
+        rem --- if previous key read took us to EOF, namespace will contain special value to indicate that
+        if ky$=nskey$+"**EOF"
+            err_num=2
+            goto trigger_error_forced
+        endif
+    endif
+
+rem --- Template for the V6 POM-02 record being read
+
+	intemp$="firm_id:c(2),po_line_code:c(2*),"
+    intemp$=intemp$+"code_desc:c(20),line_type:c(1),dropship:c(1),lead_tim_flg:c(1),land_cst_flg:c(1),add_options:c(1),rsrvd_str:c(7*),"
+    intemp$=intemp$+"gl_exp_acct:c(10*)"
+	dim pom02a$:intemp$
+
+rem --- Get template for Barista Addon's POC_LINECODE table
+
+	tpl_dev=unt
+	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
+	read (tpl_dev,key=pad("POC_LINECODE",16),dom=trigger_error) *,*,poc_linecode_tpl$
+	dim poc_linecode$:poc_linecode_tpl$
+
+rem --- Open V6 POM-02 file
+
+	pom02_dev=unt
+	open (pom02_dev,err=trigger_error)v6data_dir$+"POM-02"
+	
+rem --- Get the data
+
+    next_ky$=nskey$+"**EOF";rem --- set default in case we take an end= error branch
+    dom_flag=1
+
+    if ky$="" and keyed_read=0
+        switch (BBjAPI().TRUE)
+            case keyName$="PRIMARY"
+            case default
+                read record (pom02_dev,end=trigger_error) pom02a$; dom_flag=0
+                break
+        swend
+    else
+        switch (BBjAPI().TRUE)
+            case keyName$="PRIMARY"
+            case default
+                read record (pom02_dev,key=ky$,dom=*next) pom02a$; dom_flag=0
+                break
+        swend
+    endif
+
+    if dom_flag=0
+        poc_linecode.firm_id$=pom02a.firm_id$
+        poc_linecode.po_line_code$=pom02a.po_line_code$
+        poc_linecode.code_desc$=pom02a.code_desc$
+        poc_linecode.line_type$=pom02a.line_type$
+        poc_linecode.dropship$=pom02a.dropship$
+        poc_linecode.lead_tim_flg$=pom02a.lead_tim_flg$
+        poc_linecode.land_cst_flg$=pom02a.land_cst_flg$
+        poc_linecode.add_options$=pom02a.add_options$
+        poc_linecode.reserved_str$=pom02a.rsrvd_str$
+        poc_linecode.gl_exp_acct$=pom02a.gl_exp_acct$
+        poc_linecode.gl_ppv_acct$=""
+    endif
+    
+rem --- Get next key
+
+    if !td!.getExtract() then
+        next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
+        
+        switch (BBjAPI().TRUE)
+            case keyName$="PRIMARY"
+            case default
+                next_ky$=key(pom02_dev,end=*next)
+                break
+        swend
+    else
+        next_ky$=ky$
+    endif
+
+    rem --- store key info in group namespace (for looping back to k$=key() in calling code)
+    gns!=BBjAPI().getGroupNamespace()
+    gns!.setValue(nskey$,keyName$+"::"+next_ky$)
+    
+    if dom_flag=1
+        err_num=11
+        goto trigger_error_forced
+    else
+        td!.setReadBuffer(poc_linecode$)
+        goto std_exit
+    endif
+
+trigger_error:
+
+    rd_err_text$="", err_num=err
+    
+trigger_error_forced:
+
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    if err_num=11
+        rem -- if we took the DOM above, store the partial key in group namespace for upcoming k$=key in calling code
+        gns!=BBjAPI().getGroupNamespace()
+        gns!.setValue(nskey$,keyName$+"::"+next_ky$)
+	endif
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+    
+fix_yymmdd_date: rem --- Convert yy dates to yyyy, and yymmdd dates to yyyymmdd
+    rem ---     Input/Out: value$
+    if len(cvs(value$,3)) then
+        value$=fnyy_yy21$(value$)
+        if asc(value$)>=65 then
+            value$=str(200+asc(value$)-65)+value$(2)
+        else
+            value$="19"+value$
+        endif
+        value$=str(num(value$(1,4),err=*next)+add_year)+value$(5)
+    else
+        value$=pad("",8)
+    endif
+    return
+
+rem --- Convert 2-Char Year to 21st Century 2-Char Year
+    def fnyy_yy21$(q$)
+        q3$=" ABCDE56789ABCDEFGHIJ"
+        q$(1,1)=q3$(pos(q$(1,1)=" 0123456789ABCDEFGHIJ"))
+        return q$
+    fnend
+	
+std_exit:
