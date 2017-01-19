@@ -17,7 +17,7 @@ rem --- Read Barista Addon's apt_invoicedist instead of V6 apt-02
     nskey$="APT02"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/apt02.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -47,7 +47,7 @@ non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from n
 	
 	wkdir$ = dir("")
 	apdir$ = stbl("+APDATA")
-print (tfl)"***** partial key is: "+ky$
+
 rem --- Template for the APT-02 record being caught
 
     intemp$="firm_id:c(2),ap_type:c(2),vendor_nbr:c(6),invoice_type:c(1),reference:c(10),gl_account:c(10),"
@@ -73,9 +73,6 @@ rem --- analogous triggers exist on the Barista Addon side
     exns_suffix$="apt-02"
     exns!=BBjAPI().getNamespace(exns_prefix$,exns_suffix$,1)
     ns_info$="V6 namespace lock: "+info!.getUser()+": "+td!.getIDString()
-    
-print (tfl)"ns prefix.suffix: "+exns_prefix$+"."+exns_suffix$
-print (tfl)"*****extract_flag is: "+str(extract_flag)
 
     if extract_flag
         set_lock=0
@@ -123,6 +120,12 @@ rem --- Get the data
     if ky$="" and keyed_read=0
         read record (apt_invoicedist,end=trigger_error) apt_invoicedist$; dom_flag=0
     else
+        if len(ky$)=34
+            rem --- V6 key contains 3-char packed date; unpack it in order to find the record in Barista Addon
+            value$=ky$(32,3)
+            gosub fix_ymd_date
+            ky$=ky$(1,31)+value$
+        endif
         read record (apt_invoicedist,key=ky$,dom=*next) apt_invoicedist$; dom_flag=0
     endif
     
@@ -170,6 +173,15 @@ trigger_error_forced:
         gns!.setValue(nskey$,next_ky$)
 	endif
     throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+
+fix_ymd_date: rem --- Convert ymd packed dates to yyyymmdd
+    rem ---     Input/Out: value$
+    if len(cvs(value$,3)) then
+        value$=str(asc(value$)-32+1900)+str(asc(value$(2))-32:"00")+str(mod(asc(value$(3))-32,100):"00")
+    else
+        value$=pad("",8)
+    endif
+    return
 	
 rem --- Functions
 

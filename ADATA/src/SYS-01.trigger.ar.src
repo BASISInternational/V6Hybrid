@@ -13,7 +13,7 @@ rem --- If a terminal record, or param rec from other module, simply returns bac
 	seterr trigger_error
 
     rem ' trace
-    goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/sys01.txt"
     erase tfl$,err=*next
     string tfl$

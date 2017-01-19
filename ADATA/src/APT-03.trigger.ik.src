@@ -18,7 +18,7 @@ rem --- A for AO_VEND_INVDATE, B for AO_VEND_REF, C for AO_INV_TYPE_VEND
     nskey$="APT03"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/apt03.ik."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$

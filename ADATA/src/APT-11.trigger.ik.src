@@ -17,7 +17,7 @@ rem --- Get key from Barista Addon's apt_invoicedet instead of V6 apt-11
     nskey$="APT11"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/apt11.ik."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -48,8 +48,26 @@ rem --- get key (stored in instead-of-read trigger) from namespace
             open (apt_invoicedet,err=trigger_error)apdir$+"apt-11"
             ky$=key(apt_invoicedet,err=trigger_error)
             gns!.setValue(nskey$,ky$)
+        else
+            rem --- We already have the next key saved in the namespace - check to see if we're doing a KEYP and if so, need to wind back to previous key instead
+            if td!.getKeyCallType()="KEYP"
+            	apt_invoicedet=unt
+                open (apt_invoicedet,err=trigger_error)apdir$+"apt-11"
+                ky$=ky$(1,20)+str(num(ky$(21,2)):"000");rem --- seq# needs to be 3 char for Barista Addon
+                read (apt_invoicedet,key=ky$,dir=0);rem --- set pointer to where key in the namespace left us (after DOM on key+$FF$ in read)
+                ky$=keyp(apt_invoicedet,err=trigger_error);rem --- then get previous key and send it back to calling program so it can determine sequence#
+
+                dim seq$(2)
+                seq$(1,2)=str(num(ky$(21,3)):"00")
+                ky$=ky$(1,20)+seq$
+                gns!.setValue(nskey$,ky$)
+
+                else
+                    err_num=2
+                    goto trigger_error_forced
+                endif
+            endif
         endif
-print (tfl)"*****ky$ being returned is: "+ky$+":"
         td!.setReadBuffer(ky$)
         goto std_exit
     endif

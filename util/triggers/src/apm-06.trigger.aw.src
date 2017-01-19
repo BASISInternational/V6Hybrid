@@ -17,7 +17,7 @@ rem --- After writing to Barista Addon's apm_vendrepl file, release soft lock in
     nskey$="V16apm06"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/V16apm06.aw."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -33,9 +33,7 @@ rem ---  Get the Trigger object from the BBj File System
     keyed_read=0
 	ky$=td!.getKey(err=non_keyed_read)
     keyed_read=1
-print (tfl)"*****ky$ is: "+ky$ 
-print (tfl)"***** user: "+td!.getUser()
-print (tfl)"***** ID string: "+td!.getIDString()
+
 non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
     if !keyed_read
         gns!=BBjAPI().getGroupNamespace()

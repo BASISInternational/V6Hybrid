@@ -17,7 +17,7 @@ rem --- Read Barista Addon's apm_vendrepl instead of V6 apm-06
     nskey$="APM06"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/apm06.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -32,7 +32,6 @@ rem ---  Get the Trigger object from the BBj File System
 
     keyed_read=0
 	ky$=td!.getKey(err=non_keyed_read)
-print (tfl)"*****keyed read...ky$: "+ky$
     keyed_read=1
     
 non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
@@ -77,9 +76,6 @@ rem --- analogous triggers exist on the Barista Addon side
     exns_suffix$="apm-06"
     exns!=BBjAPI().getNamespace(exns_prefix$,exns_suffix$,1)
     ns_info$="V6 namespace lock: "+info!.getUser()+": "+td!.getIDString()
-    
-print (tfl)"ns prefix.suffix: "+exns_prefix$+"."+exns_suffix$
-print (tfl)"*****extract_flag is: "+str(extract_flag)
 
     if extract_flag
         set_lock=0
@@ -161,7 +157,7 @@ rem --- Get the data
     rem --- store next key in group namespace
     gns!=BBjAPI().getGroupNamespace()
     gns!.setValue(nskey$,next_ky$)
-print (tfl)"*****next_ky$: "+next_ky$
+
     if dom_flag=1
         err_num=11
         goto trigger_error_forced

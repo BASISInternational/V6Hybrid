@@ -17,7 +17,7 @@ rem --- Write Barista Addon's apm_vendrepl instead of V6 apm-06
     nskey$="APM06"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/apm06.iw."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -34,7 +34,7 @@ rem ---  Get the Trigger object from the BBj File System
 	
 	wkdir$ = dir("")
 	apdir$ = stbl("+APDATA")
-print (tfl)"ky$ is: "+ky$
+
 rem --- Template for the APM-06 record being caught
 
     intemp$="firm_id:c(2),vendor_nbr:c(6),buyer_code:c(3*=10),pri_rev_date:c(3),nxt_rev_date:c(3),"
@@ -88,7 +88,12 @@ rem --- Write the data
     apm_vendrepl.nyr_rec_unit=inRec.nyr_rec_unit
 
     apm_vendrepl$=field(apm_vendrepl$)
-    writerecord (apm_vendrepl)apm_vendrepl$
+
+    if td!.getDOM()
+        writerecord (apm_vendrepl,dom=trigger_error)apm_vendrepl$
+    else
+        writerecord (apm_vendrepl)apm_vendrepl$
+    endif
 
     next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
     next_ky$=key(apm_vendrepl,end=*next)
@@ -134,7 +139,6 @@ fix_ymd_date: rem --- Convert ymd packed dates to yyyymmdd
 trigger_error:
 
     rd_err_text$="", err_num=err
-print (tfl)"*****trigger error routine, err_num is: "+str(err_num)
     if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
     if err_num=11
         rem -- if we took the DOM above, store the partial key in group namespace for upcoming k$=key in calling code

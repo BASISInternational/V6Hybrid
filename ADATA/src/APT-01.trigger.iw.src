@@ -17,7 +17,7 @@ rem --- Write Barista Addon's apt_invoicehdr instead of V6 apt-01
     nskey$="APT01"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/apt01.iw."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -65,16 +65,16 @@ rem --- Write the data
     apt_invoicehdr.payment_grp$=inRec.payment_grp$
     apt_invoicehdr.ap_terms_code$=inRec.terms_code$
     value$=inRec.invoice_date$
-    gosub fix_yymmdd_date
+    gosub fix_ymd_date
     apt_invoicehdr.invoice_date$=value$
     value$=inRec.accting_date$
-    gosub fix_yymmdd_date
+    gosub fix_ymd_date
     apt_invoicehdr.accting_date$=value$
     value$=inRec.inv_due_date$
-    gosub fix_yymmdd_date
+    gosub fix_ymd_date
     apt_invoicehdr.inv_due_date$=value$
     value$=inRec.disc_date$
-    gosub fix_yymmdd_date
+    gosub fix_ymd_date
     apt_invoicehdr.disc_date$=value$
     apt_invoicehdr.reference$=inRec.reference$
     apt_invoicehdr.ap_inv_memo$=inRec.ap_inv_memo$
@@ -85,22 +85,22 @@ rem --- Write the data
     apt_invoicehdr.invoice_amt=inRec.invoice_amt
     apt_invoicehdr.discount_amt=inRec.discount_amt
     apt_invoicehdr.retention=inRec.retention
+    apt_invoicehdr.invoice_bal=inRec.invoice_amt;rem Barista Addon has Invoice Balance field in apt_invoicehdr, so set to invoice amt
     
     apt_invoicehdr$=field(apt_invoicehdr$)
-    writerecord (apt_invoicehdr)apt_invoicehdr$
+    
+    if td!.getDOM()
+        writerecord (apt_invoicehdr,dom=trigger_error)apt_invoicehdr$
+    else
+        writerecord (apt_invoicehdr)apt_invoicehdr$
+    endif
 
 	goto std_exit
 
-fix_yymmdd_date: rem --- Convert yy dates to yyyy, and yymmdd dates to yyyymmdd
+fix_ymd_date: rem --- Convert ymd packed dates to yyyymmdd
     rem ---     Input/Out: value$
     if len(cvs(value$,3)) then
-        value$=fnyy_yy21$(value$)
-        if asc(value$)>=65 then
-            value$=str(200+asc(value$)-65)+value$(2)
-        else
-            value$="19"+value$
-        endif
-        value$=str(num(value$(1,4),err=*next))+value$(5)
+        value$=str(asc(value$)-32+1900)+str(asc(value$(2))-32:"00")+str(mod(asc(value$(3))-32,100):"00")
     else
         value$=pad("",8)
     endif
@@ -110,11 +110,6 @@ trigger_error:
 
     rd_err_text$="", err_num=err
     if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
-    if err_num=11
-        rem -- if we took the DOM above, store the partial key in group namespace for upcoming k$=key in calling code
-        gns!=BBjAPI().getGroupNamespace()
-        gns!.setValue(nskey$,ky$)
-	endif
     throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
 	
 rem --- Functions

@@ -17,7 +17,7 @@ rem --- Write Barista Addon's apt_invoicedist instead of V6 apt-02
     nskey$="APT02"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/apt02.iw."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -61,13 +61,19 @@ rem --- Write the data
     apt_invoicedist.reference$=inRec.reference$
     apt_invoicedist.gl_account$=inRec.gl_account$
     value$=inRec.accting_date$
-    gosub fix_yymmdd_date
+    gosub fix_ymd_date
     apt_invoicedist.accting_date$=value$
     apt_invoicedist.gl_post_amt=inRec.gl_post_amt
     apt_invoicedist.units=inRec.units
     
     apt_invoicedist$=field(apt_invoicedist$)
-    writerecord (apt_invoicedist)apt_invoicedist$
+
+    if td!.getDOM()
+        writerecord (apt_invoicedist,dom=trigger_error)apt_invoicedist$
+    else
+        writerecord (apt_invoicedist)apt_invoicedist$
+    endif
+    
 
     next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
     next_ky$=key(apt_invoicedist,end=*next)
@@ -101,16 +107,10 @@ rem --- Write the data
 
 	goto std_exit
 
-fix_yymmdd_date: rem --- Convert yy dates to yyyy, and yymmdd dates to yyyymmdd
+fix_ymd_date: rem --- Convert ymd packed dates to yyyymmdd
     rem ---     Input/Out: value$
     if len(cvs(value$,3)) then
-        value$=fnyy_yy21$(value$)
-        if asc(value$)>=65 then
-            value$=str(200+asc(value$)-65)+value$(2)
-        else
-            value$="19"+value$
-        endif
-        value$=str(num(value$(1,4),err=*next))+value$(5)
+        value$=str(asc(value$)-32+1900)+str(asc(value$(2))-32:"00")+str(mod(asc(value$(3))-32,100):"00")
     else
         value$=pad("",8)
     endif

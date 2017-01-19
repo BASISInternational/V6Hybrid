@@ -6,7 +6,7 @@ rem This trigger assumes that it is being used in a non-modified Barista and Add
 rem Version 6 environment. If there have been any modifications to these systems,
 rem be sure to thoroughly examine this trigger and test changes.
 
-rem --- When reading V6 GLM-04 GL Account Xref, read Barista Addon glm_acct instead, using appropriate knum
+rem --- Read Barista Addon's glt_bankother instead of V6 apm-12
 
 	setopts $080872202c2e$
 	seterr trigger_error
@@ -14,11 +14,11 @@ rem --- When reading V6 GLM-04 GL Account Xref, read Barista Addon glm_acct inst
     info!=BBjAPI().getCurrentSessionInfo()
     grpID$=str(info!.getGroupID())
     sessionID$=str(info!.getSessionID())
-    nskey$="GLM04"+"_"+grpID$+"_"+sessionID$
-
+    nskey$="APM12"+"_"+grpID$+"_"+sessionID$
+    
     rem ' trace
     goto skip_trace;rem this line (and change pathname as applicable) to do the trace
-    tfl$="C:/temp_downloads/glm-04.ik."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    tfl$="C:/temp_downloads/apm12.ik."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
     tfl=unt
@@ -26,14 +26,14 @@ rem --- When reading V6 GLM-04 GL Account Xref, read Barista Addon glm_acct inst
     settrace(tfl,MODE="UNTIMED")
 skip_trace:
 	
-rem ---  Get the Trigger object from the BBj File System, and globals needed for current Barista Addon environment
+rem ---  Get the Trigger object from the BBj File System
 
     td! = BBjAPI().getFileSystem().getTriggerData()
-
+	
 	wkdir$ = dir("")
 	gldir$ = stbl("+GLDATA")
 
-    rem --- get key (stored in instead-of-read trigger) from namespace
+rem --- get key (stored in instead-of-read trigger) from namespace
     gns!=BBjAPI().getGroupNamespace()
     have_key=0
     ky$ = gns!.getValue(nskey$,err=*next);have_key=1
@@ -43,11 +43,11 @@ rem ---  Get the Trigger object from the BBj File System, and globals needed for
         goto trigger_error_forced
     else
         if have_key=0
-            rem --- have_key should always be 1 for this trigger, since V6 would be reading the glm-04 rec with the A record ID
-            rem --- throw err 2 if have_key manages to be 0 somehow
-            ky$=nskey$+"**EOF"
-            err_num=2
-            goto trigger_error_forced
+            rem --- Open Barista Bank Rec Other table and get first key
+            glt_bankother=unt
+            open (glt_bankother,err=trigger_error)gldir$+"glt-15"
+            ky$=key(glt_bankother,err=trigger_error)
+            gns!.setValue(nskey$,ky$)
         endif
         td!.setReadBuffer(ky$)
         goto std_exit
@@ -56,7 +56,7 @@ rem ---  Get the Trigger object from the BBj File System, and globals needed for
 trigger_error:
 
     rd_err_text$="", err_num=err
-
+    
 trigger_error_forced:
 
     if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
@@ -69,6 +69,19 @@ rem --- Functions
 		q3$=" ABCDE56789ABCDEFGHIJ"
 		q1$(1,1)=q3$(pos(q1$(1,1)=" 0123456789ABCDEFGHIJ"))
 		return q1$
+	fnend
+
+	rem --- returns a 3 character packed date from an 8 character year/month/day
+	def fnd$(q$)
+		q$=pad(q$,8)
+		if cvs(q$,2)="" return "   "
+		q1$=chr(num(q$(5,2))+32)+chr(num(q$(7,2))+32)
+		if q$(1,2)="19"
+			q2$=chr(num(q$(3,2))+32)
+		else
+			q2$=chr(num(q$(3,2))+132)
+		endif
+		return q2$+q1$
 	fnend
 	
 std_exit:

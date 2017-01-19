@@ -18,7 +18,7 @@ rem --- This interface uses V6's trans_number format of "C"+the date, rather tha
     nskey$="APM12"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/apm12.iw."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -68,7 +68,12 @@ rem --- Write the data
     glt_bankother.trns_date$=value$
     
     glt_bankother$=field(glt_bankother$)
-    writerecord (glt_bankother)glt_bankother$
+
+    if td!.getDOM()
+        writerecord (glt_bankother,dom=trigger_error)glt_bankother$
+    else
+        writerecord (glt_bankother)glt_bankother$
+    endif
 
 	goto std_exit
 

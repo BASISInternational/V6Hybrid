@@ -17,7 +17,7 @@ rem --- Get key from Barista Addon's apt_invoicedist instead of V6 apt-02
     nskey$="APT02"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/apt02.ik."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -45,7 +45,7 @@ rem ---  Get the Trigger object from the BBj File System
         if have_key=0
             rem --- Open Barista AP Invoice GL Distribution table and get first key
             apt_invoicedist=unt
-            open (apt_invoicedist,err=trigger_error)apdir$+"apt-01"
+            open (apt_invoicedist,err=trigger_error)apdir$+"apt-02"
             ky$=key(apt_invoicedist,err=trigger_error)
             gns!.setValue(nskey$,ky$)
         endif

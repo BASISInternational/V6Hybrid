@@ -18,7 +18,7 @@ rem --- A for AO_VEND_INVDATE, B for AO_VEND_REF, C for AO_INV_TYPE_VEND
     nskey$="APT03"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/apt03.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -37,7 +37,7 @@ rem ---  Get the Trigger object from the BBj File System
     
 non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
     if !keyed_read
-        rem --- get partial/trip-read or last full key from namespace
+        rem --- get key from namespace
         gns!=BBjAPI().getGroupNamespace()
         ky$ = gns!.getValue(nskey$,err=*next)
         rem --- if previous key read took us to EOF, namespace will contain special value to indicate that

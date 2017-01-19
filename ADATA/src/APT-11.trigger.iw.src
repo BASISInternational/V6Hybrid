@@ -17,7 +17,7 @@ rem --- Write Barista Addon's apt_invoicedet instead of V6 apt-11
     nskey$="APT11"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/apt11.iw."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -49,7 +49,7 @@ rem --- Open Barista AP Invoice Detail table
 	open (apt_invoicedet,err=trigger_error)apdir$+"apt-11"
 	tpl_dev=unt
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
-	read (tpl_dev,key=pad("apt_invoicedet",16),dom=trigger_error) *,*,apt_invoicedet_tpl$
+	read (tpl_dev,key=pad("APT_INVOICEDET",16),dom=trigger_error) *,*,apt_invoicedet_tpl$
 	dim apt_invoicedet$:apt_invoicedet_tpl$
 	
 rem --- Write the data
@@ -58,10 +58,10 @@ rem --- Write the data
     apt_invoicedet.ap_type$=inRec.ap_type$
     apt_invoicedet.vendor_id$=inRec.vendor_nbr$
     apt_invoicedet.ap_inv_no$=inRec.ap_inv_nbr$
-    apt_invoicedet.sequence_no$=inRec.sequence_num$
+    apt_invoicedet.sequence_no$=str(num(inRec.sequence_num$):"000")
     apt_invoicedet.trans_type$=inRec.trans_type$
     value$=inRec.trans_date$
-    gosub fix_yymmdd_date    
+    gosub fix_ymd_date    
     apt_invoicedet.trans_date$=value$
     apt_invoicedet.trans_ref$=inRec.trans_ref$
     apt_invoicedet.trans_amt$=inRec.trans_amt$
@@ -69,20 +69,19 @@ rem --- Write the data
     apt_invoicedet.trans_ret$=inRec.trans_ret$
     
     apt_invoicedet$=field(apt_invoicedet$)
-    writerecord (apt_invoicedet)apt_invoicedet$
+
+    if td!.getDOM()
+        writerecord (apt_invoicedet,dom=trigger_error)apt_invoicedet$
+    else
+        writerecord (apt_invoicedet)apt_invoicedet$
+    endif
 
 	goto std_exit
 
-fix_yymmdd_date: rem --- Convert yy dates to yyyy, and yymmdd dates to yyyymmdd
+fix_ymd_date: rem --- Convert ymd packed dates to yyyymmdd
     rem ---     Input/Out: value$
     if len(cvs(value$,3)) then
-        value$=fnyy_yy21$(value$)
-        if asc(value$)>=65 then
-            value$=str(200+asc(value$)-65)+value$(2)
-        else
-            value$="19"+value$
-        endif
-        value$=str(num(value$(1,4),err=*next))+value$(5)
+        value$=str(asc(value$)-32+1900)+str(asc(value$(2))-32:"00")+str(mod(asc(value$(3))-32,100):"00")
     else
         value$=pad("",8)
     endif

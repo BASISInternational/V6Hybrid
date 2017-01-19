@@ -17,7 +17,7 @@ rem --- When reading V6 GLM-04 GL Account Xref, read Barista Addon glm_acct inst
     nskey$="GLM04"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/glm-04.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -32,12 +32,11 @@ rem ---  Get the Trigger object from the BBj File System
 
     keyed_read=0
 	ky$=td!.getKey(err=non_keyed_read)
-print (tfl)"*****td!.getKey(): "+ky$
     keyed_read=1
     
 non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
     if !keyed_read
-        rem --- get partial/trip-read or last full key from namespace
+        rem --- get key from namespace
         gns!=BBjAPI().getGroupNamespace()
         ky$ = gns!.getValue(nskey$,err=*next)
         rem --- if previous key read took us to EOF, namespace will contain special value to indicate that
@@ -92,9 +91,7 @@ rem --- Get the data
 
     next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
     next_ky$=key(glm_acct,end=store_key)
-print (tfl)"*****next_ky$: "+next_ky$
     next_ky$=next_ky$(1,2)+ky$(3,1)+next_ky$(3)
-print (tfl)"*****V6 version is: "+next_ky$
 
 store_key:    
     rem --- store next key in group namespace

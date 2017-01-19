@@ -17,7 +17,7 @@ rem --- Read Barista Addon's glm_acct file instead of V6 GLM-01
     nskey$="GLM01"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/glm-01.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -32,12 +32,11 @@ rem ---  Get the Trigger object from the BBj File System
 
     keyed_read=0
 	ky$=td!.getKey(err=non_keyed_read)
-print (tfl)"*****td!.getKey(): "+ky$
     keyed_read=1
     
 non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
     if !keyed_read
-        rem --- get partial/trip-read or last full key from namespace
+        rem --- get key from namespace
         gns!=BBjAPI().getGroupNamespace()
         ky$ = gns!.getValue(nskey$,err=*next)
         rem --- if previous key read took us to EOF, namespace will contain special value to indicate that

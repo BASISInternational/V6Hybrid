@@ -17,7 +17,7 @@ rem --- Write Barista Addon's apm_vendhist instead of V6 apm-02
     nskey$="APM02"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/apm02.iw."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -53,7 +53,7 @@ rem --- Open Barista Vendor Codes and History table
 	tpl_dev=unt
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("APM_VENDHIST",16),dom=trigger_error) *,*,apm_vendhist_tpl$
-	dim apm_vendhist$:apm_vendhist_tpl$; rem --- Template for the APM-12 record being caught
+	dim apm_vendhist$:apm_vendhist_tpl$;rem --- Template for the APM-12 record being caught
 	
 rem --- Write the data
 
@@ -61,13 +61,13 @@ rem --- Write the data
     apm_vendhist.vendor_id$=inRec.vendor_nbr$
     apm_vendhist.ap_type$=inRec.ap_type$
     apm_vendhist.ap_dist_code$=inRec.dist_code$
-    apm_vendhist.payment_grp$=inRec.payment_grp
+    apm_vendhist.payment_grp$=inRec.payment_grp$
     apm_vendhist.ap_terms_code$=inRec.terms_code$
     value$=inRec.lstinv_date$
-    gosub fix_yymmdd_date
+    gosub fix_ymd_date
     apm_vendhist.lstinv_date$=value$
     value$=inRec.lstpay_date$
-    gosub fix_yymmdd_date    
+    gosub fix_ymd_date    
     apm_vendhist.lstpay_date$=value$
     apm_vendhist.gl_account$=inRec.gl_account$
     apm_vendhist.open_invs=inRec.open_invs
@@ -86,20 +86,19 @@ rem --- Write the data
     apm_vendhist.nxt_cyr_pmts=inRec.nxt_cyr_pmts
     
     apm_vendhist$=field(apm_vendhist$)
-    writerecord (apm_vendhist)apm_vendhist$
+
+    if td!.getDOM()
+        writerecord (apm_vendhist,dom=trigger_error)apm_vendhist$
+    else
+        writerecord (apm_vendhist)apm_vendhist$
+    endif
 
 	goto std_exit
 
-fix_yymmdd_date: rem --- Convert yy dates to yyyy, and yymmdd dates to yyyymmdd
+fix_ymd_date: rem --- Convert ymd packed dates to yyyymmdd
     rem ---     Input/Out: value$
     if len(cvs(value$,3)) then
-        value$=fnyy_yy21$(value$)
-        if asc(value$)>=65 then
-            value$=str(200+asc(value$)-65)+value$(2)
-        else
-            value$="19"+value$
-        endif
-        value$=str(num(value$(1,4),err=*next))+value$(5)
+        value$=str(asc(value$)-32+1900)+str(asc(value$(2))-32:"00")+str(mod(asc(value$(3))-32,100):"00")
     else
         value$=pad("",8)
     endif

@@ -17,7 +17,7 @@ rem --- Read Barista Addon's apt_invoicedet instead of V6 apt-11
     nskey$="APT11"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/apt11.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -36,7 +36,7 @@ rem ---  Get the Trigger object from the BBj File System
     
 non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
     if !keyed_read
-        rem --- get partial/trip-read or last full key from namespace
+        rem --- get key from namespace
         gns!=BBjAPI().getGroupNamespace()
         ky$ = gns!.getValue(nskey$,err=*next)
         rem --- if previous key read took us to EOF, namespace will contain special value to indicate that
@@ -48,7 +48,7 @@ non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from n
 	
 	wkdir$ = dir("")
 	apdir$ = stbl("+APDATA")
-print (tfl)"*****incoming ky$ is: "+ky$+":"
+
 rem --- Template for the APT-11 record being caught
 
     intemp$="firm_id:c(2),ap_type:c(2),vendor_nbr:c(6),ap_inv_nbr:c(10),sequence_num:c(2*),"
@@ -68,7 +68,7 @@ rem --- Open Barista AP Invoice Detail table
 rem --- Get the data
 
     dom_flag=1
-    if len(ky$)>20 then ky$=ky$(1,20)+str(num(ky$(21)):"000");rem V6 key to apt-11 contains 2-char seq#, but incoming from Barista Addon is 3-char.
+    if len(ky$)>20 then ky$=ky$(1,20)+str(num(ky$(21),err=*next):"000");rem V6 key to apt-11 contains 2-char seq#, but incoming from Barista Addon is 3-char. Err=needed for case where apt-11 key is constructed from apt-01 key + $FF$ to find next available sequence number
 
     if ky$="" and keyed_read=0
         read record (apt_invoicedet,end=trigger_error) apt_invoicedet$; dom_flag=0
@@ -93,14 +93,11 @@ rem --- Get the data
     next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
     next_ky$=key(apt_invoicedet,end=*next)
     if pos("**EOF"=next_ky$)=0 then
-        if num(next_ky$(21,3))>99
-            next_ky$=nskey$+"**EOF";rem --- since V6 can only accommodate up to 99 detail lines, force EOF if there are more on the Barista Addon side
-        else
-            seq$=str(num(next_ky$(21,3)):"00")
-            next_ky$=next_ky$(1,20)+seq$;rem --- in V6, seq# is 2 char, but it's 3 in Barista Addon, so need to send back as 2 char.
-        endif
+        dim seq$(2)
+        seq$(1,2)=str(num(next_ky$(21,3)):"00");rem --- in V6, seq# is 2 char, but it's 3 in Barista Addon (note if over 100, will go back as "10", but V6 also has this potential problem)
+        next_ky$=next_ky$(1,20)+seq$
     endif
-print (tfl)"*****next_ky$ going out of ir is: "+next_ky$+":"
+
     rem --- store next key in group namespace
     gns!=BBjAPI().getGroupNamespace()
     gns!.setValue(nskey$,next_ky$)

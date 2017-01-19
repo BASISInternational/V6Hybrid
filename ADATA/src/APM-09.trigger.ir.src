@@ -17,7 +17,7 @@ rem --- Read Barista Addon's apm_vendcmts (Comments) instead of V6 apm-09
     nskey$="APM09"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/apm09.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -36,7 +36,7 @@ rem ---  Get the Trigger object from the BBj File System
     
 non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
     if !keyed_read
-        rem --- get partial/trip-read or last full key from namespace
+        rem --- get key from namespace
         gns!=BBjAPI().getGroupNamespace()
         ky$ = gns!.getValue(nskey$,err=*next)
         rem --- if previous key read took us to EOF, namespace will contain special value to indicate that
@@ -49,7 +49,7 @@ non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from n
 	wkdir$ = dir("")
 	apdir$ = stbl("+APDATA")
 
-rem --- Template for the APM-01 record being caught
+rem --- Template for the APM-09 record being caught
 
     intemp$="firm_id:c(2),vendor_nbr:c(6),sequence_num:c(2*=10),std_comments:c(48*=10)"
 	dim inRec$:intemp$
@@ -82,8 +82,7 @@ rem --- Get the data
 
     next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
     next_ky$=key(apm_vendcmts,end=*next)
-print (tfl)"*****next_ky$: "+next_ky$
-print (tfl)"*****nskey$: "+nskey$
+
     rem --- store next key in group namespace
     gns!=BBjAPI().getGroupNamespace()
     gns!.setValue(nskey$,next_ky$)

@@ -18,7 +18,7 @@ rem --- instead of the V6 APM-10 file's A, B, C, or D records.
     nskey$="APM10"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/apm10.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -36,7 +36,7 @@ rem ---  Get the Trigger object from the BBj File System
 
 	wkdir$ = dir("")
 	apdir$ = stbl("+APDATA")
-print (tfl)"*****ky$ is: "+ky$	
+
 rem --- Open template and masks files for use in getting Barista template for correct file, and masks for params
 
 	tpl_dev=unt
@@ -83,8 +83,8 @@ rem --- Open template and masks files for use in getting Barista template for co
             inRec.gl_purc_acct$=tpl.gl_purc_acct$
         break
         case 3; rem C - Terms Codes
-            apm10c_tpl$="firm_id:c(2),record_id_c:c(1),terms_code:c(2),code_desc:c(20*=10),"
-            apm10c_tpl$=apm10c_tpl$+"prox_or_days:n(7*=10),disc_percent:n(7*=10),due_days:n(7*=10),disc_days:n(7*=10)"
+            apm10c_tpl$="firm_id:c(2),record_id_c:c(1),terms_code:c(2),code_desc:c(20),"
+            apm10c_tpl$=apm10c_tpl$+"prox_or_days:c(1*=10),disc_percent:n(7*=10),due_days:n(7*=10),disc_days:n(7*=10)"
             dim inRec$:apm10c_tpl$
             alias$="APC_TERMSCODE"
             filename$="apc_termscode"
@@ -115,7 +115,7 @@ rem --- Open template and masks files for use in getting Barista template for co
             read record(code_dev,key=ky$,dom=*break)tpl$;dom_flag=0
 
             inRec.firm_id$=tpl.firm_id$
-            inRec.record_id_c$=tpl.record_id_d$
+            inRec.record_id_d$=tpl.record_id_d$
             inRec.payment_grp$=tpl.payment_grp$
             inRec.code_desc$=tpl.code_desc$
         break

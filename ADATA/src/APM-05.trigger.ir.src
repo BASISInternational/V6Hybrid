@@ -33,8 +33,7 @@ rem ---  Get the Trigger object from the BBj File System
     keyed_read=0
 	ky$=td!.getKey(err=non_keyed_read)
     keyed_read=1
-print (tfl)"*****ky$ is: "+ky$ 
-print (tfl)"***** user: "+td!.getUser()  
+ 
 non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
     if !keyed_read
         gns!=BBjAPI().getGroupNamespace()
@@ -49,7 +48,7 @@ non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from n
 	wkdir$ = dir("")
 	apdir$ = stbl("+APDATA")
 
-rem --- Template for the APM-01 record being caught
+rem --- Template for the APM-05 record being caught
 
 	intemp$="firm_id:c(2),vendor_nbr:c(6),purch_addr:c(2*=10),name:c(30),addr_line_1:c(24),addr_line_2:c(24),addr_line_3:c(24),zip_code:c(9),"
 	intemp$=intemp$+"phone_number:c(10),phone_exten:c(4),contact_name:c(20),"
@@ -97,8 +96,7 @@ rem --- Get the data
 
     next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
     next_ky$=key(apm_vendaddr,end=*next)
-print (tfl)"*****next_ky$: "+next_ky$
-print (tfl)"*****nskey$: "+nskey$
+
     rem --- store next key in group namespace
     gns!=BBjAPI().getGroupNamespace()
     gns!.setValue(nskey$,next_ky$)

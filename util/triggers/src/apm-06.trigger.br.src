@@ -6,7 +6,7 @@ rem This trigger assumes that it is being used in a non-modified Barista and Add
 rem Version 6 environment. If there have been any modifications to these systems,
 rem be sure to thoroughly examine this trigger and test changes.
 
-rem --- Read Barista Addon's apm_vendrepl file; if trying to extract, check soft lock to ensure no collision w/ V6
+rem --- Read Barista Addon's apm_vendrepl file; if trying to extract, check/set soft lock to ensure no collision w/ V6
 
 	setopts $080872202c2e$
 	seterr trigger_error
@@ -17,7 +17,7 @@ rem --- Read Barista Addon's apm_vendrepl file; if trying to extract, check soft
     nskey$="V16apm06"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/temp_downloads/V16apm06.br."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
@@ -33,9 +33,7 @@ rem ---  Get the Trigger object from the BBj File System
     keyed_read=0
 	ky$=td!.getKey(err=non_keyed_read)
     keyed_read=1
-print (tfl)"*****ky$ is: "+ky$ 
-print (tfl)"***** user: "+td!.getUser()
-print (tfl)"***** ID string: "+td!.getIDString()
+
 non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from namespace rather than td!.getKey()
     if !keyed_read
         gns!=BBjAPI().getGroupNamespace()
@@ -59,10 +57,6 @@ rem --- V6 will do the same. The soft lock is needed since there's no way to get
     exns_suffix$="apm-06"
     exns!=BBjAPI().getNamespace(exns_prefix$,exns_suffix$,1)
     ns_info$="V16 namespace lock: "+info!.getUser()+": "+td!.getIDString()
-        
-print (tfl)"*****ns prefix.suffix: "+exns_prefix$+"."+exns_suffix$
-print (tfl)"*****ns_info$ is: "+ns_info$
-print (tfl)"*****extract_flag is: "+str(extract_flag)
 
     if extract_flag
         set_lock=0
@@ -89,8 +83,6 @@ print (tfl)"*****extract_flag is: "+str(extract_flag)
         exns!.setLock(ky$,5000,err=*next);set_lock=1
         if set_lock        
             ex_info$=exns!.getValue(ky$,err=*endif)
-print (tfl)"*****not extracting, so remove lock if I have one... ky$: "+ky$
-print (tfl)"*****and ex_info$: "+ex_info$
             if ex_info$="" or ex_info$=ns_info$
                 exns!.removeLock(ky$)
                 exns!.removeValue(ky$,err=*endif)
