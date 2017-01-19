@@ -1,8 +1,12 @@
-rem --- build_triggers.aon
+rem --- adx_V6build_triggers.aon
 rem --- Copyright BASIS International Ltd.  All Rights Reserved.
 
-rem --- This program looks for all .trigger files in the V6 ADATA directory and changes working dir, config file, and all trigger source paths relative to the current install location.
-rem --- TODO --- Since a production hybrid installation also requires triggers on the Barista Addon side, the .trigger definition files and corresponding source code will be in the V6Hybrid/util/triggers and triggers/src folders. This program needs to copy them to aon/data and aon/data/src.
+rem --- This program looks for all .trigger files in the V6 ADATA directory and changes working dir,
+rem --- config file, and all trigger source paths relative to the current install location.
+rem --- Since a production hybrid installation also requires triggers on the Barista Addon side, 
+rem --- the *.trigger definition files and corresponding source code are copied from the V6Hybrid/util/triggers 
+rem --- and triggers/src folders to the Barista Addon installation's aon/data and aon/data/src directories; and
+rem --- all the trigger souce paths are update for that installation location.
 
     seterr std_error
     setesc std_error
@@ -54,7 +58,7 @@ rem --- Open File(s)
 
 rem --- init progress meter
 
-    total_recs=10
+    total_recs=26
     curr_rec=0
     task_val$="BUILDTRIGGERS"
     task_desc$="Create Trigger Defs"
@@ -91,11 +95,59 @@ rem --- Replace working dir, config, and all trigger source paths with those fro
     
     trgProp$="source"
 
-    tdir=unt
     triggerDir$=FileObject.fixPath(triggerDir$,"/")
     if triggerDir$(len(triggerDir$),1)<>"/" then triggerDir$=triggerDir$+"/"
+    gosub updateTriggerPaths    
+
+rem --- Install triggers for Barista Addon installation
+
+    rem --- Locate Hybrid installation's util/triggers directory
+    hybridProgDir$=stbl("V6HYBRID_PROG",err=std_exit)
+    hybridProgDir$=FileObject.fixPath(hybridProgDir$,"/")
+    hybridDir$=hybridProgDir$(1,pos("/prog"=hybridProgDir$))+"/"
+    hybridTriggerDir$=hybridDir$+"util/triggers/"
+
+    rem --- Locate Barista Addon installation's aon/data directory
+    aonDataDir$=stbl("+DIR_DAT",err=std_exit)
+    aonDataDir$=FileObject.fixPath(aonDataDir$,"/")
+
+    rem --- Creating a small invisible window to hold progress meter for adc_copydir.aon
+    sysGUI!=BBjAPI().getSysGui()
+    if BBjAPI().isInMDI() then
+        desktop_w=BBjAPI().getMDI().getClientWidth()
+        desktop_h=BBjAPI().getMDI().getClientHeight()
+    else
+        screenSize!=sysGUI!.getSystemMetrics().getScreenSize()
+        desktop_w=screenSize!.width
+        desktop_h=screenSize!.height
+    endif
+    rdForm!=sysGUI!.addWindow(int(desktop_w/2),int(desktop_h/2),1,1,"",$00000000$)
+    rdForm!.setTitleBarVisible(0)
+    rdForm!.setVisible(0)
+
+    rem --- Recursively copy Hybrid's util/triggers directory to Barista Addon's aon/data directory
+    call pgmdir$+"adc_copydir.aon",hybridTriggerDir$,aonDataDir$,rdForm!,0,status
+
+    rem --- In copied *.trigger definition files, update paths to the Barista Addon installation location
+    triggerDir$=aonDataDir$
+    gosub updateTriggerPaths    
+
+update_status:rem --- Update AutoLaunch Status
+
+    extractrecord(ads_autolaunch,key="V6BLDTRGRS")ads_autolaunch$; rem Advisory Locking
+    ads_autolaunch.process_status$="C"
+    ads_autolaunch.trans_date$=date(0:"%Yl%Mz%Dz")
+    ads_autolaunch.trans_time$=date(0:"%Hz%mz%sz")
+    ads_autolaunch$=field(ads_autolaunch$)
+    writerecord(ads_autolaunch)ads_autolaunch$
+
+goto std_exit
+
+updateTriggerPaths: rem --- Update paths in trigger files
+    rem --- input: triggerDir$ = directory holding the *.trigger definition files
+
+    tdir=unt
     open (tdir)triggerDir$
-    
     while 1
         readrecord(tdir,end=*break)fileName$
         if len(fileName$)<9 or fileName$(len(fileName$)-7,8)<>".trigger" then continue         
@@ -104,10 +156,10 @@ rem --- Replace working dir, config, and all trigger source paths with those fro
         trigger!.setString(BBjAdminTriggers.WORKING_DIR, baristaWD$)
         trigger!.setString(BBjAdminTriggers.CONFIG, baristaWD$+stbl("+DIR_CFG")+"barista.cfg")
         
-rem --- now loop thru before/after/instead-of (outer loop) + close, erase, key, open, read, remove, write + _source (inner loop)
-rem --- get the path to the source file, flip slashes, look for /src
-rem --- replace what's in front of /src with current ADATA location
-rem --- then set it back and commit
+        rem --- now loop thru before/after/instead-of (outer loop) + close, erase, key, open, read, remove, write + _source (inner loop)
+        rem --- get the path to the source file, flip slashes, look for /src
+        rem --- replace what's in front of /src with current ADATA location
+        rem --- then set it back and commit
 
         for tt=0 to trgTypes!.size()-1
             for te=0 to trgEvents!.size()-1
@@ -130,17 +182,7 @@ rem --- then set it back and commit
         progress!.setValue("+process_task",task_val$+"^U^"+str(curr_rec)+"^")
 
     wend
-
-update_status:rem --- Update AutoLaunch Status
-
-    extractrecord(ads_autolaunch,key="V6BLDTRGRS")ads_autolaunch$; rem Advisory Locking
-    ads_autolaunch.process_status$="C"
-    ads_autolaunch.trans_date$=date(0:"%Yl%Mz%Dz")
-    ads_autolaunch.trans_time$=date(0:"%Hz%mz%sz")
-    ads_autolaunch$=field(ads_autolaunch$)
-    writerecord(ads_autolaunch)ads_autolaunch$
-
-goto std_exit
+    return
 
 open_tables:rem -----<Open Tables
 
