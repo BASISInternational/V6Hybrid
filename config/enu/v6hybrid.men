@@ -488,7 +488,6 @@ Shop Floor Control^AONV6_SF^M^^^im_menua_shop_floor_cont.png^^00000000^V6H^^16.0
 AddonSoftware Administration^AONADMIN^M^^^im_menua_system_admin.png^N^01007514^AD^^16.0^^^^^^^^
 	Executive Summary^ADS_EXECSUMMARY^A^^ads_V6execsummary.aon^im_menui_view.png^^01007514^AD^Executive_Summary^16.0^^^^^^^^
 	Executive Summary Update^ADX_EXECSUMMARY^A^^adx_execsummary.aon^im_menui_update.png^^01007514^AD^Executive_Summary^16.0^^^^^^^^
-	Executive Summary Update V6^AONV6_SYXEA^A^^adx_v6leadin.aon - SYX.EA^im_menui_update.png^^00000000^V6H^^16.0^^^^^^^^
 	Report Control^AON_RPTCTL^G^^^im_node_col.png^N^01007514^AD^^16.0^^^^^^^^
 		Report Control Documents^TEMP_ADM_RPTCTL^T^ADM_RPTCTL^^im_menui_table.png^^01007514^AD^^16.0^^^^^^^^
 		Report Control Recipients^ADM_RPTCTL_RCP^T^ADM_RPTCTL_RCP^^im_menui_table.png^^01007514^AD^^16.0^^^^^^^^
@@ -509,15 +508,16 @@ AddonSoftware Administration^AONADMIN^M^^^im_menua_system_admin.png^N^01007514^A
 			Convert PR Employee Comments^ADX_PRBBUILDCOMMENTS^A^^adx_PRBbuildcomments.aon^im_menui_utility.png^^01007514^AD^^16.0^^^^^^^^
 			Combine PR Check History^ADX_PRBBUILDCHKHIST^A^^adx_PRBbuildchkhist.aon^im_menui_utility.png^^01007514^AD^^16.0^^^^^^^^
 			Convert PR Union History^ADX_PRBBUILDUNIONHIS^A^^adx_PRBbuildunionhist.aon^im_menui_utility.png^^01007514^AD^^16.0^^^^^^^^
-	V6 Maintenance and Utilities^AONV6_MISC^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
-		F5 SpeedSearch^AONV6_F5^A^^adx_v6leadin.aon - V6D.AB^im_menui_view.png^^00000000^V6H^^16.0^^^^^^^^
-		F1 Reports^AONV6_F1^A^^adx_v6leadin.aon - V6D.AA^im_menui_view.png^^00000000^V6H^^16.0^^^^^^^^
+	V6 Administration^AONV6_MISC^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
 		User Maintenance^AONV6_SYMBA^A^^adx_v6leadin.aon - SYM.BA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
 		Printer Maintenance^AONV6_SYMGA^A^^adx_v6leadin.aon - SYM.GA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
 		System Description Maintenance^AONV6_SYMDA^A^^adx_v6leadin.aon - SYM.DA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
 		Process Maintenance^AONV6_SYMIA^A^^adx_v6leadin.aon - SYM.IA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
 		Company Maintenance^AONV6_SYMEA^A^^adx_v6leadin.aon - SYM.EA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
+		Executive Summary Update^AONV6_SYXEA^A^^adx_v6leadin.aon - SYX.EA^im_menui_update.png^^00000000^V6H^^16.0^^^^^^^^
 		Utilities^AONV6_AD_MNT^G^^^im_node_col.png^^00000000^V6H^^16.0^^^^^^^^
+			F5 SpeedSearch^AONV6_F5^A^^adx_v6leadin.aon - V6D.AB^im_menui_view.png^^00000000^V6H^^16.0^^^^^^^^
+			F1 Reports^AONV6_F1^A^^adx_v6leadin.aon - V6D.AA^im_menui_view.png^^00000000^V6H^^16.0^^^^^^^^
 			Create Stored Procedure Definitions^AONV6_SPROCS^A^^[V6HYBRID_PROG]adx_V6build_sproc.aon^im_menui_utility.png^^00000000^V6H^^16.0^^^^^^^^
 			Create Trigger Definitions^AONV6_TRIGGERS^A^^[V6HYBRID_PROG]adx_V6build_triggers.aon^im_menui_utility.png^^00000000^V6H^^16.0^^^^^^^^
 			Addon V6 CUI^AONV6_CUI^P^^SYS.ZA^im_menui_table.png^^00000000^V6H^^16.0^^^^-u%USERNAME% -m5160 -tT0 -q^C:/aon_QCV6Hybrid/apps/V6Hybrid/config.aon^^^
