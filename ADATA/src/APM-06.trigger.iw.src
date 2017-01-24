@@ -139,6 +139,9 @@ fix_ymd_date: rem --- Convert ymd packed dates to yyyymmdd
 trigger_error:
 
     rd_err_text$="", err_num=err
+
+trigger_error_forced:
+
     if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
     if err_num=11
         rem -- if we took the DOM above, store the partial key in group namespace for upcoming k$=key in calling code
