@@ -250,7 +250,7 @@ Payroll^PRBMENU^M^^^im_menua_payroll.png^N^01004419^PRB^^16.0^^^^^^^^
 Order/Invoice Processing^AONV6_OP^M^^^im_menua_order_proc.png^^00000000^V6H^^16.0^^^^^^^^
 	Order Entry^AONV6_OPEDA^A^^adx_v6leadin.aon - OPE.DA^im_menui_table.png^^00000000^V6H^^16.0^^^^^^^^
 	Order/Picking List^AONV6_OPRNA^A^^adx_v6leadin.aon - OPR.NA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
-	Open Order Detail Report^AONV6_OPRIA^A^^adx_v6leadin.aon - OPE.IA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
+	Open Order Detail Report^AONV6_OPRIA^A^^adx_v6leadin.aon - OPR.IA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
 	Order Status Report by Customer^AONV6_OPRQA^A^^adx_v6leadin.aon - OPR.QA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
 	Order Status Report by Item^AONV6_OPROA^A^^adx_v6leadin.aon - OPR.OA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
 	Shipping Schedule Report^AONV6_OPRAA^A^^adx_v6leadin.aon - OPR.AA^im_menui_report.png^^00000000^V6H^^16.0^^^^^^^^
