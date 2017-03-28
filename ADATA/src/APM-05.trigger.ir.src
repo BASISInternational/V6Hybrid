@@ -17,7 +17,7 @@ rem --- Read Barista Addon's apm_vendaddr (Purchase Addresses) instead of V6 apm
     nskey$="APM05"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
-    rem goto skip_trace;rem this out to do the trace
+    goto skip_trace;rem this out to do the trace
     tfl$="C:/temp_downloads/apm05.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
