@@ -58,8 +58,8 @@ REM ========================================================================
 REM ========================================================================
 REM Initialize
 REM ========================================================================
-rem 'CAH
-    goto CAH_end;rem to enable trace
+
+    goto skip_trace;rem to enable trace
     tfl$="C:/temp_downloads/renderStmts.txt"
     erase tfl$,err=*next
     string tfl$
@@ -67,14 +67,15 @@ rem 'CAH
     open(tchan)tfl$
     settrace (tchan,MODE="UNTIMED")
     print (tchan)"In render stmts program..."
-CAH_end:
+skip_trace:
     pdfLocation$ = stbl("+V6_DIR_PDF")
 
 rem ' ****************************************************
 rem ' * invoke jasper for given customer
 rem ' ****************************************************
-    
-    reportName$ = "../apps/V6Hybrid/reports/custStatementSingle.jasper"
+
+    reportDir$ = stbl("+V6_DIR_REPORTS",err=*next)
+    reportName$ = reportDir$+"custStatementSingle.jasper"
     
     BBjReport! = BarUtils.getBBJasperReport(reportName$)
 

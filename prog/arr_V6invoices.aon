@@ -222,7 +222,9 @@ rem --- Read next Invoice Header (are-05) record
         params!.put("RESTART",restart$)
         params!.put("RESTART_INVOICE",restart_invoice$)
         params!.put("COPIES",str(copies))
-        params!.put("PROCESS_INFO",stbl("!PROCESS",err=*next));rem for V6 need this to open correct entry file if running batched
+
+        proc$=stbl("!PROCESS",err=*next)
+        params!.put("PROCESS_INFO",proc$);rem for V6 need this to open correct entry file if running batched
 
     rem --- invoke jasper
 
