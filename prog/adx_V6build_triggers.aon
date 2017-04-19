@@ -67,9 +67,8 @@ rem --- init progress meter
     progress!.setValue("+process_task",task_val$+"^C^"+task_desc$+"^CNC^"+str(total_recs)+"^")
 
 rem --- Get Admin Object
-    NSAdmin!=BBjAPI().getNamespace("adminobjects","barista",1)
-    admin!=NSAdmin!.getValue("+bar_admin_"+cvs(user_id$,11),err=*next)
-    NSAdmin!=null()
+
+    admin!=BBjAPI().getGroupNamespace().getValue("+bar_admin_"+cvs(user_id$,11),err=*next)
 
     if admin!=null() then goto std_exit 
 

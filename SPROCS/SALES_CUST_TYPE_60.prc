@@ -33,13 +33,13 @@ sp! = BBjAPI().getFileSystem().getStoredProcedureData()
 
 rem ' Get the IN and IN/OUT parameters used by the procedure
 firm_id$=sp!.getParameter("FIRM_ID")
-month$ = sp!.getParameter("MONTH")
-year$ = sp!.getParameter("YEAR")
+beg_dt$ = sp!.getParameter("BEGDATE")
+end_dt$ = sp!.getParameter("ENDDATE")
 barista_wd$=sp!.getParameter("BARISTA_WD")
 
 rem V6demo --- ART03 defined in BASIS dictionary with V6_INVOICE_DATE as a Date field, using AON format
-beg_dt$=year$+"-"+month$+"-01"
-end_dt$=year$+"-"+month$+"-31"
+beg_dt$=beg_dt$(1,4)+"-"+beg_dt$(5,2)+"-"+beg_dt$(7,2)
+end_dt$=end_dt$(1,4)+"-"+end_dt$(5,2)+"-"+end_dt$(7,2)
 
 sv_wd$=dir("")
 chdir barista_wd$
@@ -63,7 +63,7 @@ rs! = BBJAPI().createMemoryRecordSet("FIRM_ID:C(2),CUST_TYPE:C(3),CODE_DESC:C(20
 
 while 1
     irec$ = sqlfetch(chan,err=*break)
-    data! = rs!.getEmptyRecordData()    
+    data! = rs!.getEmptyRecordData()
     data!.setFieldValue("FIRM_ID",firm_id$)
     data!.setFieldValue("CUST_TYPE",irec.cust_type$)
     data!.setFieldValue("CODE_DESC",irec.code_desc$)
@@ -81,7 +81,5 @@ end
 sproc_error:rem --- SPROC error trap/handler
     rd_err_text$="", err_num=err
     if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
-    x$=stbl("+THROWN_ERR","TRUE")   
+    x$=stbl("+THROWN_ERR","TRUE")
     throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
-
-

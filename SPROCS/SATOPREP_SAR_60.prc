@@ -84,6 +84,7 @@ rem --- Get the IN parameters used by the procedure
 	RETURN Q1$
 	FNEND
 	
+    yyyy$=year$
 	year$ = fnyear_yy21$(num(year$))
 
 rem --- dirs	
@@ -107,6 +108,7 @@ rem --- Open/Lock files via Barista for files defined in dictionary
     dim files$[files],options$[files],ids$[files],templates$[files],channels[files]
     files$[1]="SAM-03",ids$[1]="SAM03"
     files$[2]="ARM-10",ids$[2]="ARM10F"
+    files$[3]="gls_calendar",ids$[3]="GLS_CALENDAR"
 
     call pgmdir$+"adc_fileopen.aon",action,begfile,endfile,files$[all],options$[all],ids$[all],templates$[all],channels[all],batch,status
     if status then
@@ -117,32 +119,26 @@ rem --- Open/Lock files via Barista for files defined in dictionary
 
     sam03a_dev=channels[1]
     arm10f_dev=channels[2]
-    glparams_dev=channels[3]
+    gls_calendar_dev=channels[3]
 
 rem --- Dimension string templates
 
     dim sam03a$:templates$[1]
     dim arm10f$:templates$[2]
-
+    dim gls_calendar$:templates$[3]
+    
 rem --- Get number of periods and period end abbrs used by fiscal calendar
 
-	sql_prep$=""
-	sql_prep$=sql_prep$+"SELECT total_pers, abbr_name_01, abbr_name_02, abbr_name_03, abbr_name_04, abbr_name_05, abbr_name_06, "
-    sql_prep$=sql_prep$+"abbr_name_07, abbr_name_08, abbr_name_09, abbr_name_10, abbr_name_11, abbr_name_12, abbr_name_13 "
-    sql_prep$=sql_prep$+"FROM gls_params "
-	sql_prep$=sql_prep$+"WHERE firm_id='"+firm_id$+"' AND gl='GL' AND sequence_00='00'"
-
-    tmprs!=BarUtils.getResultSet(sql_prep$)
     periodAbbr!=BBjAPI().makeVector()
-    
-    while (tmprs!.next())
-        numGlPers = num(tmprs!.getString("total_pers"))
-        for period=1 to numGlPers
-            periodAbbr!.addItem(tmprs!.getString("abbr_name_"+str(period:"00")))
-        next period
-    wend
-    
-    tmprs!.close(err=*next)
+    readrecord(gls_calendar_dev,key=firm_id$+yyyy$,dom=*next)gls_calendar$
+
+
+    numGlPers=num(gls_calendar.total_pers$)
+    for period=1 to numGlPers
+        abbrname$=field(gls_calendar$,"ABBR_NAME_"+str(period:"00"))
+        periodAbbr!.addItem(abbrname$)
+
+    next period
     
 rem --- Get total sales and period sales by salesperson
 rem --- salesMap! key=total sales for salesperson, holds slspsnMap! (in case more than one salesperson with same total sales)

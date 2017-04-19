@@ -75,8 +75,7 @@ rem --- Do the processing
 update_DD:rem --- Make changes directly to BASIS DD for properties that can't be set/passed in from Barista
 
     rem --- Get Admin Object
-    rdNSAdmin!=BBjAPI().getNamespace("adminobjects","barista",1)
-    rdAdmin!=rdNSAdmin!.getValue("+bar_admin_"+cvs(user_id$,11),err=*next)
+    rdAdmin!=BBjAPI().getGroupNamespace().getValue("+bar_admin_"+cvs(user_id$,11),err=*next)
     rdNSAdmin!=null()
 
     if rdAdmin!=null() then return

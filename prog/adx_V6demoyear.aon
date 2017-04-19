@@ -511,9 +511,7 @@ disable_triggers:rem --- Disable triggers in V6 demo data directory
     rd_user$="admin"
     rd_user$=stbl("+USER_ID",err=*next)
     rd_password$="admin123"
-    rdNSGroup!=BBjAPI().getGroupNamespace()
-    rdNSAdmin!=BBjAPI().getNamespace("adminobjects","barista",1)
-    rdAdmin!=rdNSAdmin!.getValue("+bar_admin_"+cvs(rd_user$,11),err=*next)
+    rdAdmin!=BBjAPI().getGroupNamespace().getValue("+bar_admin_"+cvs(rd_user$,11),err=*next)
     if rdAdmin!<>null() then
         rd_user$=rdAdmin!.getUser()
         rd_password$=rdAdmin!.getPassword()

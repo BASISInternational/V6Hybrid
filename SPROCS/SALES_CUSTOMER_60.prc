@@ -33,13 +33,13 @@ sp! = BBjAPI().getFileSystem().getStoredProcedureData()
 rem ' Get the IN and IN/OUT parameters used by the procedure
 firm_id$=sp!.getParameter("FIRM_ID")
 customer_nbr$=sp!.getParameter("CUSTOMER_NBR")
-month$ = sp!.getParameter("MONTH")
-year$ = sp!.getParameter("YEAR")
+beg_dt$ = sp!.getParameter("BEGDATE")
+end_dt$ = sp!.getParameter("ENDDATE")
 barista_wd$=sp!.getParameter("BARISTA_WD")
 
 rem V6demo --- ART03 defined in BASIS dictionary with V6_INVOICE_DATE as a Date field, using AON format
-beg_dt$=year$+"-"+month$+"-01"
-end_dt$=year$+"-"+month$+"-31"
+beg_dt$=beg_dt$(1,4)+"-"+beg_dt$(5,2)+"-"+beg_dt$(7,2)
+end_dt$=end_dt$(1,4)+"-"+end_dt$(5,2)+"-"+end_dt$(7,2)
 
 sv_wd$=dir("")
 chdir barista_wd$
