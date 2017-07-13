@@ -15,6 +15,7 @@ rem --- Read V6 POT-14 instead of Barista Addon's pot_recdet
     grpID$=str(info!.getGroupID())   
     sessionID$=str(info!.getSessionID())
     nskey$="POT14"+"_"+grpID$+"_"+sessionID$
+    nsvendorkey$="POT14VENDNO"+"_"+grpID$+"_"+sessionID$
 
     rem ' trace
     goto skip_trace;rem this out to do the trace
@@ -122,20 +123,30 @@ rem --- Get the data
                 
                 rem --- Find vendor nbr for this v16 PRIMARY key (firm_id+po_no+receiver_no+[modified]po_line_no)
                 vendor_nbr$=""
+                have_vendor=0
                 pot04_dev=unt
                 open (pot04_dev,err=trigger_error)v6data_dir$+"POT-04"
-                read(pot04_dev,key=ky_firm_id$,dom=*next)
-                while 1
-                    read(pot04_dev,end=*break)pot04_key$
-                    if pot04_key$(1,2)<>ky_firm_id$ then break
-                    if pot04_key$(9,7)+pot04_key$(16,7)<>ky_po_no$+ky_receiver_no$ then continue
-                    vendor_nbr$=pot04_key$(3,6)
-                    break
-                wend
+
+                gns!=BBjAPI().getGroupNamespace()
+                vendor_nbr$=gns!.getValue(nsvendorkey$,err=*next)
+                read (pot04_dev,key=ky_firm_id$+vendor_nbr$+ky_po_no$+ky_receiver_no$,dom=*next); have_vendor=1
+
+                if !have_vendor
+                    read(pot04_dev,key=ky_firm_id$,dom=*next)
+                    while 1
+                        read(pot04_dev,end=*break)pot04_key$
+                        if pot04_key$(1,2)<>ky_firm_id$ then break
+                        if pot04_key$(9,7)+pot04_key$(16,7)<>ky_po_no$+ky_receiver_no$ then continue
+                        vendor_nbr$=pot04_key$(3,6)
+                        gns!.setValue(nsvendorkey$,vendor_nbr$)
+                        break
+                    wend
+                endif
+                
                 if vendor_nbr$<>"" then
                     read record (pot14_dev,key=ky_firm_id$+vendor_nbr$+ky_po_no$+ky_receiver_no$+ky_po_line_nbr$,dom=*next) pot14a$; dom_flag=0
                 endif
-                break
+            break
         swend
     endif
 
