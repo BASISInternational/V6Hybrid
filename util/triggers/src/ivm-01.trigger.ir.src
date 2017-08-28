@@ -152,7 +152,7 @@ rem --- Get the data
                 
                 ivm03_dev=unt
                 open (ivm03_dev,err=trigger_error)v6data_dir$+"IVM-03"
-                dim ivm01a$(29)
+                dim ivm03a$(29)
                 read(ivm03_dev,key=ky_firm_id$+"D"+ky_vendor_nbr$+ky_item_number$,dom=*next)ivm03a$; dom_flag=0
                 if dom_flag=0 then
                     dim this_ky$(22)
@@ -186,7 +186,7 @@ rem --- Get the data
 
                 ivm03_dev=unt
                 open (ivm03_dev,err=trigger_error)v6data_dir$+"IVM-03"
-                dim ivm01a$(29)
+                dim ivm03a$(29)
                 read(ivm03_dev,key=ky_firm_id$+"F"+ky_buyer_code$+ky_vendor_nbr$,dom=*next)
                 if ky_item_number$<>"" then
                     while 1
