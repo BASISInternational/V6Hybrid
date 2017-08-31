@@ -154,7 +154,7 @@ updateTriggerPaths: rem --- Update paths in trigger files
         trigger! = admin!.getTriggers(triggerDir$+trgFile$,err=*continue)
         trigger!.setString(BBjAdminTriggers.WORKING_DIR, baristaWD$)
         trigger!.setString(BBjAdminTriggers.CONFIG, baristaWD$+stbl("+DIR_CFG")+"barista.cfg")
-        trigger!.setString(BBjAdminTriggers.ENABLED, BBjAPI().TRUE)
+        trigger!.setString(BBjAdminTriggers.ENABLED, "true")
         
         rem --- now loop thru before/after/instead-of (outer loop) + close, erase, key, open, read, remove, write + _source (inner loop)
         rem --- get the path to the source file, flip slashes, look for /src
