@@ -1316,8 +1316,7 @@ rem     The inner widget gives us access to the dataset so that we can provide n
 	
 	rem Refresh based on new sql
 	slsCmpWidget!.setSQL(sql$)
-    slsCmpWidget!.refresh()
-	
+	salesComparisonBarDashboardWidget!.refresh()
 	exit
 	
 rem ==============================================   
