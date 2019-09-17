@@ -141,17 +141,29 @@ rem --- output from this routine is used to summarize sales by invoice date into
 
     switch num(emonth$)
         case 1; eday$ = "31"
+            break
         case 2; eday$ = "28"
+            break
         case 3; eday$ = "31"
+            break
         case 4; eday$ = "30"
+            break
         case 5; eday$ = "31"
+            break
         case 6; eday$ = "30"
+            break
         case 7; eday$ = "31"
+            break
         case 8; eday$ = "31"
+            break
         case 9; eday$ = "30"
+            break
         case 10; eday$ = "31"
+            break
         case 11; eday$ = "30"
+            break
         case 12; eday$ = "31"
+            break
     swend
     
     if mod(num(eyear$),4) = 0 and num(emonth$) = 2 then eday$="29"
