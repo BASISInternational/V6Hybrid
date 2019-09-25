@@ -196,7 +196,7 @@ rem --- Get the data
         pot_recdet.qty_received=pot14a.qty_received
         pot_recdet.qty_invoiced=pot14a.qty_invoiced
         pot_recdet.reserved_num_03=pot14a.rsrvd_num_03
-        pot_recdet.reserved_num_04=pot14a.rsrvd_num_04
+rem     pot_recdet.reserved_num_04=pot14a.rsrvd_num_04  ; rem --- Eliminated in v19.00
         pot_recdet.dealer_num_01=pot14a.dealer_num_01
         pot_recdet.dealer_num_02=pot14a.dealer_num_02
         pot_recdet.ns_item_id$=""
