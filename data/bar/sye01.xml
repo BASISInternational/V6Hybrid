@@ -17,13 +17,13 @@
 			<RESTRICT_AUTOADD id="ddm_tables.sye01"></RESTRICT_AUTOADD>
 			<ASC_COMP_ID id="ddm_tables.sye01">00000000</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_tables.sye01">V6H</ASC_PROD_ID>
-			<ASC_VERSION_ID id="ddm_tables.sye01">16.0</ASC_VERSION_ID>
+			<ASC_VERSION_ID id="ddm_tables.sye01">18.0      </ASC_VERSION_ID>
 			<ASC_LICENSE_ID id="ddm_tables.sye01">C20192ADFFA1AD94EB7CAD5E9C4825EE</ASC_LICENSE_ID>
 			<DD_EXPORT_DATA id="ddm_tables.sye01">Y</DD_EXPORT_DATA>
 			<DD_CREATE_DATE id="ddm_tables.sye01">20160923</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_tables.sye01">20161007</DD_LSTREV_DATE>
-			<DD_LSTSYNC_DATE id="ddm_tables.sye01">20160923</DD_LSTSYNC_DATE>
-			<DD_LSTSYNC_TIME id="ddm_tables.sye01">152338</DD_LSTSYNC_TIME>
+			<DD_LSTREV_DATE id="ddm_tables.sye01">20191126</DD_LSTREV_DATE>
+			<DD_LSTSYNC_DATE id="ddm_tables.sye01">20191126</DD_LSTSYNC_DATE>
+			<DD_LSTSYNC_TIME id="ddm_tables.sye01">130231</DD_LSTSYNC_TIME>
 			<DD_ATTR_ATAB id="ddm_tables.sye01"></DD_ATTR_ATAB>
 			<DD_ATTR_CPGM id="ddm_tables.sye01"></DD_ATTR_CPGM>
 			<DD_ATTR_DKNM id="ddm_tables.sye01"></DD_ATTR_DKNM>
@@ -45,6 +45,17 @@
 			<SQL_TABLE id="ddm_tables.sye01"></SQL_TABLE>
 			<DD_ATTR_FONT id="ddm_tables.sye01"></DD_ATTR_FONT>
 			<DD_ATTR_STYL id="ddm_tables.sye01"></DD_ATTR_STYL>
+			<DD_ADMIN_BACKUP id="ddm_tables.sye01"></DD_ADMIN_BACKUP>
+			<DD_ATTR_RSET id="ddm_tables.sye01"></DD_ATTR_RSET>
+			<DD_ATTR_IGNR id="ddm_tables.sye01"></DD_ATTR_IGNR>
+			<DD_ATTR_RPOS id="ddm_tables.sye01"></DD_ATTR_RPOS>
+			<DD_ATTR_XPOS id="ddm_tables.sye01"></DD_ATTR_XPOS>
+			<DD_ATTR_YPOS id="ddm_tables.sye01"></DD_ATTR_YPOS>
+			<DD_ATTR_FWID id="ddm_tables.sye01"></DD_ATTR_FWID>
+			<DD_ATTR_FHGT id="ddm_tables.sye01"></DD_ATTR_FHGT>
+			<DD_ATTR_PADW id="ddm_tables.sye01"></DD_ATTR_PADW>
+			<DD_ATTR_PADH id="ddm_tables.sye01"></DD_ATTR_PADH>
+			<DD_ATTR_PADG id="ddm_tables.sye01"></DD_ATTR_PADG>
 		</RECORD>
 	</ALIAS>
 	<ALIAS id="ddm_table_tpls">
@@ -78,6 +89,7 @@
 			<DD_SEGMENT_SORT id="ddm_key_segs.sye010001"></DD_SEGMENT_SORT>
 			<DD_SEGMENT_UNIQ id="ddm_key_segs.sye010001"></DD_SEGMENT_UNIQ>
 			<DD_SEGMENT_MATH id="ddm_key_segs.sye010001"></DD_SEGMENT_MATH>
+			<DD_SEGMENT_NUM id="ddm_key_segs.sye010001"></DD_SEGMENT_NUM>
 		</RECORD>
 	</ALIAS>
 	<ALIAS id="ddm_table_cols">
@@ -125,6 +137,13 @@
 			<DD_ATTR_FONT id="ddm_table_cols.sye01001"></DD_ATTR_FONT>
 			<DD_ATTR_STYL id="ddm_table_cols.sye01001"></DD_ATTR_STYL>
 			<DD_ATTR_FTSR id="ddm_table_cols.sye01001"></DD_ATTR_FTSR>
+			<DD_ATTR_CWID id="ddm_table_cols.sye01001"></DD_ATTR_CWID>
+			<DD_ATTR_CTLI id="ddm_table_cols.sye01001"></DD_ATTR_CTLI>
+			<DD_ATTR_CTLN id="ddm_table_cols.sye01001"></DD_ATTR_CTLN>
+			<DD_ATTR_CTLC id="ddm_table_cols.sye01001"></DD_ATTR_CTLC>
+			<DD_ATTR_RADG id="ddm_table_cols.sye01001"></DD_ATTR_RADG>
+			<DD_ATTR_RKEY id="ddm_table_cols.sye01001"></DD_ATTR_RKEY>
+			<DD_ATTR_BTNS id="ddm_table_cols.sye01001"></DD_ATTR_BTNS>
 		</RECORD>
 		<RECORD id="ddm_table_cols.sye01002">
 			<DD_TABLE_ALIAS id="ddm_table_cols.sye01002">SYE01           </DD_TABLE_ALIAS>
@@ -169,6 +188,13 @@
 			<DD_ATTR_FONT id="ddm_table_cols.sye01002"></DD_ATTR_FONT>
 			<DD_ATTR_STYL id="ddm_table_cols.sye01002"></DD_ATTR_STYL>
 			<DD_ATTR_FTSR id="ddm_table_cols.sye01002"></DD_ATTR_FTSR>
+			<DD_ATTR_CWID id="ddm_table_cols.sye01002"></DD_ATTR_CWID>
+			<DD_ATTR_CTLI id="ddm_table_cols.sye01002"></DD_ATTR_CTLI>
+			<DD_ATTR_CTLN id="ddm_table_cols.sye01002"></DD_ATTR_CTLN>
+			<DD_ATTR_CTLC id="ddm_table_cols.sye01002"></DD_ATTR_CTLC>
+			<DD_ATTR_RADG id="ddm_table_cols.sye01002"></DD_ATTR_RADG>
+			<DD_ATTR_RKEY id="ddm_table_cols.sye01002"></DD_ATTR_RKEY>
+			<DD_ATTR_BTNS id="ddm_table_cols.sye01002"></DD_ATTR_BTNS>
 		</RECORD>
 		<RECORD id="ddm_table_cols.sye01003">
 			<DD_TABLE_ALIAS id="ddm_table_cols.sye01003">SYE01           </DD_TABLE_ALIAS>
@@ -213,6 +239,13 @@
 			<DD_ATTR_FONT id="ddm_table_cols.sye01003"></DD_ATTR_FONT>
 			<DD_ATTR_STYL id="ddm_table_cols.sye01003"></DD_ATTR_STYL>
 			<DD_ATTR_FTSR id="ddm_table_cols.sye01003"></DD_ATTR_FTSR>
+			<DD_ATTR_CWID id="ddm_table_cols.sye01003"></DD_ATTR_CWID>
+			<DD_ATTR_CTLI id="ddm_table_cols.sye01003"></DD_ATTR_CTLI>
+			<DD_ATTR_CTLN id="ddm_table_cols.sye01003"></DD_ATTR_CTLN>
+			<DD_ATTR_CTLC id="ddm_table_cols.sye01003"></DD_ATTR_CTLC>
+			<DD_ATTR_RADG id="ddm_table_cols.sye01003"></DD_ATTR_RADG>
+			<DD_ATTR_RKEY id="ddm_table_cols.sye01003"></DD_ATTR_RKEY>
+			<DD_ATTR_BTNS id="ddm_table_cols.sye01003"></DD_ATTR_BTNS>
 		</RECORD>
 	</ALIAS>
 	<ALIAS id="ddm_elements">
@@ -265,13 +298,16 @@
 			<DD_ATTR_STYP id="ddm_elements.firm_id"></DD_ATTR_STYP>
 			<DD_ATTR_STEP id="ddm_elements.firm_id"></DD_ATTR_STEP>
 			<DD_ATTR_FLPT id="ddm_elements.firm_id"></DD_ATTR_FLPT>
+			<DD_ATTR_OEMD id="ddm_elements.firm_id"></DD_ATTR_OEMD>
+			<DD_ATTR_Y2KW id="ddm_elements.firm_id"></DD_ATTR_Y2KW>
+			<DD_ATTR_CASB id="ddm_elements.firm_id"></DD_ATTR_CASB>
 		</RECORD>
 		<RECORD id="ddm_elements.gen_date">
 			<DD_DATA_NAME id="ddm_elements.gen_date">GEN_DATE        </DD_DATA_NAME>
 			<DD_DESCRIPTION id="ddm_elements.gen_date">Generation Date [YYYYMMDD]    </DD_DESCRIPTION>
 			<DD_DATA_TYPE id="ddm_elements.gen_date">C</DD_DATA_TYPE>
 			<DD_DATA_LENGTH id="ddm_elements.gen_date">8</DD_DATA_LENGTH>
-			<DD_MASK_TYPE id="ddm_elements.gen_date"> </DD_MASK_TYPE>
+			<DD_MASK_TYPE id="ddm_elements.gen_date"></DD_MASK_TYPE>
 			<DD_SYSTEM_REC id="ddm_elements.gen_date"></DD_SYSTEM_REC>
 			<ASC_COMP_ID id="ddm_elements.gen_date">01007514</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_elements.gen_date">AD </ASC_PROD_ID>
@@ -285,8 +321,8 @@
 			<DD_ATTR_CTLH id="ddm_elements.gen_date"></DD_ATTR_CTLH>
 			<DD_ATTR_CTYP id="ddm_elements.gen_date">D</DD_ATTR_CTYP>
 			<DD_ATTR_DCOL id="ddm_elements.gen_date"></DD_ATTR_DCOL>
-			<DD_ATTR_DCOM id="ddm_elements.gen_date">            </DD_ATTR_DCOM>
-			<DD_ATTR_DEXP id="ddm_elements.gen_date">            </DD_ATTR_DEXP>
+			<DD_ATTR_DCOM id="ddm_elements.gen_date"></DD_ATTR_DCOM>
+			<DD_ATTR_DEXP id="ddm_elements.gen_date"></DD_ATTR_DEXP>
 			<DD_ATTR_DFLT id="ddm_elements.gen_date"></DD_ATTR_DFLT>
 			<DD_ATTR_DKNM id="ddm_elements.gen_date"></DD_ATTR_DKNM>
 			<DD_ATTR_DKEY id="ddm_elements.gen_date"></DD_ATTR_DKEY>
@@ -314,6 +350,9 @@
 			<DD_ATTR_STYP id="ddm_elements.gen_date">1</DD_ATTR_STYP>
 			<DD_ATTR_STEP id="ddm_elements.gen_date"></DD_ATTR_STEP>
 			<DD_ATTR_FLPT id="ddm_elements.gen_date"></DD_ATTR_FLPT>
+			<DD_ATTR_OEMD id="ddm_elements.gen_date"></DD_ATTR_OEMD>
+			<DD_ATTR_Y2KW id="ddm_elements.gen_date"></DD_ATTR_Y2KW>
+			<DD_ATTR_CASB id="ddm_elements.gen_date"></DD_ATTR_CASB>
 		</RECORD>
 		<RECORD id="ddm_elements.reserved_str">
 			<DD_DATA_NAME id="ddm_elements.reserved_str">RESERVED_STR    </DD_DATA_NAME>
@@ -363,6 +402,9 @@
 			<DD_ATTR_STYP id="ddm_elements.reserved_str"></DD_ATTR_STYP>
 			<DD_ATTR_STEP id="ddm_elements.reserved_str"></DD_ATTR_STEP>
 			<DD_ATTR_FLPT id="ddm_elements.reserved_str"></DD_ATTR_FLPT>
+			<DD_ATTR_OEMD id="ddm_elements.reserved_str"></DD_ATTR_OEMD>
+			<DD_ATTR_Y2KW id="ddm_elements.reserved_str"></DD_ATTR_Y2KW>
+			<DD_ATTR_CASB id="ddm_elements.reserved_str"></DD_ATTR_CASB>
 		</RECORD>
 	</ALIAS>
 </SYE01>
