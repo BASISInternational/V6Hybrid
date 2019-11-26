@@ -17,15 +17,15 @@
 			<RESTRICT_AUTOADD id="ddm_tables.adx_v6demoyear">Y</RESTRICT_AUTOADD>
 			<ASC_COMP_ID id="ddm_tables.adx_v6demoyear">00000000</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_tables.adx_v6demoyear">V6H</ASC_PROD_ID>
-			<ASC_VERSION_ID id="ddm_tables.adx_v6demoyear">16.0</ASC_VERSION_ID>
+			<ASC_VERSION_ID id="ddm_tables.adx_v6demoyear">17.0      </ASC_VERSION_ID>
 			<ASC_LICENSE_ID id="ddm_tables.adx_v6demoyear"></ASC_LICENSE_ID>
 			<DD_EXPORT_DATA id="ddm_tables.adx_v6demoyear">N</DD_EXPORT_DATA>
 			<DD_CREATE_DATE id="ddm_tables.adx_v6demoyear">20160805</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_tables.adx_v6demoyear">20161007</DD_LSTREV_DATE>
-			<DD_LSTSYNC_DATE id="ddm_tables.adx_v6demoyear">20161007</DD_LSTSYNC_DATE>
-			<DD_LSTSYNC_TIME id="ddm_tables.adx_v6demoyear">103140</DD_LSTSYNC_TIME>
+			<DD_LSTREV_DATE id="ddm_tables.adx_v6demoyear">20191126</DD_LSTREV_DATE>
+			<DD_LSTSYNC_DATE id="ddm_tables.adx_v6demoyear">20191125</DD_LSTSYNC_DATE>
+			<DD_LSTSYNC_TIME id="ddm_tables.adx_v6demoyear">085652</DD_LSTSYNC_TIME>
 			<DD_ATTR_ATAB id="ddm_tables.adx_v6demoyear"></DD_ATTR_ATAB>
-			<DD_ATTR_CPGM id="ddm_tables.adx_v6demoyear">../apps/V6Hybrid/;</DD_ATTR_CPGM>
+			<DD_ATTR_CPGM id="ddm_tables.adx_v6demoyear">C:/Temp/tmp/v6hybrid_tmp/apps/V6Hybrid/;</DD_ATTR_CPGM>
 			<DD_ATTR_DKNM id="ddm_tables.adx_v6demoyear"></DD_ATTR_DKNM>
 			<DD_ATTR_FIMG id="ddm_tables.adx_v6demoyear"></DD_ATTR_FIMG>
 			<DD_ATTR_FTYP id="ddm_tables.adx_v6demoyear">S</DD_ATTR_FTYP>
@@ -45,6 +45,17 @@
 			<SQL_TABLE id="ddm_tables.adx_v6demoyear"></SQL_TABLE>
 			<DD_ATTR_FONT id="ddm_tables.adx_v6demoyear"></DD_ATTR_FONT>
 			<DD_ATTR_STYL id="ddm_tables.adx_v6demoyear"></DD_ATTR_STYL>
+			<DD_ADMIN_BACKUP id="ddm_tables.adx_v6demoyear"></DD_ADMIN_BACKUP>
+			<DD_ATTR_RSET id="ddm_tables.adx_v6demoyear"></DD_ATTR_RSET>
+			<DD_ATTR_IGNR id="ddm_tables.adx_v6demoyear"></DD_ATTR_IGNR>
+			<DD_ATTR_RPOS id="ddm_tables.adx_v6demoyear"></DD_ATTR_RPOS>
+			<DD_ATTR_XPOS id="ddm_tables.adx_v6demoyear"></DD_ATTR_XPOS>
+			<DD_ATTR_YPOS id="ddm_tables.adx_v6demoyear"></DD_ATTR_YPOS>
+			<DD_ATTR_FWID id="ddm_tables.adx_v6demoyear"></DD_ATTR_FWID>
+			<DD_ATTR_FHGT id="ddm_tables.adx_v6demoyear"></DD_ATTR_FHGT>
+			<DD_ATTR_PADW id="ddm_tables.adx_v6demoyear"></DD_ATTR_PADW>
+			<DD_ATTR_PADH id="ddm_tables.adx_v6demoyear"></DD_ATTR_PADH>
+			<DD_ATTR_PADG id="ddm_tables.adx_v6demoyear"></DD_ATTR_PADG>
 		</RECORD>
 	</ALIAS>
 	<ALIAS id="ddm_table_cpro">
@@ -64,9 +75,29 @@
 	</ALIAS>
 	<ALIAS id="ddm_table_opts">
 		<ID id="ddm_table_opts">DDM_TABLE_OPTS</ID>
+		<RECORD id="ddm_table_opts.adx_v6demoyeara">
+			<DD_TABLE_ALIAS id="ddm_table_opts.adx_v6demoyeara">ADX_V6DEMOYEAR  </DD_TABLE_ALIAS>
+			<DD_ATTR_OPTS id="ddm_table_opts.adx_v6demoyeara">A</DD_ATTR_OPTS>
+		</RECORD>
 		<RECORD id="ddm_table_opts.adx_v6demoyearh">
 			<DD_TABLE_ALIAS id="ddm_table_opts.adx_v6demoyearh">ADX_V6DEMOYEAR  </DD_TABLE_ALIAS>
 			<DD_ATTR_OPTS id="ddm_table_opts.adx_v6demoyearh">H</DD_ATTR_OPTS>
+		</RECORD>
+		<RECORD id="ddm_table_opts.adx_v6demoyearn">
+			<DD_TABLE_ALIAS id="ddm_table_opts.adx_v6demoyearn">ADX_V6DEMOYEAR  </DD_TABLE_ALIAS>
+			<DD_ATTR_OPTS id="ddm_table_opts.adx_v6demoyearn">N</DD_ATTR_OPTS>
+		</RECORD>
+		<RECORD id="ddm_table_opts.adx_v6demoyearp">
+			<DD_TABLE_ALIAS id="ddm_table_opts.adx_v6demoyearp">ADX_V6DEMOYEAR  </DD_TABLE_ALIAS>
+			<DD_ATTR_OPTS id="ddm_table_opts.adx_v6demoyearp">P</DD_ATTR_OPTS>
+		</RECORD>
+		<RECORD id="ddm_table_opts.adx_v6demoyearu">
+			<DD_TABLE_ALIAS id="ddm_table_opts.adx_v6demoyearu">ADX_V6DEMOYEAR  </DD_TABLE_ALIAS>
+			<DD_ATTR_OPTS id="ddm_table_opts.adx_v6demoyearu">U</DD_ATTR_OPTS>
+		</RECORD>
+		<RECORD id="ddm_table_opts.adx_v6demoyearv">
+			<DD_TABLE_ALIAS id="ddm_table_opts.adx_v6demoyearv">ADX_V6DEMOYEAR  </DD_TABLE_ALIAS>
+			<DD_ATTR_OPTS id="ddm_table_opts.adx_v6demoyearv">V</DD_ATTR_OPTS>
 		</RECORD>
 	</ALIAS>
 	<ALIAS id="ddm_table_tpls">
@@ -122,6 +153,13 @@
 			<DD_ATTR_FONT id="ddm_table_cols.adx_v6demoyear001"></DD_ATTR_FONT>
 			<DD_ATTR_STYL id="ddm_table_cols.adx_v6demoyear001"></DD_ATTR_STYL>
 			<DD_ATTR_FTSR id="ddm_table_cols.adx_v6demoyear001">N</DD_ATTR_FTSR>
+			<DD_ATTR_CWID id="ddm_table_cols.adx_v6demoyear001"></DD_ATTR_CWID>
+			<DD_ATTR_CTLI id="ddm_table_cols.adx_v6demoyear001">3001</DD_ATTR_CTLI>
+			<DD_ATTR_CTLN id="ddm_table_cols.adx_v6demoyear001">ine_current_year</DD_ATTR_CTLN>
+			<DD_ATTR_CTLC id="ddm_table_cols.adx_v6demoyear001">0</DD_ATTR_CTLC>
+			<DD_ATTR_RADG id="ddm_table_cols.adx_v6demoyear001"></DD_ATTR_RADG>
+			<DD_ATTR_RKEY id="ddm_table_cols.adx_v6demoyear001">N</DD_ATTR_RKEY>
+			<DD_ATTR_BTNS id="ddm_table_cols.adx_v6demoyear001"></DD_ATTR_BTNS>
 		</RECORD>
 		<RECORD id="ddm_table_cols.adx_v6demoyear002">
 			<DD_TABLE_ALIAS id="ddm_table_cols.adx_v6demoyear002">ADX_V6DEMOYEAR  </DD_TABLE_ALIAS>
@@ -166,6 +204,13 @@
 			<DD_ATTR_FONT id="ddm_table_cols.adx_v6demoyear002"></DD_ATTR_FONT>
 			<DD_ATTR_STYL id="ddm_table_cols.adx_v6demoyear002"></DD_ATTR_STYL>
 			<DD_ATTR_FTSR id="ddm_table_cols.adx_v6demoyear002"></DD_ATTR_FTSR>
+			<DD_ATTR_CWID id="ddm_table_cols.adx_v6demoyear002"></DD_ATTR_CWID>
+			<DD_ATTR_CTLI id="ddm_table_cols.adx_v6demoyear002">3002</DD_ATTR_CTLI>
+			<DD_ATTR_CTLN id="ddm_table_cols.adx_v6demoyear002">inn_increment_year</DD_ATTR_CTLN>
+			<DD_ATTR_CTLC id="ddm_table_cols.adx_v6demoyear002">0</DD_ATTR_CTLC>
+			<DD_ATTR_RADG id="ddm_table_cols.adx_v6demoyear002"></DD_ATTR_RADG>
+			<DD_ATTR_RKEY id="ddm_table_cols.adx_v6demoyear002">N</DD_ATTR_RKEY>
+			<DD_ATTR_BTNS id="ddm_table_cols.adx_v6demoyear002"></DD_ATTR_BTNS>
 		</RECORD>
 	</ALIAS>
 	<ALIAS id="ddm_elements">
@@ -189,7 +234,7 @@
 			<DD_ATTR_CTLH id="ddm_elements.current_year"></DD_ATTR_CTLH>
 			<DD_ATTR_CTYP id="ddm_elements.current_year">E</DD_ATTR_CTYP>
 			<DD_ATTR_DCOL id="ddm_elements.current_year"></DD_ATTR_DCOL>
-			<DD_ATTR_DCOM id="ddm_elements.current_year">            </DD_ATTR_DCOM>
+			<DD_ATTR_DCOM id="ddm_elements.current_year"></DD_ATTR_DCOM>
 			<DD_ATTR_DEXP id="ddm_elements.current_year"></DD_ATTR_DEXP>
 			<DD_ATTR_DFLT id="ddm_elements.current_year"></DD_ATTR_DFLT>
 			<DD_ATTR_DKNM id="ddm_elements.current_year"></DD_ATTR_DKNM>
@@ -218,6 +263,9 @@
 			<DD_ATTR_STYP id="ddm_elements.current_year">3</DD_ATTR_STYP>
 			<DD_ATTR_STEP id="ddm_elements.current_year"></DD_ATTR_STEP>
 			<DD_ATTR_FLPT id="ddm_elements.current_year"></DD_ATTR_FLPT>
+			<DD_ATTR_OEMD id="ddm_elements.current_year"></DD_ATTR_OEMD>
+			<DD_ATTR_Y2KW id="ddm_elements.current_year"></DD_ATTR_Y2KW>
+			<DD_ATTR_CASB id="ddm_elements.current_year"></DD_ATTR_CASB>
 		</RECORD>
 		<RECORD id="ddm_elements.pick_gl_per">
 			<DD_DATA_NAME id="ddm_elements.pick_gl_per">PICK_GL_PER     </DD_DATA_NAME>
@@ -267,6 +315,9 @@
 			<DD_ATTR_STYP id="ddm_elements.pick_gl_per"></DD_ATTR_STYP>
 			<DD_ATTR_STEP id="ddm_elements.pick_gl_per"></DD_ATTR_STEP>
 			<DD_ATTR_FLPT id="ddm_elements.pick_gl_per"></DD_ATTR_FLPT>
+			<DD_ATTR_OEMD id="ddm_elements.pick_gl_per"></DD_ATTR_OEMD>
+			<DD_ATTR_Y2KW id="ddm_elements.pick_gl_per"></DD_ATTR_Y2KW>
+			<DD_ATTR_CASB id="ddm_elements.pick_gl_per"></DD_ATTR_CASB>
 		</RECORD>
 	</ALIAS>
 </ADX_V6DEMOYEAR>
