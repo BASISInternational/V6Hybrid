@@ -6,7 +6,7 @@ rem This trigger assumes that it is being used in a non-modified Barista and Add
 rem Version 6 environment. If there have been any modifications to these systems,
 rem be sure to thoroughly examine this trigger and test changes.
 
-rem --- Read Barista Addon's apm_vendcmts (Comments) instead of V6 apm-09
+rem --- Read Barista Addon's apm_vendmast MEMO_1024 instead of V6 apm-09 comments
 
 	setopts $080872202c2e$
 	seterr trigger_error
@@ -15,10 +15,11 @@ rem --- Read Barista Addon's apm_vendcmts (Comments) instead of V6 apm-09
     grpID$=str(info!.getGroupID())
     sessionID$=str(info!.getSessionID())
     nskey$="APM09"+"_"+grpID$+"_"+sessionID$
+    nsdata$="APM09"+"_"+grpID$+"_"+sessionID$+"_data"
 
     rem ' trace
     goto skip_trace;rem this line (and change pathname as applicable) to do the trace
-    tfl$="C:/temp_downloads/apm09.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    tfl$="C:/Temp/apm09.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
     tfl=unt
@@ -26,7 +27,7 @@ rem --- Read Barista Addon's apm_vendcmts (Comments) instead of V6 apm-09
     settrace(tfl,MODE="UNTIMED")
 skip_trace:
 	
-rem ---  Get the Trigger object from the BBj File System
+rem --- Get the Trigger object from the BBj File System
 
     td! = BBjAPI().getFileSystem().getTriggerData()
 
@@ -54,38 +55,84 @@ rem --- Template for the APM-09 record being caught
     intemp$="firm_id:c(2),vendor_nbr:c(6),sequence_num:c(2*=10),std_comments:c(48*=10)"
 	dim inRec$:intemp$
 
-rem --- Open Barista Vendor Comments table
+rem --- Open Barista Vendor Master table
 
-	apm_vendcmts=unt
-	open (apm_vendcmts,err=trigger_error)apdir$+"apm-09"
+	apm_vendmast=unt
+	open (apm_vendmast,err=trigger_error)apdir$+"apm-01"
 	tpl_dev=unt
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
-	read (tpl_dev,key=pad("APM_VENDCMTS",16),dom=trigger_error) *,*,apm_vendcmts_tpl$
-	dim apm_vendcmts$:apm_vendcmts_tpl$
+	read (tpl_dev,key=pad("APM_VENDMAST",16),dom=trigger_error) *,*,apm_vendmast_tpl$
+	dim apm_vendmast$:apm_vendmast_tpl$
 	
 rem --- Get the data
 
     dom_flag=1
 
     if ky$="" and keyed_read=0
-        read record (apm_vendcmts,end=trigger_error) apm_vendcmts$; dom_flag=0
+        if ky$="" then dim ky$(10)
+        read record (apm_vendmast,end=trigger_error) apm_vendmast$; dom_flag=0
     else
-        read record (apm_vendcmts,key=ky$,dom=*next) apm_vendcmts$; dom_flag=0
+        if ky$="" then dim ky$(10)
+        read record (apm_vendmast,key=ky$(1,8),dom=*next) apm_vendmast$; dom_flag=0
     endif
     
     if dom_flag=0
-        inRec.firm_id$ = apm_vendcmts.firm_id$
-        inRec.vendor_nbr$=apm_vendcmts.vendor_id$
-        inRec.sequence_num$=apm_vendcmts.sequence_num$
-        inRec.std_comments$=apm_vendcmts.std_comments$
-    endif
 
-    next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
-    next_ky$=key(apm_vendcmts,end=*next)
+        rem --- Get remainder of previously read memo_1024$ from the namespace
+        have_data=0
+        gns!=BBjAPI().getGroupNamespace()
+        memo_1024$=gns!.getValue(nsdata$,err=*next); have_data=1
+        if !have_data then
+            memo_1024$=$0A$+cvs(apm_vendmast.memo_1024$,2)
+        endif
+        dim std_comments$(48)
+        std_comments$(1)=memo_1024$
+        if pos($0A$=std_comments$) then
+            if len(memo_1024$)>pos($0A$=std_comments$) then
+                memo_1024$=memo_1024$(pos($0A$=std_comments$)+1)
+            else
+                memo_1024$=""
+            endif
+            if pos($0A$=std_comments$)=1 then
+                std_comments$(1)=""
+            else
+                std_comments$(1)=std_comments$(1,pos($0A$=std_comments$)-1)
+            endif
+        else
+            if len(std_comments$)>len(memo_1024$) then
+                memo_1024$=""
+            else
+                memo_1024$=memo_1024$(len(std_comments$))
+            endif
+        endif
+
+        if num(ky$(9,2))<1 then ky$(9,2)="01"
+        inRec.firm_id$ = apm_vendmast.firm_id$
+        inRec.vendor_nbr$=apm_vendmast.vendor_id$
+        inRec.sequence_num$=ky$(9,2)
+        inRec.std_comments$=std_comments$
+
+        if len(memo_1024$)>0
+            rem --- must build next key, cannot use next apm_vendmast key
+            ky$(9,2)=str(num(ky$(9,2))+1:"00")
+            next_ky$=ky$
+        else
+            next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
+            next_ky$=key(apm_vendmast,end=*next)+"01"
+            memo_1024$=""
+        endif
+    else
+        next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
+        next_ky$=key(apm_vendmast,end=*next)+"01"
+        memo_1024$=""
+    endif
 
     rem --- store next key in group namespace
     gns!=BBjAPI().getGroupNamespace()
     gns!.setValue(nskey$,next_ky$)
+    
+    rem --- store remainder of memo_1024$ in group namespace
+    gns!.setValue(nsdata$,memo_1024$)
 
     if dom_flag=1
         err_num=11

@@ -6,7 +6,7 @@ rem This trigger assumes that it is being used in a non-modified Barista and Add
 rem Version 6 environment. If there have been any modifications to these systems,
 rem be sure to thoroughly examine this trigger and test changes.
 
-rem --- Read Barista Addon's apm_vendcmts (Comments) instead of V6 apm-09
+rem --- Read Barista Addon's apm_vendmast MEMO_1024 instead of V6 apm-09 comments
 
 	setopts $080872202c2e$
 	seterr trigger_error
@@ -17,8 +17,7 @@ rem --- Read Barista Addon's apm_vendcmts (Comments) instead of V6 apm-09
     nskey$="APM09"+"_"+grpID$+"_"+sessionID$
     
     rem ' trace
-    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
-    tfl$="C:/temp_downloads/apm09.ik."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    tfl$="C:/Temp/apm09.ik."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
     tfl=unt
@@ -43,9 +42,9 @@ rem --- get key (stored in instead-of-read trigger) from namespace
         goto trigger_error_forced
     else
         if have_key=0
-            rem --- Open Barista Vendor Comments table and get first key
+            rem --- Open Barista Vendor Master table and get first key
             apm_vendcmts=unt
-            open (apm_vendcmts,err=trigger_error)apdir$+"apm-05"
+            open (apm_vendcmts,err=trigger_error)apdir$+"apm-01"
             ky$=key(apm_vendcmts,err=trigger_error)
             gns!.setValue(nskey$,ky$)
         endif
