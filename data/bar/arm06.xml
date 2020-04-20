@@ -17,7 +17,7 @@
 			<RESTRICT_AUTOADD id="ddm_tables.arm06"></RESTRICT_AUTOADD>
 			<ASC_COMP_ID id="ddm_tables.arm06">00000000</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_tables.arm06">V6H</ASC_PROD_ID>
-			<ASC_VERSION_ID id="ddm_tables.arm06">19.0      </ASC_VERSION_ID>
+			<ASC_VERSION_ID id="ddm_tables.arm06">20.0      </ASC_VERSION_ID>
 			<ASC_LICENSE_ID id="ddm_tables.arm06"></ASC_LICENSE_ID>
 			<DD_EXPORT_DATA id="ddm_tables.arm06">Y</DD_EXPORT_DATA>
 			<DD_CREATE_DATE id="ddm_tables.arm06">2457627</DD_CREATE_DATE>
