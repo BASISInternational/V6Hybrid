@@ -5,7 +5,6 @@ REM  * @author bhipple
 REM  *
 REM  */
 
-
 rem Use statements
 use ::dashboard/dashboard.bbj::Dashboard
 use ::dashboard/dashboard.bbj::DashboardCategory
@@ -92,7 +91,9 @@ if (firmID$ <> "" and custNum$ <> "")
             colors! = ChartWidget.getVectorOfJavaColorsFromHexColorStrings(4, "#f5bcbc", "#861313", .65, .65)
             colors!.insertItem(0, ChartWidget.getColorWithAlphaFromHexString("#169c16", 0.65))
             colors!.insertItem(0, ChartWidget.getColorWithAlphaFromHexString("#1d56c9", 0.65))
-            widget!.setChartColors(colors!)
+            rem widget!.setChartColors(colors!) CAH
+            widget!.setChartColorTheme(ChartWidget.getColorThemeColorful2());rem CAH
+	
             widget!.setLegendPosition(ChartWidget.getSideLeft(), ChartWidget.getHAlignRight(), ChartWidget.getVAlignCenter())
             widget!.setLabelFormat("{0}: {1}", java.text.NumberFormat.getCurrencyInstance(), java.text.NumberFormat.getPercentInstance())
             rem Set the Widget data

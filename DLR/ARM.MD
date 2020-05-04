@@ -149,7 +149,7 @@
 5110 CUST_NUM$ = A0$(3,6)
 5120 FUTURE=B[0];CURRENT=B[1];OVER_30=B[2];OVER_60=B[3];OVER_90=B[4];OVER_120=B[5]
 5130 TOTAL_AGING = FUTURE + CURRENT + OVER_30 + OVER_60 + OVER_90 + OVER_120
-5140 SCALL_STRING$ = "bbj -tT0 arm_custwidget.aon - " + FIRM_ID$ + " " + CUST_NUM$;rem + " &"
+5140 SCALL_STRING$="bbj -tT0 arm_custwidget.aon - "+firm_id$+" "+cust_num$+" &"
 5150 IF (TOTAL_AGING > 0) THEN X=SCALL(SCALL_STRING$)
 5160 RETURN
 6000 REM " --- Search for Open Invoices"

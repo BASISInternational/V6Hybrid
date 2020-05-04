@@ -38,7 +38,7 @@
 1320 PRINT @(0,L0),'CE',
 1390 GOTO 3000
 2000 REM " --- Alpha Search
-2040 rem ' CALL "SYC.LC",V$
+2040 REM CALL "SYC.LC",V$
 2042 rem ' replace with a barista sprinkle
 2044 gosub runBaristaQuery
 2060 IF V$="" THEN GOTO 1020
@@ -221,7 +221,7 @@
 
 10000 runBaristaQuery:
 10010 rem "V6demo --- run barista query
-10020 barista$ = dsk("")+dir(""), barista_cfg$=barista$+stbl("+FILE_CFG")
+10020 barista$ = dsk("")+dir(""), barista_cfg$=barista$+stbl("+FILE_CFG");REM barista$=stbl("+BARISTA_HOME"),barista_cfg$=barista$+stbl("+FILE_CFG")
 10030 bbjhome$ = System.getProperty("basis.BBjHome") + "/"
 10040 pid$ = hta(info(3,0)); ns_name$="query_result" + pid$
 10050 xuserName$ = "admin";rem stbl("SYSTEMUID")

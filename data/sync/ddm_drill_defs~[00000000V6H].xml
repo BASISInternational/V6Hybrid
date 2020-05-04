@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<barista_record_table>DDM_DRILL_DEFS</barista_record_table>
+<barista_admin_records>
+	<barista_record>
+		<DRILL_DEF_ID>V6_ART13        </DRILL_DEF_ID>
+		<DESCRIPTION>V6 Invoice Detail</DESCRIPTION>
+		<DD_ATTR_DTAB>ART13           </DD_ATTR_DTAB>
+		<DD_ATTR_DKEY>[V6_FIRM_ID]+[V6_AR_TYPE]+[V6_CUSTOMER_NBR]+[V6_AR_INV_NBR]</DD_ATTR_DKEY>
+		<ASC_COMP_ID>00000000</ASC_COMP_ID>
+		<ASC_PROD_ID>V6H</ASC_PROD_ID>
+		<DD_ATTR_IDEF>V6_ART13        </DD_ATTR_IDEF>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+</barista_admin_records>

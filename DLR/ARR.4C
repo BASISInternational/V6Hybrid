@@ -388,28 +388,28 @@
 10530 rem ' columns vary based on summary or detail form
 10550 setReportColumns:
 10560 if p7$ = "D" then
-10570	doc!.addColumn("Invoice", "C", 7, 80, "", "E", "L", "")
-10580	doc!.addColumn("Due", "C", 8, 90, "", "E", "C", "")
-10590	doc!.addColumn("PO Number", "C", 10, 110, "", "E", "L", "")
-10600	doc!.addColumn("Order^Number", "C", 7, 70, "", "E", "L", "")
-10610	doc!.addColumn("Terms", "C", 5, 60, "", "E", "L", "")
-10620	doc!.addColumn("Type", "C", 4, 50, "", "E", "L", "")
-10630	doc!.addColumn("Current", "N", 12, 100, "-####,##0.00", "N", "R", "")
-10640	doc!.addColumn("30-Days", "N", 12, 100, "-####,##0.00", "N", "R", "")
-10650	doc!.addColumn("60-Days", "N", 12, 100, "-####,##0.00", "N", "R", "")
-10660	doc!.addColumn("90-Days", "N", 12, 100, "-####,##0.00", "N", "R", "")
-10670	doc!.addColumn("120-Days", "N", 12, 100, "-####,##0.00", "N", "R", "")
-10680	doc!.addColumn("Balance", "N", 12, 100, "-####,##0.00", "N", "R", "")
+10570	doc!.addColumn("Invoice", "C", 7, 50, "", "E", "L", "")
+10580	doc!.addColumn("Due", "C", 8, 50, "", "E", "C", "")
+10590	doc!.addColumn("PO Number", "C", 10, 75, "", "E", "L", "")
+10600	doc!.addColumn("Order^Number", "C", 7, 50, "", "E", "L", "")
+10610	doc!.addColumn("Terms", "C", 5, 30, "", "E", "L", "")
+10620	doc!.addColumn("Type", "C", 4, 30, "", "E", "L", "")
+10630	doc!.addColumn("Current", "N", 12, 60, "-####,##0.00", "N", "R", "")
+10640	doc!.addColumn("30-Days", "N", 12, 60, "-####,##0.00", "N", "R", "")
+10650	doc!.addColumn("60-Days", "N", 12, 60, "-####,##0.00", "N", "R", "")
+10660	doc!.addColumn("90-Days", "N", 12, 60, "-####,##0.00", "N", "R", "")
+10670	doc!.addColumn("120-Days", "N", 12, 60, "-####,##0.00", "N", "R", "")
+10680	doc!.addColumn("Balance", "N", 12, 60, "-####,##0.00", "N", "R", "")
 10690 else
 10700	if p7$ = "S" then
-10710		doc!.addColumn("Customer # & Name", "C", 37, 370, "", "E", "L", "")
-10720		doc!.addColumn("Future", "N", 12, 100, "-####,##0.00", "N", "R", "")
-10730		doc!.addColumn("Current", "N", 12, 100, "-####,##0.00", "N", "R", "")
-10740		doc!.addColumn("30-Days", "N", 12, 100, "-####,##0.00", "N", "R", "")
-10750		doc!.addColumn("60-Days", "N", 12, 100, "-####,##0.00", "N", "R", "")
-10760		doc!.addColumn("90-Days", "N", 12, 100, "-####,##0.00", "N", "R", "")
-10770		doc!.addColumn("120-Days", "N", 12, 100, "-####,##0.00", "N", "R", "")
-10780		doc!.addColumn("Balance", "N", 12, 100, "-####,##0.00", "N", "R", "")
+10710		doc!.addColumn("Customer # & Name", "C", 37, 120, "", "E", "L", "")
+10720		doc!.addColumn("Future", "N", 12, 50, "-####,##0.00", "N", "R", "")
+10730		doc!.addColumn("Current", "N", 12, 50, "-####,##0.00", "N", "R", "")
+10740		doc!.addColumn("30-Days", "N", 12, 50, "-####,##0.00", "N", "R", "")
+10750		doc!.addColumn("60-Days", "N", 12, 50, "-####,##0.00", "N", "R", "")
+10760		doc!.addColumn("90-Days", "N", 12, 50, "-####,##0.00", "N", "R", "")
+10770		doc!.addColumn("120-Days", "N", 12, 50, "-####,##0.00", "N", "R", "")
+10780		doc!.addColumn("Balance", "N", 12, 50, "-####,##0.00", "N", "R", "")
 10790	fi
 10795 fi
 10800 return

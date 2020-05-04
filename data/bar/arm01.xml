@@ -21,9 +21,9 @@
 			<ASC_LICENSE_ID id="ddm_tables.arm01"></ASC_LICENSE_ID>
 			<DD_EXPORT_DATA id="ddm_tables.arm01">Y</DD_EXPORT_DATA>
 			<DD_CREATE_DATE id="ddm_tables.arm01">20160819</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_tables.arm01">20191126</DD_LSTREV_DATE>
-			<DD_LSTSYNC_DATE id="ddm_tables.arm01">20191126</DD_LSTSYNC_DATE>
-			<DD_LSTSYNC_TIME id="ddm_tables.arm01">131401</DD_LSTSYNC_TIME>
+			<DD_LSTREV_DATE id="ddm_tables.arm01">20200504</DD_LSTREV_DATE>
+			<DD_LSTSYNC_DATE id="ddm_tables.arm01">20200504</DD_LSTSYNC_DATE>
+			<DD_LSTSYNC_TIME id="ddm_tables.arm01">133854</DD_LSTSYNC_TIME>
 			<DD_ATTR_ATAB id="ddm_tables.arm01"></DD_ATTR_ATAB>
 			<DD_ATTR_CPGM id="ddm_tables.arm01"></DD_ATTR_CPGM>
 			<DD_ATTR_DKNM id="ddm_tables.arm01"></DD_ATTR_DKNM>
@@ -1968,7 +1968,7 @@
 			<ASC_PROD_ID id="ddm_elements.v6_opened_date">V6H</ASC_PROD_ID>
 			<LOCALIZATION_EX id="ddm_elements.v6_opened_date"></LOCALIZATION_EX>
 			<DD_CREATE_DATE id="ddm_elements.v6_opened_date">2457620</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_elements.v6_opened_date">20160825</DD_LSTREV_DATE>
+			<DD_LSTREV_DATE id="ddm_elements.v6_opened_date">20200504</DD_LSTREV_DATE>
 			<DD_AUTO_COMP id="ddm_elements.v6_opened_date"></DD_AUTO_COMP>
 			<DD_ATTR_BLNK id="ddm_elements.v6_opened_date"></DD_ATTR_BLNK>
 			<DD_ATTR_CDAT id="ddm_elements.v6_opened_date"></DD_ATTR_CDAT>
@@ -1977,7 +1977,7 @@
 			<DD_ATTR_CTYP id="ddm_elements.v6_opened_date">E</DD_ATTR_CTYP>
 			<DD_ATTR_DCOL id="ddm_elements.v6_opened_date"></DD_ATTR_DCOL>
 			<DD_ATTR_DCOM id="ddm_elements.v6_opened_date"></DD_ATTR_DCOM>
-			<DD_ATTR_DEXP id="ddm_elements.v6_opened_date">V6DATE3     </DD_ATTR_DEXP>
+			<DD_ATTR_DEXP id="ddm_elements.v6_opened_date"></DD_ATTR_DEXP>
 			<DD_ATTR_DFLT id="ddm_elements.v6_opened_date"></DD_ATTR_DFLT>
 			<DD_ATTR_DKNM id="ddm_elements.v6_opened_date"></DD_ATTR_DKNM>
 			<DD_ATTR_DKEY id="ddm_elements.v6_opened_date"></DD_ATTR_DKEY>
@@ -2002,11 +2002,11 @@
 			<DD_ATTR_PVAL id="ddm_elements.v6_opened_date"></DD_ATTR_PVAL>
 			<DD_ATTR_SDLG id="ddm_elements.v6_opened_date"></DD_ATTR_SDLG>
 			<DD_ATTR_SLEV id="ddm_elements.v6_opened_date"></DD_ATTR_SLEV>
-			<DD_ATTR_STYP id="ddm_elements.v6_opened_date"></DD_ATTR_STYP>
+			<DD_ATTR_STYP id="ddm_elements.v6_opened_date">o</DD_ATTR_STYP>
 			<DD_ATTR_STEP id="ddm_elements.v6_opened_date">0</DD_ATTR_STEP>
 			<DD_ATTR_FLPT id="ddm_elements.v6_opened_date"></DD_ATTR_FLPT>
-			<DD_ATTR_OEMD id="ddm_elements.v6_opened_date"></DD_ATTR_OEMD>
-			<DD_ATTR_Y2KW id="ddm_elements.v6_opened_date"></DD_ATTR_Y2KW>
+			<DD_ATTR_OEMD id="ddm_elements.v6_opened_date">AON</DD_ATTR_OEMD>
+			<DD_ATTR_Y2KW id="ddm_elements.v6_opened_date">30</DD_ATTR_Y2KW>
 			<DD_ATTR_CASB id="ddm_elements.v6_opened_date"></DD_ATTR_CASB>
 		</RECORD>
 		<RECORD id="ddm_elements.v6_ar_ship_via">
@@ -2580,15 +2580,6 @@
 			<DD_ATTR_OEMD id="ddm_elements.v6_op_frt_terms"></DD_ATTR_OEMD>
 			<DD_ATTR_Y2KW id="ddm_elements.v6_op_frt_terms"></DD_ATTR_Y2KW>
 			<DD_ATTR_CASB id="ddm_elements.v6_op_frt_terms"></DD_ATTR_CASB>
-		</RECORD>
-	</ALIAS>
-	<ALIAS id="ddm_exp_codes">
-		<ID id="ddm_exp_codes">DDM_EXP_CODES</ID>
-		<RECORD id="ddm_exp_codes.v6date3">
-			<DD_EXPAND_CODE id="ddm_exp_codes.v6date3">V6DATE3     </DD_EXPAND_CODE>
-			<DD_DESCRIPTION id="ddm_exp_codes.v6date3">V6 3 Character Date</DD_DESCRIPTION>
-			<DD_EXP_INSTRUCT id="ddm_exp_codes.v6date3">![V6HYBRID_PROG]+"adx_expand_date.aon"</DD_EXP_INSTRUCT>
-			<USER_MODIFIED id="ddm_exp_codes.v6date3"></USER_MODIFIED>
 		</RECORD>
 	</ALIAS>
 </ARM01>

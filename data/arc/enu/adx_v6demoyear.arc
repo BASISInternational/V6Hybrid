@@ -1,12 +1,12 @@
 //#charset: windows-1252
 
 // ASCII Resource File
-// ADX_V6DEMOYEAR - Change V6 Demo Data Year
+// ADX_V6DEMOYEAR - V6 Change Demo Data Year
 // Barista Application Framework.  Copyright BASIS International Ltd
 
 VERSION "4.0"
 
-WINDOW 1000 "" 10 40 0330 0110
+WINDOW 1000 "" 0010 0040 0330 0110
 BEGIN
     NAME "win_adx_v6demoyear"
     MANAGESYSCOLOR
