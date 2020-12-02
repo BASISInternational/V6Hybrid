@@ -45,25 +45,29 @@ rem --- Initializations
     dim sysinfo$:sysinfo_template$
     sysinfo$=stbl("+SYSINFO",err=*next)
 
-    rem --- Derive base directory path
-    baseDir$=stbl("V6HYBRID",err=std_exit)
+rem --- Open File(s)
+    
+    num_files=2
+    dim open_tables$[1:num_files],open_opts$[1:num_files],open_chans$[1:num_files],open_tpls$[1:num_files]
+    open_tables$[1]="ADS_AUTOLAUNCH",open_opts$[1]="OTA"
+    open_tables$[2]="DDM_SYSTEMS",open_opts$[2]="OTA"
+
+    gosub open_tables
+
+    ads_autolaunch=num(open_chans$[1]);dim ads_autolaunch$:open_tpls$[1]
+    ddm_systems=num(open_chans$[2]);dim ddm_systems$:open_tpls$[2]
+
+rem --- Derive base installation directory for Addon
+
+    readrecord(ddm_systems,key=pad("ADDON",16),dom=std_exit)ddm_systems$
+    baseDir$=ddm_systems.mount_dir$
     baseDir$=FileObject.fixPath(baseDir$, "/")
-    strip_pos=pos("/V6HYBRID"=cvs(baseDir$,4))
+    strip_pos=pos("/aon/"=cvs(baseDir$,2))
     if strip_pos
         baseDir$=baseDir$(1,strip_pos)
     else
         goto std_exit
     endif
-
-rem --- Open File(s)
-    
-    num_files=1
-    dim open_tables$[1:num_files],open_opts$[1:num_files],open_chans$[1:num_files],open_tpls$[1:num_files]
-    open_tables$[1]="ADS_AUTOLAUNCH",open_opts$[1]="OTA"
-
-    gosub open_tables
-
-    ads_autolaunch=num(open_chans$[1]);dim ads_autolaunch$:open_tpls$[1]
 
 rem --- Do the processing
     gosub update_DD
@@ -97,7 +101,7 @@ update_DD:rem --- Make changes directly to BASIS DD for properties that can't be
 
     return
   
-rename_menus:rem --- Rename Addon's menu (addon.men) and Payroll's menu (prbabs.men)
+rename_menus:rem --- Rename Addon's menu (addon.men) and Payroll's menu if applicable (prbabs.men)
              rem --- Use superset/customized V6Hybrid menu (v6hybrid.men) instead
 
     rem --- Vector to store Addon and Payroll apps menu names
