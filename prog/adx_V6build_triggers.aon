@@ -6,7 +6,7 @@ rem --- config file, and all trigger source paths relative to the current instal
 rem --- Since a production hybrid installation also requires triggers on the Barista Addon side, 
 rem --- the *.trigger definition files and corresponding source code are copied from the V6Hybrid/util/triggers 
 rem --- and triggers/src folders to the Barista Addon installation's aon/data and aon/data/src directories; and
-rem --- all the trigger souce paths are update for that installation location.
+rem --- all the trigger souce paths are updated for that installation location.
 
     seterr std_error
     setesc std_error
@@ -138,6 +138,18 @@ update_status:rem --- Update AutoLaunch Status
     ads_autolaunch.trans_date$=date(0:"%Yl%Mz%Dz")
     ads_autolaunch.trans_time$=date(0:"%Hz%mz%sz")
     ads_autolaunch$=field(ads_autolaunch$)
+
+    rem --- Use bax_mount_sel to get rdMountVect! containing hashes of mounted system and backup directory info for use in bax_xmlrec_exp.bbj
+    dev_mode$=""
+    call stbl("+DIR_SYP")+"bax_mount_sel.bbj",rdMountVect!,table_chans$[all],dev_mode$
+
+    rem --- Update admin xml file
+    if rdMountVect!<>null() and rdMountVect!.size()>0
+        exp_action$="C"
+        exp_add_only$=""
+        call stbl("+DIR_SYP")+"bax_xmlrec_exp.bbj","ADS_AUTOLAUNCH",ads_autolaunch$,exp_action$,exp_add_only$,dev_mode$,rdMountVect!,table_chans$[all]
+    endif
+
     writerecord(ads_autolaunch)ads_autolaunch$
 
 goto std_exit
