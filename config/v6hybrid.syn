@@ -34,10 +34,5 @@ SYSPFX=../apps/V6Hybrid/SHS/
 SYSCFG=+V6DATA=../apps/V6Hybrid/ADATA/
 SYSLANG=ENU
 DEVICE=alias T0 syswindow "" invisible, USERID=admin, LEGACYID=+ON
-DBDD=AddonSoftware
-DCOMP=00000000
-DAPP=V6H
-DPFX=
-SQLDB=
-IMPSRC=DD
+
 
