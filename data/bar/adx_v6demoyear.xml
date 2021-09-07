@@ -21,11 +21,11 @@
 			<ASC_LICENSE_ID id="ddm_tables.adx_v6demoyear"></ASC_LICENSE_ID>
 			<DD_EXPORT_DATA id="ddm_tables.adx_v6demoyear">N</DD_EXPORT_DATA>
 			<DD_CREATE_DATE id="ddm_tables.adx_v6demoyear">20160805</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_tables.adx_v6demoyear">20191126</DD_LSTREV_DATE>
-			<DD_LSTSYNC_DATE id="ddm_tables.adx_v6demoyear">20191126</DD_LSTSYNC_DATE>
-			<DD_LSTSYNC_TIME id="ddm_tables.adx_v6demoyear">131358</DD_LSTSYNC_TIME>
+			<DD_LSTREV_DATE id="ddm_tables.adx_v6demoyear">20210907</DD_LSTREV_DATE>
+			<DD_LSTSYNC_DATE id="ddm_tables.adx_v6demoyear">20210907</DD_LSTSYNC_DATE>
+			<DD_LSTSYNC_TIME id="ddm_tables.adx_v6demoyear">150614</DD_LSTSYNC_TIME>
 			<DD_ATTR_ATAB id="ddm_tables.adx_v6demoyear"></DD_ATTR_ATAB>
-			<DD_ATTR_CPGM id="ddm_tables.adx_v6demoyear">C:/Temp/tmp/v6hybrid_tmp/apps/V6Hybrid/;</DD_ATTR_CPGM>
+			<DD_ATTR_CPGM id="ddm_tables.adx_v6demoyear">C:/aon_instances/aonqc/V6Hv21/apps/V6Hybrid/;</DD_ATTR_CPGM>
 			<DD_ATTR_DKNM id="ddm_tables.adx_v6demoyear"></DD_ATTR_DKNM>
 			<DD_ATTR_FIMG id="ddm_tables.adx_v6demoyear"></DD_ATTR_FIMG>
 			<DD_ATTR_FTYP id="ddm_tables.adx_v6demoyear">S</DD_ATTR_FTYP>
