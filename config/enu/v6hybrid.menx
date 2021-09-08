@@ -23,15 +23,6 @@ Addon AP Additional (Hidden)^0000002850^M^^^im_menua_miscellaneous.png^^01007514
 	Invoice Detail Inquiry^APR_VENDINV^T^APR_VENDINV^^im_menui_table.png^^01007514^AP^^20.0^^Y^^^^^^
 Addon GL Additional (Hidden)^0000002900^M^^^im_menua_miscellaneous.png^^01007514^GL^^20.0^^Y^^^^^^
 	Summary Activity Inquiry^GLM_SUMMACTIVITY^T^GLM_SUMMACTIVITY^^im_menui_table.png^^01007514^GL^^20.0^^Y^^^^^^
-Addon PR Additional (Hidden)^0000002970^M^^^im_menua_miscellaneous.png^^01004419^PR^^20.0^^Y^^^^^^
-	Payroll Daily Entry Default Dates^PRE_PRDATES^T^PRE_PRDATES^^im_menui_table.png^^01004419^PR^^20.0^^Y^^^^^^
-	Payroll MICR Fonts Lookup^PRM_MICRFONT^T^PRM_MICRFONT^^im_menui_table.png^^01004419^PR^^20.0^^Y^^^^^^
-	Payroll Tax and Contribution Update^PRC_TAX_UPDATE^T^PRC_TAX_UPDATE^^im_menui_update.png^^01004419^PR^^20.0^^Y^^^^^^
-	94x Tax Form Control^PRC_TAX_MISC_CTL^T^PRC_TAX_MISC_CTL^^im_menui_table.png^^01004419^PR^^20.0^^Y^^^^^^
-	Update PR Display Description^PRX_UTIL_NAME_DESC^A^^prx_builddisplaydesc.aon^im_menui_table.png^^01004419^PRB^^20.0^^Y^^^^^^
-	Convert PR Employee Comments^PRX_UTIL_COMMENTS^A^^prx_buildcomments.aon^im_menui_table.png^^01004419^PRB^^20.0^^Y^^^^^^
-	Combine PR Check History^PRX_UTIL_CHECK_HIST^A^^prx_buildchkhist.aon^im_menui_table.png^^01004419^PRB^^20.0^^Y^^^^^^
-	Convert PR Union History^PRX_UTIL_UNION_HIST^A^^prx_buildunionhist.aon^im_menui_table.png^^01004419^PRB^^20.0^^Y^^^^^^
 Digital Dashboard^AONV6_DASH_M^M^^^im_menua_dashboard.png^^00000000^V6H^^20.0^^^^^^^^
 	Digital Dashboard^AONV6_DASH^A^^adx_V6aondashboard.aon^im_menui_view.png^^00000000^V6H^^20.0^^^^^^^^
 Accounts Payable^APMENU^M^^^im_menua_accts_payable.png^^01007514^AP^Accounts_Payable7^20.0^^^^^^^^
@@ -177,81 +168,6 @@ General Ledger^GLMENU^M^^^im_menua_gen_ledger.png^N^01007514^GL^General_Ledger_M
 		Copy Chart of Accounts^GLX_COPYCHART^T^GLX_COPYCHART^^im_menui_utility.png^N^01007514^GL^Copy_Chart_of_Accounts^20.0^^^^^^^^
 		Historic Report Headings^GLM_FINHEADING^T^GLM_FINHEADING^^im_menui_table.png^^01007514^GL^Report_Heading7^20.0^^^^^^^^
 		Build Account Summary from History^GLX_BUILDACTSUM^T^GLX_BUILDACTSUM^^im_menui_utility.png^^01007514^GL^Build_Account_Summary_from_History1^20.0^^^^^^^^
-Payroll^PRBMENU^M^^^im_menua_payroll.png^N^01004419^PRB^^20.0^^^^^^^^
-	Daily Processing^PRBMENU_DAILYPROC^G^^^im_node_col.png^^01004419^PRB^properations_menu4_html^20.0^^^^^^^^
-		Payroll Period Definition^PRS_PERIOD^T^PRS_PERIOD^^im_menui_table.png^^01004419^PRB^properations_payrollperioddefinition_html^20.0^^^^^^^^
-		Payroll Entry^PRE_PAYROLL^T^PRE_PAYROLL^^im_menui_table.png^^01004419^PRB^properations_payrollentry_html^20.0^^^^^^^^
-		Payroll Earnings Entry Report^PRR_EARNENTRYREG^T^PRR_EARNENTRYREG^^im_menui_report.png^^01004419^PRB^properations_payrollearningsentryreport_html^20.0^^^^^^^^
-		Earnings Register^PRR_EARNINGS^T^PRR_EARNINGS^^im_menui_report.png^^01004419^PRB^properations_earningsregister_html^20.0^^^^^^^^
-		Distribution Report^PRR_DISTREPT^T^PRR_DISTREPT^^im_menui_report.png^^01004419^PRB^properations_distributionreport_html^20.0^^^^^^^^
-		Payroll Calculation^PRU_AA^A^^pru_paycalc.aon^im_menui_update.png^^01004419^PRB^properations_payrollcalculation_html^20.0^^^^^^^^
-		Deduction Report^PRR_PAYDDCT^T^PRR_PAYDDCT^^im_menui_report.png^^01004419^PRB^properations_deductionreport_html^20.0^Y^^^^^^^
-		Tax Report^PRR_PAYTAX^T^PRR_PAYTAX^^im_menui_report.png^^01004419^PRB^properations_taxreport_html^20.0^^^^^^^^
-		Contribution Report^PRR_PAYCONT^T^PRR_PAYCONT^^im_menui_report.png^^01004419^PRB^properations_contributionreport_html^20.0^^^^^^^^
-		Accrual Report^PRR_PAYACCRL^T^PRR_PAYACCRL^^im_menui_report.png^^01004419^PRB^properations_accrualreport_html^20.0^^^^^^^^
-		Exception Report^PRR_PAYEXCEPT^T^PRR_PAYEXCEPT^^im_menui_report.png^^01004419^PRB^properations_exceptionreport_html^20.0^^^^^^^^
-		Detail Report^PRR_DETAILS^T^PRR_DETAILS^^im_menui_report.png^^01004419^PRB^properations_detailreport_html^20.0^^^^^^^^
-		GL Distribution Report^PRR_GLDISTRIB^T^PRR_GLDISTRIB^^im_menui_report.png^^01004419^PRB^properations_gldistributionreport_html^20.0^^^^^^^^
-		Pre-Check Report^PRR_PRECHECK^T^PRR_PRECHECK^^im_menui_report.png^^01004419^PRB^properations_precheckreport_html^20.0^^^^^^^^
-		Check Printing^PRR_CHKPRINT^T^PRR_CHKPRINT^^im_menui_report.png^^01004419^PRB^properations_checkprinting_html^20.0^^^^^^^^
-		Check Register^PRR_CHKREGISTER^T^PRR_CHKREGISTER^^im_menui_report.png^^01004419^PRB^properations_checkregister_html^20.0^^^^^^^^
-	Daily Entry^PRBMENU_DAILYENT^G^^^im_node_col.png^^01004419^PRB^properations_menu3_html^20.0^^^^^^^^
-		Daily Entry^PRE_DAYTIME_HDR^T^PRE_DAYTIME_HDR^^im_menui_table.png^^01004419^PRB^properations_dailyentry1_html^20.0^^^^^^^^
-		Daily Entry Register^PRR_DLYENTRYREG^T^PRR_DLYENTRYREG^^im_menui_report.png^^01004419^PRB^properations_dailyentryregister_html^20.0^^^^^^^^
-	Periodic Processing^PRBMENU_PERPROC^G^^^im_node_col.png^^01004419^PRB^properations_menu2_html^20.0^^^^^^^^
-		Payroll Distribution History Report^PRR_LBRDISTREPOR^T^PRR_LBRDISTREPOR^^im_menui_report.png^^01004419^PRB^properations_payrolldistributionhistoryreport_html^20.0^^^^^^^^
-		Monthly Check Report^PRR_MNTHCHCK^T^PRR_MNTHCHCK^^im_menui_report.png^^01004419^PRB^properations_monthlycheckreport_html^20.0^^^^^^^^
-		Month End Update^PRU_MONTHEND^T^PRU_MONTHEND^^im_menui_update.png^^01004419^PRB^properations_monthendupdate_html^20.0^^^^^^^^
-		Earnings Status Report^PRR_EARNSTATUS^T^PRR_EARNSTATUS^^im_menui_report.png^^01004419^PRB^properations_earningsstatusreport_html^20.0^^^^^^^^
-		Deduction Status Report^PRR_DEDSTTREPORT^T^PRR_DEDSTTREPORT^^im_menui_report.png^^01004419^PRB^properations_deductionstatusreport_html^20.0^^^^^^^^
-		Tax Status Report^PRR_TAXSTATUS^T^PRR_TAXSTATUS^^im_menui_report.png^^01004419^PRB^properations_taxstatusreport_html^20.0^^^^^^^^
-		Contribution Status Report^PRR_CONTRIBSTAT^T^PRR_CONTRIBSTAT^^im_menui_report.png^^01004419^PRB^properations_contributionstatusreport_html^20.0^^^^^^^^
-		Accrual Status Report^PRR_ACCRLSTAT^T^PRR_ACCRLSTAT^^im_menui_report.png^^01004419^PRB^properations_accrualstatusreport_html^20.0^^^^^^^^
-		Payroll Check History Report^PRR_CHECKHISTORY^T^PRR_CHECKHISTORY^^im_menui_report.png^^01004419^PRB^properations_payrollcheckhistoryreport_html^20.0^^^^^^^^
-		Earnings History Report^PRR_EARNHIST^T^PRR_EARNHIST^^im_menui_report.png^^01004419^PRB^properations_earningshistoryreport_html^20.0^^^^^^^^
-		Union History Report^PRR_UNIONHIST^T^PRR_UNIONHIST^^im_menui_report.png^^01004419^PRB^properations_unionhistoryreport_html^20.0^^^^^^^^
-		Payroll Date Listing^PRR_DATELIST^T^PRR_DATELIST^^im_menui_report.png^^01004419^PRB^properations_payrolldatelisting_html^20.0^^^^^^^^
-		Year End Update^PRU_YEAREND^T^PRU_YEAREND^^im_menui_update.png^^01004419^PRB^properations_yearendupdate_html^20.0^^^^^^^^
-		W-2 Processing^PRBMENU_W2^G^^^im_node_col.png^^01004419^PRB^properations_w2processmenu_html^20.0^^^^^^^^
-			W2 Box Definition^PRC_W2BOX^T^PRC_W2BOX^^im_menui_table.png^^01004419^PRB^properations_w2boxdefinition_html^20.0^^^^^^^^
-			W2 Form Box ID Definition^PRC_W2BOX_BX_ID^T^PRC_W2BOX_BX_ID^^im_menui_table.png^^01004419^PRB^properations_w2formboxiddefinition_html^20.0^^^^^^^^
-			W2 State ID Definition^PRC_W2BOX_ST_ID^T^PRC_W2BOX_ST_ID^^im_menui_table.png^^01004419^PRB^properations_w2stateiddefinition_html^20.0^^^^^^^^
-			Copy/Remove/Install  W-2 Configuration^PRC_W2_CONFIG^T^PRC_W2_CONFIG^^im_menui_utility.png^^01004419^PRB^properations_copyremoveinstallw2configuration_html^20.0^^^^^^^^
-			W-2 Calculation^PRU_W2CALC^T^PRU_W2CALC^^im_menui_update.png^^01004419^PRB^properations_w2calculation_html^20.0^^^^^^^^
-			W-2 Printing^PRR_W2PRINT^T^PRR_W2PRINT^^im_menui_report.png^^01004419^PRB^properations_w2printing_html^20.0^^^^^^^^
-			W-2 Export^PRR_W2EXPORT^T^PRR_W2EXPORT^^im_menui_report.png^^01004419^PRB^properations_w2export_html^20.0^^^^^^^^
-			W-2 E-File^PRR_W2EFILE^T^PRR_W2EFILE^^im_menui_report.png^^01004419^PRB^properations_w2efile_html^20.0^^^^^^^^
-			W4 Tax Form Printing^PRR_TAX_W4_PRT^T^PRR_TAX_W4_PRT^^im_menui_report.png^^01004419^PRB^properations_w4taxformprinting_html^20.0^Y^^^^^^^
-		Employer Returns Processing^PRBMENU_9X^G^^^im_node_col.png^^01004419^PRB^properations_employerreturnsprocessing_html^20.0^^^^^^^^
-			94X Box Definition^PRC_TAX_MISC_HDR^T^PRC_TAX_MISC_HDR^^im_menui_table.png^^01004419^PRB^properations_94xboxdefinition_html^20.0^^^^^^^^
-			Copy/Remove/Install 94X Configuration^PRC_94X_CONFIG^T^PRC_94X_CONFIG^^im_menui_table.png^^01004419^PRB^properations_copyremoveinstall94xconfiguratio_html^20.0^^^^^^^^
-			94X Form Printing^PRR_TAX_MISC_PRT^T^PRR_TAX_MISC_PRT^^im_menui_report.png^^01004419^PRB^properations_94xformprinting_html^20.0^^^Y^^^^^
-	Reports^PRBMENU_REPORTS^G^^^im_node_col.png^^01004419^PRB^properations_menu1_html^20.0^^^^^^^^
-		Employee Detail Listing^PRR_EMPMAINTLIST^T^PRR_EMPMAINTLIST^^im_menui_report.png^^01004419^PRB^properations_employeedetaillisting_html^20.0^^^^^^^^
-		Employee Master Listing^PRR_EMPL_MASTER^T^PRR_EMPL_MASTER^^im_menui_report.png^^01004419^PRB^properations_employeemasterlisting_html^20.0^^^^^^^^
-		Employee Cross Reference Report^PRR_EMPLXREF^T^PRR_EMPLXREF^^im_menui_report.png^^01004419^PRB^properations_employeecrossreference_html^20.0^^^^^^^^
-		Employee Labels^PRR_EMPLBLPRNT^T^PRR_EMPLBLPRNT^^im_menui_report.png^^01004419^PRB^properations_employeelabels_html^20.0^^^^^^^^
-	Inquiry and Maintenance^PRBMENU_MAINT^G^^^im_node_col.png^^01004419^PRB^properations_menu_html^20.0^^^^^^^^
-		Employees^PRM_EMPLMAST^T^PRM_EMPLMAST^^im_menui_table.png^^01004419^PRB^properations_employees_html^20.0^^^^^^^^
-		Contribution Codes^PRC_CONTCODE^T^PRC_CONTCODE^^im_menui_table.png^^01004419^PRB^properations_contributioncodes_html^20.0^^^^^^^^
-		Department Codes^PRC_DEPTCODE^T^PRC_DEPTCODE^^im_menui_table.png^^01004419^PRB^properations_departmentcodes_html^20.0^^^^^^^^
-		Deduction Codes^PRC_DDCTCODE^T^PRC_DDCTCODE^^im_menui_table.png^^01004419^PRB^properations_deductioncodes_html^20.0^^^^^^^^
-		Labor Distribution^PRT_LABORDST^T^PRT_LABORDST^^im_menui_table.png^^01004419^PRB^properations_labordistribution_html^20.0^^^^^^^^
-		Pay Codes^PRC_PAYCODE^T^PRC_PAYCODE^^im_menui_table.png^^01004419^PRB^properations_paycodes_html^20.0^^^^^^^^
-		Report Codes^PRC_RPRTCODE^T^PRC_RPRTCODE^^im_menui_table.png^^01004419^PRB^properations_reportcodes_html^20.0^^^^^^^^
-		Tax Codes^PRC_TAXCODE^T^PRC_TAXCODE^^im_menui_table.png^^01004419^PRB^properations_taxcodes_html^20.0^^^^^^^^
-		Tax Tables^PRC_TAXTABLE^T^PRC_TAXTABLE^^im_menui_table.png^^01004419^PRB^properations_taxtables_html^20.0^^^^^^^^
-		Title Codes^PRC_TITLCODE^T^PRC_TITLCODE^^im_menui_table.png^^01004419^PRB^properations_titlecodes_html^20.0^^^^^^^^
-		Total Codes^PRC_TOTLCODE^T^PRC_TOTLCODE^^im_menui_table.png^^01004419^PRB^properations_totalcodes_html^20.0^^^^^^^^
-		Union Code^PRC_UNNCODE^T^PRC_UNNCODE^^im_menui_table.png^^01004419^PRB^properations_unioncode_html^20.0^^^^^^^^
-		Parameters^PRBMENU_MPARAMS^G^^^im_node_col.png^^01004419^PRB^properations_applicationparameters_html^20.0^^^^^^^^
-			Application Parameters^PRS_PARAMS^T^PRS_PARAMS^^im_menui_parameter.png^^01004419^PRB^properations_applicationparameters_html^20.0^^^^^^^^
-			Report Parameters^PRS_REPORT^T^PRS_REPORT^^im_menui_parameter.png^^01004419^PRB^properations_reportparameters_html^20.0^^^^^^^^
-	Utilities^PRBMENU_UTILITIES^G^^^im_node_col.png^^01004419^PRB^properations_menu5_html^20.0^^^^^^^^
-		Import Shop Floor Employees^PRX_UTIL_SHOP_FLOOR^A^^prx_buildshopfloor.aon^im_menui_table.png^^01004419^PRB^properations_importshopflooremployees_html^20.0^^^^^^^^
-		Install PR Fonts^PRX_INSTALL_FONT^A^^prx_installfont.aon^im_menui_utility.png^^01004419^PRB^properations_installprfonts_html^20.0^^^^^^^^
-		Install PR Fonts on JNLP Client^PRX_INSTALL_FONT_CLT^A^^prx_installfontclnt.aon^im_menui_utility.png^^01004419^PRB^properations_installprfontsonjnlpclient_html^20.0^^^^^^^^
-		Purge Check Work File^PRX_CHKWORKCLR^T^PRX_CHKWORKCLR^^im_menui_utility.png^^01004419^PRB^properations_purgecheckworkfile_html^20.0^^^^^^^^
 Order/Invoice Processing^AONV6_OP^M^^^im_menua_order_proc.png^^00000000^V6H^^20.0^^^^^^^^
 	Order Entry^AONV6_OPEDA^A^^adx_v6leadin.aon - OPE.DA^im_menui_table.png^^00000000^V6H^^20.0^^^^^^^^
 	Order/Picking List^AONV6_OPRNA^A^^adx_v6leadin.aon - OPR.NA^im_menui_report.png^^00000000^V6H^^20.0^^^^^^^^

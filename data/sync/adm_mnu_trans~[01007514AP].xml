@@ -1,0 +1,4665 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<barista_record_table>ADM_MNU_TRANS</barista_record_table>
+<barista_admin_records>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>07b831ec-8d93-446a-9282-163cf2b64b0e</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Berichte</MENU_DESC>
+		<HELP_TAG>Accounts_Payable_Reports7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>07b831ec-8d93-446a-9282-163cf2b64b0e</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Reports</MENU_DESC>
+		<HELP_TAG>Accounts_Payable_Reports7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>07b831ec-8d93-446a-9282-163cf2b64b0e</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Reports</MENU_DESC>
+		<HELP_TAG>Accounts_Payable_Reports7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>07b831ec-8d93-446a-9282-163cf2b64b0e</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Informes</MENU_DESC>
+		<HELP_TAG>Accounts_Payable_Reports7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>07b831ec-8d93-446a-9282-163cf2b64b0e</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Informes</MENU_DESC>
+		<HELP_TAG>Accounts_Payable_Reports7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>07b831ec-8d93-446a-9282-163cf2b64b0e</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rapports</MENU_DESC>
+		<HELP_TAG>Accounts_Payable_Reports7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>07b831ec-8d93-446a-9282-163cf2b64b0e</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rapports</MENU_DESC>
+		<HELP_TAG>Accounts_Payable_Reports7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>07b831ec-8d93-446a-9282-163cf2b64b0e</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rapporti</MENU_DESC>
+		<HELP_TAG>Accounts_Payable_Reports7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>07f74ad1-e201-4454-80a2-b1de42465f80</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Anwendungsparameter</MENU_DESC>
+		<HELP_TAG>Application_Parameters21</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>07f74ad1-e201-4454-80a2-b1de42465f80</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Application Parameters</MENU_DESC>
+		<HELP_TAG>Application_Parameters21</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>07f74ad1-e201-4454-80a2-b1de42465f80</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Application Parameters</MENU_DESC>
+		<HELP_TAG>Application_Parameters21</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>07f74ad1-e201-4454-80a2-b1de42465f80</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Parámetros de la aplicación</MENU_DESC>
+		<HELP_TAG>Application_Parameters21</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>07f74ad1-e201-4454-80a2-b1de42465f80</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Parámetros de la aplicación</MENU_DESC>
+		<HELP_TAG>Application_Parameters21</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>07f74ad1-e201-4454-80a2-b1de42465f80</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Paramètres de l'Application</MENU_DESC>
+		<HELP_TAG>Application_Parameters21</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>07f74ad1-e201-4454-80a2-b1de42465f80</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Paramètres de l'Application</MENU_DESC>
+		<HELP_TAG>Application_Parameters21</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>07f74ad1-e201-4454-80a2-b1de42465f80</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Parametri dell'applicazione</MENU_DESC>
+		<HELP_TAG>Application_Parameters21</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>09e7d04d-f090-42ea-af2c-85d54ce1396e</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Schecks verbuchen</MENU_DESC>
+		<HELP_TAG>Check_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>09e7d04d-f090-42ea-af2c-85d54ce1396e</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Check Register</MENU_DESC>
+		<HELP_TAG>Check_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>09e7d04d-f090-42ea-af2c-85d54ce1396e</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Check Register</MENU_DESC>
+		<HELP_TAG>Check_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>09e7d04d-f090-42ea-af2c-85d54ce1396e</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registro de cheques</MENU_DESC>
+		<HELP_TAG>Check_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>09e7d04d-f090-42ea-af2c-85d54ce1396e</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registro de cheques</MENU_DESC>
+		<HELP_TAG>Check_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>09e7d04d-f090-42ea-af2c-85d54ce1396e</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registre de Chèque</MENU_DESC>
+		<HELP_TAG>Check_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>09e7d04d-f090-42ea-af2c-85d54ce1396e</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registre de Chèque</MENU_DESC>
+		<HELP_TAG>Check_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>09e7d04d-f090-42ea-af2c-85d54ce1396e</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Controllare il registro</MENU_DESC>
+		<HELP_TAG>Check_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>11d58e14-211e-4b2a-b93e-d7b700b1ec9e</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Kredtoren-Kontenarten</MENU_DESC>
+		<HELP_TAG>Accounts_Payable_Type_Code_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>11d58e14-211e-4b2a-b93e-d7b700b1ec9e</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Accounts Payable Types</MENU_DESC>
+		<HELP_TAG>Accounts_Payable_Type_Code_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>11d58e14-211e-4b2a-b93e-d7b700b1ec9e</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Accounts Payable Types</MENU_DESC>
+		<HELP_TAG>Accounts_Payable_Type_Code_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>11d58e14-211e-4b2a-b93e-d7b700b1ec9e</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Tipos de cuentas por pagar</MENU_DESC>
+		<HELP_TAG>Accounts_Payable_Type_Code_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>11d58e14-211e-4b2a-b93e-d7b700b1ec9e</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Tipos de cuentas por pagar</MENU_DESC>
+		<HELP_TAG>Accounts_Payable_Type_Code_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>11d58e14-211e-4b2a-b93e-d7b700b1ec9e</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Types de Comptes Créditeurs</MENU_DESC>
+		<HELP_TAG>Accounts_Payable_Type_Code_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>11d58e14-211e-4b2a-b93e-d7b700b1ec9e</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Types de Comptes Créditeurs</MENU_DESC>
+		<HELP_TAG>Accounts_Payable_Type_Code_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>11d58e14-211e-4b2a-b93e-d7b700b1ec9e</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Tipi conti debitori</MENU_DESC>
+		<HELP_TAG>Accounts_Payable_Type_Code_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>14d542ed-2391-479d-b61e-482ed7408e59</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Kreditoren-Kommentare</MENU_DESC>
+		<HELP_TAG>Vendor_Comments_Listing7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>14d542ed-2391-479d-b61e-482ed7408e59</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendor Comments Listing</MENU_DESC>
+		<HELP_TAG>Vendor_Comments_Listing7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>14d542ed-2391-479d-b61e-482ed7408e59</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendor Comments Listing</MENU_DESC>
+		<HELP_TAG>Vendor_Comments_Listing7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>14d542ed-2391-479d-b61e-482ed7408e59</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Lista de comentarios de proveedores</MENU_DESC>
+		<HELP_TAG>Vendor_Comments_Listing7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>14d542ed-2391-479d-b61e-482ed7408e59</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Lista de comentarios de proveedores</MENU_DESC>
+		<HELP_TAG>Vendor_Comments_Listing7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>14d542ed-2391-479d-b61e-482ed7408e59</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Liste de Commentaires du Vendeur</MENU_DESC>
+		<HELP_TAG>Vendor_Comments_Listing7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>14d542ed-2391-479d-b61e-482ed7408e59</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Liste de Commentaires du Vendeur</MENU_DESC>
+		<HELP_TAG>Vendor_Comments_Listing7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>14d542ed-2391-479d-b61e-482ed7408e59</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Listato venditore commenti</MENU_DESC>
+		<HELP_TAG>Vendor_Comments_Listing7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1631b8ef-21a1-4287-b953-9237aa6fb301</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Receipt History Inquiry</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1631b8ef-21a1-4287-b953-9237aa6fb301</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Receipt History Inquiry</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1631b8ef-21a1-4287-b953-9237aa6fb301</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Receipt History Inquiry</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1631b8ef-21a1-4287-b953-9237aa6fb301</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Receipt History Inquiry</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1631b8ef-21a1-4287-b953-9237aa6fb301</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Receipt History Inquiry</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1631b8ef-21a1-4287-b953-9237aa6fb301</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Receipt History Inquiry</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1631b8ef-21a1-4287-b953-9237aa6fb301</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Receipt History Inquiry</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1631b8ef-21a1-4287-b953-9237aa6fb301</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Receipt History Inquiry</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1762607f-4356-4f26-a2a8-7da7b888fa6b</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rechnungen verbuchen</MENU_DESC>
+		<HELP_TAG>Invoice_Register14</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1762607f-4356-4f26-a2a8-7da7b888fa6b</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Invoice Register</MENU_DESC>
+		<HELP_TAG>Invoice_Register14</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1762607f-4356-4f26-a2a8-7da7b888fa6b</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Invoice Register</MENU_DESC>
+		<HELP_TAG>Invoice_Register14</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1762607f-4356-4f26-a2a8-7da7b888fa6b</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registro de facturas</MENU_DESC>
+		<HELP_TAG>Invoice_Register14</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1762607f-4356-4f26-a2a8-7da7b888fa6b</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registro de facturas</MENU_DESC>
+		<HELP_TAG>Invoice_Register14</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1762607f-4356-4f26-a2a8-7da7b888fa6b</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registre de Factures</MENU_DESC>
+		<HELP_TAG>Invoice_Register14</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1762607f-4356-4f26-a2a8-7da7b888fa6b</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registre de Factures</MENU_DESC>
+		<HELP_TAG>Invoice_Register14</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1762607f-4356-4f26-a2a8-7da7b888fa6b</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registro delle fatture</MENU_DESC>
+		<HELP_TAG>Invoice_Register14</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1a8aaa2d-fcf2-44ef-9c47-0951d83578e6</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rebuild Invoice Balance</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1a8aaa2d-fcf2-44ef-9c47-0951d83578e6</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rebuild Invoice Balance</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1a8aaa2d-fcf2-44ef-9c47-0951d83578e6</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rebuild Invoice Balance</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1a8aaa2d-fcf2-44ef-9c47-0951d83578e6</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rebuild Invoice Balance</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1a8aaa2d-fcf2-44ef-9c47-0951d83578e6</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rebuild Invoice Balance</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1a8aaa2d-fcf2-44ef-9c47-0951d83578e6</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rebuild Invoice Balance</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1a8aaa2d-fcf2-44ef-9c47-0951d83578e6</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rebuild Invoice Balance</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1a8aaa2d-fcf2-44ef-9c47-0951d83578e6</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rebuild Invoice Balance</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1bc78b06-1f5c-486f-ae44-fdf62fe8d538</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Kreditoren-Adressliste</MENU_DESC>
+		<HELP_TAG>Vendor_Name_Address_Listing7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1bc78b06-1f5c-486f-ae44-fdf62fe8d538</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendor Name & Address Listing</MENU_DESC>
+		<HELP_TAG>Vendor_Name_Address_Listing7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1bc78b06-1f5c-486f-ae44-fdf62fe8d538</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendor Name & Address Listing</MENU_DESC>
+		<HELP_TAG>Vendor_Name_Address_Listing7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1bc78b06-1f5c-486f-ae44-fdf62fe8d538</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Lista de nombre y domicilio de proveedores</MENU_DESC>
+		<HELP_TAG>Vendor_Name_Address_Listing7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1bc78b06-1f5c-486f-ae44-fdf62fe8d538</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Lista de nombre y domicilio de proveedores</MENU_DESC>
+		<HELP_TAG>Vendor_Name_Address_Listing7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1bc78b06-1f5c-486f-ae44-fdf62fe8d538</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Liste Adresses & Nom du Vendeur</MENU_DESC>
+		<HELP_TAG>Vendor_Name_Address_Listing7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1bc78b06-1f5c-486f-ae44-fdf62fe8d538</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Liste Adresses & Nom du Vendeur</MENU_DESC>
+		<HELP_TAG>Vendor_Name_Address_Listing7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1bc78b06-1f5c-486f-ae44-fdf62fe8d538</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Nome venditore & Listato indirizzi</MENU_DESC>
+		<HELP_TAG>Vendor_Name_Address_Listing7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1d5e4dfd-b485-4f64-b06b-c5e30c13b03e</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Monatliche Scheckliste</MENU_DESC>
+		<HELP_TAG>Monthly_Check_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1d5e4dfd-b485-4f64-b06b-c5e30c13b03e</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Monthly Check Report</MENU_DESC>
+		<HELP_TAG>Monthly_Check_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1d5e4dfd-b485-4f64-b06b-c5e30c13b03e</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Monthly Check Report</MENU_DESC>
+		<HELP_TAG>Monthly_Check_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1d5e4dfd-b485-4f64-b06b-c5e30c13b03e</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Informe mensual de cheques</MENU_DESC>
+		<HELP_TAG>Monthly_Check_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1d5e4dfd-b485-4f64-b06b-c5e30c13b03e</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Informe mensual de cheques</MENU_DESC>
+		<HELP_TAG>Monthly_Check_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1d5e4dfd-b485-4f64-b06b-c5e30c13b03e</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rapport de Vérification Mensuelle</MENU_DESC>
+		<HELP_TAG>Monthly_Check_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1d5e4dfd-b485-4f64-b06b-c5e30c13b03e</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rapport de Vérification Mensuelle</MENU_DESC>
+		<HELP_TAG>Monthly_Check_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>1d5e4dfd-b485-4f64-b06b-c5e30c13b03e</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rapporto controllo mensile</MENU_DESC>
+		<HELP_TAG>Monthly_Check_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>33a97695-e7fc-4d77-bbea-d7c7ea31129b</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Liste der Genehmigender & Unterzeichner</MENU_DESC>
+		<HELP_TAG>User_Authorization_Listing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>33a97695-e7fc-4d77-bbea-d7c7ea31129b</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>User Authorization Listing</MENU_DESC>
+		<HELP_TAG>User_Authorization_Listing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>33a97695-e7fc-4d77-bbea-d7c7ea31129b</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>User Authorization Listing</MENU_DESC>
+		<HELP_TAG>User_Authorization_Listing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>33a97695-e7fc-4d77-bbea-d7c7ea31129b</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Lista de aprobador y firmante</MENU_DESC>
+		<HELP_TAG>User_Authorization_Listing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>33a97695-e7fc-4d77-bbea-d7c7ea31129b</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Lista de aprobador y firmante</MENU_DESC>
+		<HELP_TAG>User_Authorization_Listing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>33a97695-e7fc-4d77-bbea-d7c7ea31129b</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Liste de Autorisation et signature</MENU_DESC>
+		<HELP_TAG>User_Authorization_Listing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>33a97695-e7fc-4d77-bbea-d7c7ea31129b</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Liste de Autorisation et signature</MENU_DESC>
+		<HELP_TAG>User_Authorization_Listing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>33a97695-e7fc-4d77-bbea-d7c7ea31129b</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Approvers & Signers Listing</MENU_DESC>
+		<HELP_TAG>User_Authorization_Listing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>373bb204-42d6-4c3a-a4c0-3f174f8754f5</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rechnungen erfassen</MENU_DESC>
+		<HELP_TAG>Invoice_Entry</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>373bb204-42d6-4c3a-a4c0-3f174f8754f5</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Invoice Entry</MENU_DESC>
+		<HELP_TAG>Invoice_Entry</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>373bb204-42d6-4c3a-a4c0-3f174f8754f5</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Invoice Entry</MENU_DESC>
+		<HELP_TAG>Invoice_Entry</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>373bb204-42d6-4c3a-a4c0-3f174f8754f5</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Entrada de facturas</MENU_DESC>
+		<HELP_TAG>Invoice_Entry</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>373bb204-42d6-4c3a-a4c0-3f174f8754f5</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Entrada de facturas</MENU_DESC>
+		<HELP_TAG>Invoice_Entry</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>373bb204-42d6-4c3a-a4c0-3f174f8754f5</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Saisie de Facture</MENU_DESC>
+		<HELP_TAG>Invoice_Entry</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>373bb204-42d6-4c3a-a4c0-3f174f8754f5</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Saisie de Facture</MENU_DESC>
+		<HELP_TAG>Invoice_Entry</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>373bb204-42d6-4c3a-a4c0-3f174f8754f5</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Partita fattura</MENU_DESC>
+		<HELP_TAG>Invoice_Entry</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3bd8c859-24b0-4b7c-849a-41a98f520fe3</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Einkaufs-Journal</MENU_DESC>
+		<HELP_TAG>Purchase_Journal</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3bd8c859-24b0-4b7c-849a-41a98f520fe3</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Purchase Journal</MENU_DESC>
+		<HELP_TAG>Purchase_Journal</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3bd8c859-24b0-4b7c-849a-41a98f520fe3</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Purchase Journal</MENU_DESC>
+		<HELP_TAG>Purchase_Journal</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3bd8c859-24b0-4b7c-849a-41a98f520fe3</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Diario de compras</MENU_DESC>
+		<HELP_TAG>Purchase_Journal</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3bd8c859-24b0-4b7c-849a-41a98f520fe3</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Diario de compras</MENU_DESC>
+		<HELP_TAG>Purchase_Journal</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3bd8c859-24b0-4b7c-849a-41a98f520fe3</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Journal des Achats</MENU_DESC>
+		<HELP_TAG>Purchase_Journal</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3bd8c859-24b0-4b7c-849a-41a98f520fe3</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Journal des Achats</MENU_DESC>
+		<HELP_TAG>Purchase_Journal</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3bd8c859-24b0-4b7c-849a-41a98f520fe3</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registro d'acquisto</MENU_DESC>
+		<HELP_TAG>Purchase_Journal</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3cbcd06f-5519-4292-9fb4-90d23e7813fe</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Kreditoren-Details</MENU_DESC>
+		<HELP_TAG>Vendor_Detail_Listing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3cbcd06f-5519-4292-9fb4-90d23e7813fe</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendor Detail Listing</MENU_DESC>
+		<HELP_TAG>Vendor_Detail_Listing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3cbcd06f-5519-4292-9fb4-90d23e7813fe</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendor Detail Listing</MENU_DESC>
+		<HELP_TAG>Vendor_Detail_Listing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3cbcd06f-5519-4292-9fb4-90d23e7813fe</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Lista de detalles de proveedores</MENU_DESC>
+		<HELP_TAG>Vendor_Detail_Listing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3cbcd06f-5519-4292-9fb4-90d23e7813fe</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Lista de detalles de proveedores</MENU_DESC>
+		<HELP_TAG>Vendor_Detail_Listing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3cbcd06f-5519-4292-9fb4-90d23e7813fe</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Liste de Données du Vendeur</MENU_DESC>
+		<HELP_TAG>Vendor_Detail_Listing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3cbcd06f-5519-4292-9fb4-90d23e7813fe</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Liste de Données du Vendeur</MENU_DESC>
+		<HELP_TAG>Vendor_Detail_Listing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3cbcd06f-5519-4292-9fb4-90d23e7813fe</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Listato venditore dettaglio</MENU_DESC>
+		<HELP_TAG>Vendor_Detail_Listing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3d0a33ce-f931-40d7-b35a-8b2f43499e83</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Zahlgruppen</MENU_DESC>
+		<HELP_TAG>Payment_Group_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3d0a33ce-f931-40d7-b35a-8b2f43499e83</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Payment Groups</MENU_DESC>
+		<HELP_TAG>Payment_Group_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3d0a33ce-f931-40d7-b35a-8b2f43499e83</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Payment Groups</MENU_DESC>
+		<HELP_TAG>Payment_Group_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3d0a33ce-f931-40d7-b35a-8b2f43499e83</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Grupos de pago</MENU_DESC>
+		<HELP_TAG>Payment_Group_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3d0a33ce-f931-40d7-b35a-8b2f43499e83</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Grupos de pago</MENU_DESC>
+		<HELP_TAG>Payment_Group_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3d0a33ce-f931-40d7-b35a-8b2f43499e83</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Groupes de Paiement</MENU_DESC>
+		<HELP_TAG>Payment_Group_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3d0a33ce-f931-40d7-b35a-8b2f43499e83</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Groupes de Paiement</MENU_DESC>
+		<HELP_TAG>Payment_Group_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3d0a33ce-f931-40d7-b35a-8b2f43499e83</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Gruppi pagamenti</MENU_DESC>
+		<HELP_TAG>Payment_Group_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3fa83cd6-ee64-467f-a5f0-73ca3113fb38</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Kreditoren-Karteikarten</MENU_DESC>
+		<HELP_TAG>Vendor_Ledger_Cards7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3fa83cd6-ee64-467f-a5f0-73ca3113fb38</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendor Ledger Cards</MENU_DESC>
+		<HELP_TAG>Vendor_Ledger_Cards7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3fa83cd6-ee64-467f-a5f0-73ca3113fb38</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendor Ledger Cards</MENU_DESC>
+		<HELP_TAG>Vendor_Ledger_Cards7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3fa83cd6-ee64-467f-a5f0-73ca3113fb38</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Fichas del mayor de proveedores</MENU_DESC>
+		<HELP_TAG>Vendor_Ledger_Cards7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3fa83cd6-ee64-467f-a5f0-73ca3113fb38</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Fichas del mayor de proveedores</MENU_DESC>
+		<HELP_TAG>Vendor_Ledger_Cards7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3fa83cd6-ee64-467f-a5f0-73ca3113fb38</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Fiches de Comptes du Vendeur</MENU_DESC>
+		<HELP_TAG>Vendor_Ledger_Cards7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3fa83cd6-ee64-467f-a5f0-73ca3113fb38</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Fiches de Comptes du Vendeur</MENU_DESC>
+		<HELP_TAG>Vendor_Ledger_Cards7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>3fa83cd6-ee64-467f-a5f0-73ca3113fb38</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registro mastro venditore</MENU_DESC>
+		<HELP_TAG>Vendor_Ledger_Cards7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>40dd075f-76a0-4514-8ea3-f1d70d41fc5a</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Wiederkehrende Rechnungen erfassen</MENU_DESC>
+		<HELP_TAG>Recurring_Invoice_Entry7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>40dd075f-76a0-4514-8ea3-f1d70d41fc5a</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Recurring Invoice Entry</MENU_DESC>
+		<HELP_TAG>Recurring_Invoice_Entry7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>40dd075f-76a0-4514-8ea3-f1d70d41fc5a</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Recurring Invoice Entry</MENU_DESC>
+		<HELP_TAG>Recurring_Invoice_Entry7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>40dd075f-76a0-4514-8ea3-f1d70d41fc5a</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Entrada de facturas recurrentes</MENU_DESC>
+		<HELP_TAG>Recurring_Invoice_Entry7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>40dd075f-76a0-4514-8ea3-f1d70d41fc5a</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Entrada de facturas recurrentes</MENU_DESC>
+		<HELP_TAG>Recurring_Invoice_Entry7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>40dd075f-76a0-4514-8ea3-f1d70d41fc5a</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Saisie de Facture Récurrente</MENU_DESC>
+		<HELP_TAG>Recurring_Invoice_Entry7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>40dd075f-76a0-4514-8ea3-f1d70d41fc5a</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Saisie de Facture Récurrente</MENU_DESC>
+		<HELP_TAG>Recurring_Invoice_Entry7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>40dd075f-76a0-4514-8ea3-f1d70d41fc5a</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Fatture ricorrente</MENU_DESC>
+		<HELP_TAG>Recurring_Invoice_Entry7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>492eac65-3a25-4dea-bd7a-15a46463c244</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>1099 Datenexport</MENU_DESC>
+		<HELP_TAG>Export_1099_Data_to_Text</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>492eac65-3a25-4dea-bd7a-15a46463c244</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Export 1099 Data to Text</MENU_DESC>
+		<HELP_TAG>Export_1099_Data_to_Text</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>492eac65-3a25-4dea-bd7a-15a46463c244</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Export 1099 Data to Text</MENU_DESC>
+		<HELP_TAG>Export_1099_Data_to_Text</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>492eac65-3a25-4dea-bd7a-15a46463c244</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Exportar datos 1099 a texto</MENU_DESC>
+		<HELP_TAG>Export_1099_Data_to_Text</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>492eac65-3a25-4dea-bd7a-15a46463c244</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Exportar datos 1099 a texto</MENU_DESC>
+		<HELP_TAG>Export_1099_Data_to_Text</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>492eac65-3a25-4dea-bd7a-15a46463c244</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Export Données de 1099 Vers un Fichier Texte</MENU_DESC>
+		<HELP_TAG>Export_1099_Data_to_Text</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>492eac65-3a25-4dea-bd7a-15a46463c244</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Export Données de 1099 Vers un Fichier Texte</MENU_DESC>
+		<HELP_TAG>Export_1099_Data_to_Text</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>492eac65-3a25-4dea-bd7a-15a46463c244</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Esportare dei dati 1099 in un testo</MENU_DESC>
+		<HELP_TAG>Export_1099_Data_to_Text</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>4c24b53f-3ad2-4bbd-8ac9-a83d222eaef4</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Verwaltung</MENU_DESC>
+		<HELP_TAG>AP_Maintenance_Main_Menu</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>4c24b53f-3ad2-4bbd-8ac9-a83d222eaef4</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Inquiry and Maintenance</MENU_DESC>
+		<HELP_TAG>AP_Maintenance_Main_Menu</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>4c24b53f-3ad2-4bbd-8ac9-a83d222eaef4</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Inquiry and Maintenance</MENU_DESC>
+		<HELP_TAG>AP_Maintenance_Main_Menu</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>4c24b53f-3ad2-4bbd-8ac9-a83d222eaef4</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Mantenimiento</MENU_DESC>
+		<HELP_TAG>AP_Maintenance_Main_Menu</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>4c24b53f-3ad2-4bbd-8ac9-a83d222eaef4</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Mantenimiento</MENU_DESC>
+		<HELP_TAG>AP_Maintenance_Main_Menu</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>4c24b53f-3ad2-4bbd-8ac9-a83d222eaef4</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Suivi</MENU_DESC>
+		<HELP_TAG>AP_Maintenance_Main_Menu</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>4c24b53f-3ad2-4bbd-8ac9-a83d222eaef4</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Suivi</MENU_DESC>
+		<HELP_TAG>AP_Maintenance_Main_Menu</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>4c24b53f-3ad2-4bbd-8ac9-a83d222eaef4</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Manutenzione</MENU_DESC>
+		<HELP_TAG>AP_Maintenance_Main_Menu</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>5677a932-5bdd-48cf-affd-8e58becaa7e1</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rebuild Invoice Balance</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>5677a932-5bdd-48cf-affd-8e58becaa7e1</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rebuild Invoice Balance</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>5677a932-5bdd-48cf-affd-8e58becaa7e1</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rebuild Invoice Balance</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>5677a932-5bdd-48cf-affd-8e58becaa7e1</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rebuild Invoice Balance</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>5677a932-5bdd-48cf-affd-8e58becaa7e1</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rebuild Invoice Balance</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>5677a932-5bdd-48cf-affd-8e58becaa7e1</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rebuild Invoice Balance</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>5677a932-5bdd-48cf-affd-8e58becaa7e1</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rebuild Invoice Balance</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>5677a932-5bdd-48cf-affd-8e58becaa7e1</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rebuild Invoice Balance</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>5e59f862-ae08-4c87-bbc3-21c0c9b5372a</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Parameter</MENU_DESC>
+		<HELP_TAG>AP_Parameter_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>5e59f862-ae08-4c87-bbc3-21c0c9b5372a</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Parameters</MENU_DESC>
+		<HELP_TAG>AP_Parameter_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>5e59f862-ae08-4c87-bbc3-21c0c9b5372a</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Parameters</MENU_DESC>
+		<HELP_TAG>AP_Parameter_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>5e59f862-ae08-4c87-bbc3-21c0c9b5372a</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Parámetros</MENU_DESC>
+		<HELP_TAG>AP_Parameter_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>5e59f862-ae08-4c87-bbc3-21c0c9b5372a</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Parámetros</MENU_DESC>
+		<HELP_TAG>AP_Parameter_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>5e59f862-ae08-4c87-bbc3-21c0c9b5372a</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Paramètres</MENU_DESC>
+		<HELP_TAG>AP_Parameter_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>5e59f862-ae08-4c87-bbc3-21c0c9b5372a</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Paramètres</MENU_DESC>
+		<HELP_TAG>AP_Parameter_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>5e59f862-ae08-4c87-bbc3-21c0c9b5372a</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Parametri</MENU_DESC>
+		<HELP_TAG>AP_Parameter_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>63936b10-acd6-4620-bd4f-a112dcb61ef5</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Manuelle Schecks verbuchen</MENU_DESC>
+		<HELP_TAG>Manual_Check_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>63936b10-acd6-4620-bd4f-a112dcb61ef5</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Manual Check Register</MENU_DESC>
+		<HELP_TAG>Manual_Check_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>63936b10-acd6-4620-bd4f-a112dcb61ef5</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Manual Check Register</MENU_DESC>
+		<HELP_TAG>Manual_Check_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>63936b10-acd6-4620-bd4f-a112dcb61ef5</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registro de cheque manual</MENU_DESC>
+		<HELP_TAG>Manual_Check_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>63936b10-acd6-4620-bd4f-a112dcb61ef5</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registro de cheque manual</MENU_DESC>
+		<HELP_TAG>Manual_Check_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>63936b10-acd6-4620-bd4f-a112dcb61ef5</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registre de Chèque Manuel</MENU_DESC>
+		<HELP_TAG>Manual_Check_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>63936b10-acd6-4620-bd4f-a112dcb61ef5</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registre de Chèque Manuel</MENU_DESC>
+		<HELP_TAG>Manual_Check_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>63936b10-acd6-4620-bd4f-a112dcb61ef5</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Verifica manuale del registro</MENU_DESC>
+		<HELP_TAG>Manual_Check_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>694f3626-a644-420c-94fc-bcfa60ad805f</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Manuelle Schecks erfassen</MENU_DESC>
+		<HELP_TAG>Manual_Check_Entry7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>694f3626-a644-420c-94fc-bcfa60ad805f</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Manual Check Entry</MENU_DESC>
+		<HELP_TAG>Manual_Check_Entry7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>694f3626-a644-420c-94fc-bcfa60ad805f</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Manual Check Entry</MENU_DESC>
+		<HELP_TAG>Manual_Check_Entry7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>694f3626-a644-420c-94fc-bcfa60ad805f</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Entrada de cheque manual</MENU_DESC>
+		<HELP_TAG>Manual_Check_Entry7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>694f3626-a644-420c-94fc-bcfa60ad805f</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Entrada de cheque manual</MENU_DESC>
+		<HELP_TAG>Manual_Check_Entry7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>694f3626-a644-420c-94fc-bcfa60ad805f</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Saisie de Chèque Manuel</MENU_DESC>
+		<HELP_TAG>Manual_Check_Entry7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>694f3626-a644-420c-94fc-bcfa60ad805f</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Saisie de Chèque Manuel</MENU_DESC>
+		<HELP_TAG>Manual_Check_Entry7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>694f3626-a644-420c-94fc-bcfa60ad805f</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Verifica manuale dell'entrata</MENU_DESC>
+		<HELP_TAG>Manual_Check_Entry7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>69a6b86d-9aac-4d98-8456-9b4ec6f1a301</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Manual Check Entry GL Detail</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>69a6b86d-9aac-4d98-8456-9b4ec6f1a301</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Manual Check Entry GL Detail</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>69a6b86d-9aac-4d98-8456-9b4ec6f1a301</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Manual Check Entry GL Detail</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>69a6b86d-9aac-4d98-8456-9b4ec6f1a301</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Manual Check Entry GL Detail</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>69a6b86d-9aac-4d98-8456-9b4ec6f1a301</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Manual Check Entry GL Detail</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>69a6b86d-9aac-4d98-8456-9b4ec6f1a301</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Manual Check Entry GL Detail</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>69a6b86d-9aac-4d98-8456-9b4ec6f1a301</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Manual Check Entry GL Detail</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>69a6b86d-9aac-4d98-8456-9b4ec6f1a301</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Manual Check Entry GL Detail</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>6b97be19-7bb6-481e-b796-e749ee6dd9be</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Invoice Entry Default Date</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>6b97be19-7bb6-481e-b796-e749ee6dd9be</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Invoice Entry Default Date</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>6b97be19-7bb6-481e-b796-e749ee6dd9be</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Invoice Entry Default Date</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>6b97be19-7bb6-481e-b796-e749ee6dd9be</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Invoice Entry Default Date</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>6b97be19-7bb6-481e-b796-e749ee6dd9be</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Invoice Entry Default Date</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>6b97be19-7bb6-481e-b796-e749ee6dd9be</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Invoice Entry Default Date</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>6b97be19-7bb6-481e-b796-e749ee6dd9be</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Invoice Entry Default Date</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>6b97be19-7bb6-481e-b796-e749ee6dd9be</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Invoice Entry Default Date</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>70e1ba79-62f1-4f95-9a46-cb99a681569d</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Wiederkehrende Rechnungen verbuchen</MENU_DESC>
+		<HELP_TAG>Recurring_Invoice_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>70e1ba79-62f1-4f95-9a46-cb99a681569d</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Recurring Invoice Register</MENU_DESC>
+		<HELP_TAG>Recurring_Invoice_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>70e1ba79-62f1-4f95-9a46-cb99a681569d</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Recurring Invoice Register</MENU_DESC>
+		<HELP_TAG>Recurring_Invoice_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>70e1ba79-62f1-4f95-9a46-cb99a681569d</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registro de facturas recurrentes</MENU_DESC>
+		<HELP_TAG>Recurring_Invoice_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>70e1ba79-62f1-4f95-9a46-cb99a681569d</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registro de facturas recurrentes</MENU_DESC>
+		<HELP_TAG>Recurring_Invoice_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>70e1ba79-62f1-4f95-9a46-cb99a681569d</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registre de Facture Récurrente</MENU_DESC>
+		<HELP_TAG>Recurring_Invoice_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>70e1ba79-62f1-4f95-9a46-cb99a681569d</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registre de Facture Récurrente</MENU_DESC>
+		<HELP_TAG>Recurring_Invoice_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>70e1ba79-62f1-4f95-9a46-cb99a681569d</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registro fatture ricorrente</MENU_DESC>
+		<HELP_TAG>Recurring_Invoice_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>76cdcd32-b7a8-466e-8ef9-a9d1ed4896cc</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Invoice History Inquiry</MENU_DESC>
+		<HELP_TAG>apoperations_invoice_history_inquiry_htm</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>76cdcd32-b7a8-466e-8ef9-a9d1ed4896cc</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Invoice History Inquiry</MENU_DESC>
+		<HELP_TAG>apoperations_invoice_history_inquiry_htm</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>76cdcd32-b7a8-466e-8ef9-a9d1ed4896cc</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Invoice History Inquiry</MENU_DESC>
+		<HELP_TAG>apoperations_invoice_history_inquiry_htm</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>76cdcd32-b7a8-466e-8ef9-a9d1ed4896cc</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Invoice History Inquiry</MENU_DESC>
+		<HELP_TAG>apoperations_invoice_history_inquiry_htm</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>76cdcd32-b7a8-466e-8ef9-a9d1ed4896cc</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Invoice History Inquiry</MENU_DESC>
+		<HELP_TAG>apoperations_invoice_history_inquiry_htm</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>76cdcd32-b7a8-466e-8ef9-a9d1ed4896cc</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Invoice History Inquiry</MENU_DESC>
+		<HELP_TAG>apoperations_invoice_history_inquiry_htm</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>76cdcd32-b7a8-466e-8ef9-a9d1ed4896cc</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Invoice History Inquiry</MENU_DESC>
+		<HELP_TAG>apoperations_invoice_history_inquiry_htm</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>76cdcd32-b7a8-466e-8ef9-a9d1ed4896cc</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Invoice History Inquiry</MENU_DESC>
+		<HELP_TAG>apoperations_invoice_history_inquiry_htm</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>82002225-8e82-4719-8bca-5f88c7da7de2</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Jahr für 1099 Formular abschließen</MENU_DESC>
+		<HELP_TAG>Close_Form_1099_Year</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>82002225-8e82-4719-8bca-5f88c7da7de2</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Close Form 1099 Year</MENU_DESC>
+		<HELP_TAG>Close_Form_1099_Year</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>82002225-8e82-4719-8bca-5f88c7da7de2</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Close Form 1099 Year</MENU_DESC>
+		<HELP_TAG>Close_Form_1099_Year</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>82002225-8e82-4719-8bca-5f88c7da7de2</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Cerrar año del formulario 1099</MENU_DESC>
+		<HELP_TAG>Close_Form_1099_Year</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>82002225-8e82-4719-8bca-5f88c7da7de2</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Cerrar año del formulario 1099</MENU_DESC>
+		<HELP_TAG>Close_Form_1099_Year</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>82002225-8e82-4719-8bca-5f88c7da7de2</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Fermeture Formulaire 1099 de l'Année</MENU_DESC>
+		<HELP_TAG>Close_Form_1099_Year</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>82002225-8e82-4719-8bca-5f88c7da7de2</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Fermeture Formulaire 1099 de l'Année</MENU_DESC>
+		<HELP_TAG>Close_Form_1099_Year</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>82002225-8e82-4719-8bca-5f88c7da7de2</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Chiusura anno 1099 </MENU_DESC>
+		<HELP_TAG>Close_Form_1099_Year</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>89b64aa2-8211-45e8-bb0f-8e63e4010f3d</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Addon AP Additional (Hidden)</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>89b64aa2-8211-45e8-bb0f-8e63e4010f3d</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Addon AP Additional (Hidden)</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>89b64aa2-8211-45e8-bb0f-8e63e4010f3d</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Addon AP Additional (Hidden)</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>89b64aa2-8211-45e8-bb0f-8e63e4010f3d</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Addon AP Additional (Hidden)</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>89b64aa2-8211-45e8-bb0f-8e63e4010f3d</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Addon AP Additional (Hidden)</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>89b64aa2-8211-45e8-bb0f-8e63e4010f3d</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Addon AP Additional (Hidden)</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>89b64aa2-8211-45e8-bb0f-8e63e4010f3d</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Addon AP Additional (Hidden)</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>89b64aa2-8211-45e8-bb0f-8e63e4010f3d</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Addon AP Additional (Hidden)</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>8c96d029-77db-4297-a1ca-0b199c7ceb21</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Kunden-Codes</MENU_DESC>
+		<HELP_TAG>Buyer_Code_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>8c96d029-77db-4297-a1ca-0b199c7ceb21</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Buyer Codes</MENU_DESC>
+		<HELP_TAG>Buyer_Code_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>8c96d029-77db-4297-a1ca-0b199c7ceb21</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Buyer Codes</MENU_DESC>
+		<HELP_TAG>Buyer_Code_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>8c96d029-77db-4297-a1ca-0b199c7ceb21</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Código de comprador</MENU_DESC>
+		<HELP_TAG>Buyer_Code_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>8c96d029-77db-4297-a1ca-0b199c7ceb21</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Código de comprador</MENU_DESC>
+		<HELP_TAG>Buyer_Code_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>8c96d029-77db-4297-a1ca-0b199c7ceb21</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Codes Acheteur</MENU_DESC>
+		<HELP_TAG>Buyer_Code_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>8c96d029-77db-4297-a1ca-0b199c7ceb21</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Codes Acheteur</MENU_DESC>
+		<HELP_TAG>Buyer_Code_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>8c96d029-77db-4297-a1ca-0b199c7ceb21</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Codice acquirente</MENU_DESC>
+		<HELP_TAG>Buyer_Code_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9050446a-4823-467e-a8db-5bbbed01dcb4</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Zahlungsvorschläge drucken</MENU_DESC>
+		<HELP_TAG>Payment_Selection_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9050446a-4823-467e-a8db-5bbbed01dcb4</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Payment Selection Report</MENU_DESC>
+		<HELP_TAG>Payment_Selection_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9050446a-4823-467e-a8db-5bbbed01dcb4</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Payment Selection Report</MENU_DESC>
+		<HELP_TAG>Payment_Selection_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9050446a-4823-467e-a8db-5bbbed01dcb4</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Informe de selección de pagos</MENU_DESC>
+		<HELP_TAG>Payment_Selection_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9050446a-4823-467e-a8db-5bbbed01dcb4</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Informe de selección de pagos</MENU_DESC>
+		<HELP_TAG>Payment_Selection_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9050446a-4823-467e-a8db-5bbbed01dcb4</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rapport de Sélection de Paiement</MENU_DESC>
+		<HELP_TAG>Payment_Selection_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9050446a-4823-467e-a8db-5bbbed01dcb4</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rapport de Sélection de Paiement</MENU_DESC>
+		<HELP_TAG>Payment_Selection_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9050446a-4823-467e-a8db-5bbbed01dcb4</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rapporto selezione pagamento</MENU_DESC>
+		<HELP_TAG>Payment_Selection_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>91967a49-a45a-4b7f-a79a-cfd21cb6c902</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Kreditorenstamm</MENU_DESC>
+		<HELP_TAG>Vendor_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>91967a49-a45a-4b7f-a79a-cfd21cb6c902</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendors</MENU_DESC>
+		<HELP_TAG>Vendor_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>91967a49-a45a-4b7f-a79a-cfd21cb6c902</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendors</MENU_DESC>
+		<HELP_TAG>Vendor_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>91967a49-a45a-4b7f-a79a-cfd21cb6c902</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Proveedores</MENU_DESC>
+		<HELP_TAG>Vendor_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>91967a49-a45a-4b7f-a79a-cfd21cb6c902</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Proveedores</MENU_DESC>
+		<HELP_TAG>Vendor_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>91967a49-a45a-4b7f-a79a-cfd21cb6c902</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendeurs</MENU_DESC>
+		<HELP_TAG>Vendor_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>91967a49-a45a-4b7f-a79a-cfd21cb6c902</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendeurs</MENU_DESC>
+		<HELP_TAG>Vendor_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>91967a49-a45a-4b7f-a79a-cfd21cb6c902</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Venditore</MENU_DESC>
+		<HELP_TAG>Vendor_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9b6d0ea9-97db-40ae-ab4e-db5602034e05</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Buchungsschlüssel</MENU_DESC>
+		<HELP_TAG>Distribution_Code_Maintenance14</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9b6d0ea9-97db-40ae-ab4e-db5602034e05</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Distribution Codes</MENU_DESC>
+		<HELP_TAG>Distribution_Code_Maintenance14</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9b6d0ea9-97db-40ae-ab4e-db5602034e05</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Distribution Codes</MENU_DESC>
+		<HELP_TAG>Distribution_Code_Maintenance14</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9b6d0ea9-97db-40ae-ab4e-db5602034e05</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Códigos de distribución</MENU_DESC>
+		<HELP_TAG>Distribution_Code_Maintenance14</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9b6d0ea9-97db-40ae-ab4e-db5602034e05</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Códigos de distribución</MENU_DESC>
+		<HELP_TAG>Distribution_Code_Maintenance14</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9b6d0ea9-97db-40ae-ab4e-db5602034e05</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Codes de Distribution</MENU_DESC>
+		<HELP_TAG>Distribution_Code_Maintenance14</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9b6d0ea9-97db-40ae-ab4e-db5602034e05</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Codes de Distribution</MENU_DESC>
+		<HELP_TAG>Distribution_Code_Maintenance14</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9b6d0ea9-97db-40ae-ab4e-db5602034e05</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Codici di distribuzione</MENU_DESC>
+		<HELP_TAG>Distribution_Code_Maintenance14</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9e917b70-9118-4584-8730-e5a220680658</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Invoice Detail Inquiry</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9e917b70-9118-4584-8730-e5a220680658</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Invoice Detail Inquiry</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9e917b70-9118-4584-8730-e5a220680658</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Invoice Detail Inquiry</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9e917b70-9118-4584-8730-e5a220680658</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Invoice Detail Inquiry</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9e917b70-9118-4584-8730-e5a220680658</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Invoice Detail Inquiry</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9e917b70-9118-4584-8730-e5a220680658</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Invoice Detail Inquiry</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9e917b70-9118-4584-8730-e5a220680658</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Invoice Detail Inquiry</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>9e917b70-9118-4584-8730-e5a220680658</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Invoice Detail Inquiry</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>a729cc37-c029-4341-8dea-267d6c0d0cda</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Bedingungs-Codes</MENU_DESC>
+		<HELP_TAG>Terms_Code_Maintenance7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>a729cc37-c029-4341-8dea-267d6c0d0cda</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Terms Codes</MENU_DESC>
+		<HELP_TAG>Terms_Code_Maintenance7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>a729cc37-c029-4341-8dea-267d6c0d0cda</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Terms Codes</MENU_DESC>
+		<HELP_TAG>Terms_Code_Maintenance7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>a729cc37-c029-4341-8dea-267d6c0d0cda</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Códigos de condición</MENU_DESC>
+		<HELP_TAG>Terms_Code_Maintenance7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>a729cc37-c029-4341-8dea-267d6c0d0cda</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Códigos de condición</MENU_DESC>
+		<HELP_TAG>Terms_Code_Maintenance7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>a729cc37-c029-4341-8dea-267d6c0d0cda</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Codes Termes</MENU_DESC>
+		<HELP_TAG>Terms_Code_Maintenance7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>a729cc37-c029-4341-8dea-267d6c0d0cda</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Codes Termes</MENU_DESC>
+		<HELP_TAG>Terms_Code_Maintenance7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>a729cc37-c029-4341-8dea-267d6c0d0cda</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Codici condizioni</MENU_DESC>
+		<HELP_TAG>Terms_Code_Maintenance7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ac8a5d12-d5f1-4ec0-bd00-1133143ee3da</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Berichtsparameter</MENU_DESC>
+		<HELP_TAG>Report_Parameters</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ac8a5d12-d5f1-4ec0-bd00-1133143ee3da</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Report Parameters</MENU_DESC>
+		<HELP_TAG>Report_Parameters</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ac8a5d12-d5f1-4ec0-bd00-1133143ee3da</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Report Parameters</MENU_DESC>
+		<HELP_TAG>Report_Parameters</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ac8a5d12-d5f1-4ec0-bd00-1133143ee3da</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Parámetros del informe</MENU_DESC>
+		<HELP_TAG>Report_Parameters</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ac8a5d12-d5f1-4ec0-bd00-1133143ee3da</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Parámetros del informe</MENU_DESC>
+		<HELP_TAG>Report_Parameters</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ac8a5d12-d5f1-4ec0-bd00-1133143ee3da</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Paramètres du Rapport</MENU_DESC>
+		<HELP_TAG>Report_Parameters</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ac8a5d12-d5f1-4ec0-bd00-1133143ee3da</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Paramètres du Rapport</MENU_DESC>
+		<HELP_TAG>Report_Parameters</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ac8a5d12-d5f1-4ec0-bd00-1133143ee3da</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rapporto parametri</MENU_DESC>
+		<HELP_TAG>Report_Parameters</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>aee21176-d157-42d1-887e-a8f9d485d421</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Kreditoren</MENU_DESC>
+		<HELP_TAG>Accounts_Payable7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>aee21176-d157-42d1-887e-a8f9d485d421</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Accounts Payable</MENU_DESC>
+		<HELP_TAG>Accounts_Payable7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>aee21176-d157-42d1-887e-a8f9d485d421</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Accounts Payable</MENU_DESC>
+		<HELP_TAG>Accounts_Payable7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>aee21176-d157-42d1-887e-a8f9d485d421</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Cuentas por pagar</MENU_DESC>
+		<HELP_TAG>Accounts_Payable7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>aee21176-d157-42d1-887e-a8f9d485d421</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Cuentas por pagar</MENU_DESC>
+		<HELP_TAG>Accounts_Payable7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>aee21176-d157-42d1-887e-a8f9d485d421</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Comptes Créditeurs</MENU_DESC>
+		<HELP_TAG>Accounts_Payable7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>aee21176-d157-42d1-887e-a8f9d485d421</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Comptes Créditeurs</MENU_DESC>
+		<HELP_TAG>Accounts_Payable7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>aee21176-d157-42d1-887e-a8f9d485d421</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Conti Debitori</MENU_DESC>
+		<HELP_TAG>Accounts_Payable7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>b10083dc-2692-48b7-93b6-243994417cc0</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Zahlung autorisieren Genehmigender & Unterzeichner</MENU_DESC>
+		<HELP_TAG>User_Authorization_Levels</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>b10083dc-2692-48b7-93b6-243994417cc0</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>User Authorization Levels</MENU_DESC>
+		<HELP_TAG>User_Authorization_Levels</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>b10083dc-2692-48b7-93b6-243994417cc0</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>User Authorization Levels</MENU_DESC>
+		<HELP_TAG>User_Authorization_Levels</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>b10083dc-2692-48b7-93b6-243994417cc0</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Aprobador y firmante de la autorización del pago</MENU_DESC>
+		<HELP_TAG>User_Authorization_Levels</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>b10083dc-2692-48b7-93b6-243994417cc0</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Aprobador y firmante de la autorización del pago</MENU_DESC>
+		<HELP_TAG>User_Authorization_Levels</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>b10083dc-2692-48b7-93b6-243994417cc0</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Autorisation de paiement et signature</MENU_DESC>
+		<HELP_TAG>User_Authorization_Levels</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>b10083dc-2692-48b7-93b6-243994417cc0</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Autorisation de paiement et signature</MENU_DESC>
+		<HELP_TAG>User_Authorization_Levels</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>b10083dc-2692-48b7-93b6-243994417cc0</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Payment Authorization Approver & Signer</MENU_DESC>
+		<HELP_TAG>User_Authorization_Levels</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>bed69533-1d02-4827-98b0-a0498076a311</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Utilities</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>bed69533-1d02-4827-98b0-a0498076a311</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Utilities</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>bed69533-1d02-4827-98b0-a0498076a311</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Utilities</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>bed69533-1d02-4827-98b0-a0498076a311</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Utilities</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>bed69533-1d02-4827-98b0-a0498076a311</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Utilities</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>bed69533-1d02-4827-98b0-a0498076a311</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Utilities</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>bed69533-1d02-4827-98b0-a0498076a311</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Utilities</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>bed69533-1d02-4827-98b0-a0498076a311</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Utilities</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>c798c56e-f2fd-430d-8cc9-a759b6fa2507</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Periodenwechsel durchführen</MENU_DESC>
+		<HELP_TAG>AP_Period_End_Update</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>c798c56e-f2fd-430d-8cc9-a759b6fa2507</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Period End Update</MENU_DESC>
+		<HELP_TAG>AP_Period_End_Update</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>c798c56e-f2fd-430d-8cc9-a759b6fa2507</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Period End Update</MENU_DESC>
+		<HELP_TAG>AP_Period_End_Update</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>c798c56e-f2fd-430d-8cc9-a759b6fa2507</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Actualización de cierre del período</MENU_DESC>
+		<HELP_TAG>AP_Period_End_Update</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>c798c56e-f2fd-430d-8cc9-a759b6fa2507</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Actualización de cierre del período</MENU_DESC>
+		<HELP_TAG>AP_Period_End_Update</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>c798c56e-f2fd-430d-8cc9-a759b6fa2507</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Mise à Jour Périodique</MENU_DESC>
+		<HELP_TAG>AP_Period_End_Update</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>c798c56e-f2fd-430d-8cc9-a759b6fa2507</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Mise à Jour Périodique</MENU_DESC>
+		<HELP_TAG>AP_Period_End_Update</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>c798c56e-f2fd-430d-8cc9-a759b6fa2507</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Aggiornamento fine periodo</MENU_DESC>
+		<HELP_TAG>AP_Period_End_Update</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ceaf9ff8-3552-4ea0-b24e-12ca28e486ec</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Verbindlichkeitenspiegel</MENU_DESC>
+		<HELP_TAG>AP_Aging_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ceaf9ff8-3552-4ea0-b24e-12ca28e486ec</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Aging Report</MENU_DESC>
+		<HELP_TAG>AP_Aging_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ceaf9ff8-3552-4ea0-b24e-12ca28e486ec</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Aging Report</MENU_DESC>
+		<HELP_TAG>AP_Aging_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ceaf9ff8-3552-4ea0-b24e-12ca28e486ec</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Informe de antigüedad</MENU_DESC>
+		<HELP_TAG>AP_Aging_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ceaf9ff8-3552-4ea0-b24e-12ca28e486ec</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Informe de antigüedad</MENU_DESC>
+		<HELP_TAG>AP_Aging_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ceaf9ff8-3552-4ea0-b24e-12ca28e486ec</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rapport de Ventilation Chronologique</MENU_DESC>
+		<HELP_TAG>AP_Aging_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ceaf9ff8-3552-4ea0-b24e-12ca28e486ec</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rapport de Ventilation Chronologique</MENU_DESC>
+		<HELP_TAG>AP_Aging_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ceaf9ff8-3552-4ea0-b24e-12ca28e486ec</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rapporto conti sospesi</MENU_DESC>
+		<HELP_TAG>AP_Aging_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>d1793d3b-792d-407c-a245-6754cfc047cb</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Schecks drucken</MENU_DESC>
+		<HELP_TAG>Check_Printing1</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>d1793d3b-792d-407c-a245-6754cfc047cb</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Check Printing</MENU_DESC>
+		<HELP_TAG>Check_Printing1</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>d1793d3b-792d-407c-a245-6754cfc047cb</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Check Printing</MENU_DESC>
+		<HELP_TAG>Check_Printing1</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>d1793d3b-792d-407c-a245-6754cfc047cb</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Impresión de cheques</MENU_DESC>
+		<HELP_TAG>Check_Printing1</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>d1793d3b-792d-407c-a245-6754cfc047cb</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Impresión de cheques</MENU_DESC>
+		<HELP_TAG>Check_Printing1</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>d1793d3b-792d-407c-a245-6754cfc047cb</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Impression de Chèque</MENU_DESC>
+		<HELP_TAG>Check_Printing1</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>d1793d3b-792d-407c-a245-6754cfc047cb</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Impression de Chèque</MENU_DESC>
+		<HELP_TAG>Check_Printing1</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>d1793d3b-792d-407c-a245-6754cfc047cb</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Stampa assegno</MENU_DESC>
+		<HELP_TAG>Check_Printing1</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>dc27e2e8-68ef-4176-9d66-9f4b86209f94</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Zahlungsvorschläge auswählen</MENU_DESC>
+		<HELP_TAG>Payment_Selection</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>dc27e2e8-68ef-4176-9d66-9f4b86209f94</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Payment Selection Entry</MENU_DESC>
+		<HELP_TAG>Payment_Selection</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>dc27e2e8-68ef-4176-9d66-9f4b86209f94</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Payment Selection Entry</MENU_DESC>
+		<HELP_TAG>Payment_Selection</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>dc27e2e8-68ef-4176-9d66-9f4b86209f94</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Selección de pago</MENU_DESC>
+		<HELP_TAG>Payment_Selection</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>dc27e2e8-68ef-4176-9d66-9f4b86209f94</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Selección de pago</MENU_DESC>
+		<HELP_TAG>Payment_Selection</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>dc27e2e8-68ef-4176-9d66-9f4b86209f94</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Saisie de Sélection de Paiement</MENU_DESC>
+		<HELP_TAG>Payment_Selection</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>dc27e2e8-68ef-4176-9d66-9f4b86209f94</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Saisie de Sélection de Paiement</MENU_DESC>
+		<HELP_TAG>Payment_Selection</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>dc27e2e8-68ef-4176-9d66-9f4b86209f94</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Selezione pagamento</MENU_DESC>
+		<HELP_TAG>Payment_Selection</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e29dd26a-b902-4a82-a4ca-f1cd5abfb99b</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Periodenwechsel</MENU_DESC>
+		<HELP_TAG>AP_Period_End_Processing_Menu5</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e29dd26a-b902-4a82-a4ca-f1cd5abfb99b</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Period End Processing</MENU_DESC>
+		<HELP_TAG>AP_Period_End_Processing_Menu5</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e29dd26a-b902-4a82-a4ca-f1cd5abfb99b</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Period End Processing</MENU_DESC>
+		<HELP_TAG>AP_Period_End_Processing_Menu5</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e29dd26a-b902-4a82-a4ca-f1cd5abfb99b</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Procesamiento de cierre del período</MENU_DESC>
+		<HELP_TAG>AP_Period_End_Processing_Menu5</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e29dd26a-b902-4a82-a4ca-f1cd5abfb99b</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Procesamiento de cierre del período</MENU_DESC>
+		<HELP_TAG>AP_Period_End_Processing_Menu5</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e29dd26a-b902-4a82-a4ca-f1cd5abfb99b</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Traitement Périodique</MENU_DESC>
+		<HELP_TAG>AP_Period_End_Processing_Menu5</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e29dd26a-b902-4a82-a4ca-f1cd5abfb99b</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Traitement Périodique</MENU_DESC>
+		<HELP_TAG>AP_Period_End_Processing_Menu5</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e29dd26a-b902-4a82-a4ca-f1cd5abfb99b</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Elaborazione fine periodo</MENU_DESC>
+		<HELP_TAG>AP_Period_End_Processing_Menu5</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e66d6e11-91b8-43e1-b847-781e0531165f</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Zahlung autorisieren</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e66d6e11-91b8-43e1-b847-781e0531165f</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Payment Authorization</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e66d6e11-91b8-43e1-b847-781e0531165f</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Payment Authorization</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e66d6e11-91b8-43e1-b847-781e0531165f</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Autorización de pago</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e66d6e11-91b8-43e1-b847-781e0531165f</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Autorización de pago</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e66d6e11-91b8-43e1-b847-781e0531165f</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Autorisation de paiement</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e66d6e11-91b8-43e1-b847-781e0531165f</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Autorisation de paiement</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e66d6e11-91b8-43e1-b847-781e0531165f</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Payment Authorization</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e7bcbb40-d40d-4884-91ae-44099f2e92ca</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Ausgaben</MENU_DESC>
+		<HELP_TAG>Disbursements_Journal7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e7bcbb40-d40d-4884-91ae-44099f2e92ca</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Disbursements Journal</MENU_DESC>
+		<HELP_TAG>Disbursements_Journal7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e7bcbb40-d40d-4884-91ae-44099f2e92ca</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Disbursements Journal</MENU_DESC>
+		<HELP_TAG>Disbursements_Journal7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e7bcbb40-d40d-4884-91ae-44099f2e92ca</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Diario de desembolsos</MENU_DESC>
+		<HELP_TAG>Disbursements_Journal7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e7bcbb40-d40d-4884-91ae-44099f2e92ca</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Diario de desembolsos</MENU_DESC>
+		<HELP_TAG>Disbursements_Journal7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e7bcbb40-d40d-4884-91ae-44099f2e92ca</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Journal des Décaissements</MENU_DESC>
+		<HELP_TAG>Disbursements_Journal7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e7bcbb40-d40d-4884-91ae-44099f2e92ca</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Journal des Décaissements</MENU_DESC>
+		<HELP_TAG>Disbursements_Journal7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>e7bcbb40-d40d-4884-91ae-44099f2e92ca</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Registro spese</MENU_DESC>
+		<HELP_TAG>Disbursements_Journal7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>f0b2c589-d6c2-4b42-b4b4-a8b3c9247110</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Kreditorenetiketten</MENU_DESC>
+		<HELP_TAG>Vendor_Label_Printing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>f0b2c589-d6c2-4b42-b4b4-a8b3c9247110</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendor Label Printing</MENU_DESC>
+		<HELP_TAG>Vendor_Label_Printing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>f0b2c589-d6c2-4b42-b4b4-a8b3c9247110</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendor Label Printing</MENU_DESC>
+		<HELP_TAG>Vendor_Label_Printing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>f0b2c589-d6c2-4b42-b4b4-a8b3c9247110</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Impresión de etiquetas de proveedores</MENU_DESC>
+		<HELP_TAG>Vendor_Label_Printing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>f0b2c589-d6c2-4b42-b4b4-a8b3c9247110</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Impresión de etiquetas de proveedores</MENU_DESC>
+		<HELP_TAG>Vendor_Label_Printing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>f0b2c589-d6c2-4b42-b4b4-a8b3c9247110</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Impression d'Etiquette du Vendeur</MENU_DESC>
+		<HELP_TAG>Vendor_Label_Printing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>f0b2c589-d6c2-4b42-b4b4-a8b3c9247110</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Impression d'Etiquette du Vendeur</MENU_DESC>
+		<HELP_TAG>Vendor_Label_Printing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>f0b2c589-d6c2-4b42-b4b4-a8b3c9247110</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Stampa etichetta venditore</MENU_DESC>
+		<HELP_TAG>Vendor_Label_Printing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ff1d46b0-ae22-48b1-bbbd-0550312c8590</MENUITEM_ID>
+		<LANG_ID>DEU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Liquiditätsbericht</MENU_DESC>
+		<HELP_TAG>Cash_Requirements_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ff1d46b0-ae22-48b1-bbbd-0550312c8590</MENUITEM_ID>
+		<LANG_ID>ENC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Cash Requirements Report</MENU_DESC>
+		<HELP_TAG>Cash_Requirements_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ff1d46b0-ae22-48b1-bbbd-0550312c8590</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Cash Requirements Report</MENU_DESC>
+		<HELP_TAG>Cash_Requirements_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ff1d46b0-ae22-48b1-bbbd-0550312c8590</MENUITEM_ID>
+		<LANG_ID>ESM</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Informe de requerimientos de efectivo</MENU_DESC>
+		<HELP_TAG>Cash_Requirements_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ff1d46b0-ae22-48b1-bbbd-0550312c8590</MENUITEM_ID>
+		<LANG_ID>ESP</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Informe de requerimientos de efectivo</MENU_DESC>
+		<HELP_TAG>Cash_Requirements_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ff1d46b0-ae22-48b1-bbbd-0550312c8590</MENUITEM_ID>
+		<LANG_ID>FRA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rapport de Besoins de Trésorerie</MENU_DESC>
+		<HELP_TAG>Cash_Requirements_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ff1d46b0-ae22-48b1-bbbd-0550312c8590</MENUITEM_ID>
+		<LANG_ID>FRC</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rapport de Besoins de Trésorerie</MENU_DESC>
+		<HELP_TAG>Cash_Requirements_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>ADDON           </MOUNT_SYS_ID>
+		<MENUITEM_ID>ff1d46b0-ae22-48b1-bbbd-0550312c8590</MENUITEM_ID>
+		<LANG_ID>ITA</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rapporto requisiti dei contanti</MENU_DESC>
+		<HELP_TAG>Cash_Requirements_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>0a1835c2-3c0f-4a21-84cc-a4ddbb0622fe</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Purchase Journal</MENU_DESC>
+		<HELP_TAG>Purchase_Journal</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>0bda39a2-909a-4eb7-91b3-a1969524ca32</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Reports</MENU_DESC>
+		<HELP_TAG>Accounts_Payable_Reports7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>0efee65e-aa21-4414-ac43-7d4d619da2f0</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>User Authorization Levels</MENU_DESC>
+		<HELP_TAG>User_Authorization_Levels</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>17e1faac-40be-4f7e-bebe-87c522416131</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Period End Processing</MENU_DESC>
+		<HELP_TAG>AP_Period_End_Processing_Menu5</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>1bf20ad1-b1e2-4998-bf32-e89176e3dfe8</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendor Detail Listing</MENU_DESC>
+		<HELP_TAG>Vendor_Detail_Listing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>1dffd2c4-c43d-4f2b-bba9-5032cc1be46a</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Invoice Entry Default Date</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>206e9671-ac42-411c-805b-c7868debc9f1</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Manual Check Entry GL Detail</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>23bfa7d1-3615-4c92-82b5-3db8b5d515a3</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Utilities</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>24d7b229-1ee3-40a8-a7e8-f962315f7e0c</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Payment Authorization</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>2cb15c66-c248-46b2-8ef3-7358558e5ef1</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Addon AP Additional (Hidden)</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>3c5cf8bb-59e4-4726-846b-3ccf2df52967</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Recurring Invoice Register</MENU_DESC>
+		<HELP_TAG>Recurring_Invoice_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>415b1ac5-9396-4fe9-b0bb-e09c484b6750</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Recurring Invoice Entry</MENU_DESC>
+		<HELP_TAG>Recurring_Invoice_Entry7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>471e42b6-6223-4497-942f-9aadd44f83eb</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Buyer Codes</MENU_DESC>
+		<HELP_TAG>Buyer_Code_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>48df22f0-75b2-4c42-8a10-ebd0fa257d89</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Manual Check Register</MENU_DESC>
+		<HELP_TAG>Manual_Check_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>4fc889c6-545e-4e5a-b696-26670853f313</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Invoice Detail Inquiry</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>5020ca00-c95d-4cfc-9cc8-b8749ae8b1b9</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendor Label Printing</MENU_DESC>
+		<HELP_TAG>Vendor_Label_Printing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>55e70535-413e-4e09-821d-f5033c452f46</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Application Parameters</MENU_DESC>
+		<HELP_TAG>Application_Parameters21</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>5e30158a-f865-4958-973c-5068d02ac41d</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Monthly Check Report</MENU_DESC>
+		<HELP_TAG>Monthly_Check_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>6259b0fa-56c4-4ef3-805d-0c9db6231755</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Terms Codes</MENU_DESC>
+		<HELP_TAG>Terms_Code_Maintenance7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>6bb8b502-2e97-48ed-92f0-2607c25e80bd</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Inquiry and Maintenance</MENU_DESC>
+		<HELP_TAG>AP_Maintenance_Main_Menu</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>7865ed4a-9b31-4fd4-a1f5-6a5199f2bbcd</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Accounts Payable</MENU_DESC>
+		<HELP_TAG>Accounts_Payable7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>809b8994-6aca-4d2f-a20a-58329bc248b2</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Invoice History Inquiry</MENU_DESC>
+		<HELP_TAG>apoperations_invoice_history_inquiry_htm</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>82250c2d-d0dc-42ea-b85c-3594f2241395</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Parameters</MENU_DESC>
+		<HELP_TAG>AP_Parameter_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>8294a664-4cbf-43c3-ba65-1433ed9de68b</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendors</MENU_DESC>
+		<HELP_TAG>Vendor_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>84cd3a78-7437-48b8-bda9-2da82f061c53</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Aging Report</MENU_DESC>
+		<HELP_TAG>AP_Aging_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>8854c4f2-6159-4b3c-bbb6-758b7236d086</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Accounts Payable Types</MENU_DESC>
+		<HELP_TAG>Accounts_Payable_Type_Code_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>92a52392-b0a6-41e5-970c-5c7acd76186d</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Export 1099 Data to Text</MENU_DESC>
+		<HELP_TAG>Export_1099_Data_to_Text</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>a029a198-0d6b-487a-a6c7-bd6cc4254c75</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Manual Check Entry</MENU_DESC>
+		<HELP_TAG>Manual_Check_Entry7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>a7bb1ad1-ed34-458b-bd7c-a06d50eef60b</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendor Ledger Cards</MENU_DESC>
+		<HELP_TAG>Vendor_Ledger_Cards7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>a7d61fca-ed5c-4e13-877b-9b6cc49f59d5</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Distribution Codes</MENU_DESC>
+		<HELP_TAG>Distribution_Code_Maintenance14</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>a824b30c-4ad6-48b9-bf25-c6cd154be6bc</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Rebuild Invoice Balance</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>adc754aa-f91f-4383-b09e-a4d6195bd505</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW>Y</NO_SHOW>
+		<MENU_DESC>Receipt History Inquiry</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>b2405826-699d-4be4-ad40-a527e2595c78</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Check Register</MENU_DESC>
+		<HELP_TAG>Check_Register</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>b56ef76f-3e97-4f15-9554-29747d071b6e</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Payment Groups</MENU_DESC>
+		<HELP_TAG>Payment_Group_Maintenance</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>b6db7310-ae4a-424e-a649-e9dde383b5dd</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Payment Selection Report</MENU_DESC>
+		<HELP_TAG>Payment_Selection_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>bcb511ef-4bd3-4f26-993d-3d52fa3d1b29</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Invoice Entry</MENU_DESC>
+		<HELP_TAG>Invoice_Entry</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>bd139466-03e8-41bf-9061-3ad67fae0a26</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendor Name & Address Listing</MENU_DESC>
+		<HELP_TAG>Vendor_Name_Address_Listing7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>bf8deb17-0c92-433b-a124-0ef94ce465af</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Period End Update</MENU_DESC>
+		<HELP_TAG>AP_Period_End_Update</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>c17033c2-e6fb-4f97-a00a-bb92e3b32e5d</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Vendor Comments Listing</MENU_DESC>
+		<HELP_TAG>Vendor_Comments_Listing7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>c552f5f9-3950-4f4c-b813-a1f0f9a4f4b9</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Disbursements Journal</MENU_DESC>
+		<HELP_TAG>Disbursements_Journal7</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>c67c545a-0021-4bb9-86d9-18fa904974c0</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Cash Requirements Report</MENU_DESC>
+		<HELP_TAG>Cash_Requirements_Report</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>cb830ec1-907c-43c0-9da6-867d95e00260</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Check Printing</MENU_DESC>
+		<HELP_TAG>Check_Printing1</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>cf634e1c-ca63-476a-84bf-c910b3d02342</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Report Parameters</MENU_DESC>
+		<HELP_TAG>Report_Parameters</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>d7629d0d-4de1-482a-8bee-06fe4c04b396</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Payment Selection Entry</MENU_DESC>
+		<HELP_TAG>Payment_Selection</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>dc7272b3-9291-4e50-9eea-4a538406720f</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>User Authorization Listing</MENU_DESC>
+		<HELP_TAG>User_Authorization_Listing</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>e2322113-dfbd-42f7-ae6d-444eba03aad1</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Close Form 1099 Year</MENU_DESC>
+		<HELP_TAG>Close_Form_1099_Year</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>f8671ef3-bf1f-46e7-8579-210d61ad995a</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Invoice Register</MENU_DESC>
+		<HELP_TAG>Invoice_Register14</HELP_TAG>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+</barista_admin_records>
