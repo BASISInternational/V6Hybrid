@@ -91,8 +91,17 @@ rem --- Replace working dir, config, and all trigger source paths with those fro
     trgEvents!.add("read-")
     trgEvents!.add("remove-")
     trgEvents!.add("write-")
-    
-    trgProp$="source"
+
+    rem --- build array of suffixes (ir, iw, etc.) used in trigger file names, corresponding to trgTypes! and trgEvents!
+    rem --- since there are two events that begin with "r", if the event is "remove," use "v" instead 
+    dim trgSourceSuffix$[2,6]
+    for tt=0 to trgTypes!.size()-1
+        for te=0 to trgEvents!.size()-1
+            tsuff$=str(trgTypes!.get(tt))(1,1)+str(trgEvents!.get(te))(1,1)
+            if pos("remove"=trgEvents!.get(te)) then let tsuff$(2,1)="v"
+            trgSourceSuffix$[tt,te]=tsuff$
+        next te
+    next tt
 
     triggerDir$=FileObject.fixPath(triggerDir$,"/")
     if triggerDir$(len(triggerDir$),1)<>"/" then triggerDir$=triggerDir$+"/"
@@ -157,13 +166,14 @@ goto std_exit
 updateTriggerPaths: rem --- Update paths in trigger files
     rem --- input: triggerDir$ = directory holding the *.trigger definition files
 
+    errcount=0
     tdir=unt
     open (tdir)triggerDir$
     while 1
         readrecord(tdir,end=*break)fileName$
         if len(fileName$)<9 or fileName$(len(fileName$)-7,8)<>".trigger" then continue         
         trgFile$=fileName$(1,len(fileName$)-8)       
-        trigger! = admin!.getTriggers(triggerDir$+trgFile$,err=*continue)
+        trigger! = admin!.getTriggers(triggerDir$+trgFile$,err=getTriggerError)
         trigger!.setString(BBjAdminTriggers.WORKING_DIR, baristaWD$)
         trigger!.setString(BBjAdminTriggers.CONFIG, baristaWD$+stbl("+DIR_CFG")+"barista.cfg")
         trigger!.setString(BBjAdminTriggers.ENABLED, "true")
@@ -175,16 +185,14 @@ updateTriggerPaths: rem --- Update paths in trigger files
 
         for tt=0 to trgTypes!.size()-1
             for te=0 to trgEvents!.size()-1
-                tprop$=trgTypes!.get(tt)+trgEvents!.get(te)+trgProp$
-                currSource$=trigger!.getString(tprop$,err=*continue)
-                currSource$=FileObject.fixPath(currSource$, "/")
-                tpos=pos("/src/"=currSource$)
-                if tpos
-                    currSource$=triggerDir$+currSource$(tpos+1)
+                tsourceprop$=trgTypes!.get(tt)+trgEvents!.get(te)+"source"
+                tenabledprop$=trgTypes!.get(tt)+trgEvents!.get(te)+"enabled"
+                if trigger!.getString(tenabledprop$)="true"
+                    currSource$=triggerDir$+"src/"+fileName$+"."+trgSourceSuffix$[tt,te]+".src"
                 else
                     currSource$=""
                 endif
-                trigger!.setString(tprop$,currSource$)
+                trigger!.setString(tsourceprop$,currSource$)
             next te
         next tt
        
@@ -195,6 +203,11 @@ updateTriggerPaths: rem --- Update paths in trigger files
 
     wend
     return
+
+    getTriggerError:
+
+        errcount=errcount+1
+        if errcount>=10 then continue else retry
 
 open_tables:rem -----<Open Tables
 
