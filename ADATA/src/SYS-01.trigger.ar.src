@@ -14,7 +14,7 @@ rem --- If a terminal record, or param rec from other module, simply returns bac
 
     rem ' trace
     goto skip_trace;rem this line (and change pathname as applicable) to do the trace
-    tfl$="C:/temp_downloads/sys01.txt"
+    tfl$="C:/temp/sys01.trace."+str(int(tim*1000))+".txt"
     erase tfl$,err=*next
     string tfl$
     tfl=unt
@@ -140,14 +140,26 @@ rem --- Open template and masks files for use in getting Barista template for co
                         system_dev=unt
                         open (system_dev,err=trigger_error)apdir$+filename$
                         read record(system_dev,key=ky$,dom=return_default)tpl$
-                        
+                  
                         sys01.firm_id$=tpl.firm_id$
                         sys01.type$=tpl.ap$
                         sys01.sequence_02$=tpl.sequence_02$
                         sys01.name$=tpl.name$
                         sys01.addr_line_1$=tpl.addr_line_1$
                         sys01.addr_line_2$=tpl.addr_line_2$
-                        sys01.addr_line_3$=iff(cvs(tpl.city$,2)="","",cvs(tpl.city$,2)+", "+tpl.state_code$+" "+tpl.zip_code$)
+                        st$=iff(cvs(tpl.state_code$,3)="","",", "+cvs(tpl.state_code$,3))
+                        zip$=iff(cvs(tpl.zip_code$,3)="",""," "+cvs(tpl.zip_code$,3))
+                        addr_3$=iff(cvs(tpl.city$,2)+st$+zip$="","",cvs(tpl.city$,2)+st$+zip$)
+                        if len(addr_3$)>24
+                            if cvs(sys01.addr_line_2$,2)=""
+                                sys01.addr_line_2$=tpl.city$
+                                sys01.addr_line_3$=tpl.state_code$+" "+tpl.zip_code$
+                            else
+                                sys01.addr_line_3$=tpl.city$(1,24-len(st$)-len(zip$))+st$+zip$
+                            endif
+                        else
+                            sys01.addr_line_3$=addr_3$
+                        endif
                         sys01.phone_number$=tpl.phone_no$
                         sys01.federal_id$=tpl.federal_id$
                         return_default$="N"
@@ -251,7 +263,7 @@ rem --- Open template and masks files for use in getting Barista template for co
                         read record(system_dev,key=ky$,dom=return_default)tpl$
                         sys01.acct_pers$=tpl.total_pers$
                         for x=1 to 13
-                            field sys01$,"per_"+str(x:"00") = fni$(field(tpl$,"per_ending_"+str(x:"00")))
+                            field sys01$,"per_"+str(x:"00") = fni$(field(tpl$,"period_end_"+str(x:"00")))
                             field sys01$,"per_name_"+str(x:"00") = field(tpl$,"period_name_"+str(x:"00"))
                             field sys01$,"abbr_name_"+str(x:"00") = field(tpl$,"abbr_name_"+str(x:"00"))
                             field sys01$,"locked_"+str(x:"00") = field(tpl$,"locked_flag_"+str(x:"00"))
@@ -343,11 +355,12 @@ rem --- Functions
 		return q1$
 	fnend
 
-	rem --- returns a 2 character period/year from a 4 character period/year
+	rem --- returns a 2 character MMDD
+    rem --- as of v21, uses period_end_xx fields, and dates are all 8 character YYYYMMDD
 	def fni$(q$)
-		q$=pad(q$,4)
-		q1$=chr(num(q$(1,2))+32)
-		q2$=chr(num(q$(3,2))+32)
+		q$=pad(q$,8)
+		q1$=chr(num(q$(5,2))+32)
+		q2$=chr(num(q$(7,2))+32)
 		return q1$+q2$
 	fnend
 	

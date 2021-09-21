@@ -18,7 +18,7 @@ rem --- Read Barista Addon's apm_vendmast instead of V6 apm-01
 
     rem ' trace
     goto skip_trace;rem this line (and change pathname as applicable) to do the trace
-    tfl$="C:/temp_downloads/apm01.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    tfl$="C:/temp/apm01.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
     tfl=unt
@@ -81,7 +81,13 @@ rem --- Get the data
         inRec.vendor_name$=apm_vendmast.vendor_name$
         inRec.addr_line_1$=apm_vendmast.addr_line_1$
         inRec.addr_line_2$=apm_vendmast.addr_line_2$
-        inRec.addr_line_3$=cvs(apm_vendmast.city$,3)+", "+apm_vendmast.state_code$
+        st$=iff(cvs(apm_vendmast.state_code$,3)="","",", "+apm_vendmast.state_code$)
+        addr3$=iff(cvs(apm_vendmast.city$,3)+st$="","",cvs(apm_vendmast.city$,3)+st$)
+        if len(addr3$)>24
+            inRec.addr_line_3$=cvs(apm_vendmast.city$,3)(1,24-len(st$))+st$
+        else
+            inRec.addr_line_3$=addr3$
+        endif
         inRec.zip_code$=apm_vendmast.zip_code$
         inRec.phone_number$=apm_vendmast.phone_no$
         inRec.phone_exten$=apm_vendmast.phone_exten$

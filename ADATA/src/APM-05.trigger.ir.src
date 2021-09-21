@@ -81,7 +81,13 @@ rem --- Get the data
         inRec.name$=apm_vendaddr.name$
         inRec.addr_line_1$=apm_vendaddr.addr_line_1$
         inRec.addr_line_2$=apm_vendaddr.addr_line_2$
-        inRec.addr_line_3$=cvs(apm_vendaddr.city$,3)+", "+apm_vendaddr.state_code$
+        st$=iff(cvs(apm_vendaddr.state_code$,3)="","",", "+apm_vendaddr.state_code$)
+        addr3$=iff(cvs(apm_vendaddr.city$,3)+st$="","",cvs(apm_vendaddr.city$,3)+st$)
+        if len(addr3$)>24
+            inRec.addr_line_3$=cvs(apm_vendaddr.city$,3)(1,24-len(st$))+st$
+        else
+            inRec.addr_line_3$=addr3$
+        endif
         inRec.zip_code$=apm_vendaddr.zip_code$
         inRec.phone_number$=apm_vendaddr.phone_no$
         inRec.phone_exten$=apm_vendaddr.phone_exten$
