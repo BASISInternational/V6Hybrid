@@ -1,0 +1,13 @@
+/callpoints
+/classes
+/data/admin_backup
+/data/arc
+/data/sync/base
+/data/sync/new
+/documents
+/logs
+.bdtPath
+.buildpath
+.project
+/.metadata/
+*.bak
