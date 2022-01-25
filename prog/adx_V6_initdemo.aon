@@ -2,7 +2,7 @@ rem ==========================================================================
 rem --- adx_V6_initdemo.aon
 rem --- Auto-Launch task that initializes V6demo environment.
 rem --- 
-rem --- AddonSoftware Version 16.00
+rem --- AddonSoftware V6Hybrid
 rem --- Copyright BASIS International Ltd.  All Rights Reserved.
 rem ==========================================================================
 
@@ -16,8 +16,10 @@ rem --- Need to do the following for the V6demo to work properly
 rem --- update_DD:
 rem ---  1. Change opened_date field data type in ARM-01 to be Character as Binary
 rem ---  2. Set date type for ART-03 invoice_date to 'AON'
-rem --- rename_menus
-rem ---  4. Rename addon.men and prbabs.men so they're not used - only using v6hybrid.men 
+rem --- rename_menus:
+rem ---  1. Delete Addon's adm_mnu_item/trans *.xml's from aon/data/sync
+rem ---  2. Delete records from actual menu tables adm_mnu_item.dat, adm_mnu_trans.dat, any records for ADDON mount_sys_id
+rem ---  3. This leaves just the superset V6Hybrid menu to be sync'd in 
 
 rem --- Get program arguments
 
@@ -75,7 +77,7 @@ rem --- Do the processing
     
     goto done
 
-
+rem CAH ******* don't think this routine is needed anymore - these are set to AON date types at the element type level now that Barista supports it... confirm and remove if so
 update_DD:rem --- Make changes directly to BASIS DD for properties that can't be set/passed in from Barista
 
     rem --- Get Admin Object

@@ -1,0 +1,173 @@
+rem AddonSoftware
+rem Copyright BASIS International Ltd.
+rem 
+rem after write
+rem This trigger assumes that it is being used in a non-modified Barista and Addon
+rem Version 6 environment. If there have been any modifications to these systems,
+rem be sure to thoroughly examine this trigger and test changes.
+
+rem --- Trigger for V6 AvaTax Interface
+rem --- Write Barista Addon's opc_taxcode (opm-06) or opc_linecode (opm-02) after corresponding writes to V6's ARM-10B or ARM-10E
+
+	setopts $080872202c2e$
+	seterr trigger_error
+
+    rem ' trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
+    tfl$="C:/temp/arm10triggertrace_V6.txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
+
+rem --- Load up the field_translations used in Dataport to convert V6 key value to Addon's and vice versa, if applicable (e.g., blank in V6 = ZZ in Addon)
+    field_trans_v6toaon! = new java.util.HashMap()
+    field_trans_aontov6! = new java.util.HashMap()
+    dim field_trans$:"fieldname:c(16*=124),old_value:c(16*=124),new_value:c(16*=124),masterfile:c(20*=)"
+    field_trans = unt
+    filedir$=stbl("+DATAPORT_FILES",err=std_exit)
+    open (field_trans)filedir$+"field_translations"
+    while 1
+       read (field_trans,end=*break)field_trans$
+       if len(field_trans$) then
+          keyval$ = cvs(field_trans.fieldname$,7)+"."+cvs(field_trans.old_value$,3)
+          dataval$ = cvs(field_trans.new_value$,7)
+          field_trans_v6toaon!.put(keyval$,dataval$)
+          keyval$=cvs(field_trans.fieldname$,7)+"."+cvs(field_trans.new_value$,3)
+          dataval$=cvs(field_trans.old_value$,7)
+          field_trans_aontov6!.put(keyval$,dataval$)
+       endif
+    wend
+
+rem ---  Get the Trigger object from the BBj File System
+
+    td! = BBjAPI().getFileSystem().getTriggerData()
+    ky$ = td!.getKey()
+    
+	wkdir$ = dir("")
+	opdir$ = stbl("+OPDATA")
+
+rem --- Templates for the V6 ARM-10B or E records being caught
+
+    switch pos(ky$(3,1)="BE")
+        case 1; rem B - Tax Codes
+            intemp$="firm_id:c(2),record_id_b:c(1),tax_code:c(2),code_desc:c(20),ar_tot_code_01:c(2),ar_tot_code_02:c(2),"
+            intemp$=intemp$+"ar_tot_code_03:c(2),ar_tot_code_04:c(2),ar_tot_code_05:c(2),ar_tot_code_06:c(2),ar_tot_code_07:c(2),"
+            intemp$=intemp$+"ar_tot_code_08:c(2),ar_tot_code_09:c(2),ar_tot_code_10:c(2),gl_account:c(10),tax_frt_flag:c(1),reserved_str:c(4*=10),tax_rate:n(7*=10),max_limit:n(7*=10)"
+        break
+        case 2; rem E - Line Codes
+            intemp$="firm_id:c(2),record_id_e:c(1),line_code:c(1),code_desc:c(20),line_type:c(1),taxable_flag:c(1),dropship:c(1),"
+            intemp$=intemp$+"message_type:c(1),product_type:c(3),prod_type_pr:c(1*=10),gl_rev_acct:c(10),dist_code:c(2*=10)"
+        break
+        case default
+            goto std_exit
+        break
+    swend
+    
+    dim inRec$:intemp$
+    inRec$=td!.getWriteBuffer()
+
+rem --- Open Barista Addon OPC_TAXCODE or OPC_LINECODE and get corresponding templates
+
+	tpl_dev=unt
+	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
+
+    switch pos(ky$(3,1)="BE")
+        case 1; rem B - Tax Codes
+            alias$="OPC_TAXCODE"
+            filename$="opm-06"
+            gosub get_template
+            code_dev=unt
+            open (code_dev,err=trigger_error)opdir$+filename$
+
+            rem --- Translate V6 key to Addon's, based on field translations
+            aonvalue!=field_trans_v6toaon!.get("OP_TAX_CODE."+cvs(inRec.tax_code$,3))
+            if aonvalue!<>null()
+                aonvalue$=str(aonvalue!)
+            else
+                aonvalue$=inRec.tax_code$
+            endif
+    
+            rem --- Write the data
+            tpl.firm_id$=inRec.firm_id$
+            tpl.op_tax_code$=aonvalue$
+            
+            readrecord(code_dev,key=tpl.firm_id$+tpl.op_tax_code$,dom=*next)tpl$
+            
+            tpl.code_desc$=inRec.code_desc$
+            tpl.ar_tot_code_01$=inRec.ar_tot_code_01$
+            tpl.ar_tot_code_02$=inRec.ar_tot_code_02$
+            tpl.ar_tot_code_03$=inRec.ar_tot_code_03$
+            tpl.ar_tot_code_04$=inRec.ar_tot_code_04$
+            tpl.ar_tot_code_05$=inRec.ar_tot_code_05$
+            tpl.ar_tot_code_06$=inRec.ar_tot_code_06$
+            tpl.ar_tot_code_07$=inRec.ar_tot_code_07$
+            tpl.ar_tot_code_08$=inRec.ar_tot_code_08$
+            tpl.ar_tot_code_09$=inRec.ar_tot_code_09$
+            tpl.ar_tot_code_10$=inRec.ar_tot_code_10$            
+            tpl.gl_account$=inRec.gl_account$
+            tpl.tax_frt_flag$=inRec.tax_frt_flag$
+            tpl.tax_rate=inRec.tax_rate
+            tpl.op_max_limit=inRec.max_limit
+    
+            tpl$=field(tpl$)
+            writerecord (code_dev)tpl$
+        break
+        case 2; rem E - Line Codes
+            alias$="OPC_LINECODE"
+            filename$="opm-02"
+            gosub get_template
+            code_dev=unt
+            open (code_dev,err=trigger_error)opdir$+filename$
+            
+            tpl.firm_id$=inRec.firm_id$
+            tpl.line_code$=inRec.line_code$
+            
+            readrecord(code_dev,key=tpl.firm_id$+tpl.line_code$,dom=*next)tpl$
+            
+            tpl.code_desc$=inRec.code_desc$
+            tpl.line_type$=inRec.line_type$
+            tpl.taxable_flag$=inRec.taxable_flag$
+            tpl.dropship$=inRec.dropship$
+            tpl.message_type$=inRec.message_type$
+            tpl.product_type$=inRec.product_type$
+            tpl.prod_type_pr$=inRec.prod_type_pr$
+            tpl.gl_rev_acct$=inRec.gl_rev_acct$
+            tpl.ar_dist_code$=inRec.dist_code$
+            tpl$=field(tpl$)
+            writerecord (code_dev)tpl$
+        break
+        case default
+        break
+    swend
+
+    goto std_exit
+    
+rem --- Subroutines
+
+get_template:
+
+	read (tpl_dev,key=pad(alias$,16),dom=trigger_error) *,*,tpl$
+	dim tpl$:tpl$
+	
+	return
+	
+trigger_error:
+
+    rd_err_text$="", err_num=err
+    
+trigger_error_forced:
+
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    if err_num=11
+        rem --- if we took the DOM above, store the next key in group namespace
+        gns!=BBjAPI().getGroupNamespace()
+        gns!.setValue(nskey$,next_ky$)
+	endif
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+
+std_exit:
+
+  

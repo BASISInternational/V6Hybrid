@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<barista_record_table>ADM_MNU_TRANS</barista_record_table>
+<barista_admin_records>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>812c00b4-6731-4956-b0fd-dcdca8b84498</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Sales Tax Transaction History</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>OP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>97423773-3e87-48f2-ba84-e229b44cb31e</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>Sales Tax Service Configuration</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>OP </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+</barista_admin_records>

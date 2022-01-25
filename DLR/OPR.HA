@@ -171,7 +171,7 @@
 1500 REM " --- Void"
 1520 rem ' IF L>L9 THEN GOSUB 5000
 1540 rem ' PRINT (7)'LF',FNF$(A0$(5,P[0]),M0$),@(12),A0$(11,7),@(21),A0$(42,7),@(30),FNB$(A0$(24,3)),"      * Void *"
-1541 report!.addBlankRow(); dim row$:rowTemplate$; row.column01$=FNF$(A0$(5,P[0]),M0$); row.column02$=A0$(11,7); row.column03$=A0$(42,7), row.column04$=FNB4$(A0$(24,3)); row.column05$="* Void *"; report!.addRow(row$)
+1541 report!.addBlankRow(); dim row$:rowTemplate$; row.column01$=FNF$(A0$(5,P[0]),M0$); row.column02$=A0$(11,7); row.column03$=A0$(42,7), row.column04$=FNB$(A0$(24,3)); row.column05$="* Void *"; report!.addRow(row$)
 1550 rem ' PRINT (7)@(0),B1$(1,30)
 1551 dim row$:rowTemplate$; row.column01$=B1$(1,30); report!.addRow(row$)
 1560 LET L=L+3

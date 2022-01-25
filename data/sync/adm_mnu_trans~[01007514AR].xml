@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<barista_record_table>ADM_MNU_TRANS</barista_record_table>
+<barista_admin_records>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>23fdd932-702b-430b-a069-f63e840dbe00</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>AR Ship Via Codes</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AR </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>6f54cfac-51be-4dc7-b493-acc6548576c2</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>AR Entity Use Code</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AR </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>b4499797-f1d2-4197-bda3-a14217e9906f</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>AR Customer Sales Tax Exempt</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>AR </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+</barista_admin_records>

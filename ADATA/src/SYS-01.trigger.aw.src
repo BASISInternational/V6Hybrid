@@ -1,0 +1,378 @@
+rem AddonSoftware
+rem Copyright BASIS International Ltd.
+rem 
+rem after write
+rem This trigger assumes that it is being used in a non-modified Barista and Addon
+rem Version 6 environment. If there have been any modifications to these systems,
+rem be sure to thoroughly examine this trigger and test changes.
+
+rem --- Trigger for V6 AvaTax Interface
+rem --- Write Barista Addon's ars_params or ars_report after corresponding writes to V6's ARS-01A or ARS-01B
+
+	setopts $080872202c2e$
+	seterr trigger_error
+
+    rem ' trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
+    tfl$="C:/temp/sys01_aw_triggertrace_V6.txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
+
+rem ---  Get the Trigger object from the BBj File System
+
+    td! = BBjAPI().getFileSystem().getTriggerData()
+    ky$ = td!.getKey()
+    
+	wkdir$ = dir("")
+	ardir$ = stbl("+ARDATA")
+    
+    if len(ky$)<6 then goto std_exit
+
+rem --- Templates for the V6 ARS-01A or B records being caught
+
+    switch (BBjAPI().TRUE)
+        case ky$(3,2) = "AR"
+            switch (BBjAPI().TRUE)
+                case ky$(5,2)="00"; rem AR Params
+                    intemp$="firm_id:c(2),ar:c(2),sequence_00:c(2*=10),cust_input:c(10*=10),"
+                    intemp$=intemp$+"cust_size:c(2),max_cust_len:c(2*=10),multi_types:c(1),multi_dist:c(1),hold_zero:c(1),"
+                    intemp$=intemp$+"zip_length:c(1),label_across:c(2),label_length:c(2),label_width:c(2),dist_by_item:c(1),"
+                    intemp$=intemp$+"job_numbers:c(1),auto_number:c(1),br_interface:c(1),cash_sale:c(1),customer_nbr:c(6),"
+                    intemp$=intemp$+"retain_hist:c(2),beg_cmt_line:c(2),end_cmt_line:c(2),dropshp_cost:c(1),min_ord_amt:c(5),"
+                    intemp$=intemp$+"min_line_amt:c(5),skip_ln_code:c(1),line_code:c(1),dropshp_whse:c(1),backorders:c(1),"
+                    intemp$=intemp$+"retain_jobs:c(2),min_csh_sale:c(5),disc_code:c(2),territory:c(3),slspsn_code:c(3),"
+                    intemp$=intemp$+"tax_code:c(2),terms_code:c(2),dist_code:c(2),rec_prt_sys:c(1),cntr_prt_pgm:c(6),"
+                    intemp$=intemp$+"rec_prt_pgm:c(6),inv_hist_flg:c(1),cust_inv_his:c(1),prt_gl_det:c(1),inv_hist_pgm:c(6),"
+                    intemp$=intemp$+"commit_days:c(3),lstcom_date:c(3),def_shp_days:c(2),reserved_str:c(20*=10),"
+                    intemp$=intemp$+"current_per:c(2),current_year:c(2*=10),cust_output:c(10*=10),amount_mask:c(12*=10),"
+                    intemp$=intemp$+"unit_mask:c(12*=10),rate_mask:c(12*=10)"
+                break
+                case ky$(5,2)="02"; rem AR Report Params
+                    intemp$="firm_id:c(2),ar:c(2),sequence_02:c(2*=10),name:c(30),addr_line_1:c(24),addr_line_2:c(24),"
+                    intemp$=intemp$+"addr_line_3:c(24),phone_number:c(10*=10),federal_id:c(15*=10)"
+                break
+                case default
+                    goto std_exit
+                break
+            swend
+        break
+        case default
+        break
+    swend
+    dim inRec$:intemp$
+    inRec$=td!.getWriteBuffer()
+
+rem --- Open Barista Addon ars_params or ars_report and get corresponding templates
+
+	tpl_dev=unt
+	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
+
+    switch (BBjAPI().TRUE)
+        case ky$(3,2) = "AR"
+            switch (BBjAPI().TRUE)
+                case ky$(5,2)="00"; rem AR Params
+                    alias$="ARS_PARAMS"
+                    filename$="ars_params"
+                    gosub get_template
+                    code_dev=unt
+                    open (code_dev,err=trigger_error)ardir$+filename$
+            
+                    rem --- Write the data for the ars_params record
+                    tpl.firm_id$=inRec.firm_id$
+                    tpl.ar$=inRec.ar$
+                    tpl.sequence_00$=inRec.sequence_00$
+                    
+                    readrecord(code_dev,key=tpl.firm_id$+tpl.ar$+tpl.sequence_00$,dom=*next)tpl$
+
+                    tpl.customer_size$=inRec.cust_size$
+                    tpl.max_customer_len$=inRec.max_cust_len$
+                    tpl.multi_types$=inRec.multi_types$
+                    tpl.multi_dist$=inRec.multi_dist$
+                    tpl.hold_zero$=inRec.hold_zero$
+                    tpl.zip_length$=inRec.zip_length$
+                    tpl.label_across$=inRec.label_across$
+                    tpl.label_length$=inRec.label_length$
+                    tpl.label_width$=inRec.label_width$
+                    tpl.dist_by_item$=inRec.dist_by_item$
+                    tpl.job_nos$=inRec.job_numbers$
+                    tpl.auto_no$=inRec.auto_number$
+                    tpl.br_interface$=inRec.br_interface$
+                    tpl.cash_sale$=inRec.cash_sale$
+                    tpl.customer_id$=inRec.customer_nbr$
+                    tpl.retain_hist$=inRec.retain_hist$
+                    tpl.beg_cmt_line$=inRec.beg_cmt_line$
+                    tpl.end_cmt_line$=inRec.end_cmt_line$
+                    tpl.dropshp_cost$=inRec.dropshp_cost$
+                    tpl.min_ord_amt$=inRec.min_ord_amt$
+                    tpl.min_line_amt$=inRec.min_line_amt$
+                    tpl.skip_ln_code$=inRec.skip_ln_code$
+                    tpl.line_code$=inRec.line_code$
+                    tpl.dropshp_whse$=inRec.dropshp_whse$
+                    tpl.backorders$=inRec.backorders$
+                    tpl.retain_jobs$=inRec.retain_jobs$
+                    tpl.min_csh_sale$=inRec.min_csh_sale$
+                    tpl.rec_prt_sys$=inRec.rec_prt_sys$
+                    tpl.cntr_prt_pgm$=inRec.cntr_prt_pgm$
+                    tpl.inv_hist_flg$=inRec.inv_hist_flg$
+                    tpl.prt_gl_det$=inRec.prt_gl_det$
+                    tpl.commit_days$=inRec.commit_days$
+                    tpl.def_shp_days$=inRec.def_shp_days$
+                    tpl.rec_prt_pgm$=inRec.rec_prt_pgm$
+                    tpl.inv_histpgm$=inRec.inv_hist_pgm$
+                    tpl.lstcom_date$=fnfulldate$(inRec.lstcom_date$)
+                    tpl.current_per$=inRec.current_per$ 
+                    tpl.current_year$=fnfullyear$(inRec.current_year$)
+                    tpl.customer_output$=inRec.cust_output$
+            
+                    tpl$=field(tpl$)
+                    writerecord (code_dev)tpl$
+                    
+                    rem --- some fields in V6 ars01A are in Addon's ars_custdflt, so update that, too.
+                    close(code_dev)
+                    alias$="ARS_CUSTDFLT"
+                    filename$="ars_custdflt"
+                    gosub get_template
+                    code_dev=unt
+                    open (code_dev,err=trigger_error)ardir$+filename$
+                    
+                    rem --- Write the data for the ars_custdflt record (note there were fewer custdflt values in V6 than Addon)
+                    tpl.firm_id$=inRec.firm_id$
+                    tpl.record_id_d$="D"
+                    
+                    readrecord(code_dev,key=tpl.firm_id$+tpl.record_id_d$,dom=*next)tpl$
+
+                    tpl.disc_code$=inRec.disc_code$
+                    tpl.territory$=inRec.territory$
+                    tpl.slspsn_code$=inRec.slspsn_code$
+                    tpl.tax_code$=inRec.tax_code$
+                    tpl.ar_terms_code$=inRec.terms_code$
+                    tpl.ar_dist_code$=inRec.dist_code$
+
+                    tpl$=field(tpl$)
+                    writerecord (code_dev)tpl$
+                break
+                case ky$(5,2)="02"; rem AR Report Params
+                    alias$="ARS_REPORT"
+                    filename$="ars_report"
+                    gosub get_template
+                    code_dev=unt
+                    open (code_dev,err=trigger_error)ardir$+filename$
+            
+                    rem --- Write the data for the ars_params record
+                    tpl.firm_id$=inRec.firm_id$
+                    tpl.ar$=inRec.ar$
+                    tpl.sequence_02$=inRec.sequence_02$
+                    
+                    readrecord(code_dev,key=tpl.firm_id$+tpl.ar$+tpl.sequence_02$,dom=*next)tpl$
+                    
+                    tpl.name$=inRec.name$
+                    address$=inRec.addr_line_1$+inRec.addr_line_2$+inRec.addr_line_3$
+                    gosub reformat_address
+                    tpl.addr_line_1$=address$(1,24)
+                    tpl.addr_line_2$=address$(25,24)
+                    tpl.city$=city$
+                    tpl.state_code$=state$
+                    tpl.zip_code$=zip$
+                    tpl.phone_no$=inRec.phone_number$
+                    
+                    tpl$=field(tpl$)
+                    writerecord (code_dev)tpl$
+                break
+                case default
+                break
+            swend
+        break
+        case default
+        break
+    swend
+
+    goto std_exit
+    
+rem --- Subroutines
+
+get_template:
+
+	read (tpl_dev,key=pad(alias$,16),dom=trigger_error) *,*,tpl$
+	dim tpl$:tpl$
+	
+	return
+
+reformat_address:
+
+    dim state$(2),city$(24);rem --- This code is based on the same routine in DataPort_main.bbj
+    states$="ALAKAZARCACOCTDEDCFLGAHIIDILINIAKSKYLAMEMDMAMIMNMSMOMTNENVNHNJNMNYNCNDOHOKORPAPRRISCSDTNTXUTVTVAVIWAWVWIWY"
+    states$=states$+"ABBCMBNBNLNSNTNUONPEQCSKYT"; rem ' Canadian province/territory codes
+    city$=cvs(tpl.city$,3)
+    state$=cvs(tpl.state_code$,3)
+    zip$=cvs(tpl.zip_code$,3)
+
+    if city$="" or state$="" or zip$="" then
+        if len(address$) and mod(len(address$),24)=0 then
+            for x=len(address$) to 1 step -24
+                string1$=cvs(address$(x-23,24),3)
+                if string1$="" then continue
+                string2$=""
+                string3$=""
+                string4$=""
+
+                rem --- Does this address line hold the zip code and/or state code?
+                if state$="" or zip$="" then
+                    string2_pos=pos(" "=string1$,-1)
+                    if string2_pos then
+                        string2$=cvs(string1$(string2_pos+1),2)
+                    else
+                        string2$=string1$
+                    endif
+                    rem --- Does this address line hold the zip code?
+                    if zip$="" then
+                        string2_len$=str(len(string2$))
+                        switch (BBjAPI().TRUE)
+                            case string2_len$="5"
+                            case string2_len$="9"
+                                if num(string2$,err=*endif) then
+                                    zip$=string2$
+                                    address$(x-23+string2_pos,24-string2_pos)=""
+                                endif
+                                break
+                            case string2_len$="10"
+                                if pos("-"=string2$,1,0)=1 and pos("-"=string2$,1)=6 then
+                                    if num(string2$(1,5)+string2$(7),err=*endif) then
+                                        zip$=string2$(1,5)+string2$(7)
+                                        address$(x-23+string2_pos,24-string2_pos)=""
+                                    endif
+                                endif
+                                break
+                            case default
+                                break
+                        swend
+                    endif
+                
+                    rem --- Does this address line hold the state code?
+                    if state$="" then 
+                        if zip$="" or string2$=string1$ or len(string2$)=2 then
+                            rem --- Does this address line hold the state code without the zip code?
+                            if len(string2$)=2 then
+                                if pos(string2$=states$,2) then
+                                    state$=string2$
+                                    address$(x-23+string2_pos,24-string2_pos)=""
+                                endif
+                            else
+                                string3_pos=pos(" "=string2$,-1)
+                                if string3_pos then
+                                    string3$=cvs(string2$(string3_pos+1),2)
+                                else
+                                    string3$=string2$
+                                endif
+                                if len(string3$)=2 and pos(string3$=states$,2) then
+                                    state$=string3$
+                                    address$(x-23+string2_pos+string3_pos,24-string2_pos+string3_pos)=""
+    								string4$=cvs(address$(x-23,24),2)
+                                else
+                                    string4$=string3$
+                                endif
+                            endif
+                        else
+                            rem --- Does this address line hold the state code in addition to the zip code?
+                            if string2$<>string1$ then
+                                string2_pos=pos(string2$=string1$,-1)
+                                string3$=cvs(string1$(1,string2_pos-1),2)
+                                if len(string3$)=2 then
+                                    if pos(string3$=states$,2) then
+                                        state$=string3$
+                                        address$(x-23+string2_pos,24-string2_pos)=""
+                                    endif
+                                else
+                                    string3_pos=pos(" "=string3$,-1)
+                                    if string3_pos then
+                                        string3$=cvs(string3$(string3_pos+1),2)
+                                        string3_pos=string2_pos-string3_pos
+                                    endif
+                                    if len(string3$)=2 and pos(string3$=states$,2) then
+                                        state$=string3$
+                                        address$(x-23+string2_pos-string3_pos,24-string2_pos+string3_pos)=""
+    									string4$=cvs(address$(x-23,24),2)
+                                    else
+                                        string4$=string3$
+                                    endif
+                                endif
+                            endif
+                        endif
+                    endif
+                
+                    rem --- Does this address line hold the city in addition to the state code?
+                    if state$<>"" and string4$<>"" then
+                        city$=cvs(string4$,3)
+                        address$(x-23,24)=""
+                    endif
+                endif
+
+                rem --- Does this address line hold just the city?
+                if city$="" and state$<>cvs(string1$,3) then
+                    rem --- Skip the first address line when city hasn't been found yet
+                    if x>24 then
+                        if state$<>"" and pos(" "+state$+" "=string1$+" ",-1) then
+                            rem --- Previously entered state code is at the end of this line too.
+                            string1$=string1$(1,pos(" "+state$+" "=string1$+" ",-1)-1)
+                        endif
+                        city$=cvs(string1$,3)
+                        address$(x-23,24)=""
+                    endif
+                endif
+
+                rem --- Done once we have the city.
+                if city$<>"" then break
+            next x
+        endif
+    endif
+    
+    rem --- Strip trailing comma from city
+    if city$<>"" then
+        if city$(len(city$))="," then city$=city$(1,len(city$)-1)
+    endif
+
+    return
+
+rem --- Functions
+
+rem --- convert V6 3-char packed date to YYYYMMDD
+    def fnfulldate$(value$)=str(asc(value$)-32+1900)+str(asc(value$(2))-32:"00")+str(mod(asc(value$(3))-32,100):"00")
+
+rem --- convert 2-char to 4-char year
+    def fnfullyear$(value$)
+        value$=fnyy_yy21$(value$)
+        if asc(value$)>=65 then
+            value$=str(200+asc(value$)-65)+value$(2)
+        else
+            value$="19"+value$
+        endif
+        return value$
+    fnend
+        
+rem --- Convert 2-Char Year to 21st Century 2-Char Year
+    def fnyy_yy21$(q$)
+        q3$=" ABCDE56789ABCDEFGHIJ"
+        q$(1,1)=q3$(pos(q$(1,1)=" 0123456789ABCDEFGHIJ"))
+        return q$
+    fnend
+	
+trigger_error:
+
+    rd_err_text$="", err_num=err
+    
+trigger_error_forced:
+
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    if err_num=11
+        rem --- if we took the DOM above, store the next key in group namespace
+        gns!=BBjAPI().getGroupNamespace()
+        gns!.setValue(nskey$,next_ky$)
+	endif
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+
+std_exit:
+
+  

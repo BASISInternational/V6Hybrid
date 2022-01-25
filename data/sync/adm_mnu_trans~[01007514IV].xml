@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<barista_record_table>ADM_MNU_TRANS</barista_record_table>
+<barista_admin_records>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>1f844a3f-7eec-4895-af30-d528539493ef</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>IV Inventory Items</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>IV </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>7e7ccf29-f089-4699-a853-380ac9408c97</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>IV Item Class</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>IV </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>94c01fab-8cc2-49e3-8d19-aedb4f52303f</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW>N</NO_SHOW>
+		<MENU_DESC>IV Item Type</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>IV </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>fd27a12c-938a-4386-b4fb-6997523e7250</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW> </NO_SHOW>
+		<MENU_DESC>IV Product Type</MENU_DESC>
+		<ASC_COMP_ID>01007514</ASC_COMP_ID>
+		<ASC_PROD_ID>IV </ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+</barista_admin_records>

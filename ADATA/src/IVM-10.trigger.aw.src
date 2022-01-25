@@ -1,0 +1,216 @@
+rem AddonSoftware
+rem Copyright BASIS International Ltd.
+rem 
+rem after write
+rem This trigger assumes that it is being used in a non-modified Barista and Addon
+rem Version 6 environment. If there have been any modifications to these systems,
+rem be sure to thoroughly examine this trigger and test changes.
+
+rem --- Trigger for V6 AvaTax Interface
+rem --- Write Barista Addon's ivc_prodcode or ivc_whsecode after corresponding writes to V6's IVM-10A or IVM-10C
+
+	setopts $080872202c2e$
+	seterr trigger_error
+
+    rem ' trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
+    tfl$="C:/temp/ivm10triggertrace_V6.txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
+
+rem --- Load up the field_translations used in Dataport to convert V6 key value to Addon's and vice versa, if applicable (e.g., blank in V6 = ZZ in Addon)
+    field_trans_v6toaon! = new java.util.HashMap()
+    field_trans_aontov6! = new java.util.HashMap()
+    dim field_trans$:"fieldname:c(16*=124),old_value:c(16*=124),new_value:c(16*=124),masterfile:c(20*=)"
+    field_trans = unt
+    filedir$=stbl("+DATAPORT_FILES",err=std_exit)
+    open (field_trans)filedir$+"field_translations"
+    while 1
+       read (field_trans,end=*break)field_trans$
+       if len(field_trans$) then
+          keyval$ = cvs(field_trans.fieldname$,7)+"."+cvs(field_trans.old_value$,3)
+          dataval$ = cvs(field_trans.new_value$,7)
+          field_trans_v6toaon!.put(keyval$,dataval$)
+          keyval$=cvs(field_trans.fieldname$,7)+"."+cvs(field_trans.new_value$,3)
+          dataval$=cvs(field_trans.old_value$,7)
+          field_trans_aontov6!.put(keyval$,dataval$)
+       endif
+    wend
+
+rem ---  Get the Trigger object from the BBj File System
+
+    td! = BBjAPI().getFileSystem().getTriggerData()
+    ky$ = td!.getKey()
+    
+	wkdir$ = dir("")
+	ivdir$ = stbl("+IVDATA")
+
+rem --- Templates for the V6 IVM-10A or C records being caught
+
+    switch pos(ky$(3,1)="AC")
+        case 1; rem A - Product Type Codes
+            intemp$="firm_id:c(2),record_id_a:c(1),product_type:c(3),code_desc:c(20),sa_level:c(1),reserved_str:c(5*=10)"
+        break
+        case 2; rem C - Warehouse Codes
+            intemp$="firm_id:c(2),record_id_c:c(1),warehouse_id:c(2),short_name:c(24),addr_line_1:c(24),addr_line_2:c(24),"
+            intemp$=intemp$+"addr_line_3:c(24),addr_line_4:c(24),phone_number:c(10),zip_code:c(9),reserved_str:c(16*=10)"
+        break
+        case default
+            goto std_exit
+        break
+    swend
+    
+    dim inRec$:intemp$
+    inRec$=td!.getWriteBuffer()
+
+rem --- Open Barista Addon IVC_PRODCODE or IVC_WHSECODE and get corresponding templates
+
+	tpl_dev=unt
+	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
+
+    switch pos(ky$(3,1)="AC")
+        case 1; rem A - Product Codes
+            alias$="IVC_PRODCODE"
+            filename$="ivc_prodcode"
+            gosub get_template
+            code_dev=unt
+            open (code_dev,err=trigger_error)ivdir$+filename$
+
+            rem --- Translate V6 key to Addon's, based on field translations
+            aonvalue!=field_trans_v6toaon!.get("PRODUCT_TYPE."+cvs(inRec.product_type$,3))
+            if aonvalue!<>null()
+                aonvalue$=str(aonvalue!)
+            else
+                aonvalue$=inRec.product_type$
+            endif
+    
+            rem --- Write the data
+            tpl.firm_id$=inRec.firm_id$
+            tpl.record_id_a$=inRec.record_id_a$
+            tpl.product_type$=aonvalue$
+            
+            readrecord(code_dev,key=tpl.firm_id$+tpl.record_id_a$+tpl.product_type$,dom=*next)tpl$
+            
+            tpl.code_desc$=inRec.code_desc$
+            tpl.sa_level$=inRec.sa_level$
+    
+            tpl$=field(tpl$)
+            writerecord (code_dev)tpl$
+        break
+        case 2; rem C - Warehouse Codes
+            alias$="IVC_WHSECODE"
+            filename$="ivc_whsecode"
+            gosub get_template
+            code_dev=unt
+            open (code_dev,err=trigger_error)ivdir$+filename$
+            
+            tpl.firm_id$=inRec.firm_id$
+            tpl.record_id_c$=inRec.record_id_c$
+            tpl.warehouse_id$=inRec.warehouse_id$
+            
+            readrecord(code_dev,key=tpl.firm_id$+tpl.record_id_c$+tpl.warehouse_id$,dom=*next)tpl$
+            
+            tpl.short_name$=inRec.short_name$
+            address$=inRec.addr_line_1$+inRec.addr_line_2$+inRec.addr_line_3$+inRec.addr_line_4$
+            gosub reformat_address
+            tpl.addr_line_1$=address$(1,24)
+            tpl.addr_line_2$=address$(25,24)
+            tpl.addr_line_3$=address$(49,24)
+            tpl.city$=city$
+            tpl.state_code$=state$
+            tpl.phone_no$=inRec.phone_number$
+            tpl.zip_code$=inRec.zip_code$
+            
+            tpl$=field(tpl$)
+            writerecord (code_dev)tpl$
+        break
+        case default
+        break
+    swend
+
+    goto std_exit
+
+    
+rem --- Subroutines
+
+get_template:
+
+	read (tpl_dev,key=pad(alias$,16),dom=trigger_error) *,*,tpl$
+	dim tpl$:tpl$
+	
+	return
+
+reformat_address:
+
+    dim state$(2),city$(24)
+    states$="ALAKAZARCACOCTDEDCFLGAHIIDILINIAKSKYLAMEMDMAMIMNMSMOMTNENVNHNJNMNYNCNDOHOKORPAPRRISCSDTNTXUTVTVAVIWAWVWIWY"
+    states$=states$+"ABBCMBNBNLNSNTNUONPEQCSKYT"; rem ' Canadian province/territory codes
+    if len(address$) and len(address$)/24 then
+        for x=len(address$) to 1 step -24
+            string1$=cvs(address$(x-23,24),2)
+            if string1$="" then
+                continue
+            endif
+            if cvs(state$,2)<>"" and cvs(city$,2)="" then
+                if pos(" "=string1$)=0 then
+                    city$(1)=string1$,address$(x-23,24)=""
+                    break
+                endif
+            endif
+            if len(string1$)<2 then
+                city$(1)=string1$,address$(x-23,24)=""
+                break
+            endif
+            if len(string1$)=2 then
+                break
+            endif
+            if len(string1$)>2 and string1$(len(string1$)-2,1)<>" " then
+                city$(1)=""
+                break
+            endif
+            string2$=string1$(len(string1$)-1,2)
+            if pos(string2$=states$,2)=0 then
+                city$(1)=""
+                break
+            endif
+            state$=string2$
+            if len(string1$)=2 then
+                if x>1 then
+                    city$(1)=address$(x-47,24)
+                    address$(x-47,48)=""
+                endif
+            else
+                city$(1)=address$(x-23,len(string1$)-3)
+                address$(x-23,24)=""
+            endif
+            string1$=cvs(city$,2)
+            if len(string1$) and string1$(len(string1$),1)="," then
+                string1$=string1$(1,len(string1$)-1)
+            endif
+            city$(1)=string1$
+            if cvs(city$,2)<>"" then break
+        next x
+    endif
+    return
+	
+trigger_error:
+
+    rd_err_text$="", err_num=err
+    
+trigger_error_forced:
+
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    if err_num=11
+        rem --- if we took the DOM above, store the next key in group namespace
+        gns!=BBjAPI().getGroupNamespace()
+        gns!.setValue(nskey$,next_ky$)
+	endif
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+
+std_exit:
+
+  

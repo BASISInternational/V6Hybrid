@@ -1,0 +1,161 @@
+rem --- V6 AvaTax Interface
+rem --- Maintain Sales Tax Service Codes based on which category (by Product Type, Item Class, or Item Type) is specified in OP Params
+rem --- This program runs from the menu, and launches IVX_PRODTAXSVC, IVX_CLASTAXSVC, or IVX_TYPETAXSVC
+
+rem --- Copyright BASIS International Ltd.  All Rights Reserved.
+rem --- All Rights Reserved
+
+    setesc std_error
+    seterr std_error
+
+rem --- Retrieve sysinfo data
+
+    rem --- If BUI, initialize Barista processes
+    if info(3,6)="5" then
+        use ::ado_util.src::util
+        Translate!=util.initBUIProcess()
+        if Translate!=null() then goto std_exit
+    endif
+
+    dim sysinfo$:stbl("+SYSINFO_TPL")
+    sysinfo$=stbl("+SYSINFO")
+    firm_id$=sysinfo.firm_id$
+
+rem --- Open/Lock Files
+
+	num_files=1
+	dim open_tables$[1:num_files], open_opts$[1:num_files], open_chans$[1:num_files], open_tpls$[1:num_files]
+
+	open_tables$[1] ="OPS_PARAMS",    open_opts$[1] = "OTA"
+    
+	gosub open_tables
+	
+    ops_params = num(open_chans$[1])
+    dim ops_params$:open_tpls$[1]
+    
+rem --- Parameters
+
+    find record (ops_params,key=firm_id$+"AR00",dom=std_missing_params) ops_params$
+
+rem --- Launch the form specified by params to enter Sales Tax Service codes for Item Type, Item Class, or Product Type
+
+    switch (BBjAPI().TRUE)
+        case ops_params.tax_svc_cd_src$ = "T"
+            rem --- by Item Type
+            call stbl("+DIR_SYP")+"bam_run_prog.bbj","IVX_TYPETAXSVC",stbl("+USER_ID"),"MNT","",table_chans$[all]
+            break
+        case ops_params.tax_svc_cd_src$ = "C"
+            rem --- by Item Class
+            call stbl("+DIR_SYP")+"bam_run_prog.bbj","IVX_CLASTAXSVC",stbl("+USER_ID"),"MNT","",table_chans$[all]
+            break
+        case ops_params.tax_svc_cd_src$ = "P"
+            rem --- by Product Type
+            call stbl("+DIR_SYP")+"bam_run_prog.bbj","IVX_PRODTAXSVC",stbl("+USER_ID"),"MNT","",table_chans$[all]
+            break
+        case default
+            rem --- parameter not set, or unknown value
+            break
+    swend
+
+rem --- All done
+
+    goto std_exit
+
+    
+open_tables:rem --- Open Tables
+
+	call stbl("+DIR_SYP")+"bac_open_tables.bbj",
+:		open_beg,
+:		open_end,
+:		open_tables$[all],
+:		open_opts$[all],
+:		open_chans$[all],
+:		open_tpls$[all],
+:		rd_table_chans$[all],
+:		open_batch,
+:		open_status$
+
+	if open_status$<>""
+		msg_id$="ENTRY_OPEN_ERROR"
+		dim msg_tokens$[1]
+			msg_tokens$[1]=open_status$
+		gosub disp_message
+		goto std_exit
+	endif
+
+	return
+
+rem #include disp_message.src
+
+disp_message: rem --- Display Message Dialog
+
+    call stbl("+DIR_SYP")+"bac_message.bbj",msg_id$,msg_tokens$[all],msg_opt$,table_chans$[all]
+
+    return
+
+rem #endinclude disp_message.src
+rem #include std_error.src
+
+std_error: rem --- Standard error handler (11Oct2017)
+
+    if tcb(19)>0
+        rem --- Escape handler
+        if and(chr(tcb(19)),$08$)=$08$
+            release
+        else
+            setesc std_error
+            return
+        endif
+    endif
+
+    if err=0   
+        rem --- Get tcb(12) and tcb(10) to send into bac_error
+        lock_byte=tcb(10)
+        lock_chan=tcb(12)  
+    endif
+
+    rd_err_text$="",err_num=err
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    if err_num=252 then
+        E!=BBjAPI().getLastBBjException()
+        rd_err_text$=rd_err_text$+$0A$+E!.getClass().getName()
+        if E!.getMessage()<>null() then rd_err_text$=rd_err_text$+": "+E!.getMessage()
+    endif
+    call stbl("+DIR_SYP")+"bac_error.bbj",pgm(-2),str(tcb(5)),str(err_num),rd_err_text$,rd_err_act$,lock_byte,lock_chan
+    if pos("ESCAPE"=rd_err_act$) seterr 0; setesc 0
+    if pos("RETRY"=rd_err_act$) retry
+    if pgm(-1)<>pgm(-2) status=999; exit 
+    release
+
+rem #endinclude std_error.src
+rem #include std_missing_params.src
+
+std_missing_params: rem --- Standard missing parameter handler (15Apr2006)
+
+    rd_err_text$=""
+    if tcb(5)<>0 and pgm(-1)=pgm(-2) rd_err_text$=pgm(tcb(5))
+    pgmdir$=stbl("+DIR_PGM",err=std_missing_params_exit)
+    call pgmdir$+"adc_noparams.aon",err=std_missing_params_exit,pgm(-2),str(tcb(5)),
+:                                   str(err),rd_err_text$,rd_err_act$
+std_missing_params_exit:
+    master_user$=cvs(stbl("+MASTER_USER",err=std_missing_params_release),2)
+    sysinfo_template$=stbl("+SYSINFO_TPL",err=std_missing_params_release)
+    dim sysinfo$:sysinfo_template$
+    sysinfo$=stbl("+SYSINFO",err=std_missing_params_release)
+    if cvs(sysinfo.user_id$,2)=master_user$ escape
+std_missing_params_release:
+    status=999
+    if pgm(-1)<>pgm(-2) exit
+    release
+
+rem #endinclude std_missing_params.src
+rem #include std_end.src
+
+std_exit: rem --- Standard program end (01Mar2006)
+
+    run stbl("+DIR_SYP")+"bas_process_end.bbj",err=*next
+    release
+
+rem #endinclude std_end.src
+
+    end

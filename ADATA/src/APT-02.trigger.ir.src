@@ -64,7 +64,7 @@ rem --- Open Barista AP Invoice GL Distribution table
 	read (tpl_dev,key=pad("APT_INVOICEDIST",16),dom=trigger_error) *,*,apt_invoicedist_tpl$
 	dim apt_invoicedist$:apt_invoicedist_tpl$
 
-rem --- V6 extracts this record when updating (PO Invoice Reg/Updt)
+rem --- V6 writes this record when updating (PO Invoice Reg/Updt)
 rem --- if doing an extract, place a soft lock in a namespace, remove the soft lock after write
 rem --- analogous triggers exist on the Barista Addon side
 

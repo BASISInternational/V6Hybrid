@@ -1,0 +1,95 @@
+rem AddonSoftware
+rem Copyright BASIS International Ltd.
+rem 
+rem after write
+rem This trigger assumes that it is being used in a non-modified Barista and Addon
+rem Version 6 environment. If there have been any modifications to these systems,
+rem be sure to thoroughly examine this trigger and test changes.
+
+rem --- Trigger for V6 AvaTax Interface
+rem --- Write Barista Addon's ivc_typecode after writing V6's IVM-15
+
+	setopts $080872202c2e$
+	seterr trigger_error
+
+    rem ' trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
+    tfl$="C:/temp/ivm15triggertrace_V6.txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
+
+rem --- Load up the field_translations used in Dataport to convert V6 key value to Addon's and vice versa, if applicable (e.g., blank in V6 = ZZ in Addon)
+    field_trans_v6toaon! = new java.util.HashMap()
+    field_trans_aontov6! = new java.util.HashMap()
+    dim field_trans$:"fieldname:c(16*=124),old_value:c(16*=124),new_value:c(16*=124),masterfile:c(20*=)"
+    field_trans = unt
+    filedir$=stbl("+DATAPORT_FILES",err=std_exit)
+    open (field_trans)filedir$+"field_translations"
+    while 1
+       read (field_trans,end=*break)field_trans$
+       if len(field_trans$) then
+          keyval$ = cvs(field_trans.fieldname$,7)+"."+cvs(field_trans.old_value$,3)
+          dataval$ = cvs(field_trans.new_value$,7)
+          field_trans_v6toaon!.put(keyval$,dataval$)
+          keyval$=cvs(field_trans.fieldname$,7)+"."+cvs(field_trans.new_value$,3)
+          dataval$=cvs(field_trans.old_value$,7)
+          field_trans_aontov6!.put(keyval$,dataval$)
+       endif
+    wend
+
+rem ---  Get the Trigger object from the BBj File System
+
+    td! = BBjAPI().getFileSystem().getTriggerData()
+    
+	wkdir$ = dir("")
+	ivdir$ = stbl("+IVDATA")
+
+rem --- Template for the V6 IVM-15 record being caught
+
+    intemp$="firm_id:c(2),item_type:c(3*=10),code_desc:c(20),reserved_str:c(12*=10)"
+
+	dim inRec$:intemp$
+    inRec$=td!.getWriteBuffer()
+
+rem --- Open Barista Addon IVC_TYPECODE and get its template
+
+	ivc_typecode=unt
+	open (ivc_typecode)ivdir$+"ivm-15"
+	tpl_dev=unt
+	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
+	read (tpl_dev,key=pad("IVC_TYPECODE",16),dom=trigger_error) *,*,ivc_typecode_tpl$
+	dim ivc_typecode$:ivc_typecode_tpl$
+
+rem --- Translate V6 key to Addon's, based on field translations
+    aonvalue!=field_trans_v6toaon!.get("ITEM_TYPE."+cvs(inRec.item_type$,3))
+    if aonvalue!<>null()
+        aonvalue$=str(aonvalue!)
+    else
+        aonvalue$=inRec.item_type$
+    endif
+	
+rem --- Write the data
+
+    ivc_typecode.firm_id$=inRec.firm_id$
+    ivc_typecode.item_type$=aonvalue$
+    
+    readrecord(ivc_typecode,key=ivc_typecode.firm_id$+ivc_typecode.item_type$,dom=*next)ivc_typecode$
+    
+    ivc_typecode.code_desc$=inRec.code_desc$
+    
+    ivc_typecode$=field(ivc_typecode$)
+    writerecord (ivc_typecode)ivc_typecode$
+
+	goto std_exit
+
+trigger_error:
+
+    rd_err_text$="", err_num=err
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+	
+std_exit:
