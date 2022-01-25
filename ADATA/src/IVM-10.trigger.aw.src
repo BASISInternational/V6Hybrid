@@ -116,14 +116,17 @@ rem --- Open Barista Addon IVC_PRODCODE or IVC_WHSECODE and get corresponding te
             
             tpl.short_name$=inRec.short_name$
             address$=inRec.addr_line_1$+inRec.addr_line_2$+inRec.addr_line_3$+inRec.addr_line_4$
+            tpl.city$=""
+            tpl.state_code$=""
+            tpl.zip_code$=""
             gosub reformat_address
             tpl.addr_line_1$=address$(1,24)
             tpl.addr_line_2$=address$(25,24)
             tpl.addr_line_3$=address$(49,24)
             tpl.city$=city$
             tpl.state_code$=state$
-            tpl.phone_no$=inRec.phone_number$
             tpl.zip_code$=inRec.zip_code$
+            tpl.phone_no$=inRec.phone_number$
             
             tpl$=field(tpl$)
             writerecord (code_dev)tpl$
@@ -146,55 +149,137 @@ get_template:
 
 reformat_address:
 
-    dim state$(2),city$(24)
+    dim state$(2),city$(24);rem --- This code is based on the same routine in DataPort_main.bbj
     states$="ALAKAZARCACOCTDEDCFLGAHIIDILINIAKSKYLAMEMDMAMIMNMSMOMTNENVNHNJNMNYNCNDOHOKORPAPRRISCSDTNTXUTVTVAVIWAWVWIWY"
     states$=states$+"ABBCMBNBNLNSNTNUONPEQCSKYT"; rem ' Canadian province/territory codes
-    if len(address$) and len(address$)/24 then
-        for x=len(address$) to 1 step -24
-            string1$=cvs(address$(x-23,24),2)
-            if string1$="" then
-                continue
-            endif
-            if cvs(state$,2)<>"" and cvs(city$,2)="" then
-                if pos(" "=string1$)=0 then
-                    city$(1)=string1$,address$(x-23,24)=""
-                    break
+    city$=cvs(tpl.city$,3)
+    state$=cvs(tpl.state_code$,3)
+    zip$=cvs(tpl.zip_code$,3)
+
+    if city$="" or state$="" or zip$="" then
+        if len(address$) and mod(len(address$),24)=0 then
+            for x=len(address$) to 1 step -24
+                string1$=cvs(address$(x-23,24),3)
+                if string1$="" then continue
+                string2$=""
+                string3$=""
+                string4$=""
+
+                rem --- Does this address line hold the zip code and/or state code?
+                if state$="" or zip$="" then
+                    string2_pos=pos(" "=string1$,-1)
+                    if string2_pos then
+                        string2$=cvs(string1$(string2_pos+1),2)
+                    else
+                        string2$=string1$
+                    endif
+                    rem --- Does this address line hold the zip code?
+                    if zip$="" then
+                        string2_len$=str(len(string2$))
+                        switch (BBjAPI().TRUE)
+                            case string2_len$="5"
+                            case string2_len$="9"
+                                if num(string2$,err=*endif) then
+                                    zip$=string2$
+                                    address$(x-23+string2_pos,24-string2_pos)=""
+                                endif
+                                break
+                            case string2_len$="10"
+                                if pos("-"=string2$,1,0)=1 and pos("-"=string2$,1)=6 then
+                                    if num(string2$(1,5)+string2$(7),err=*endif) then
+                                        zip$=string2$(1,5)+string2$(7)
+                                        address$(x-23+string2_pos,24-string2_pos)=""
+                                    endif
+                                endif
+                                break
+                            case default
+                                break
+                        swend
+                    endif
+                
+                    rem --- Does this address line hold the state code?
+                    if state$="" then 
+                        if zip$="" or string2$=string1$ or len(string2$)=2 then
+                            rem --- Does this address line hold the state code without the zip code?
+                            if len(string2$)=2 then
+                                if pos(string2$=states$,2) then
+                                    state$=string2$
+                                    address$(x-23+string2_pos,24-string2_pos)=""
+                                endif
+                            else
+                                string3_pos=pos(" "=string2$,-1)
+                                if string3_pos then
+                                    string3$=cvs(string2$(string3_pos+1),2)
+                                else
+                                    string3$=string2$
+                                endif
+                                if len(string3$)=2 and pos(string3$=states$,2) then
+                                    state$=string3$
+                                    address$(x-23+string2_pos+string3_pos,24-string2_pos+string3_pos)=""
+    								string4$=cvs(address$(x-23,24),2)
+                                else
+                                    string4$=string3$
+                                endif
+                            endif
+                        else
+                            rem --- Does this address line hold the state code in addition to the zip code?
+                            if string2$<>string1$ then
+                                string2_pos=pos(string2$=string1$,-1)
+                                string3$=cvs(string1$(1,string2_pos-1),2)
+                                if len(string3$)=2 then
+                                    if pos(string3$=states$,2) then
+                                        state$=string3$
+                                        address$(x-23+string2_pos,24-string2_pos)=""
+                                    endif
+                                else
+                                    string3_pos=pos(" "=string3$,-1)
+                                    if string3_pos then
+                                        string3$=cvs(string3$(string3_pos+1),2)
+                                        string3_pos=string2_pos-string3_pos
+                                    endif
+                                    if len(string3$)=2 and pos(string3$=states$,2) then
+                                        state$=string3$
+                                        address$(x-23+string2_pos-string3_pos,24-string2_pos+string3_pos)=""
+    									string4$=cvs(address$(x-23,24),2)
+                                    else
+                                        string4$=string3$
+                                    endif
+                                endif
+                            endif
+                        endif
+                    endif
+                
+                    rem --- Does this address line hold the city in addition to the state code?
+                    if state$<>"" and string4$<>"" then
+                        city$=cvs(string4$,3)
+                        address$(x-23,24)=""
+                    endif
                 endif
-            endif
-            if len(string1$)<2 then
-                city$(1)=string1$,address$(x-23,24)=""
-                break
-            endif
-            if len(string1$)=2 then
-                break
-            endif
-            if len(string1$)>2 and string1$(len(string1$)-2,1)<>" " then
-                city$(1)=""
-                break
-            endif
-            string2$=string1$(len(string1$)-1,2)
-            if pos(string2$=states$,2)=0 then
-                city$(1)=""
-                break
-            endif
-            state$=string2$
-            if len(string1$)=2 then
-                if x>1 then
-                    city$(1)=address$(x-47,24)
-                    address$(x-47,48)=""
+
+                rem --- Does this address line hold just the city?
+                if city$="" and state$<>cvs(string1$,3) then
+                    rem --- Skip the first address line when city hasn't been found yet
+                    if x>24 then
+                        if state$<>"" and pos(" "+state$+" "=string1$+" ",-1) then
+                            rem --- Previously entered state code is at the end of this line too.
+                            string1$=string1$(1,pos(" "+state$+" "=string1$+" ",-1)-1)
+                        endif
+                        city$=cvs(string1$,3)
+                        address$(x-23,24)=""
+                    endif
                 endif
-            else
-                city$(1)=address$(x-23,len(string1$)-3)
-                address$(x-23,24)=""
-            endif
-            string1$=cvs(city$,2)
-            if len(string1$) and string1$(len(string1$),1)="," then
-                string1$=string1$(1,len(string1$)-1)
-            endif
-            city$(1)=string1$
-            if cvs(city$,2)<>"" then break
-        next x
+
+                rem --- Done once we have the city.
+                if city$<>"" then break
+            next x
+        endif
     endif
+    
+    rem --- Strip trailing comma from city
+    if city$<>"" then
+        if city$(len(city$))="," then city$=city$(1,len(city$)-1)
+    endif
+
     return
 	
 trigger_error:

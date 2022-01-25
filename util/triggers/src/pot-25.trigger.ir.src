@@ -18,7 +18,7 @@ rem --- Read V6 POT-25 instead of Barista Addon's pot_invdet
 
     rem ' trace
     goto skip_trace;rem this out to do the trace
-    tfl$="C:/temp_downloads/pot25.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
+    tfl$="C:/temp/pot25.ir."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
     tfl=unt
@@ -57,9 +57,9 @@ non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from n
 rem --- Template for the V6 POT-25 record being read
 
 	intemp$="firm_id:c(2),ap_type:c(2),vendor_nbr:c(6),ap_inv_nbr:c(10),sequence_nbr:c(3),line_number:c(3*=10),"
-    intemp$=intemp$+"po_number:c(7),po_line_nbr:c(3),receiver_nbr:c(7),po_line_code:c(2),order_memo:c(40*=10),"
-	intemp$=intemp$+"dealer_str:c(1*=10),"
-	intemp$=intemp$+"unit_cost:n(7*=10),qty_received:n(7*=10),receipt_cost:n(7*=10),rsrvd_num:n(1*=10),dealer_num:n(1*=10)"
+    intemp$=intemp$+"po_number:c(7),po_line_nbr:c(3),receiver_nbr:c(7),po_line_code:c(2),order_memo:c(40),"
+	intemp$=intemp$+"reserved_str:c(37*=10),dealer_str:c(1*=10),"
+	intemp$=intemp$+"unit_cost:n(7*=10),qty_received:n(7*=10),receipt_cost:n(7*=10),reserved_num:n(1*=10),dealer_num:n(1*=10)"
 	dim pot25a$:intemp$
 
 rem --- Get template for Barista Addon's POT_INVDET table
@@ -130,7 +130,7 @@ rem --- Get the data
         pot_invdet.ap_type$=pot25a.ap_type$
         pot_invdet.vendor_id$=pot25a.vendor_nbr$
         pot_invdet.ap_inv_no$=pot25a.ap_inv_nbr$
-        pot_invdet.sequence_no$=pot25a.sequence_nbr$
+        pot_invdet.sequence_ref$=pot25a.sequence_nbr$
         pot_invdet.line_no$=pot25a.line_number$
         pot_invdet.po_no$=pot25a.po_number$
         pot_invdet.po_int_seq_ref$=""
@@ -142,7 +142,6 @@ rem --- Get the data
         pot_invdet.unit_cost=pot25a.unit_cost
         pot_invdet.qty_received=pot25a.qty_received
         pot_invdet.receipt_cost=pot25a.receipt_cost
-        pot_invdet.reserved_num=pot25a.rsrvd_num
         pot_invdet.dealer_num=pot25a.dealer_num
     endif
 

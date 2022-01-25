@@ -1,0 +1,644 @@
+0010 REM "OPE - Invoice Entry/Total"
+0020 REM "Program OPE.CE"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.5 - 01Dec98 |"
+0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0031 REM "21Oct96 WGH: Can't apply cash in Invoice Entry to an Order for a non
+0031:-cash customer (4080-4085)"
+0032 REM "17Apr97 WGH: Don't overwrite previously entered Discount when invoic
+0032:e is recalled (1030-1060,1500-1595,1605,2060)"
+0033 REM "30Apr97 WGH: For cash sales, verify that Cash Receipt Code allows a 
+0033:Discount (6335-6345)"
+0034 REM "12Aug98 WGH: Multilevel taxes may be wrong when Maximum Tax of top l
+0034:evel tax is exceeded (6070,6180,6220-6250)"
+0035 REM "10Apr00 WGH: Calculate Tax after Sales Discount taken on taxable ite
+0035:ms (520,1610-1615,2065,6010-6020,6055,6110,6160,6210)
+0036 REM "30Aug00 WGH: Tax may not recalculate correctly when Taxable Amount c
+0036:hanges (1230,1505-1525,1545,1565,1580-1585)
+0040 REM 
+0085 SETESC 9000
+0090 SETERR 9000
+0200 REM " --- IOLists"
+0210 ARE03A: IOLIST A0$,A[ALL]
+0220 ARE20A: IOLIST Z0$,Z1$,Z[ALL]
+0270 ARM10B1: IOLIST Y1$(1),Y1,Y2
+0280 ARM10B2: IOLIST *,X0,X1
+0290 ARM10C: IOLIST Y7$,Y9$
+0300 ARM10I: IOLIST *,Y0
+0500 REM " --- Initialize Data"
+0510 DIM Y7$(30),Y9$(21),Z0$(56),Z1$(30),Z[1]
+0520 PRECISION 2
+0550 LET CASH_RECEIPT=0,FORMAT$=""
+0700 REM " --- Background"
+0720 PRINT @(0,L0),'CE','SB',@(5,14),"Gross Sales:",@(2,15),"Sales Discount:",
+0720:@(8,16),"Subtotal:",@(13,17),"Tax:",@(9,18),"Freight:",@(7,19),"Net Sales
+0720::",'SF',
+0750 REM " --- Cash Background"
+0760 IF A0$(99,1)<>"Y" THEN GOTO 0800
+0770 PRINT 'SB',@(36,14),"Cash Receipt Code: ",@(41,15),"Check Number: ",@(49,
+0770:16),"Memo: ",@(44,17),"CC Number: ",@(44,18),"Exp. Date: ",@(37,19),"Cust
+0770: Name: ",@(38,20),"Amount Tendered: ",@(47,21),"Change: ",'SF',
+0800 REM " --- V6H - AvaTax Interface?
+0810 gosub AvaTax_Init; gosub using_tax_svc
+1000 REM " --- Get Sales Discount"
+1010 LET Y0=0
+1020 FIND (ARM10_DEV,KEY=N0$+"I"+A0$(64,2),DOM=1030)IOL=ARM10I
+1030 LET NEWDISC=Y0,Y0=0
+1040 FIND (ARM10_DEV,KEY=N0$+"I"+OLDDISCCODE$,DOM=1050)IOL=ARM10I
+1050 LET OLDDISC=Y0,PREVDISC=0
+1060 IF OLDSALESTOTAL THEN LET PREVDISC=100*A[2]/OLDSALESTOTAL
+1200 REM " --- Get Sales Tax"
+1210 DIM Y1$(60); LET Y1=0,Y2=0
+1220 FIND (ARM10_DEV,KEY=N0$+"B"+A0$(80,2),DOM=1300)IOL=ARM10B1
+1400 REM " --- Get Cash Receipt Record"
+1410 IF A0$(99,1)<>"Y" THEN GOTO 1500
+1420 DIM Z0$(56),Z1$(30),Z[1]
+1430 READ (ARE20_DEV,KEY=A0$(1,17),DOM=1440)IOL=ARE20A
+1440 LET Z0$(1,17)=A0$(1,17),Z0$(18,3)=A0$(24,3),Z0$(50,7)=A0$(42,7)
+1500 REM " --- Change Discount?"
+1505 IF S$(7,1)="0" AND OLDDISCCODE$="" AND A[2]=0 THEN GOTO 1590; REM "Discou
+1505:nt not entered yet
+1510 IF OLDSALESTOTAL<>0 AND A[2]=OLDDISC*OLDSALESTOTAL/100 THEN GOTO 1590; RE
+1510:M "Not currently using a manually entered discount
+1515 IF OLDSALESTOTAL THEN LET SAVED_NEWDISC=NEWDISC,NEWDISC=PREVDISC ELSE LET
+1515: SAVED_NEWDISC=NEWDISC,NEWDISC=OLDDISC
+1520 IF U[0]=OLDSALESTOTAL AND A0$(64,2)=OLDDISCCODE$ AND NEWDISC*U[0]/100=A[2
+1520:] THEN GOTO 1590; REM "Sales total,discount code and discount percent hav
+1520:e not changed
+1525 GOSUB TAX_CALC
+1530 GOSUB 5000
+1540 IF PREVDISC=0 THEN LET OLDDISC$="" ELSE LET OLDDISC$=CVS(STR(PREVDISC:"##
+1540:0.00-"),3)+"% "
+1545 IF SAVED_NEWDISC=0 THEN LET NEWDISC$="" ELSE LET NEWDISC$=CVS(STR(SAVED_N
+1545:EWDISC:"##0.00-"),3)+"% "
+1550 DIM MESSAGE$[1]
+1560 LET MESSAGE$[0]="Replace previous "+OLDDISC$+"discount of "+CVS(STR(A[2]:
+1560:M1$),3)+" with"
+1565 LET MESSAGE$[1]="new "+NEWDISC$+"discount of "+CVS(STR(SAVED_NEWDISC*U[0]
+1565:/100:M1$),3)+" (Y/N)?"
+1570 CALL "SYC.XA",0,MESSAGE$[ALL],1,-1,-1,V$,V3
+1580 ON POS(V$="YN",1) GOTO 1570,1585,1595
+1585 LET NEWDISC=SAVED_NEWDISC
+1590 LET A[2]=NEWDISC*U[0]/100
+1595 LET OLDSALESTOTAL=U[0]
+1600 REM " --- Show Discount, Tax & Cash Receipt"
+1605 LET OLDDISCCODE$=A0$(64,2)
+1610 GOSUB TAX_CALC
+1615 GOSUB 5000
+1620 IF A0$(99,1)<>"Y" THEN GOTO 1700
+1630 DIM Y7$(30),Y9$(21)
+1640 FIND (ARM10_DEV,KEY=N0$+"C"+Z0$(21,3),DOM=1700)IOL=ARM10C
+1650 PRINT @(55,14),Z0$(21,3)," ",Y7$(7,20),
+1660 IF Y9$(21,1)="C" THEN PRINT @(55,15),Z0$(24,7),@(55,16),Z0$(31,16),
+1670 IF Y9$(21,1)="P" THEN PRINT @(55,17),Z0$(31,16),@(55,18),FNB2$(Z0$(47,3))
+1670:,
+1680 PRINT @(48,19),Z1$(1,30),
+1690 IF Y9$(21,1)<>"P" THEN PRINT @(55,20),Z[1]:M1$,@(55,21),Z[1]-Z[0]:M1$,
+1700 REM " --- Return From Printing Receipt?"
+1710 IF RECEIPT_PRINTED THEN LET RECEIPT_PRINTED=0; GOTO 4000
+1900 REM " --- Cash Receipt?"
+1960 IF CASH_RECEIPT THEN GOTO 2400
+1980 GOTO 2100
+2000 REM " --- Discount"
+2020 LET V0$="N",V2$=STR(A[2]),V3$=M1$,V4$="",V1=18,V2=15,I0=0
+2030 GOSUB 7000
+2035 ON V3 GOTO 2060,2000,2090,2000,2090
+2060 LET A[2]=V,OLDSALESTOTAL=U[0]
+2065 IF U[0]<>0 THEN LET NEWDISC=100*A[2]/U[0]
+2070 GOSUB TAX_CALC
+2080 GOSUB 5000
+2090 GOTO 3900
+2100 REM " --- Freight"
+2120 LET V0$="N",V1$="C",V2$=STR(A[1]),V3$=M1$,V1=18,V2=18,V4$="<F2> To Enter 
+2120:Discount Amount",I0=1
+2130 GOSUB 7000
+2135 ON V3 GOTO 2160,2100,2190,2100,2160;rem V6H changed F4 to goto 2160 instead of 2190
+2160 LET A[1]=V
+2170 GOSUB TAX_CALC
+2175 if sls_tax_intrface$<>"" and use_tax_service$="Y" then gosub Avatax_Calculation; rem --- V6H - Do AvaTax calc, if applicable
+2180 GOSUB 5000
+2190 GOTO 3900
+2400 REM " --- Cash Receipts"
+2405 LET CASH_RECEIPT=0
+2410 IF A0$(99,1)<>"Y" THEN GOTO 4000
+2420 LET V0$="S",V1$="KCR",V2$=Z0$(21,3),V1=55,V2=14,V0=3,V4$="Enter A Valid C
+2420:ash Receipts Code (<F1>=None/<F3>=Lookup)",I0=2
+2430 GOSUB 7000
+2435 ON V3 GOTO 2460,4500,2590,2450,2440
+2440 IF FNP$(V$)="" THEN GOTO 4500 ELSE GOTO 4000
+2450 GOSUB LOOKUP_CSH_CD
+2460 LET V$=V$+FILL(3),V$=V$(1,3)
+2470 FIND (ARM10_DEV,KEY=N0$+"C"+V$,DOM=2400)IOL=ARM10C
+2480 IF POS(Y9$(21,1)="$CP")=0 THEN GOTO 2400
+2490 IF V$<>Z0$(21,3) THEN LET Z0$(24,26)=""; GOSUB 5500
+2500 LET Z0$(21,3)=V$
+2510 PRINT @(V1,V2),Z0$(21,3)," ",Y7$(7,20),
+2520 IF Y9$(21,1)<>"P" THEN GOTO 2550
+2530 LET Z[1]=0,I0=I0+2
+2540 PRINT @(55,20),'CL',@(55,21),'CL',
+2550 IF Y9$(21,1)="$" THEN LET I0=I0+4
+2590 GOTO 3900
+2600 REM " --- Check Number"
+2610 IF Y9$(21,1)<>"C" THEN GOTO 2690
+2620 LET V0$="S",V2$=Z0$(24,7),V3$="",V4$="",V1=55,V2=15,V0=7
+2630 GOSUB 7000
+2635 ON V3 GOTO 2660,2600,2690,2600,2690
+2660 LET Z0$(24,7)=V$
+2690 GOTO 3900
+2700 REM " --- Memo"
+2720 LET V0$="S",V2$=Z0$(31,16),V3$="",V4$="",V1=55,V2=16,V0=16,I0=4
+2730 GOSUB 7000
+2735 ON V3 GOTO 2760,2700,2790,2700,2790
+2760 LET Z0$(31,16)=V$,I0=I0+2
+2790 GOTO 3900
+2800 REM " --- Credit Card Number"
+2810 IF Y9$(21,1)<>"P" THEN GOTO 2890
+2820 LET V0$="S",V2$=Z0$(31,16),V3$="",V4$="",V1=55,V2=17,V0=16
+2830 GOSUB 7000
+2835 ON V3 GOTO 2860,2800,2400,2800,2890
+2860 LET Z0$(31,16)=V$
+2890 GOTO 3900
+2900 REM " --- Expiration Date"
+2920 LET V0$="D",V2$=Z0$(47,3),V3$="",V4$="",V1=55,V2=18
+2930 GOSUB 7000
+2935 ON V3 GOTO 2950,2900,2990,2900,2990
+2950 IF V$>=F0$(7,3) THEN GOTO 2980
+2960 DIM MESSAGE$[1]; LET MESSAGE$[0]="Credit Card Expired (<Enter>=Continue)"
+2965 CALL "SYC.XA",2,MESSAGE$[ALL],0,22,-1,V$,V3
+2970 GOTO 2920
+2980 LET Z0$(47,3)=V$
+2990 GOTO 3900
+3000 REM " --- Name"
+3010 IF FNP$(Z1$(1,30))="" THEN LET Z1$(1,30)=B1$
+3020 LET V0$="S",V2$=Z1$(1,30),V3$="",V4$="",V0=30,V1=48,V2=19
+3030 GOSUB 7000
+3035 ON V3 GOTO 3060,3000,3040,3000,3090
+3040 ON POS(Y9$(21,1)="$C") GOTO 3000,2400,2700
+3060 LET Z1$(1,30)=V$
+3080 GOSUB 6300
+3090 GOTO 3900
+3100 REM " --- Amount Tendered"
+3105 IF Y9$(21,1)="C" THEN IF Z[1]=0 THEN LET Z[1]=U[0]+A[0]-A[2]+A[1]
+3110 IF Y9$(21,1)="P" THEN LET Z[1]=Z[0]; GOTO 3145
+3115 IF Z[1]<>0 THEN LET X$=STR(Z[1]:M1$) ELSE LET X$=STR(Z[0]:M1$)
+3120 LET X$=X$(POS(" "<>X$))
+3125 LET V0$="N",V1$="CR",V2$=STR(Z[1]),V3$=M1$,V4$="<Enter>="+FNP$(X$),V0=18,
+3125:V1=55,V2=20,I0=8
+3130 GOSUB 7000
+3135 ON V3 GOTO 3140,3100,3190,3100,3190
+3140 IF V<>0 THEN LET Z[1]=V ELSE LET Z[1]=Z[0]
+3145 PRINT @(55,20),Z[1]:M1$,
+3150 IF Z[1]>=Z[0] THEN GOTO 3180
+3160 LET V0$="S",V1$="C",V2$="",V3$="",V4$="Amount Tendered Is Less Than The S
+3160:ale Amount (<Enter>=Continue)",V0=1,V1=FNV(V4$),V2=22
+3165 GOSUB 7000
+3170 GOTO 3100
+3180 PRINT @(55,21),Z[1]-Z[0]:M1$,
+3190 GOTO 3900
+3900 REM " --- Next Field"
+3910 IF V3=4 THEN GOSUB 6300; GOTO 4000
+3920 IF V3<>2 THEN GOTO 3950
+3930 IF I0>0 THEN LET I0=I0-1
+3940 GOTO 3960
+3950 LET I0=I0+1
+3960 ON I0 GOTO 2000,2100,2400,2600,2700,2800,2900,3000,3100,4000
+4000 REM " --- Correct?"
+4005 IF A0$(99,1)="Y" AND S$(7,1)="1" AND Z[1]<Z[0] THEN GOTO 3100
+4006 IF A0$(99,1)="Y" AND P3$(64,1)="Y" THEN LET Q9$="(Y/N/SC/SR/PC/PR" ELSE L
+4006:ET Q9$="(Y/N/SC/PC"
+4008 IF S$(2,1)="1" THEN LET Q9$=Q9$+"/Cash/Acct"
+4010 LET V0$="S",V1$="^KC",V2$="Y",V3$="",V4$="Is The Information Correct "+Q9
+4010:$+"/F2=Detail/Delete)?",V0=6,V1=FNV(V4$),V2=22
+4012 IF V1+V0>78 THEN PRINT @(0,22),V4$,'CL',; LET V1=LEN(V4$)+1,V4$=""
+4014 GOSUB 7000
+4035 ON V3 GOTO 4050,4000,4040,4000,4000
+4040 GOSUB 5300; RUN "OPE.CD"
+4050 IF V$="DELETE" THEN LET O0=4; RUN "OPE.CB"
+4060 IF V$="PC" OR (V$="PR" AND A0$(99,1)="Y" AND P3$(64,1)="Y") THEN GOTO 420
+4060:0
+4065 IF V$="SC" OR (V$="SR" AND A0$(99,1)="Y" AND P3$(64,1)="Y") THEN GOTO 430
+4065:0
+4070 IF S$(2,1)="0" THEN GOTO 4090
+4080 IF A0$(99,1)<>"N" AND (V$="A" OR V$="ACCT") THEN GOTO 4500
+4085 IF A0$(99,1)<>"Y" AND (V$="C" OR V$="CASH") THEN LET A0$(99,1)="Y",CASH_R
+4085:ECEIPT=1; GOTO 0750
+4090 ON POS(V$="YN") GOTO 4000,4100,2100
+4100 REM " --- Run Overlay"
+4110 LET A0$(69,1)="N"
+4120 GOSUB 5300
+4130 rem gosub close_AvaTax;rem V6H
+4150 RUN "OPE.CB"
+4200 REM " --- Print"
+4205 LET A0$(69,1)="N"
+4210 GOSUB 5300
+4220 IF V$="PC" AND R2$(15,2)="  " OR (V$="PR" AND R2$(27,2)="  ") THEN GOTO 4
+4220:280
+4230 IF V$="PR" THEN LET RECEIPT_PRINTED=1; RUN P3$(71,6),ERR=4260
+4235 IF V$<>"PC" THEN GOTO 4260
+4240 LET O9$="OPE.CB",O9=2,PRTR_DEV=UNT
+4245 CALL "SYC.GA",PRTR_DEV,0,"Print Invoice "+A0$(42,7),R2$(15,2)+FORMAT$,STA
+4245:TUS
+4250 IF STATUS THEN GOTO 4000
+4255 RUN P3$(65,6),ERR=4260
+4260 PRINT 'RB',
+4262 LET V0$="S",V1$="C",V2$="",V3$="",V4$="This Print Option Is Not Available
+4262: (<Enter>=Continue)",V0=1,V1=FNV(V4$),V2=22
+4264 GOSUB 7000
+4270 GOTO 4000
+4280 PRINT 'RB',
+4282 LET V0$="S",V1$="C",V2$="",V3$="",V4$="No Printer Has Been Selected (<Ent
+4282:er>=Continue)",V0=1,V1=FNV(V4$),V2=22
+4284 GOSUB 7000
+4290 GOTO 4000
+4300 REM " --- Printer Select"
+4310 DIM OPTION$[2]; LET OPTION$[1]="INVOICE"
+4320 IF V$="SR" THEN LET OPTION$[1]="RECEIPT"
+4330 CALL "SYC.QP",STAT,OPTION$[ALL]
+4335 IF OPTION$[1]="EXIT" THEN GOTO 4360
+4340 IF V$="SR" THEN LET R2$(27,2)=OPTION$[1] ELSE LET R2$(15,2)=OPTION$[1]
+4350 IF LEN(OPTION$[1])>2 THEN LET FORMAT$=OPTION$[1](3) ELSE LET FORMAT$=""
+4360 PRINT 'SB',@(40,1),R2$(15,2),
+4370 IF P3$(64,1)="Y" THEN PRINT "/",R2$(27,2),
+4380 PRINT 'SF',
+4390 GOTO 4000
+4500 REM " --- Remove Cash Sales"
+4505 IF S$(2,2)<>"11" THEN GOTO 4540
+4510 LET V0$="S",V1$="C",V2$="",V3$="",V4$="On-Account Sales Not Permitted For
+4510: Cash Account (<Enter>=Continue)",V0=1,V1=FNV(V4$),V2=22
+4520 GOSUB 7000
+4530 GOTO 4590
+4540 FOR X=14 TO 21
+4545 PRINT @(35,X),'CL',
+4550 NEXT X
+4560 REMOVE (ARE20_DEV,KEY=Z0$(1,17),DOM=4570)
+4570 LET A0$(99,1)="N"
+4580 LET Z0$(21,26)=""; DIM Z1$(30),Z[1]
+4590 GOTO 4000
+5000 REM " --- Display"
+5020 PRINT @(Q[0],8),U[0]+A[0]-A[2]+A[1]:M1$,
+5040 PRINT @(18,14),U[0]:M1$,@(18,15),A[2]:M1$,@(18,16),U[0]-A[2]:M1$,@(18,17)
+5040:,A[0]:M1$,@(18,18),A[1]:M1$,@(18,19),U[0]+A[0]-A[2]+A[1]:M1$,
+5090 RETURN
+5300 REM " --- End Of Invoice"
+5310 LET A[6]=U[0],A[7]=U[2]
+5320 WRITE (ARE03_DEV,KEY=A0$(1,20))IOL=ARE03A
+5330 IF S$(2,1)="0" THEN GOTO 5390
+5340 GOSUB 6300
+5350 IF A0$(99,1)="Y" THEN WRITE (ARE20_DEV,KEY=Z0$(1,17))IOL=ARE20A
+5390 RETURN
+5500 REM " --- Clear Cash Receipt Dislpay"
+5510 FOR X=15 TO 21
+5520 IF X=19 THEN PRINT @(48,X),'CL',
+5530 PRINT @(55,X),'CL',
+5540 NEXT X
+5590 RETURN
+6000 REM " --- Calculate Multilevel Taxes"
+6005 TAX_CALC:
+6006 rem --- V6H - if using AvaTax *and* the customer's tax code says to use the service then don't calc tax here, just return
+6010 if sls_tax_intrface$<>"" and use_tax_service$="Y" then return
+6020 IF U[1]<>0 THEN LET A[4]=U[1]-NEWDISC*U[1]/100 ELSE LET A[4]=0
+6030 IF Y1$(56,1)="Y" THEN LET A[4]=A[4]+A[1]
+6040 LET A[0]=0,X1=Y2
+6050 LET X2=Y1*A[4]/100,Y3=Y1
+6060 LET X2=X2*1,Y4=X2
+6070 IF X1<>0 AND ABS(X2)>X1 THEN LET Y3=Y3-Y1,Y4=Y4-X2,X2=X1*SGN(X2)
+6080 LET A[0]=X2
+6090 IF LEN(Y1$)<50 THEN LET Y1$=Y1$+J1$,Y1$=Y1$(1,50)
+6100 FOR X=1 TO 10
+6120 LET X0$=Y1$(26+2*(X-1),2)
+6130 IF X0$="  " THEN GOTO 6200
+6140 FIND (ARM10_DEV,KEY=N0$+"B"+X0$,DOM=6200)IOL=ARM10B2
+6150 LET X2=X0*A[4]/100,Y3=Y3+X0
+6170 LET X2=X2*1,Y4=Y4+X2
+6180 IF X1<>0 AND ABS(X2)>X1 THEN LET Y3=Y3-X0,Y4=Y4-X2,X2=X1*SGN(X2)
+6190 LET A[0]=A[0]+X2
+6200 NEXT X
+6230 LET Y5=ROUND(Y3*A[4]/100)-ROUND(Y4); REM "Correct penny rounding errors
+6250 IF Y5 THEN LET A[0]=A[0]+Y5
+6290 RETURN
+6300 REM " --- Totals"
+6310 LET Z[0]=U[0]+A[0]-A[2]+A[1]
+6320 IF A0$(99,1)<>"Y" THEN GOTO 6390
+6330 FIND (ARM10_DEV,KEY=N0$+"C"+Z0$(21,3),DOM=6350)IOL=ARM10C
+6335 IF A[2]=0 OR Y7$(28,1)="Y" THEN GOTO 6360
+6340 DIM MESSAGE$[1]; LET MESSAGE$[0]="The Cash Receipt Code does NOT allow di
+6340:scounts. (<Enter>=Continue)"
+6345 CALL "SYC.XA",2,MESSAGE$[ALL],0,22,-1,V$,V3
+6350 EXITTO 2400
+6360 IF Y9$(21,1)="P" THEN LET Z[1]=Z[0]; GOTO 6390
+6370 IF Y9$(21,1)="C" THEN IF Z[1]=0 THEN LET Z[1]=U[0]+A[0]-A[2]+A[1]
+6380 PRINT @(55,21),Z[1]-Z[0]:M1$,
+6390 RETURN
+6400 REM " --- Lookup Cash Receipts Code"
+6405 LOOKUP_CSH_CD:
+6410 LET NMBR=1
+6415 DIM DESCRIPT$[NMBR],FIELD[NMBR],POSITION[NMBR],LENGTH[NMBR]
+6420 LET DESCRIPT$[0]="Code",FIELD[0]=1,POSITION[0]=4,LENGTH[0]=3
+6425 LET DESCRIPT$[1]="Description",FIELD[1]=1,POSITION[1]=7,LENGTH[1]=20
+6430 CALL "SYC.LK",ARM10_DEV,"C",NMBR,"Cash Receipts Code Lookup",DESCRIPT$[AL
+6430:L],FIELD[ALL],POSITION[ALL],LENGTH[ALL],1,3,V$
+6440 RETURN
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions"
+8010 DEF FNA$(Q$,Q2$)=STR(MOD((ASC(Q$)-32)*POS(" "<>Q2$(2,1)),100):"00")
+8025 DEF FNB2$(Q1$)=FNA$(Q1$(2),Q1$)+"/"+FNA$(Q1$(1),Q1$)
+8085 DEF FNV(Q$)=42+INT(LEN(Q$)/2)
+8090 DEF FNP$(Q$)=CVS(Q$,2)
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 SETERR 9000
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9900 RUN "SYS.AA"
+9999 END
+10000 rem --- V6H - code added for running AvaTax Interface with V6Hybrid
+10100 AvaTax_Init:
+10105 if salesTax!<>null() then return;rem only go thru init once
+10110 use ::opo_AvaTaxInterface.aon::AvaTaxInterface
+10115 myBBjAPI!=BBjAPI(); GSpace!=myBBjAPI!.getGroupNamespace();rem used for MDI progress meter on/off
+10120 firm_id$=N0$,sls_tax_intrface$="",use_tax_service$=""
+10130 num_files=7
+10132 dim open_tables$[1:num_files],open_opts$[1:num_files],open_chans$[1:num_files],open_tpls$[1:num_files]
+10140 open_tables$[1]="OPS_PARAMS",  open_opts$[1]="OTA"
+10142 open_tables$[2]="OPC_TAXCODE",  open_opts$[2]="OTA"
+10144 open_tables$[3]="OPT_INVHDR",  open_opts$[3]="OTA"
+10146 open_tables$[4]="OPT_INVDET",  open_opts$[4]="OTA"
+10148 open_tables$[5]="ARM_CUSTMAST",  open_opts$[5]="OTA"
+10150 open_tables$[6]="ARM_CUSTSHIP",  open_opts$[6]="OTA"
+10152 open_tables$[7]="OPT_INVSHIP",  open_opts$[7]="OTA"
+10155 call stbl("+DIR_SYP")+"bac_open_tables.bbj",open_beg,open_end,open_tables$[all],open_opts$[all],open_chans$[all],open_tpls$[all],rd_table_chans$[all],open_batch,open_status$
+10160 if open_status$=""
+10162   ops_params=num(open_chans$[1]),opc_taxcode=num(open_chans$[2]),opt_invhdr=num(open_chans$[3]),opt_invdet=num(open_chans$[4]),arm_custmast=num(open_chans$[5]),arm_custship=num(open_chans$[6]),opt_invship=num(open_chans$[7])
+10164   dim ops_params$:open_tpls$[1],opc_taxcode$:open_tpls$[2],opt_invhdr$:open_tpls$[3],opt_invdet$:open_tpls$[4],arm_custmast$:open_tpls$[5],arm_custship$:open_tpls$[6],opt_invship$:open_tpls$[7]
+10166 else
+10167   return;rem --- can't open needed tables, so tax calc will happen without using the service
+10168 endif
+10170 read record (ops_params,key=firm_id$+"AR00",dom=*next) ops_params$
+10180 sls_tax_intrface$=ops_params.sls_tax_intrface$
+10200 if sls_tax_intrface$<>"" then
+10210   rem --- Create salesTax! object and get connection to Sales Tax Service
+10215   GSpace!.setValue("+build_task","ON");rem MDI progress meter on
+10220   salesTax!=new AvaTaxInterface(firm_id$)
+10230   if !salesTax!.connectClient(Form!)
+10250   rem --- CAH TODO - display message? set the NO_SLS_TAX_CALC flag to 1?
+10360   endif
+10365   GSpace!.setValue("+build_task","OFF");rem MDI progress meter off
+10370 endif
+10390 return
+10400 rem --- if using AvaTax get opc_taxcode record associated with this invoice and see if this tax code is *using* the service; if so, use_sales_tax_svc$="Y", otherwise "N"
+10410 using_tax_svc:
+10410     opc_taxcode.firm_id$=firm_id$,opc_taxcode.op_tax_code$=A0$(80,2)
+10420     read record (opc_taxcode,key=opc_taxcode.firm_id$+opc_taxcode.op_tax_code$,dom=*next)opc_taxcode$
+10430     if opc_taxcode.use_tax_service$="1" then use_tax_service$="Y"
+10490 return
+10600 close_AvaTax:
+10610 salesTax!.close()
+10620 salesTax!=null()
+10630 Form!.destroy()
+10650 return
+15000 Avatax_Calculation: rem --- V6H - call out to AvaTax
+15001 GSpace!.setValue("+build_task","ON");rem MDI progress meter on
+15010 gosub create_Addon_invoice
+15020 success=0
+15030 taxProps!=salesTax!.calculateTax(opt_invhdr$,"SalesInvoice",err=*next); success=1
+15031 rem --- if successful, update screen w/ tax amount, otherwise set the no_sls_tax_calc flags in opt_invhdr and ope_prntlist... what else?
+15040 if success
+15050   A[0]=num(taxProps!.getProperty("tax_amount")),A[4]=num(taxProps!.getProperty("taxable_amt"))
+15060 else
+15070   rem --- CAH TODO: if not successful, set the opt_invhdr.no_sls_tax_calc$ to "1" and write it back so we can consult the flag during invoicing/sales reg/update
+15080 endif
+15085 GSpace!.setValue("+build_task","OFF");rem MDI progress meter off
+15090 return
+20000 create_Addon_invoice:
+20010 rem --- Copy this invoice and shipping info into Addon tables (basically using them as work tables) in prep for calling the AvaTax calculateTax() method
+20100 ARM01A: IOLIST WB0$,WB1$
+20110 ARM03A: IOLIST WD0$(1),WD1$(1)
+20120 ARE33A: IOLIST WMAN_D0$,WMAN_D1$(1)
+20130 rem --- ARE03A: IOLIST A0$,A[ALL]
+20135 ARE13A: IOLIST WW0$(1),WW1$(1),WW[ALL]
+20200 rem --- opt_invhdr$ fields: firm_id, ar_type, customer_id, order_no, ar_inv_no, credit_invoice, invoice_date, order_date, discount_amt, shipto_type, shipto_no, ar_ship_via, freight_amt
+20210 rem --- opt_invdet$ fields: firm_id, ar_type, customer_id, order_no, ar_inv_no, internal_seq_no, line_code, order_memo, item_id, warehouse_id, line_no, taxable_amt, qty_shipped
+20220 rem --- arm_custmast$ fields: firm_id, customer_id, addr_line_1, addr_line_2, addr_line_3, zip_code, city, state_code
+20230 rem --- arm_custship$ fields: firm_id, customer_id, shipto_no, addr_line_1, addr_line_2, addr_line_3, zip_code, city, state_code
+20240 rem --- opt_invship$ fields: firm_id, customer_id, order_no, ar_inv_no, "S", addr_line_1, addr_line_2, addr_line_3, zip_code, city, state_code
+20300 rem --- order header - remove existing if there is one, then re-write
+20310 opt_invhdr.firm_id$=firm_id$, opt_invhdr.ar_type$=A0$(3,2), opt_invhdr.customer_id$=A0$(5,6), opt_invhdr.order_no$=A0$(11,7), opt_invhdr.ar_inv_no$=A0$(42,7)
+20320 opt_invhdr.invoice_date$=fnfulldate$(A0$(24,3)), opt_invhdr.order_date$=fnfulldate$(A0$(77,3)), opt_invhdr.discount_amt=A[2], opt_invhdr.shipto_no$=A0$(102,6)
+20330 opt_invhdr.ar_ship_via$=A0$(32,10), opt_invhdr.freight_amt=A[1]
+20340 if num(A0$(102,6))=0 then opt_invhdr.shipto_type$="B" else if num(A0$(102,6))=99 then opt_invhdr.shipto_type$="M" else opt_invhdr.shipto_type$="S"
+20350 if credit_invoice$<>"" then opt_invhdr.credit_invoice$=credit_invoice$(8,7);rem --- order/invoice#/invoice date; set in OPE.CB when creating a credit invoice (also cleared there when setting up new order)
+20360 remove(opt_invhdr,key=opt_invhdr.firm_id$+opt_invhdr.ar_type$+opt_invhdr.customer_id$+opt_invhdr.order_no$+opt_invhdr.ar_inv_no$,dom=*next)
+20370 writerecord(opt_invhdr)opt_invhdr$
+20375 if credit_invoice$<>""
+20380   remove(opt_invhdr,key=opt_invhdr.firm_id$+opt_invhdr.ar_type$+opt_invhdr.customer_id$+credit_invoice$(1,14),dom=*next)
+20385   dim cr_opt_invhdr$:fattr(opt_invhdr$); cr_opt_invhdr.firm_id$=firm_id$,cr_opt_invhdr.ar_type$=opt_invhdr.ar_type$,cr_opt_invhdr.customer_id$=opt_invhdr.customer_id$,cr_opt_invhdr.order_no$=credit_invoice$(1,7),cr_opt_invhdr.ar_inv_no$=credit_invoice$(8,7),cr_opt_invhdr.invoice_date$=fnfulldate$(credit_invoice$(15,3))
+20390   writerecord(opt_invhdr)cr_opt_invhdr$
+20395 endif
+20400 rem --- order detail lines - remove any existing lines, then re-write
+20410 dim WW0$(52),WW1$(64),WW[14],WMAN_D1$(130),WD0$(14),WD1$(174)
+20420 opt_invdet.firm_id$=firm_id$, opt_invdet.ar_type$=A0$(3,2), opt_invdet.customer_id$=A0$(5,6), opt_invdet.order_no$=A0$(11,7), opt_invdet.ar_inv_no$=A0$(42,7)
+20430 read(opt_invdet,key=opt_invdet.firm_id$+opt_invdet.ar_type$+opt_invdet.customer_id$+opt_invdet.order_no$+opt_invdet.ar_inv_no$,dom=*next)
+20440 while 1
+20450   dtl_key$=key(opt_invdet,end=*break)
+20460   if pos(opt_invdet.firm_id$+opt_invdet.ar_type$+opt_invdet.customer_id$+opt_invdet.order_no$+opt_invdet.ar_inv_no$=dtl_key$)<>1 then break
+20470   remove(opt_invdet,key=dtl_key$)
+20480 wend
+20500 read(ARE13_DEV,key=opt_invdet.firm_id$+opt_invdet.ar_type$+opt_invdet.customer_id$+opt_invdet.order_no$,dom=*next)
+20510 while 1
+20520   are13_key$=key(ARE13_DEV,end=*break);read(ARE13_DEV)IOL=ARE13A
+20530   if pos(opt_invdet.firm_id$+opt_invdet.ar_type$+opt_invdet.customer_id$+opt_invdet.order_no$=are13_key$)<>1 then break
+20540   call stbl("+DIR_SYP")+"bas_sequences.bbj","INTERNAL_SEQ_NO",internal_seq_no$,table_chans$[all],"QUIET"
+20550   opt_invdet.internal_seq_no$=internal_seq_no$, opt_invdet.line_code$=WW0$(21,1), opt_invdet.order_memo$=WW1$(1,40), opt_invdet.item_id$=WW0$(33,20)
+20560   opt_invdet.warehouse_id$=WW0$(31,2), opt_invdet.line_no$=WW0$(18,3), opt_invdet.taxable_amt=WW[7], opt_invdet.qty_shipped=WW[4]
+20570   writerecord(opt_invdet)opt_invdet$
+20580 wend
+20700 rem --- write out ship-to address to customer master, customer ship-to, or manual ship-to
+20710    switch pos(opt_invhdr.shipto_type$="BSM")
+20715        case 0
+20720        case 1;rem Bill to from arm_custmast
+20725            read(ARM01_DEV,key=firm_id$+A0$(5,6))IOL=ARM01A
+20730            address$=WB1$(31,72)+WB1$(179,48),city$="",state$="",zip$=""
+20740            gosub reformat_address
+20750            arm_custmast.firm_id$=firm_id$,arm_custmast.customer_id$=WB0$(3,6)
+20760            remove(arm_custmast,key=arm_custmast.firm_id$+arm_custmast.customer_id$,dom=*next)
+20770            arm_custmast.addr_line_1$=address$(1,24), arm_custmast.addr_line_2$=address$(25,24),arm_custmast.addr_line_3$=address$(49,24)
+20780            arm_custmast.addr_line_4$=address$(73,24),arm_custmast.city$=city$, arm_custmast.state_code$=state$, arm_custmast.zip_code$=WB1$(103,9)
+20790            writerecord(arm_custmast)arm_custmast$
+20795        break
+20800        case 2;rem Ship to from arm_custship
+20805            read(ARM03_DEV,key=firm_id$+A0$(5,6))IOL=ARM03A
+20810            address$=WD1$(31,72),city$="",state$="",zip$=""
+20820            gosub reformat_address
+20830            arm_custship.firm_id$=firm_id$,arm_custship.customer_id$=WD0$(3,6),arm_custship.shipto_no$=WD0$(9,6)
+20840            remove(arm_custship,key=arm_custship.firm_id$+arm_custship.customer_id$+arm_custship.shipto_no$,dom=*next)
+20850            arm_custship.addr_line_1$=address$(1,24), arm_custship.addr_line_2$=address$(25,24),arm_custship.addr_line_3$=address$(49,24)
+20860            arm_custship.city$=city$, arm_custship.state_code$=state$, arm_custship.zip_code$=WD1$(103,9)
+20870            writerecord(arm_custship)arm_custship$
+20880        break
+20900        case 3;rem Manual from ope_ordship
+20905            read(ARE33_DEV,key=firm_id$+A0$(5,6)+A0$(11,7))IOL=ARE33A
+20910            address$=WMAN_D1$(31,72),city$="",state$="",zip$=""
+20920            gosub reformat_address
+20930            opt_invship.firm_id$=firm_id$,opt_invship.customer_id$=WMAN_D0$(3,6),opt_invship.order_no$=WMAN_D0$(9,7),opt_invship.ar_inv_no$=A0$(42,7),opt_invship.address_type$="S"
+20940            remove(opt_invship,key=opt_invship.firm_id$+opt_invship.customer_id$+opt_invship.order_no$+opt_invship.ar_inv_no$+opt_invship.address_type$,dom=*next)
+20950            opt_invship.addr_line_1$=address$(1,24), opt_invship.addr_line_2$=address$(25,24),opt_invship.addr_line_3$=address$(49,24)
+20960            opt_invship.city$=city$, opt_invship.state_code$=state$, opt_invship.zip_code$=WMAN_D1$(103,9)
+20970            writerecord(opt_invship)opt_invship$
+20980        break
+20990   swend
+20995 return
+30000 reformat_address:
+30010 dim state$(2),city$(24);rem --- This code is based on the same routine in DataPort_main.bbj
+30020 states$="ALAKAZARCACOCTDEDCFLGAHIIDILINIAKSKYLAMEMDMAMIMNMSMOMTNENVNHNJNMNYNCNDOHOKORPAPRRISCSDTNTXUTVTVAVIWAWVWIWY"
+30030 states$=states$+"ABBCMBNBNLNSNTNUONPEQCSKYT"; rem ' Canadian province/territory codes
+30100 if city$="" or state$="" or zip$="" then
+30110     if len(address$) and mod(len(address$),24)=0 then
+30120         for x=len(address$) to 1 step -24
+30130             string1$=cvs(address$(x-23,24),3)
+30140             if string1$="" then continue
+30150             string2$=""
+30160             string3$=""
+30170             string4$=""
+30200             rem --- Does this address line hold the zip code and/or state code?
+30210             if state$="" or zip$="" then
+30220                 string2_pos=pos(" "=string1$,-1)
+30230                if string2_pos then
+30240                     string2$=cvs(string1$(string2_pos+1),2)
+30250                 else
+30260                     string2$=string1$
+30270                 endif
+30300                 rem --- Does this address line hold the zip code?
+30310                 if zip$="" then
+30320                     string2_len$=str(len(string2$))
+30330                     switch (BBjAPI().TRUE)
+30340                         case string2_len$="5"
+30350                         case string2_len$="9"
+30360                             if num(string2$,err=*endif) then
+30370                                 zip$=string2$
+30380                                 address$(x-23+string2_pos,24-string2_pos)=""
+30390                             endif
+30395                             break
+30400                         case string2_len$="10"
+30410                             if pos("-"=string2$,1,0)=1 and pos("-"=string2$,1)=6 then
+30420                                 if num(string2$(1,5)+string2$(7),err=*endif) then
+30430                                     zip$=string2$(1,5)+string2$(7)
+30440                                     address$(x-23+string2_pos,24-string2_pos)=""
+30450                                 endif
+30460                             endif
+30470                             break
+30480                         case default
+30490                             break
+30495                     swend
+30498                 endif       
+30500                 rem --- Does this address line hold the state code?
+30510                 if state$="" then 
+30520                     if zip$="" or string2$=string1$ or len(string2$)=2 then
+30530                         rem --- Does this address line hold the state code without the zip code?
+30540                         if len(string2$)=2 then
+30550                             if pos(string2$=states$,2) then
+30560                                 state$=string2$
+30570                                 address$(x-23+string2_pos,24-string2_pos)=""
+30580                             endif
+30590                         else
+30600                             string3_pos=pos(" "=string2$,-1)
+30610                             if string3_pos then
+30620                                 string3$=cvs(string2$(string3_pos+1),2)
+30630                             else
+30640                                 string3$=string2$
+30650                             endif
+30660                             if len(string3$)=2 and pos(string3$=states$,2) then
+30670                                 state$=string3$
+30680                                 address$(x-23+string2_pos+string3_pos,24-string2_pos+string3_pos)=""
+30690                                 string4$=cvs(address$(x-23,24),2)
+30695                             else
+30700                                 string4$=string3$
+30710                             endif
+30720                         endif
+30730                     else
+30740                         rem --- Does this address line hold the state code in addition to the zip code?
+30750                         if string2$<>string1$ then
+30760                             string2_pos=pos(string2$=string1$,-1)
+30770                            string3$=cvs(string1$(1,string2_pos-1),2)
+30780                             if len(string3$)=2 then
+30790                                 if pos(string3$=states$,2) then
+30800                                     state$=string3$
+30810                                     address$(x-23+string2_pos,24-string2_pos)=""
+30820                                 endif
+30830                             else
+30840                                 string3_pos=pos(" "=string3$,-1)
+30850                                 if string3_pos then
+30860                                     string3$=cvs(string3$(string3_pos+1),2)
+30870                                     string3_pos=string2_pos-string3_pos
+30880                                 endif
+30890                                 if len(string3$)=2 and pos(string3$=states$,2) then
+30900                                     state$=string3$
+30910                                     address$(x-23+string2_pos-string3_pos,24-string2_pos+string3_pos)=""
+30920                                     string4$=cvs(address$(x-23,24),2)
+30930                                 else
+30940                                     string4$=string3$
+30950                                 endif
+30960                             endif
+30970                         endif
+30980                     endif
+30990                 endif            
+31000                 rem --- Does this address line hold the city in addition to the state code?
+31010                 if state$<>"" and string4$<>"" then
+31020                     city$=cvs(string4$,3)
+31030                     address$(x-23,24)=""
+31040                 endif
+31050             endif
+31060             rem --- Does this address line hold just the city?
+31070             if city$="" and state$<>cvs(string1$,3) then
+31080                 rem --- Skip the first address line when city hasn't been found yet
+31090                 if x>24 then
+31100                     if state$<>"" and pos(" "+state$+" "=string1$+" ",-1) then
+31110                         rem --- Previously entered state code is at the end of this line too.
+31120                         string1$=string1$(1,pos(" "+state$+" "=string1$+" ",-1)-1)
+31130                     endif
+31140                     city$=cvs(string1$,3)
+31150                     address$(x-23,24)=""
+31160                 endif
+31170             endif
+31180             rem --- Done once we have the city.
+31190             if city$<>"" then break
+31200         next x
+31210     endif
+31220 endif
+31230 rem --- Strip trailing comma from city
+31240 if city$<>"" then
+31250     if city$(len(city$))="," then city$=city$(1,len(city$)-1)
+31260 endif
+31270 return
+70000 rem --- functions
+70010 rem --- Convert 3-char packed date to YYYYMMDD
+70020 def fnfulldate$(value$)=str(asc(value$)-32+1900)+str(asc(value$(2))-32:"00")+str(mod(asc(value$(3))-32,100):"00")
+
+
+                    
+

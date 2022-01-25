@@ -102,7 +102,7 @@ rem --- Get the data
         pot_invhdr.ap_type$=pot05a.ap_type$
         pot_invhdr.vendor_id$=pot05a.vendor_nbr$
         pot_invhdr.ap_inv_no$=pot05a.ap_inv_nbr$
-        pot_invhdr.sequence_no$=pot05a.sequence_nbr$
+        pot_invhdr.sequence_ref$=pot05a.sequence_nbr$
         pot_invhdr.reserved_str$=pot05a.rsrvd_str$
         pot_invhdr.hold_flag$=pot05a.hold_flag$
         pot_invhdr.ap_terms_code$=pot05a.terms_code$

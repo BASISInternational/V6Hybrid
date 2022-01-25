@@ -171,6 +171,9 @@ rem --- Open Barista Addon ars_params or ars_report and get corresponding templa
                     
                     tpl.name$=inRec.name$
                     address$=inRec.addr_line_1$+inRec.addr_line_2$+inRec.addr_line_3$
+                    tpl.city$=""
+                    tpl.state_code$=""
+                    tpl.zip_code$=""
                     gosub reformat_address
                     tpl.addr_line_1$=address$(1,24)
                     tpl.addr_line_2$=address$(25,24)

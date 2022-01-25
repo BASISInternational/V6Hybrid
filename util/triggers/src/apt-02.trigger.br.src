@@ -48,7 +48,7 @@ non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from n
 	wkdir$ = dir("")
 	apdir$ = stbl("+APDATA")
 
-rem --- V6 extracts this record when updating (IV Period End, or PO Replenishment Reg/Updt)
+rem --- V6 writes this record when updating (PO Invoice Reg/Updt)
 rem --- If doing an extract in Barista Addon, check for, and/or place a soft lock in a namespace.
 rem --- V6 will do the same. The soft lock is needed since there's no way to get the V6 extract to persist across read/write triggers.
 
