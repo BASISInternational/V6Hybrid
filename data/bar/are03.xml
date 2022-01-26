@@ -17,13 +17,13 @@
 			<RESTRICT_AUTOADD id="ddm_tables.are03"></RESTRICT_AUTOADD>
 			<ASC_COMP_ID id="ddm_tables.are03">00000000</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_tables.are03">V6H</ASC_PROD_ID>
-			<ASC_VERSION_ID id="ddm_tables.are03">20.0      </ASC_VERSION_ID>
+			<ASC_VERSION_ID id="ddm_tables.are03">22.0      </ASC_VERSION_ID>
 			<ASC_LICENSE_ID id="ddm_tables.are03"></ASC_LICENSE_ID>
 			<DD_EXPORT_DATA id="ddm_tables.are03">Y</DD_EXPORT_DATA>
 			<DD_CREATE_DATE id="ddm_tables.are03">20161011</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_tables.are03">20200504</DD_LSTREV_DATE>
-			<DD_LSTSYNC_DATE id="ddm_tables.are03">20200504</DD_LSTSYNC_DATE>
-			<DD_LSTSYNC_TIME id="ddm_tables.are03">134138</DD_LSTSYNC_TIME>
+			<DD_LSTREV_DATE id="ddm_tables.are03">20220125</DD_LSTREV_DATE>
+			<DD_LSTSYNC_DATE id="ddm_tables.are03">20211209</DD_LSTSYNC_DATE>
+			<DD_LSTSYNC_TIME id="ddm_tables.are03">115240</DD_LSTSYNC_TIME>
 			<DD_ATTR_ATAB id="ddm_tables.are03"></DD_ATTR_ATAB>
 			<DD_ATTR_CPGM id="ddm_tables.are03"></DD_ATTR_CPGM>
 			<DD_ATTR_DKNM id="ddm_tables.are03"></DD_ATTR_DKNM>
@@ -4172,7 +4172,7 @@
 			<DD_ATTR_MSKO id="ddm_elements.v6_tax_amount">###,###,##0.00-</DD_ATTR_MSKO>
 			<DD_ATTR_PADC id="ddm_elements.v6_tax_amount"></DD_ATTR_PADC>
 			<DD_ATTR_PADJ id="ddm_elements.v6_tax_amount"></DD_ATTR_PADJ>
-			<DD_ATTR_PREC id="ddm_elements.v6_tax_amount">0</DD_ATTR_PREC>
+			<DD_ATTR_PREC id="ddm_elements.v6_tax_amount">2</DD_ATTR_PREC>
 			<DD_ATTR_PROM id="ddm_elements.v6_tax_amount"></DD_ATTR_PROM>
 			<DD_ATTR_PVAL id="ddm_elements.v6_tax_amount"></DD_ATTR_PVAL>
 			<DD_ATTR_SDLG id="ddm_elements.v6_tax_amount"></DD_ATTR_SDLG>
@@ -4224,7 +4224,7 @@
 			<DD_ATTR_MSKO id="ddm_elements.v6_freight_amt">###,###,##0.00-</DD_ATTR_MSKO>
 			<DD_ATTR_PADC id="ddm_elements.v6_freight_amt"></DD_ATTR_PADC>
 			<DD_ATTR_PADJ id="ddm_elements.v6_freight_amt"></DD_ATTR_PADJ>
-			<DD_ATTR_PREC id="ddm_elements.v6_freight_amt">0</DD_ATTR_PREC>
+			<DD_ATTR_PREC id="ddm_elements.v6_freight_amt">2</DD_ATTR_PREC>
 			<DD_ATTR_PROM id="ddm_elements.v6_freight_amt"></DD_ATTR_PROM>
 			<DD_ATTR_PVAL id="ddm_elements.v6_freight_amt"></DD_ATTR_PVAL>
 			<DD_ATTR_SDLG id="ddm_elements.v6_freight_amt"></DD_ATTR_SDLG>
@@ -4276,7 +4276,7 @@
 			<DD_ATTR_MSKO id="ddm_elements.v6_discount_amt">###,###,##0.00-</DD_ATTR_MSKO>
 			<DD_ATTR_PADC id="ddm_elements.v6_discount_amt"></DD_ATTR_PADC>
 			<DD_ATTR_PADJ id="ddm_elements.v6_discount_amt"></DD_ATTR_PADJ>
-			<DD_ATTR_PREC id="ddm_elements.v6_discount_amt">0</DD_ATTR_PREC>
+			<DD_ATTR_PREC id="ddm_elements.v6_discount_amt">2</DD_ATTR_PREC>
 			<DD_ATTR_PROM id="ddm_elements.v6_discount_amt"></DD_ATTR_PROM>
 			<DD_ATTR_PVAL id="ddm_elements.v6_discount_amt"></DD_ATTR_PVAL>
 			<DD_ATTR_SDLG id="ddm_elements.v6_discount_amt"></DD_ATTR_SDLG>
@@ -4484,7 +4484,7 @@
 			<DD_ATTR_MSKO id="ddm_elements.v6_total_sales">###,###,##0.00-</DD_ATTR_MSKO>
 			<DD_ATTR_PADC id="ddm_elements.v6_total_sales"></DD_ATTR_PADC>
 			<DD_ATTR_PADJ id="ddm_elements.v6_total_sales"></DD_ATTR_PADJ>
-			<DD_ATTR_PREC id="ddm_elements.v6_total_sales">0</DD_ATTR_PREC>
+			<DD_ATTR_PREC id="ddm_elements.v6_total_sales">2</DD_ATTR_PREC>
 			<DD_ATTR_PROM id="ddm_elements.v6_total_sales"></DD_ATTR_PROM>
 			<DD_ATTR_PVAL id="ddm_elements.v6_total_sales"></DD_ATTR_PVAL>
 			<DD_ATTR_SDLG id="ddm_elements.v6_total_sales"></DD_ATTR_SDLG>

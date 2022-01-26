@@ -17,15 +17,15 @@
 			<RESTRICT_AUTOADD id="ddm_tables.arm10d"></RESTRICT_AUTOADD>
 			<ASC_COMP_ID id="ddm_tables.arm10d">00000000</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_tables.arm10d">V6H</ASC_PROD_ID>
-			<ASC_VERSION_ID id="ddm_tables.arm10d">20.0      </ASC_VERSION_ID>
+			<ASC_VERSION_ID id="ddm_tables.arm10d">22.0      </ASC_VERSION_ID>
 			<ASC_LICENSE_ID id="ddm_tables.arm10d">C629009E7C84C7BF74A3C71F7D54F37D</ASC_LICENSE_ID>
 			<DD_EXPORT_DATA id="ddm_tables.arm10d">Y</DD_EXPORT_DATA>
 			<DD_CREATE_DATE id="ddm_tables.arm10d">20160930</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_tables.arm10d">20191126</DD_LSTREV_DATE>
-			<DD_LSTSYNC_DATE id="ddm_tables.arm10d">20191126</DD_LSTSYNC_DATE>
-			<DD_LSTSYNC_TIME id="ddm_tables.arm10d">131403</DD_LSTSYNC_TIME>
+			<DD_LSTREV_DATE id="ddm_tables.arm10d">20220125</DD_LSTREV_DATE>
+			<DD_LSTSYNC_DATE id="ddm_tables.arm10d">20211209</DD_LSTSYNC_DATE>
+			<DD_LSTSYNC_TIME id="ddm_tables.arm10d">115240</DD_LSTSYNC_TIME>
 			<DD_ATTR_ATAB id="ddm_tables.arm10d"></DD_ATTR_ATAB>
-			<DD_ATTR_CPGM id="ddm_tables.arm10d">C:/Temp/tmp/v6hybrid_tmp/apps/V6Hybrid/;</DD_ATTR_CPGM>
+			<DD_ATTR_CPGM id="ddm_tables.arm10d">C:/aon_instances/aonv6h/avatax/V6Hybrid/;</DD_ATTR_CPGM>
 			<DD_ATTR_DKNM id="ddm_tables.arm10d"></DD_ATTR_DKNM>
 			<DD_ATTR_FIMG id="ddm_tables.arm10d"></DD_ATTR_FIMG>
 			<DD_ATTR_FTYP id="ddm_tables.arm10d">T</DD_ATTR_FTYP>
@@ -98,6 +98,276 @@
 			<DD_TABLE_ALIAS id="ddm_table_tpls.arm10d">ARM10D          </DD_TABLE_ALIAS>
 			<DD_FILE_NAME id="ddm_table_tpls.arm10d">ARM-10</DD_FILE_NAME>
 			<DD_TABLE_TPL id="ddm_table_tpls.arm10d">v6_firm_id:c(2),v6_record_id_d:c(1),v6_dist_code:c(2),v6_code_desc:c(20),v6_rsrvd_str:c(5*),gl_ar_acct:c(10),gl_cash_acct:c(10),gl_sls_acct:c(10),gl_disc_acct:c(10),gl_frgt_acct:c(10),gl_inv_adj:c(10),gl_inv_acct:c(10),gl_cogs_acct:c(10),gl_cogs_adj:c(10),gl_ppv_acct:c(10),gl_purc_acct:c(10*)</DD_TABLE_TPL>
+		</RECORD>
+	</ALIAS>
+	<ALIAS id="ddm_table_ref">
+		<ID id="ddm_table_ref">DDM_TABLE_REF</ID>
+		<RECORD id="ddm_table_ref.arm10dgl_ar_acctglm_acct">
+			<DD_TABLE_ALIAS id="ddm_table_ref.arm10dgl_ar_acctglm_acct">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_ref.arm10dgl_ar_acctglm_acct">GL_AR_ACCT      </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_ref.arm10dgl_ar_acctglm_acct">GLM_ACCT        </REF_TABLE_ALIAS>
+			<TABLE_REF_NAME id="ddm_table_ref.arm10dgl_ar_acctglm_acct">FK_ARM10D_GL_AR_ACCT_GLM_ACCT                                                                                                                                                                                                                                  </TABLE_REF_NAME>
+		</RECORD>
+		<RECORD id="ddm_table_ref.arm10dgl_cash_acctglm_acct">
+			<DD_TABLE_ALIAS id="ddm_table_ref.arm10dgl_cash_acctglm_acct">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_ref.arm10dgl_cash_acctglm_acct">GL_CASH_ACCT    </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_ref.arm10dgl_cash_acctglm_acct">GLM_ACCT        </REF_TABLE_ALIAS>
+			<TABLE_REF_NAME id="ddm_table_ref.arm10dgl_cash_acctglm_acct">FK_ARM10D_GL_CASH_ACCT_GLM_ACCT                                                                                                                                                                                                                                </TABLE_REF_NAME>
+		</RECORD>
+		<RECORD id="ddm_table_ref.arm10dgl_cogs_acctglm_acct">
+			<DD_TABLE_ALIAS id="ddm_table_ref.arm10dgl_cogs_acctglm_acct">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_ref.arm10dgl_cogs_acctglm_acct">GL_COGS_ACCT    </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_ref.arm10dgl_cogs_acctglm_acct">GLM_ACCT        </REF_TABLE_ALIAS>
+			<TABLE_REF_NAME id="ddm_table_ref.arm10dgl_cogs_acctglm_acct">FK_ARM10D_GL_COGS_ACCT_GLM_ACCT                                                                                                                                                                                                                                </TABLE_REF_NAME>
+		</RECORD>
+		<RECORD id="ddm_table_ref.arm10dgl_cogs_adjglm_acct">
+			<DD_TABLE_ALIAS id="ddm_table_ref.arm10dgl_cogs_adjglm_acct">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_ref.arm10dgl_cogs_adjglm_acct">GL_COGS_ADJ     </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_ref.arm10dgl_cogs_adjglm_acct">GLM_ACCT        </REF_TABLE_ALIAS>
+			<TABLE_REF_NAME id="ddm_table_ref.arm10dgl_cogs_adjglm_acct">FK_ARM10D_GL_COGS_ADJ_GLM_ACCT                                                                                                                                                                                                                                 </TABLE_REF_NAME>
+		</RECORD>
+		<RECORD id="ddm_table_ref.arm10dgl_disc_acctglm_acct">
+			<DD_TABLE_ALIAS id="ddm_table_ref.arm10dgl_disc_acctglm_acct">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_ref.arm10dgl_disc_acctglm_acct">GL_DISC_ACCT    </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_ref.arm10dgl_disc_acctglm_acct">GLM_ACCT        </REF_TABLE_ALIAS>
+			<TABLE_REF_NAME id="ddm_table_ref.arm10dgl_disc_acctglm_acct">FK_ARM10D_GL_DISC_ACCT_GLM_ACCT                                                                                                                                                                                                                                </TABLE_REF_NAME>
+		</RECORD>
+		<RECORD id="ddm_table_ref.arm10dgl_frgt_acctglm_acct">
+			<DD_TABLE_ALIAS id="ddm_table_ref.arm10dgl_frgt_acctglm_acct">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_ref.arm10dgl_frgt_acctglm_acct">GL_FRGT_ACCT    </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_ref.arm10dgl_frgt_acctglm_acct">GLM_ACCT        </REF_TABLE_ALIAS>
+			<TABLE_REF_NAME id="ddm_table_ref.arm10dgl_frgt_acctglm_acct">FK_ARM10D_GL_FRGT_ACCT_GLM_ACCT                                                                                                                                                                                                                                </TABLE_REF_NAME>
+		</RECORD>
+		<RECORD id="ddm_table_ref.arm10dgl_inv_acctglm_acct">
+			<DD_TABLE_ALIAS id="ddm_table_ref.arm10dgl_inv_acctglm_acct">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_ref.arm10dgl_inv_acctglm_acct">GL_INV_ACCT     </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_ref.arm10dgl_inv_acctglm_acct">GLM_ACCT        </REF_TABLE_ALIAS>
+			<TABLE_REF_NAME id="ddm_table_ref.arm10dgl_inv_acctglm_acct">FK_ARM10D_GL_INV_ACCT_GLM_ACCT                                                                                                                                                                                                                                 </TABLE_REF_NAME>
+		</RECORD>
+		<RECORD id="ddm_table_ref.arm10dgl_inv_adjglm_acct">
+			<DD_TABLE_ALIAS id="ddm_table_ref.arm10dgl_inv_adjglm_acct">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_ref.arm10dgl_inv_adjglm_acct">GL_INV_ADJ      </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_ref.arm10dgl_inv_adjglm_acct">GLM_ACCT        </REF_TABLE_ALIAS>
+			<TABLE_REF_NAME id="ddm_table_ref.arm10dgl_inv_adjglm_acct">FK_ARM10D_GL_INV_ADJ_GLM_ACCT                                                                                                                                                                                                                                  </TABLE_REF_NAME>
+		</RECORD>
+		<RECORD id="ddm_table_ref.arm10dgl_ppv_acctglm_acct">
+			<DD_TABLE_ALIAS id="ddm_table_ref.arm10dgl_ppv_acctglm_acct">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_ref.arm10dgl_ppv_acctglm_acct">GL_PPV_ACCT     </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_ref.arm10dgl_ppv_acctglm_acct">GLM_ACCT        </REF_TABLE_ALIAS>
+			<TABLE_REF_NAME id="ddm_table_ref.arm10dgl_ppv_acctglm_acct">FK_ARM10D_GL_PPV_ACCT_GLM_ACCT                                                                                                                                                                                                                                 </TABLE_REF_NAME>
+		</RECORD>
+		<RECORD id="ddm_table_ref.arm10dgl_purc_acctglm_acct">
+			<DD_TABLE_ALIAS id="ddm_table_ref.arm10dgl_purc_acctglm_acct">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_ref.arm10dgl_purc_acctglm_acct">GL_PURC_ACCT    </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_ref.arm10dgl_purc_acctglm_acct">GLM_ACCT        </REF_TABLE_ALIAS>
+			<TABLE_REF_NAME id="ddm_table_ref.arm10dgl_purc_acctglm_acct">FK_ARM10D_GL_PURC_ACCT_GLM_ACCT                                                                                                                                                                                                                                </TABLE_REF_NAME>
+		</RECORD>
+		<RECORD id="ddm_table_ref.arm10dgl_sls_acctglm_acct">
+			<DD_TABLE_ALIAS id="ddm_table_ref.arm10dgl_sls_acctglm_acct">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_ref.arm10dgl_sls_acctglm_acct">GL_SLS_ACCT     </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_ref.arm10dgl_sls_acctglm_acct">GLM_ACCT        </REF_TABLE_ALIAS>
+			<TABLE_REF_NAME id="ddm_table_ref.arm10dgl_sls_acctglm_acct">FK_ARM10D_GL_SLS_ACCT_GLM_ACCT                                                                                                                                                                                                                                 </TABLE_REF_NAME>
+		</RECORD>
+	</ALIAS>
+	<ALIAS id="ddm_table_refcol">
+		<ID id="ddm_table_refcol">DDM_TABLE_REFCOL</ID>
+		<RECORD id="ddm_table_refcol.arm10dgl_ar_acctglm_acct0001">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_ar_acctglm_acct0001">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_ar_acctglm_acct0001">GL_AR_ACCT      </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_ar_acctglm_acct0001">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_ar_acctglm_acct0001">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_ar_acctglm_acct0001">01</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_ar_acctglm_acct0001">FIRM_ID         </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_ar_acctglm_acct0001">FIRM_ID         </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_ar_acctglm_acct0002">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_ar_acctglm_acct0002">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_ar_acctglm_acct0002">GL_AR_ACCT      </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_ar_acctglm_acct0002">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_ar_acctglm_acct0002">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_ar_acctglm_acct0002">02</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_ar_acctglm_acct0002">GL_ACCOUNT      </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_ar_acctglm_acct0002">GL_AR_ACCT      </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_cash_acctglm_acct0001">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_cash_acctglm_acct0001">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_cash_acctglm_acct0001">GL_CASH_ACCT    </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_cash_acctglm_acct0001">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_cash_acctglm_acct0001">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_cash_acctglm_acct0001">01</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_cash_acctglm_acct0001">FIRM_ID         </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_cash_acctglm_acct0001">FIRM_ID         </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_cash_acctglm_acct0002">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_cash_acctglm_acct0002">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_cash_acctglm_acct0002">GL_CASH_ACCT    </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_cash_acctglm_acct0002">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_cash_acctglm_acct0002">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_cash_acctglm_acct0002">02</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_cash_acctglm_acct0002">GL_ACCOUNT      </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_cash_acctglm_acct0002">GL_CASH_ACCT    </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_cogs_acctglm_acct0001">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_cogs_acctglm_acct0001">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_cogs_acctglm_acct0001">GL_COGS_ACCT    </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_cogs_acctglm_acct0001">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_cogs_acctglm_acct0001">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_cogs_acctglm_acct0001">01</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_cogs_acctglm_acct0001">FIRM_ID         </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_cogs_acctglm_acct0001">FIRM_ID         </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_cogs_acctglm_acct0002">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_cogs_acctglm_acct0002">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_cogs_acctglm_acct0002">GL_COGS_ACCT    </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_cogs_acctglm_acct0002">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_cogs_acctglm_acct0002">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_cogs_acctglm_acct0002">02</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_cogs_acctglm_acct0002">GL_ACCOUNT      </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_cogs_acctglm_acct0002">GL_COGS_ACCT    </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_cogs_adjglm_acct0001">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_cogs_adjglm_acct0001">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_cogs_adjglm_acct0001">GL_COGS_ADJ     </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_cogs_adjglm_acct0001">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_cogs_adjglm_acct0001">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_cogs_adjglm_acct0001">01</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_cogs_adjglm_acct0001">FIRM_ID         </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_cogs_adjglm_acct0001">FIRM_ID         </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_cogs_adjglm_acct0002">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_cogs_adjglm_acct0002">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_cogs_adjglm_acct0002">GL_COGS_ADJ     </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_cogs_adjglm_acct0002">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_cogs_adjglm_acct0002">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_cogs_adjglm_acct0002">02</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_cogs_adjglm_acct0002">GL_ACCOUNT      </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_cogs_adjglm_acct0002">GL_COGS_ADJ     </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_disc_acctglm_acct0001">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_disc_acctglm_acct0001">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_disc_acctglm_acct0001">GL_DISC_ACCT    </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_disc_acctglm_acct0001">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_disc_acctglm_acct0001">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_disc_acctglm_acct0001">01</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_disc_acctglm_acct0001">FIRM_ID         </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_disc_acctglm_acct0001">FIRM_ID         </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_disc_acctglm_acct0002">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_disc_acctglm_acct0002">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_disc_acctglm_acct0002">GL_DISC_ACCT    </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_disc_acctglm_acct0002">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_disc_acctglm_acct0002">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_disc_acctglm_acct0002">02</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_disc_acctglm_acct0002">GL_ACCOUNT      </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_disc_acctglm_acct0002">GL_DISC_ACCT    </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_frgt_acctglm_acct0001">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_frgt_acctglm_acct0001">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_frgt_acctglm_acct0001">GL_FRGT_ACCT    </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_frgt_acctglm_acct0001">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_frgt_acctglm_acct0001">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_frgt_acctglm_acct0001">01</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_frgt_acctglm_acct0001">FIRM_ID         </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_frgt_acctglm_acct0001">FIRM_ID         </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_frgt_acctglm_acct0002">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_frgt_acctglm_acct0002">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_frgt_acctglm_acct0002">GL_FRGT_ACCT    </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_frgt_acctglm_acct0002">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_frgt_acctglm_acct0002">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_frgt_acctglm_acct0002">02</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_frgt_acctglm_acct0002">GL_ACCOUNT      </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_frgt_acctglm_acct0002">GL_FRGT_ACCT    </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_inv_acctglm_acct0001">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_inv_acctglm_acct0001">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_inv_acctglm_acct0001">GL_INV_ACCT     </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_inv_acctglm_acct0001">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_inv_acctglm_acct0001">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_inv_acctglm_acct0001">01</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_inv_acctglm_acct0001">FIRM_ID         </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_inv_acctglm_acct0001">FIRM_ID         </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_inv_acctglm_acct0002">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_inv_acctglm_acct0002">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_inv_acctglm_acct0002">GL_INV_ACCT     </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_inv_acctglm_acct0002">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_inv_acctglm_acct0002">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_inv_acctglm_acct0002">02</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_inv_acctglm_acct0002">GL_ACCOUNT      </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_inv_acctglm_acct0002">GL_INV_ACCT     </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_inv_adjglm_acct0001">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_inv_adjglm_acct0001">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_inv_adjglm_acct0001">GL_INV_ADJ      </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_inv_adjglm_acct0001">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_inv_adjglm_acct0001">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_inv_adjglm_acct0001">01</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_inv_adjglm_acct0001">FIRM_ID         </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_inv_adjglm_acct0001">FIRM_ID         </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_inv_adjglm_acct0002">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_inv_adjglm_acct0002">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_inv_adjglm_acct0002">GL_INV_ADJ      </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_inv_adjglm_acct0002">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_inv_adjglm_acct0002">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_inv_adjglm_acct0002">02</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_inv_adjglm_acct0002">GL_ACCOUNT      </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_inv_adjglm_acct0002">GL_INV_ADJ      </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_ppv_acctglm_acct0001">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_ppv_acctglm_acct0001">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_ppv_acctglm_acct0001">GL_PPV_ACCT     </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_ppv_acctglm_acct0001">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_ppv_acctglm_acct0001">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_ppv_acctglm_acct0001">01</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_ppv_acctglm_acct0001">FIRM_ID         </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_ppv_acctglm_acct0001">FIRM_ID         </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_ppv_acctglm_acct0002">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_ppv_acctglm_acct0002">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_ppv_acctglm_acct0002">GL_PPV_ACCT     </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_ppv_acctglm_acct0002">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_ppv_acctglm_acct0002">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_ppv_acctglm_acct0002">02</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_ppv_acctglm_acct0002">GL_ACCOUNT      </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_ppv_acctglm_acct0002">GL_PPV_ACCT     </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_purc_acctglm_acct0001">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_purc_acctglm_acct0001">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_purc_acctglm_acct0001">GL_PURC_ACCT    </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_purc_acctglm_acct0001">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_purc_acctglm_acct0001">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_purc_acctglm_acct0001">01</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_purc_acctglm_acct0001">FIRM_ID         </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_purc_acctglm_acct0001">FIRM_ID         </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_purc_acctglm_acct0002">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_purc_acctglm_acct0002">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_purc_acctglm_acct0002">GL_PURC_ACCT    </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_purc_acctglm_acct0002">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_purc_acctglm_acct0002">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_purc_acctglm_acct0002">02</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_purc_acctglm_acct0002">GL_ACCOUNT      </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_purc_acctglm_acct0002">GL_PURC_ACCT    </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_sls_acctglm_acct0001">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_sls_acctglm_acct0001">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_sls_acctglm_acct0001">GL_SLS_ACCT     </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_sls_acctglm_acct0001">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_sls_acctglm_acct0001">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_sls_acctglm_acct0001">01</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_sls_acctglm_acct0001">FIRM_ID         </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_sls_acctglm_acct0001">FIRM_ID         </FK_TABLE_COL>
+		</RECORD>
+		<RECORD id="ddm_table_refcol.arm10dgl_sls_acctglm_acct0002">
+			<DD_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_sls_acctglm_acct0002">ARM10D          </DD_TABLE_ALIAS>
+			<DD_TABLE_COL id="ddm_table_refcol.arm10dgl_sls_acctglm_acct0002">GL_SLS_ACCT     </DD_TABLE_COL>
+			<REF_TABLE_ALIAS id="ddm_table_refcol.arm10dgl_sls_acctglm_acct0002">GLM_ACCT        </REF_TABLE_ALIAS>
+			<REF_KEY_NUMBER id="ddm_table_refcol.arm10dgl_sls_acctglm_acct0002">00</REF_KEY_NUMBER>
+			<REF_KEY_SEGMENT id="ddm_table_refcol.arm10dgl_sls_acctglm_acct0002">02</REF_KEY_SEGMENT>
+			<REF_KEY_COLUMN id="ddm_table_refcol.arm10dgl_sls_acctglm_acct0002">GL_ACCOUNT      </REF_KEY_COLUMN>
+			<FK_TABLE_COL id="ddm_table_refcol.arm10dgl_sls_acctglm_acct0002">GL_SLS_ACCT     </FK_TABLE_COL>
 		</RECORD>
 	</ALIAS>
 	<ALIAS id="ddm_keys">
@@ -1421,8 +1691,8 @@
 			<DD_ATTR_CTLH id="ddm_elements.gl_disc_acct"></DD_ATTR_CTLH>
 			<DD_ATTR_CTYP id="ddm_elements.gl_disc_acct">E</DD_ATTR_CTYP>
 			<DD_ATTR_DCOL id="ddm_elements.gl_disc_acct">GL_ACCT_DESC</DD_ATTR_DCOL>
-			<DD_ATTR_DCOM id="ddm_elements.gl_disc_acct"></DD_ATTR_DCOM>
-			<DD_ATTR_DEXP id="ddm_elements.gl_disc_acct"></DD_ATTR_DEXP>
+			<DD_ATTR_DCOM id="ddm_elements.gl_disc_acct">            </DD_ATTR_DCOM>
+			<DD_ATTR_DEXP id="ddm_elements.gl_disc_acct">            </DD_ATTR_DEXP>
 			<DD_ATTR_DFLT id="ddm_elements.gl_disc_acct"></DD_ATTR_DFLT>
 			<DD_ATTR_DKNM id="ddm_elements.gl_disc_acct"></DD_ATTR_DKNM>
 			<DD_ATTR_DKEY id="ddm_elements.gl_disc_acct">[+FIRM_ID]+@</DD_ATTR_DKEY>

@@ -17,13 +17,13 @@
 			<RESTRICT_AUTOADD id="ddm_tables.are13">Y</RESTRICT_AUTOADD>
 			<ASC_COMP_ID id="ddm_tables.are13">00000000</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_tables.are13">V6H</ASC_PROD_ID>
-			<ASC_VERSION_ID id="ddm_tables.are13">20.0      </ASC_VERSION_ID>
+			<ASC_VERSION_ID id="ddm_tables.are13">22.0      </ASC_VERSION_ID>
 			<ASC_LICENSE_ID id="ddm_tables.are13"></ASC_LICENSE_ID>
 			<DD_EXPORT_DATA id="ddm_tables.are13">Y</DD_EXPORT_DATA>
 			<DD_CREATE_DATE id="ddm_tables.are13">20161012</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_tables.are13">20200504</DD_LSTREV_DATE>
-			<DD_LSTSYNC_DATE id="ddm_tables.are13">20200504</DD_LSTSYNC_DATE>
-			<DD_LSTSYNC_TIME id="ddm_tables.are13">134034</DD_LSTSYNC_TIME>
+			<DD_LSTREV_DATE id="ddm_tables.are13">20220125</DD_LSTREV_DATE>
+			<DD_LSTSYNC_DATE id="ddm_tables.are13">20211209</DD_LSTSYNC_DATE>
+			<DD_LSTSYNC_TIME id="ddm_tables.are13">115240</DD_LSTSYNC_TIME>
 			<DD_ATTR_ATAB id="ddm_tables.are13"></DD_ATTR_ATAB>
 			<DD_ATTR_CPGM id="ddm_tables.are13"></DD_ATTR_CPGM>
 			<DD_ATTR_DKNM id="ddm_tables.are13"></DD_ATTR_DKNM>
@@ -2523,7 +2523,7 @@
 			<DD_ATTR_MSKO id="ddm_elements.v6_unit_price">###,###,##0.00-</DD_ATTR_MSKO>
 			<DD_ATTR_PADC id="ddm_elements.v6_unit_price"></DD_ATTR_PADC>
 			<DD_ATTR_PADJ id="ddm_elements.v6_unit_price"></DD_ATTR_PADJ>
-			<DD_ATTR_PREC id="ddm_elements.v6_unit_price">0</DD_ATTR_PREC>
+			<DD_ATTR_PREC id="ddm_elements.v6_unit_price">2</DD_ATTR_PREC>
 			<DD_ATTR_PROM id="ddm_elements.v6_unit_price"></DD_ATTR_PROM>
 			<DD_ATTR_PVAL id="ddm_elements.v6_unit_price"></DD_ATTR_PVAL>
 			<DD_ATTR_SDLG id="ddm_elements.v6_unit_price"></DD_ATTR_SDLG>
@@ -2783,7 +2783,7 @@
 			<DD_ATTR_MSKO id="ddm_elements.v6_ext_price">###,###,##0.00-</DD_ATTR_MSKO>
 			<DD_ATTR_PADC id="ddm_elements.v6_ext_price"></DD_ATTR_PADC>
 			<DD_ATTR_PADJ id="ddm_elements.v6_ext_price"></DD_ATTR_PADJ>
-			<DD_ATTR_PREC id="ddm_elements.v6_ext_price">0</DD_ATTR_PREC>
+			<DD_ATTR_PREC id="ddm_elements.v6_ext_price">2</DD_ATTR_PREC>
 			<DD_ATTR_PROM id="ddm_elements.v6_ext_price"></DD_ATTR_PROM>
 			<DD_ATTR_PVAL id="ddm_elements.v6_ext_price"></DD_ATTR_PVAL>
 			<DD_ATTR_SDLG id="ddm_elements.v6_ext_price"></DD_ATTR_SDLG>
