@@ -6,7 +6,7 @@ rem This trigger assumes that it is being used in a non-modified Barista and Add
 rem Version 6 environment. If there have been any modifications to these systems,
 rem be sure to thoroughly examine this trigger and test changes.
 
-rem --- Write Barista Addon's apt_invoicedist instead of V6 apt-02
+rem --- Write Barista Addon's apt_invoicedist instead of V6 apt-02 (being written in the PO Invoice Update POU.EA)
 
 	setopts $080872202c2e$
 	seterr trigger_error
@@ -72,37 +72,6 @@ rem --- Write the data
         writerecord (apt_invoicedist,dom=trigger_error)apt_invoicedist$
     else
         writerecord (apt_invoicedist)apt_invoicedist$
-    endif
-    
-
-    next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
-    next_ky$=key(apt_invoicedist,end=*next)
-    rem --- store next key in group namespace
-    gns!=BBjAPI().getGroupNamespace()
-    gns!.setValue(nskey$,next_ky$)
-
-    rem --- remove soft lock from namespace
-
-    exns_prefix$=stbl("+DBNAME_API",err=trigger_error)
-    exns_suffix$="apt-02"
-    exns!=BBjAPI().getNamespace(exns_prefix$,exns_suffix$,1)
-    ns_info$="V6 namespace lock: "+info!.getUser()+": "+td!.getIDString()
-
-    set_lock=0
-    exns!.setLock(ky$,5000,err=*next);set_lock=1
-    if set_lock        
-        ex_info$=exns!.getValue(ky$,err=*next)
-        if ex_info$="" or ex_info$=ns_info$
-            exns!.removeLock(ky$)
-            exns!.removeValue(ky$,err=*endif)
-        else
-            exns!.removeLock(ky$)
-        endif
-    else
-        ex_info$=exns!.getValue(ky$,err=*next)
-        rd_err_text$=ex_info$+" (Key: "+ky$+")."
-        err_num=0
-        goto trigger_error_forced
     endif
 
 	goto std_exit
