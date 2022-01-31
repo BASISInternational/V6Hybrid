@@ -1,0 +1,214 @@
+0010 REM "OPR - Invoice Edit Report"
+0020 REM "Program OPR.JA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
+0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0040 REM
+0050 BEGIN
+0085 SETESC 9000
+0090 SETERR 9000
+0100 REM " --- Open/Lock Files "
+0110 LET FILES=12
+0120 DIM FILES$[FILES],OPTIONS$[FILES],CHANNELS[FILES]
+0130 LET FILES$[1]="ARE-03",FILES$[2]="ARE-13",FILES$[3]="ARE-23"
+0135 LET FILES$[4]="ARM-01",FILES$[5]="ARM-02",FILES$[6]="ARM-10"
+0140 LET FILES$[7]="IVM-01",FILES$[8]="IVM-02",FILES$[9]="IVM-10"
+0145 LET FILES$[10]="SYS-01"
+0150 CALL "SYC.DA",1,1,10,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STATUS
+0155 IF STATUS>0 THEN GOTO 9900
+0160 LET ARE03_DEV=CHANNELS[1],ARE13_DEV=CHANNELS[2],ARE23_DEV=CHANNELS[3]
+0170 LET ARM01_DEV=CHANNELS[4],ARM02_DEV=CHANNELS[5],ARM10_DEV=CHANNELS[6]
+0180 LET IVM01_DEV=CHANNELS[7],IVM02_DEV=CHANNELS[8],IVM10_DEV=CHANNELS[9]
+0190 LET SYS01_DEV=CHANNELS[10]
+0200 REM " --- IOLists"
+0210 ARM01A: IOLIST *,X0$
+0260 SYS01T: IOLIST X$,F0$,X$,X$,X$,F4$,F5$
+0270 ARS01A: IOLIST P0$,P1$,P2$,P3$,P4$,M0$,M1$,M2$,M3$
+0290 IVS01A: IOLIST I0$,I1$,I2$,I3$,I4$,I5$,M1$,M2$,M3$
+0400 REM " --- Parameters
+0405 DIM P[2],I[5]
+0410 FIND (SYS01_DEV,KEY="T"+FID(0),DOM=9800)IOL=SYS01T
+0420 LET N0$=F0$(16,2),N1$=F4$,N2$="AR",N4$=F5$,LF$="N"
+0430 FIND (SYS01_DEV,KEY=N0$+N2$+"00",DOM=9800)IOL=ARS01A
+0440 FIND (SYS01_DEV,KEY=N0$+"IV00",DOM=9800)IOL=IVS01A
+0460 IF POS(I3$(3,1)="LF") THEN LET LF$="Y"
+0470 LET I[0]=NUM(I2$(1,2)),I[1]=NUM(I2$(5,1)),I[2]=NUM(I2$(7,2))
+0480 LET I[3]=NUM(I2$(9,2)),I[4]=NUM(I2$(11,2)),I[5]=NUM(I2$(13,2))
+0490 LET P[1]=NUM(P2$(3,2)),P[2]=NUM(P3$(4,1)),P[0]=NUM(P2$(1,2))
+0500 REM " --- Initialize Data"
+0510 DIM LF_CHANNELS[1]
+0550 LET M0=LEN(M0$),S4$="N",S6$="U",H0=132
+0600 REM " --- Additional File Opens"
+0610 IF LF$<>"Y" THEN GOTO 0700
+0620 LET FILES$[11]="IVM-04"
+0630 LET FILES$[12]="IVW-04",OPTIONS$[12]="CL"
+0640 CALL "SYC.DA",1,11,12,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STATU
+0640:S
+0645 IF STATUS>0 THEN GOTO 9900
+0650 LET IVM04_DEV=CHANNELS[11],IVW04_DEV=CHANNELS[12]
+0660 LET LF_CHANNELS[0]=IVM04_DEV,LF_CHANNELS[1]=IVW04_DEV
+0700 REM " --- Background"
+0710 FOR X=4 TO 16 STEP 2
+0720 CALL "SYC.WC",1,0,80,0,0,X,0
+0730 NEXT X
+0750 PRINT 'SB',@(20,3),"Beginning Customer:",@(23,5),"Ending Customer:",@(16,
+0750:7),"Beginning Order Number:",@(19,9),"Ending Order Number:",@(27,11),"Inv
+0750:oiced By:",@(26,13),"Print Status:",@(28,15),"Page Break:",'SF',
+0950 gosub AvaTax_open_tables; rem --- V6Hybrid AvaTax open tables
+0955 avataxFailed!=bbjAPI().makeVector()
+1000 REM " --- Beginning Customer"
+1010 LET V0$="M",V1$="CE",V2$=S0$,V3$=M0$,V4$="Enter A Valid Customer Number (
+1010:<F1>=First/<F3>=Lookup)",V0=P[0],V1=40,V2=3,I0=0
+1020 GOSUB 7000
+1025 IF V3=4 THEN GOTO 9900
+1030 IF V3<>3 THEN GOTO 1040
+1032 CALL "SYC.LC",V$
+1034 IF V$="" THEN GOTO 1000
+1040 IF V3=1 THEN LET V$=""
+1045 IF V$="" THEN PRINT @(V1,V2),"First",'CL',; LET S0$=""; GOTO 1090
+1050 LET V$=V$+"000000"; LET V$=V$(1,6)
+1060 FIND (ARM01_DEV,KEY=N0$+V$,DOM=1000)IOL=ARM01A
+1070 PRINT @(V1,V2),FNF$(V$(1,P[0]),M0$),@(V1+M0+1,V2),X0$(1,30),
+1075 LET H4$=FNF$(V$(1,P[0]),M0$)
+1080 LET S0$=V$(1,P[0])
+1090 GOTO 3900
+1200 REM " --- Ending Customer"
+1210 LET V0$="M",V1$="CE",V2$=S1$,V3$=M0$,V4$="Enter A Valid Customer Number (
+1210:<F1>=Last/<F3>=Lookup)",V0=P[0],V1=40,V2=5
+1220 GOSUB 7000
+1230 IF V3<>3 THEN GOTO 1240
+1232 CALL "SYC.LC",V$
+1234 IF V$="" THEN GOTO 1200
+1240 IF V3=1 THEN LET V$=""
+1245 IF V$="" THEN PRINT @(V1,V2),"Last",'CL',; LET S1$=""; GOTO 1290
+1250 LET V$=V$+"000000"; LET V$=V$(1,6)
+1255 IF V$<S0$ THEN GOTO 1200
+1260 FIND (ARM01_DEV,KEY=N0$+V$,DOM=1200)IOL=ARM01A
+1270 PRINT @(V1,V2),FNF$(V$(1,P[0]),M0$),@(V1+M0+1,V2),X0$(1,30),
+1275 LET H5$=FNF$(V$(1,P[0]),M0$)
+1280 LET S1$=V$(1,P[0])
+1290 GOTO 3900
+1400 REM " --- Beginning Order"
+1410 LET V0$="Z",V1$="C",V2$=S2$,V3$="",V4$="<F1>=First",V0=7,V1=40,V2=7
+1420 IF S0$="" AND S1$="" OR S0$<>S1$ THEN LET V$=""; GOTO 1450
+1430 GOSUB 7000
+1440 IF V3=1 THEN LET V$=""
+1450 IF V$="" THEN PRINT @(V1,V2),'CL',"First"
+1460 IF V$<>"" THEN LET H6$=V$
+1480 LET S2$=V$
+1490 GOTO 3900
+1600 REM " --- Ending Order"
+1610 LET V0$="Z",V1$="C",V2$=S3$,V3$="",V4$="<F1>=Last",V0=7,V1=40,V2=9
+1620 IF S0$="" AND S1$="" OR S0$<>S1$ THEN LET V$=""; GOTO 1650
+1630 GOSUB 7000
+1640 IF V3=1 THEN LET V$=""
+1650 IF V$="" THEN PRINT @(V1,V2),'CL',"Last"
+1660 IF V$<>"" THEN LET H7$=V$
+1670 IF V$<S2$ THEN GOTO 1600
+1680 LET S3$=V$
+1690 GOTO 3900
+2000 REM " --- Invoiced By"
+2020 LET V0$="S",V1$="C",V2$=S5$,V3$="",V4$="<F1>=All",V0=3,V1=40,V2=11
+2030 PRINT @(V1,V2),'CL',
+2040 GOSUB 7000
+2050 IF V3=1 THEN LET V$=""
+2060 IF V$="" THEN PRINT @(V1,V2),'CL',"All"
+2070 IF V$<>"" THEN LET V$=V$+"   ",V$=V$(1,3),H9$=V$ ELSE LET H9$="All"
+2080 LET S5$=V$
+2090 GOTO 3900
+2200 REM " --- Printed/Not-Printed/Both"
+2220 LET V0$="S",V1$="C",V2$=S6$,V3$="PUA",V4$="P=Printed Invoices   U=Unprint
+2220:ed Invoices   A=All Invoices",V0=1,V1=40,V2=13
+2230 GOSUB 7000
+2250 IF V$="P" THEN LET X1$="Printed Invoices"
+2260 IF V$="U" THEN LET X1$="Unprinted Invoices"
+2270 IF V$="A" THEN LET X1$="All Invoices"
+2280 LET S6$=V$
+2285 PRINT @(V1,V2),S6$," ",X1$,'CL',
+2290 GOTO 3900
+2400 REM " --- Page Break"
+2420 LET V0$="Y",V1$="C",V2$=S4$,V3$="",V4$="Page Break Between Invoices (Y/N)
+2420:?",V0=1,V1=40,V2=15
+2430 GOSUB 7000
+2450 LET S4$=V$
+2490 GOTO 3900
+3900 REM " --- New Field
+3920 IF V3<>2 THEN GOTO 3950
+3930 IF I0>0 THEN LET I0=I0-1
+3940 GOTO 3960
+3950 LET I0=I0+1
+3960 ON I0 GOTO 1000,1200,1400,1600,2000,2200,2400,4000
+4000 REM " --- Correct?"
+4010 LET V4$="Is The Above Information Correct (Y/N)?"
+4020 LET V0$="Y",V1$="C",V2$="Y",V3$="",V0=1,V1=FNV(V4$),V2=22
+4025 GOSUB 7000
+4040 IF V3=4 THEN GOTO 9900
+4080 ON POS(V$="YN") GOTO 4000,4090,1000
+4090 RUN "OPR.JB"
+7000 REM " --- Standard Input Routine (15May95)"
+7010 CALL "SYC.IA",V0$,V1$,V2$,V3$,V4$,PGM(-2),V0,V1,V2,V$,V,V3,DISPLAY_LEN
+7020 IF V3=999 THEN GOTO 7200
+7030 IF V3=127 THEN GOTO 7100
+7090 RETURN
+7100 REM " --- Escape During Input"
+7110 CALL "SYC.ES",ERR=7200,PGM(-2),TCB(8),E$,E2,V3
+7120 IF V3<>127 THEN GOTO 7000
+7130 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+7200 REM " --- Error During Input"
+7210 ESCAPE
+7290 GOTO 7000
+8000 REM " --- Functions"
+8080 DEF FNV(Q$)=42+INT(LEN(Q$)/2)
+8200 REM " --- FNF$ AlphaNumeric Masking Function"
+8210 DEF FNF$(Q1$,Q2$)
+8220 IF Q2$="" THEN LET Q2$=FILL(LEN(Q1$),"0")
+8230 RETURN STR(-NUM(Q1$,ERR=ALPHA_FNF):Q2$,ERR=ALPHA_FNF)
+8240 ALPHA_FNF:
+8245 LET Q=1,Q0=0
+8250 WHILE LEN(Q2$(Q))
+8255 IF POS(Q2$(Q,1)="-()") THEN LET Q0=Q0+1 ELSE LET Q2$(Q,1)="X"
+8260 LET Q=Q+1
+8265 WEND
+8270 IF LEN(Q1$)>LEN(Q2$)-Q0 THEN LET Q1$=Q1$(1,LEN(Q2$)-Q0)
+8280 RETURN STR(Q1$:Q2$)
+8290 FNEND
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 SETERR 9000
+9220 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9800 REM " --- Display Parameter record error"
+9810 LET LINE_ERR$=LST(PGM(TCB(5)))
+9820 CALL "SYC.YA",LINE_ERR$,N2$,ERR
+9900 RUN "SYS.AA"
+9999 END
+10000 AvaTax_open_tables: rem --- V6Hybrid open tables for AvaTax Interface
+10010 num_files=1
+10020 dim open_tables$[1:num_files],open_opts$[1:num_files],open_chans$[1:num_files],open_tpls$[1:num_files]
+10030 open_tables$[1]="OPT_INVHDR",  open_opts$[1]="OTA"
+10050 call stbl("+DIR_SYP")+"bac_open_tables.bbj",open_beg,open_end,open_tables$[all],open_opts$[all],open_chans$[all],open_tpls$[all],rd_table_chans$[all],open_batch,open_status$
+10060 if open_status$<>"" then
+10062   msg_id$="ENTRY_OPEN_ERROR"
+10064   dim msg_tokens$[1]
+10066   msg_tokens$[1]=open_status$
+10068   call stbl("+DIR_SYP")+"bac_message.bbj",msg_id$,msg_tokens$[all],msg_opt$,rd_table_chans$[all]
+10070   goto 9900
+10075 endif
+10080 opt_invhdr=num(open_chans$[1])
+10090 dim opt_invhdr$:open_tpls$[1]
+10095 return

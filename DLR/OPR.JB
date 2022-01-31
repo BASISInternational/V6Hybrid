@@ -143,6 +143,7 @@
 2350 LET T9[X,2]=T9[X,2]+W[9],T9[X,3]=T9[X,3]+W[4]
 2900 GOTO 2020
 3000 REM " --- Invioce Totals"
+3005 gosub AvaTax_SLS_TAX_CALC; rem --- V6Hybrid AvaTax sales tax calculation successful?
 3020 GOSUB 5400
 3100 DIM S[2]
 3120 LET S0=0,ORD=0,BO=0,SHIP=0
@@ -170,7 +171,7 @@
 4043 report!.addRow(row$)
 4045 rem ' PRINT (7)@(O[0]-M8-2),"Sales Tax",@(O[1]),T[4]:M1$
 4046 dim row$:rowTemplate$
-4047 row.column07$="Sales Tax"+$00$+"R"; row.column08$=str(T[4]:M1$)+$00$+"R"
+4047 row.column07$="Sales Tax"+$00$+"R"; row.column08$=str(T[4]:M1$)+$00$+"R"; if avataxFailed!.size()>0 then row.column09$="??"+$00$+"L"; rem --- V6Hybrid AvaTax
 4048 report!.addRow(row$)
 4050 rem ' PRINT (7)@(O[1]),J$(1,M1)
 4051 dim row$:rowTemplate$
@@ -261,6 +262,7 @@
 4622 row.column06$=str(T[0]:M3$)+$00$+"R"; row.column07$=str(T[1]:M3$)+$00$+"R"
 4623 report!.addRow(row$)
 4630 LET L=L+2
+4690 gosub AvaTax_Skipped_Invoices; rem --- V6Hybrid AvaTax invoices skipped due to failed tax calculation
 4700 report!.renderReport()
 4990 GOTO 9900
 5000 REM " --- Report Heading"
@@ -325,7 +327,7 @@ rem ' 5220 PRINT (7)FNF$(A0$(5,P[0]),M0$),@(8),B1$(1,30),@(40),A0$(11,7),@(48),A
 5448 report!.addRow(row$)
 5450 rem ' PRINT (7)@(O[0]-M8-2),"Sales Tax",@(O[1]),A[0]:M1$
 5451 dim row$:rowTemplate$
-5452 row.column07$="Sales Tax"+$00$+"R"; row.column08$=str(A[0]:M1$)+$00$+"R"
+5452 row.column07$="Sales Tax"+$00$+"R"; row.column08$=str(A[0]:M1$)+$00$+"R"; row.column09$=avaTax_problem$+$00$+"L"; rem --- V6Hybrid AvaTax
 5453 report!.addRow(row$)
 5460 rem ' PRINT (7)@(O[1]),J$(1,M1)
 5461 dim row$:rowTemplate$
@@ -454,6 +456,42 @@ rem ' 5220 PRINT (7)FNF$(A0$(5,P[0]),M0$),@(8),B1$(1,30),@(40),A0$(11,7),@(48),A
 9390 RETURN
 9900 RUN "SYS.AA"
 9999 END
+
+10000 AvaTax_SLS_TAX_CALC: rem --- V6Hybrid AvaTax sales tax calculation successful?
+10010 avaTax_problem$=""
+10020 redim opt_invhdr$
+10030 opt_invhdr_key$=A0$(1,17)+A0$(42,7)
+10040 readrecord(opt_invhdr,key=opt_invhdr_key$,dom=*next)opt_invhdr$
+10045 if pos(opt_invhdr.firm_id$+opt_invhdr.ar_type$+opt_invhdr.customer_id$+opt_invhdr.order_no$+opt_invhdr.ar_inv_no$=opt_invhdr$)=1 then
+10050   if opt_invhdr.no_sls_tax_calc=1 then
+10055       avaTax_problem$="??"
+10060       rem --- Keep track of invoices skipped due to failed AvaTax tax calculation
+10065       custOrdInv!=bbjAPI().makeVector()
+10070       custOrdInv!.addItem(opt_invhdr.customer_id$)
+10075       custOrdInv!.addItem(opt_invhdr.order_no$)
+10080       custOrdInv!.addItem(opt_invhdr.ar_inv_no$)
+10085       avataxFailed!.addItem(custOrdInv!)
+10090 endif
+10095 return
+
+11000 AvaTax_Skipped_Invoices: rem --- V6Hybrid AvaTax invoices skipped due to failed tax calculation
+11005 if avataxFailed!.size()>0 then
+11010 dim row$:rowTemplate$
+11015 report!.addRow(row$)
+11020 row.column01$="Invoices with failed tax calculation"
+11025 report!.addRow(row$)
+11030 row.column01$="Customer"+"  -  "+"Order"+"  -  "+"Invoice"
+11035 report!.addRow(row$)
+11040   for i=0 to avataxFailed!.size()-1
+11045       custOrdInv!=avataxFailed!.getItem(i)
+11050       row.column01$=custOrdInv!.getItem(0)+"  -  "+custOrdInv!.getItem(1)+"  -  "+custOrdInv!.getItem(2)
+11055       report!.addRow(row$)
+11060   next i
+11070   msg_id$="OP_WARN_BAD_TAX"
+11075   call stbl("+DIR_SYP")+"bac_message.bbj",msg_id$,msg_tokens$[all],msg_opt$,table_chans$[all]
+11080 endif
+11090 return
+
 16000 addColumns:
 16010 rem ' add columns to the Report
 16020 report!.addColumn("Customer^Number  Name","C",23,0,"","L","")
