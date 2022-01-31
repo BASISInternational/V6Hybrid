@@ -38,6 +38,8 @@
 0330 ARM10F: IOLIST X3$
 0340 ARM10G: IOLIST *,X4$
 0350 IVM01A: IOLIST *,X2$,X9$(1)
+0400 gosub AvaTax_open_tables; rem --- V6Hybrid AvaTax open tables
+0450 avataxFailed!=bbjAPI().makeVector()
 0500 REM " --- Initialize Data"
 0510 PRECISION I[2]
 0520 LET H0=0,L9=30,HEADINGS=0,WHEN$=F0$(7,3)
@@ -90,6 +92,8 @@
 1170 IF A0$(21,1)="V" THEN GOTO 1100
 1172 IF O9>1 THEN GOTO 1400
 1175 IF A0$(22,1)<>"I" THEN GOTO 1200
+1177 gosub AvaTax_SLS_TAX_CALC; rem --- V6Hybrid AvaTax sales tax calculation successful?
+1178 if avaTax_problem$="??" then goto 1100
 1180 IF A0$(68,1)="Y" THEN GOTO 1100
 1185 IF A0$(68,1)<>"B" AND A0$(69,1)="Y" THEN GOTO 1100
 1190 LET A0$(69,1)="Y"; WRITE (ARE03_DEV,KEY=A0$(1,20))IOL=ARE03A
@@ -189,8 +193,13 @@
 3030 rem --- V6Demo - create vector of customers/orders to be processed in Jasper report
 3080 IF O9=1 THEN LET A0$(68,1)="B"; WRITE (ARE03_DEV,KEY=A0$(1,20))IOL=ARE03A; custIds!.addItem(A0$(5,6)); orderNos!.addItem(A0$(11,7)); GOTO 1100
 4000 REM " --- Totals"
-4002 if O9=1 then read (are03_dev);call "opc_V6invoice.aon",custIds!,orderNos!,P7$,P5$,MESSAGE$; goto 4190;rem --- V6Demo releases final extract, if applicable, and then calls public to create Jasper invoices
-4005 CLOSE (PRTR_DEV,ERR=4010)
+4001 if avataxFailed!.size()>0 then
+4002    rem --- V6Hybrid AvaTax invoices skipped due to failed tax calculation
+4003    if O9=1 then call stbl("+DIR_SYP")+"bac_message.bbj","OP_WARN_INV_SKIPPED",msg_tokens$[all],msg_opt$,table_chans$[all]
+4004    if O9=2 then gosub AvaTax_invoice_skipped; goto 4100
+4005 endif
+4006 if O9=1 then read (are03_dev);call "opc_V6invoice.aon",custIds!,orderNos!,P7$,P5$,MESSAGE$; goto 4190;rem --- V6Demo releases final extract, if applicable, and then calls public to create Jasper invoices
+4008 CLOSE (PRTR_DEV,ERR=4010)
 4010 IF O9=2 THEN GOSUB 4500; GOTO 4085
 4015 IF O9=3 THEN GOTO 4100
 4020 PRINT @(0,9),'CE',
@@ -204,6 +213,8 @@
 4070 PRINT @(COLUMN,11),FNF$(A0$(5,P[0]),M0$)," ",A0$(42,7),
 4075 EXTRACT (ARE03_DEV,KEY=K1$(1,2)+K1$(4)+"000",DOM=4060)IOL=ARE03A
 4080 IF A0$(68,1)<>"B" THEN GOTO 4060
+4082 gosub AvaTax_SLS_TAX_CALC; rem --- V6Hybrid AvaTax sales tax calculation successful?
+4083 if avaTax_problem$="??" then goto 4060
 4085 LET A0$(68,2)="YN"
 4090 WRITE (ARE03_DEV,KEY=A0$(1,20))IOL=ARE03A
 4095 IF O9=1 THEN GOTO 4060
@@ -367,3 +378,44 @@
 9390 RETURN
 9900 RUN "SYS.AA"
 9999 END
+
+10000 AvaTax_open_tables: rem --- V6Hybrid open tables for AvaTax Interface
+10010 num_files=1
+10020 dim open_tables$[1:num_files],open_opts$[1:num_files],open_chans$[1:num_files],open_tpls$[1:num_files]
+10030 open_tables$[1]="OPT_INVHDR",  open_opts$[1]="OTA"
+10050 call stbl("+DIR_SYP")+"bac_open_tables.bbj",open_beg,open_end,open_tables$[all],open_opts$[all],open_chans$[all],open_tpls$[all],rd_table_chans$[all],open_batch,open_status$
+10060 if open_status$<>"" then
+10062   msg_id$="ENTRY_OPEN_ERROR"
+10064   dim msg_tokens$[1]
+10066   msg_tokens$[1]=open_status$
+10068   call stbl("+DIR_SYP")+"bac_message.bbj",msg_id$,msg_tokens$[all],msg_opt$,rd_table_chans$[all]
+10070   goto 9900
+10075 endif
+10080 opt_invhdr=num(open_chans$[1])
+10090 dim opt_invhdr$:open_tpls$[1]
+10095 return
+
+10100 AvaTax_SLS_TAX_CALC: rem --- V6Hybrid AvaTax sales tax calculation successful?
+10110 avaTax_problem$=""
+10120 redim opt_invhdr$
+10130 opt_invhdr_key$=A0$(1,17)+A0$(42,7)
+10135 readrecord(opt_invhdr,key=opt_invhdr_key$,dom=*next)opt_invhdr$
+10140 if pos(opt_invhdr.firm_id$+opt_invhdr.ar_type$+opt_invhdr.customer_id$+opt_invhdr.order_no$+opt_invhdr.ar_inv_no$=opt_invhdr$)=1 then
+10145   if opt_invhdr.no_sls_tax_calc=1 then
+10150       avaTax_problem$="??"
+10155       rem --- Keep track of invoices skipped due to failed AvaTax tax calculation
+10160       custOrdInv!=bbjAPI().makeVector()
+10165       custOrdInv!.addItem(opt_invhdr.customer_id$)
+10170       custOrdInv!.addItem(opt_invhdr.order_no$)
+10175       custOrdInv!.addItem(opt_invhdr.ar_inv_no$)
+10180       avataxFailed!.addItem(custOrdInv!)
+10185   endif
+10190 endif
+10195 return
+
+10200 AvaTax_invoice_skipped: rem --- V6Hybrid AvaTax invoices skipped due to
+10210 DIM MESSAGE$[1]
+10220 LET MESSAGE$[0]="Invoice NOT printed because of a failed tax calculation."
+10230 LET MESSAGE$[1]="(<Enter>=Continue) "
+10240 CALL "SYC.XA",2,MESSAGE$[ALL],1,-1,-1,V$,V3
+10290 RETURN
