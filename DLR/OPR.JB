@@ -476,12 +476,12 @@ rem ' 5220 PRINT (7)FNF$(A0$(5,P[0]),M0$),@(8),B1$(1,30),@(40),A0$(11,7),@(48),A
 
 11000 AvaTax_Skipped_Invoices: rem --- V6Hybrid AvaTax invoices skipped due to failed tax calculation
 11005 if avataxFailed!.size()>0 then
-11010 dim row$:rowTemplate$
-11015 report!.addRow(row$)
-11020 row.column01$="Invoices with failed tax calculation"
-11025 report!.addRow(row$)
-11030 row.column01$="Customer"+"  -  "+"Order"+"  -  "+"Invoice"
-11035 report!.addRow(row$)
+11010   dim row$:rowTemplate$
+11015   report!.addRow(row$)
+11020   row.column01$="Invoices with failed tax calculation"
+11025   report!.addRow(row$)
+11030   row.column01$="Customer"+"  -  "+"Order"+"  -  "+"Invoice"
+11035   report!.addRow(row$)
 11040   for i=0 to avataxFailed!.size()-1
 11045       custOrdInv!=avataxFailed!.getItem(i)
 11050       row.column01$=custOrdInv!.getItem(0)+"  -  "+custOrdInv!.getItem(1)+"  -  "+custOrdInv!.getItem(2)

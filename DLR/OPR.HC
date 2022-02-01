@@ -46,6 +46,7 @@
 1400 REM " --- Salesperson Summary"
 1410 LET R1$="C",R2$="F",H$="Salesperson",WORK_DEV=ARW21_DEV,P=7,W=20
 1420 GOSUB 6000
+1425 gosub AvaTax_Skipped_Invoices; rem --- V6Hybrid AvaTax invoices skipped due to failed tax calculation
 1430 report!.renderReport()
 4000 REM " --- All done"
 4010 IF NONINV=0 AND INV=0 THEN GOTO 4500
@@ -130,6 +131,24 @@
 9390 RETURN
 9900 RUN "SYS.AA"
 9999 END
+
+11000 AvaTax_Skipped_Invoices: rem --- V6Hybrid AvaTax invoices skipped due to failed tax calculation
+11005 if avataxFailed!.size()>0 then
+11010   dim row$:rowTemplate$
+11015   report!.addRow(row$)
+11020   row.column01$="Invoices with failed tax calculation"
+11025   report!.addRow(row$)
+11030   row.column01$="Customer"+"  -  "+"Order"+"  -  "+"Invoice"
+11035   report!.addRow(row$)
+11035   for i=0 to avataxFailed!.size()-1
+11045       custOrdInv!=avataxFailed!.getItem(i)
+11050       row.column01$=custOrdInv!.getItem(0)+"  -  "+custOrdInv!.getItem(1)+"  -  "+custOrdInv!.getItem(2)
+11055       report!.addRow(row$)
+11060   next i
+11070   msg_id$="OP_WARN_INV_SKIPPED"
+11075   call stbl("+DIR_SYP")+"bac_message.bbj",msg_id$,msg_tokens$[all],msg_opt$,table_chans$[all]
+11080 endif
+11090 return
 
 16000 addColumns:
 16010 rem ' add columns to the Report

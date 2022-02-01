@@ -48,6 +48,8 @@
 0380 GLS01A: IOLIST X$,G1$,G2$,G3$,G4$,G5$,G6$,G7$
 0385 IVS01A: IOLIST X$,X$,I2$,I3$,I4$
 0390 SAS01A: IOLIST SA0$,SA1$(1),SA2$(1)
+0392 gosub AvaTax_open_tables; rem --- V6Hybrid AvaTax open tables
+0394 avataxFailed!=bbjAPI().makeVector()
 0400 REM " --- Parameters"
 0405 DIM G[4],I[6],P[3],V[15],INFO$[20],SA1$(11),SA2$(11)
 0410 FIND (SYS01_DEV,KEY="T"+FID(0),DOM=9800)IOL=SYS01T
@@ -154,6 +156,7 @@
 1155 READ (ARE04_DEV)
 1160 IF K1$(1,3)<>N0$+"I" THEN GOTO 4000
 1165 EXTRACT (ARE03_DEV,KEY=K1$(1,2)+K1$(4)+"000",DOM=1100)IOL=ARE03A
+1167 gosub AvaTax_SLS_TAX_CALC; rem --- V6Hybrid AvaTax sales tax calculation successful?
 1170 IF A0$(68,1)<>"Y" OR POS(A0$(69,1)="12")<>0 THEN GOTO 1100
 1173 LET Z7$="",Z8$=""
 1175 IF A0$(99,1)="Y" THEN FIND (ARE20_DEV,KEY=A0$(1,17),DOM=1180)IOL=ARE20A
@@ -295,7 +298,13 @@
 3515 DIM TAX$(60),Y5$(60)
 3517 LET TAX0=0,TAX1=0,TAX=A[0],TAXTTL=0
 3520 FIND (ARM10_DEV,KEY=N0$+"B"+A0$(80,2),DOM=3582)IOL=ARM10B
-3525 LET TAX$(1)=Y5$,TAX=TAX0*A[4]/100
+3521 if cvs(A0$(11,7),2)<>"" and avaTax_problem$="" then
+3522    rem --- V6Hybrid AvaTax used sales tax service to calculate the tax amount
+3523    ACCOUNT$=TAX$(46,10),AMOUNT=-TAX
+3524    GOSUB GLRECAP
+3525    goto 3800
+3526 endif
+3528 LET TAX$(1)=Y5$,TAX=TAX0*A[4]/100
 3530 PRECISION 2
 3532 LET TAX=TAX*1
 3534 IF TAX1<>0 AND ABS(TAX)>TAX1 THEN LET TAX=TAX1*SGN(TAX)
@@ -492,9 +501,40 @@
 9900 RUN "SYS.AA"
 9999 END
 
-5050 rem ' PRINT (7)"Customer",@(12),"Order",@(21),"Invoice",@(44),"Gross",@(104),"Net",@(116),"Gross",@(126),"Gross"
-5060 rem ' PRINT (7)"No. & Name",@(12),"Number   Number     Date",@(44),"Sales",@(54),"Returns",@(65),"Discount",@(81),"Tax",@(90),"Freight",@(103),"Sales",@(116),"Cost",@(126),"Profit",'LF'
+10000 AvaTax_open_tables: rem --- V6Hybrid open tables for AvaTax Interface
+10010 num_files=1
+10020 dim open_tables$[1:num_files],open_opts$[1:num_files],open_chans$[1:num_files],open_tpls$[1:num_files]
+10030 open_tables$[1]="OPT_INVHDR",  open_opts$[1]="OTA"
+10050 call stbl("+DIR_SYP")+"bac_open_tables.bbj",open_beg,open_end,open_tables$[all],open_opts$[all],open_chans$[all],open_tpls$[all],rd_table_chans$[all],open_batch,open_status$
+10060 if open_status$<>"" then
+10062   msg_id$="ENTRY_OPEN_ERROR"
+10064   dim msg_tokens$[1]
+10066   msg_tokens$[1]=open_status$
+10068   call stbl("+DIR_SYP")+"bac_message.bbj",msg_id$,msg_tokens$[all],msg_opt$,rd_table_chans$[all]
+10070   goto 9900
+10075 endif
+10080 opt_invhdr=num(open_chans$[1])
+10090 dim opt_invhdr$:open_tpls$[1]
+10095 return
 
+
+10100 AvaTax_SLS_TAX_CALC: rem --- V6Hybrid AvaTax sales tax calculation successful?
+10110 avaTax_problem$=""
+10120 redim opt_invhdr$
+10130 opt_invhdr_key$=A0$(1,17)+A0$(42,7)
+10135 readrecord(opt_invhdr,key=opt_invhdr_key$,dom=*next)opt_invhdr$
+10140 if pos(opt_invhdr.firm_id$+opt_invhdr.ar_type$+opt_invhdr.customer_id$+opt_invhdr.order_no$+opt_invhdr.ar_inv_no$=opt_invhdr$)=1 then
+10145   if opt_invhdr.no_sls_tax_calc=1 then
+10150       avaTax_problem$="??"
+10155       rem --- Keep track of invoices skipped due to failed AvaTax tax calculation
+10160       custOrdInv!=bbjAPI().makeVector()
+10165       custOrdInv!.addItem(opt_invhdr.customer_id$)
+10170       custOrdInv!.addItem(opt_invhdr.order_no$)
+10175       custOrdInv!.addItem(opt_invhdr.ar_inv_no$)
+10180       avataxFailed!.addItem(custOrdInv!)
+10185   endif
+10190 endif
+10195 return
 
 16000 addColumns:
 16010 rem ' add columns to the Report
