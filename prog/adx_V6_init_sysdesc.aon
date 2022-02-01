@@ -1,13 +1,10 @@
-rem ==========================================================================
-rem --- adx_V6_initdemo.aon
-rem --- Auto-Launch task that initializes V6demo environment.
+rem ===============================================================================
+rem --- adx_V6_init_sysdesc.aon
+rem --- Auto-Launch task that corrects path in System Description (SYM-04) records.
 rem --- 
 rem --- AddonSoftware V6Hybrid
 rem --- Copyright BASIS International Ltd.  All Rights Reserved.
-rem ==========================================================================
-
-    use java.io.File
-    use ::ado_file.src::FileObject
+rem ===============================================================================
     
     setesc std_error
     seterr std_error
@@ -27,6 +24,10 @@ rem --- Get program arguments
         if cvs(user_id$,2)="" then user_id$=stbl("+USER_ID",err=*next)
         if cvs(user_id$,2)="" then user_id$="ADMIN"
     endif
+
+rem --- IOLIST for System Description (SYM-04) records
+
+SYM04A: IOLIST A0$(1),A1$(1),A2$(1),A3$(1),A[ALL]
 
 rem --- Initializations
 
@@ -50,69 +51,58 @@ rem --- Open File(s)
     ads_autolaunch=num(open_chans$[1]);dim ads_autolaunch$:open_tpls$[1]
     ddm_systems=num(open_chans$[2]);dim ddm_systems$:open_tpls$[2]
 
+rem --- init progress meter
+
+    total_recs=10
+    curr_rec=0
+    task_val$="UPDTSYSDESC"
+    task_desc$="Update System Descs"
+
+    progress! = bbjAPI().getGroupNamespace()
+    progress!.setValue("+process_task",task_val$+"^C^"+task_desc$+"^CNC^"+str(total_recs)+"^")
+
 rem --- Derive base installation directory for Addon
 
-    readrecord(ddm_systems,key=pad("ADDON",16),dom=std_exit)ddm_systems$
-    baseDir$=ddm_systems.mount_dir$
-    baseDir$=FileObject.fixPath(baseDir$, "/")
-    strip_pos=pos("/aon/"=cvs(baseDir$,2))
-    if strip_pos
-        baseDir$=baseDir$(1,strip_pos)
-    else
-        goto std_exit
-    endif
+    readrecord(ddm_systems,key=pad("V6HYBRID",16),dom=std_exit)ddm_systems$
+    baseDir!=ddm_systems.mount_dir$
+    baseDir$=baseDir!.replace("\", "/")
 
 rem --- Do the processing
 
-    gosub rename_menus
+    gosub update_system_desc
     
     goto done
 
-rename_menus:
-rem --- Rename Addon's aon/data/sync/ xml's (adm_mnu_item*.xml and adm_mnu_trans*.xml) to have V6H at the end
-rem --- Also delete records from the actual menu tables (adm_mnu_item.dat and adm_mnu_trans.dat) that have ADDON as the mount_sys_id
-rem --- This leaves just the V6Hybrid menu in place, and should prevent subsequent sync's from syncing back in the aon/data/sync/ entries
-rem --- Note: this is new for v21 since menu is now table-based. Older versions simply renamed addon.men so Barista would only 'see' v6hybrid.men.
+update_system_desc:
+rem --- Loop through system description (SYM-04) records
+rem --- Update the DATA_PATH and PROGRAM_PATH fields (A2$,A3$) to reference current install location for V6Hybrid
 
-    sync_dir_dev=unt
-    sync_dir$=baseDir$+"aon/data/sync/"
-    open(sync_dir_dev)sync_dir$
+    SYM04_DEV=unt
+    open(SYM04_DEV)stbl("+V6DATA")+"SYM-04"
+    
+    dim A0$(2),A1$(64),A2$(50),A3$(50),A[2]
 
     while 1
-        readrecord (sync_dir_dev,end=*break)sync_file$
-        syncFile!=sync_file$
-        if (syncFile!.startsWith("adm_mnu_item") or syncFile!.startsWith("adm_mnu_trans")) and syncFile!.endsWith(".xml")
-            menuFile!=new File(sync_dir$+syncFile!)
-            rename_file$=sync_dir$+menuFile!.getName()+".V6H"
-            newFile!=new File(rename_file$)
-            rename menuFile!.getAbsolutePath() to newFile!.getAbsolutePath()
+        read(SYM04_DEV,err=*break)IOL=SYM04A
+        if A1$(39,1)="Y"
+            tpos=pos("/"=A2$,-1,1)
+            if tpos
+                A2$(1)=baseDir$+A2$(tpos+1)
+            endif
+            tpos=pos("/"=A3$,-1,1)
+            if tpos
+                A3$(1)=baseDir$+A3$(tpos+1)
+            endif
+            write(SYM04_DEV,key=A0$(1,2))IOL=SYM04A
         endif
+        curr_rec=curr_rec+1
+        progress!.setValue("+process_task",task_val$+"^U^"+str(curr_rec)+"^")
     wend
-    
-    close(sync_dir_dev)
-
-    sql_chan=sqlunt
-    sqlopen(sql_chan)stbl("+DBNAME")
-    
-    sql_prep$="DELETE FROM ADM_MNU_ITEM WHERE MOUNT_SYS_ID='ADDON'"
-    sqlprep(sql_chan)sql_prep$
-    sqlexec(sql_chan)
-
-    sql_prep$="DELETE FROM ADM_MNU_TRANS WHERE MOUNT_SYS_ID='ADDON'"
-    sqlprep(sql_chan)sql_prep$
-    sqlexec(sql_chan)
-
-    close(sql_chan)
-
-    rdGlobalSpace!=BBjAPI().getGlobalNamespace()
-    rdGlobalSpace!.setValue("+rebuild_menu","ALL")
-
-    return
 	
 done: rem --- All done
 
     rem --- Update AutoLaunch Status
-    extractrecord(ads_autolaunch,key="V6INITDEMO")ads_autolaunch$; rem Advisory Locking
+    extractrecord(ads_autolaunch,key="V6SYSDESCS")ads_autolaunch$; rem Advisory Locking
     ads_autolaunch.process_status$="C"
     ads_autolaunch.trans_date$=date(0:"%Yl%Mz%Dz")
     ads_autolaunch.trans_time$=date(0:"%Hz%mz%sz")
@@ -197,6 +187,7 @@ rem #include std_end.src
 
 std_exit: rem --- Standard program end (01Mar2006)
 
+    progress!.setValue("+process_task",task_val$+"^D^")
     run stbl("+DIR_SYP",err=*next)+"bas_process_end.bbj",err=*next
     release
 

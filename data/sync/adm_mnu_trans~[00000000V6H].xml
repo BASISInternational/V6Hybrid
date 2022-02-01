@@ -1813,6 +1813,16 @@
 	</barista_record>
 	<barista_record>
 		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>911d7f1f-0289-47f7-8532-e9d746ecd60e</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW>N</NO_SHOW>
+		<MENU_DESC>Update System Description Records</MENU_DESC>
+		<ASC_COMP_ID>00000000</ASC_COMP_ID>
+		<ASC_PROD_ID>V6H</ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
 		<MENUITEM_ID>9219c1ed-1782-461d-b167-025cb16be4d9</MENUITEM_ID>
 		<LANG_ID>ENU</LANG_ID>
 		<NO_SHOW> </NO_SHOW>
