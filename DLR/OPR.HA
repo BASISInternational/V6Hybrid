@@ -137,7 +137,7 @@
 0992 report! = new DocoutWrapper(n0$, "InvoiceRegister", docname$, xUserName$, xPassword$)
 0993 gosub addColumns; gosub addHeadings; gosub setOutputAction
 
-0990 GOSUB 6100
+0995 GOSUB 6100
 1000 REM " --- Initial Read"
 1010 IF SEQ$="C" THEN GOTO 1040
 1020 READ (ARW04_DEV,KEY=N0$,DOM=1100)
