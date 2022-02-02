@@ -1,0 +1,250 @@
+rem AddonSoftware
+rem Copyright BASIS International Ltd.
+rem 
+rem after write
+rem This trigger assumes that it is being used in a non-modified Barista and Addon
+rem Version 6 environment. If there have been any modifications to these systems,
+rem be sure to thoroughly examine this trigger and test changes.
+
+rem --- Trigger for V6 AvaTax Interface
+rem --- Write Barista Addon's arm_custmast and maybe also arc_shipviacode after writing V6's ARM-01
+
+	setopts $080872202c2e$
+	seterr trigger_error
+
+    rem ' trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
+    tfl$="C:/temp/arm01triggertrace_V6.txt"
+    erase tfl$,err=*next
+    string tfl$
+    tfl=unt
+    open(tfl)tfl$
+    settrace(tfl,MODE="UNTIMED")
+skip_trace:
+
+rem ---  Get the Trigger object from the BBj File System
+
+    td! = BBjAPI().getFileSystem().getTriggerData()
+
+	wkdir$ = dir("")
+	ardir$ = stbl("+ARDATA")
+
+rem --- Template for the V6 ARM-01 record being caught
+
+    intemp$="firm_id:c(2),customer_nbr:c(6*=10),cust_name:c(30),addr_line_1:c(24),addr_line_2:c(24),"
+    intemp$=intemp$+"addr_line_3:c(24),zip_code:c(9),phone_number:c(10),phone_exten:c(4),resale_nbr:c(20),"
+    intemp$=intemp$+"alt_sequence:c(10),opened_date:c(3),ar_ship_via:c(10),fax_number:c(10),addr_line_4:c(24),"
+    intemp$=intemp$+"addr_line_5:c(24),retain_cust:c(1),contact_name:c(20),db_number:c(9),sic_code:c(8),"
+    intemp$=intemp$+"country:c(24),fob:c(15),op_frt_terms:c(2*=10)"
+
+	dim inRec$:intemp$
+    inRec$=td!.getWriteBuffer()
+
+rem --- Open Barista Addon ARM_CUSTMAST and ARC_SHIPVIACODE and get their templates
+
+	arm_custmast=unt
+	open (arm_custmast)ardir$+"arm-01"
+    arc_shipviacode=unt
+    open (arc_shipviacode)ardir$+"arc_shipviacode"
+	tpl_dev=unt
+	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
+	read (tpl_dev,key=pad("ARM_CUSTMAST",16),dom=trigger_error) *,*,arm_custmast_tpl$
+	dim arm_custmast$:arm_custmast_tpl$
+	read (tpl_dev,key=pad("ARC_SHIPVIACODE",16),dom=trigger_error) *,*,arc_shipviacode_tpl$
+	dim arc_shipviacode$:arc_shipviacode_tpl$
+	
+rem --- Write the data
+
+    arm_custmast.firm_id$=inRec.firm_id$
+    arm_custmast.customer_id$=inRec.customer_nbr$
+    
+    readrecord(arm_custmast,key=arm_custmast.firm_id$+arm_custmast.customer_id$,dom=*next)arm_custmast$
+    
+    address$=inRec.addr_line_1$+inRec.addr_line_2$+inRec.addr_line_3$+inRec.addr_line_4$+inRec.addr_line_5$
+    arm_custmast.city$=""
+    arm_custmast.state_code$=""
+    gosub reformat_address
+
+    arm_custmast.customer_name$=inRec.cust_name$
+    arm_custmast.addr_line_1$=address$(1,24)
+    arm_custmast.addr_line_2$=address$(25,24)
+    arm_custmast.addr_line_3$=address$(49,24)
+    arm_custmast.zip_code$=inRec.zip_code$
+    arm_custmast.phone_no$=inRec.phone_number$
+    arm_custmast.phone_exten$=inRec.phone_exten$
+    arm_custmast.resale_no$=inRec.resale_nbr$
+    arm_custmast.alt_sequence$=inRec.alt_sequence$
+    arm_custmast.ar_ship_via$=inRec.ar_ship_via$
+    arm_custmast.fax_no$=inRec.fax_number$
+    arm_custmast.addr_line_4$=address$(73,24)
+    arm_custmast.city$=city$
+    arm_custmast.state_code$=state$
+    arm_custmast.retain_cust$=inRec.retain_cust$
+    arm_custmast.contact_name$=inRec.contact_name$
+    arm_custmast.db_no$=inRec.db_number$
+    arm_custmast.sic_code$=inRec.sic_code$
+    arm_custmast.country$=inRec.country$
+    arm_custmast.fob$=inRec.fob$
+    arm_custmast.opened_date$=fnfulldate$(inrec.opened_date$)
+
+    arm_custmast$=field(arm_custmast$)
+    writerecord (arm_custmast)arm_custmast$
+    
+    rem --- see if the ar_ship_via$ exists in arc_shipviacode$, and add if not (it's a text field in V6, but validated in Addon)
+    arc_shipviacode.firm_id$=inRec.firm_id$
+    arc_shipviacode.ar_ship_via$=inRec.ar_ship_via$
+    found=0
+    readrecord(arc_shipviacode,key=arc_shipviacode.firm_id$+arc_shipviacode.ar_ship_via$,dom=*next)arc_shipviacode$;found=1
+    if !found
+        writerecord(arc_shipviacode)arc_shipviacode$
+    endif
+
+	goto std_exit
+
+reformat_address:
+
+    dim state$(2),city$(24);rem --- This code is based on the same routine in DataPort_main.bbj
+    states$="ALAKAZARCACOCTDEDCFLGAHIIDILINIAKSKYLAMEMDMAMIMNMSMOMTNENVNHNJNMNYNCNDOHOKORPAPRRISCSDTNTXUTVTVAVIWAWVWIWY"
+    states$=states$+"ABBCMBNBNLNSNTNUONPEQCSKYT"; rem ' Canadian province/territory codes
+    city$=cvs(arm_custmast.city$,3)
+    state$=cvs(arm_custmast.state_code$,3)
+    zip$=cvs(arm_custmast.zip_code$,3)
+
+    if city$="" or state$="" or zip$="" then
+        if len(address$) and mod(len(address$),24)=0 then
+            for x=len(address$) to 1 step -24
+                string1$=cvs(address$(x-23,24),3)
+                if string1$="" then continue
+                string2$=""
+                string3$=""
+                string4$=""
+
+                rem --- Does this address line hold the zip code and/or state code?
+                if state$="" or zip$="" then
+                    string2_pos=pos(" "=string1$,-1)
+                    if string2_pos then
+                        string2$=cvs(string1$(string2_pos+1),2)
+                    else
+                        string2$=string1$
+                    endif
+                    rem --- Does this address line hold the zip code?
+                    if zip$="" then
+                        string2_len$=str(len(string2$))
+                        switch (BBjAPI().TRUE)
+                            case string2_len$="5"
+                            case string2_len$="9"
+                                if num(string2$,err=*endif) then
+                                    zip$=string2$
+                                    address$(x-23+string2_pos,24-string2_pos)=""
+                                endif
+                                break
+                            case string2_len$="10"
+                                if pos("-"=string2$,1,0)=1 and pos("-"=string2$,1)=6 then
+                                    if num(string2$(1,5)+string2$(7),err=*endif) then
+                                        zip$=string2$(1,5)+string2$(7)
+                                        address$(x-23+string2_pos,24-string2_pos)=""
+                                    endif
+                                endif
+                                break
+                            case default
+                                break
+                        swend
+                    endif
+                
+                    rem --- Does this address line hold the state code?
+                    if state$="" then 
+                        if zip$="" or string2$=string1$ or len(string2$)=2 then
+                            rem --- Does this address line hold the state code without the zip code?
+                            if len(string2$)=2 then
+                                if pos(string2$=states$,2) then
+                                    state$=string2$
+                                    address$(x-23+string2_pos,24-string2_pos)=""
+                                endif
+                            else
+                                string3_pos=pos(" "=string2$,-1)
+                                if string3_pos then
+                                    string3$=cvs(string2$(string3_pos+1),2)
+                                else
+                                    string3$=string2$
+                                endif
+                                if len(string3$)=2 and pos(string3$=states$,2) then
+                                    state$=string3$
+                                    address$(x-23+string2_pos+string3_pos,24-string2_pos+string3_pos)=""
+    								string4$=cvs(address$(x-23,24),2)
+                                else
+                                    string4$=string3$
+                                endif
+                            endif
+                        else
+                            rem --- Does this address line hold the state code in addition to the zip code?
+                            if string2$<>string1$ then
+                                string2_pos=pos(string2$=string1$,-1)
+                                string3$=cvs(string1$(1,string2_pos-1),2)
+                                if len(string3$)=2 then
+                                    if pos(string3$=states$,2) then
+                                        state$=string3$
+                                        address$(x-23+string2_pos,24-string2_pos)=""
+                                    endif
+                                else
+                                    string3_pos=pos(" "=string3$,-1)
+                                    if string3_pos then
+                                        string3$=cvs(string3$(string3_pos+1),2)
+                                        string3_pos=string2_pos-string3_pos
+                                    endif
+                                    if len(string3$)=2 and pos(string3$=states$,2) then
+                                        state$=string3$
+                                        address$(x-23+string2_pos-string3_pos,24-string2_pos+string3_pos)=""
+    									string4$=cvs(address$(x-23,24),2)
+                                    else
+                                        string4$=string3$
+                                    endif
+                                endif
+                            endif
+                        endif
+                    endif
+                
+                    rem --- Does this address line hold the city in addition to the state code?
+                    if state$<>"" and string4$<>"" then
+                        city$=cvs(string4$,3)
+                        address$(x-23,24)=""
+                    endif
+                endif
+
+                rem --- Does this address line hold just the city?
+                if city$="" and state$<>cvs(string1$,3) then
+                    rem --- Skip the first address line when city hasn't been found yet
+                    if x>24 then
+                        if state$<>"" and pos(" "+state$+" "=string1$+" ",-1) then
+                            rem --- Previously entered state code is at the end of this line too.
+                            string1$=string1$(1,pos(" "+state$+" "=string1$+" ",-1)-1)
+                        endif
+                        city$=cvs(string1$,3)
+                        address$(x-23,24)=""
+                    endif
+                endif
+
+                rem --- Done once we have the city.
+                if city$<>"" then break
+            next x
+        endif
+    endif
+    
+    rem --- Strip trailing comma from city
+    if city$<>"" then
+        if city$(len(city$))="," then city$=city$(1,len(city$)-1)
+    endif
+
+    return
+
+rem --- Functions
+
+rem --- convert V6 3-char packed date to YYYYMMDD
+    def fnfulldate$(value$)=str(asc(value$)-32+1900)+str(asc(value$(2))-32:"00")+str(mod(asc(value$(3))-32,100):"00")
+
+trigger_error:
+
+    rd_err_text$="", err_num=err
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    throw "["+pgm(-2)+"] "+str(tcb(5))+": "+rd_err_text$,err_num
+	
+std_exit:
