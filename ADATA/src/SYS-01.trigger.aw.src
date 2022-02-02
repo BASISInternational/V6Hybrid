@@ -61,6 +61,7 @@ rem --- Templates for the V6 ARS-01A or B records being caught
             swend
         break
         case default
+            goto std_exit
         break
     swend
     dim inRec$:intemp$
