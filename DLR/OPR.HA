@@ -300,7 +300,7 @@
 3520 FIND (ARM10_DEV,KEY=N0$+"B"+A0$(80,2),DOM=3582)IOL=ARM10B
 3521 if cvs(A0$(11,7),2)<>"" and avaTax_problem$="" then
 3522    rem --- V6Hybrid AvaTax used sales tax service to calculate the tax amount
-3523    ACCOUNT$=TAX$(46,10),AMOUNT=-TAX
+3523    TAX$(1)=Y5$,ACCOUNT$=TAX$(46,10),AMOUNT=-TAX
 3524    GOSUB GLRECAP
 3525    goto 3800
 3526 endif

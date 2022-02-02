@@ -180,9 +180,11 @@
 4910 rem ' CLOSE (7,ERR=4920)
 4920 CLOSE (GLM03_DEVTMP,ERR=4930)
 4930 LET GLM03_DEVTMP=0
-4940 if txt then gosub make_pdf
-4950 rem ' render the docout object
-4960 gosub showReport
+4940 if GLCONTROL$(50,1)="Y" then
+4950    REM "Print GL Sales Detail Report
+4960    if txt then gosub make_pdf
+4970    gosub showReport
+4980 endif
 4990 RUN UPDATE$,ERR=9900
 5000 REM " --- Report Heading"
 5010 LET L=HEADINGS+1
