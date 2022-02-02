@@ -400,7 +400,7 @@
 10120 redim opt_invhdr$
 10130 opt_invhdr_key$=A0$(1,17)+A0$(42,7)
 10135 readrecord(opt_invhdr,key=opt_invhdr_key$,dom=*next)opt_invhdr$
-10140 if pos(opt_invhdr.firm_id$+opt_invhdr.ar_type$+opt_invhdr.customer_id$+opt_invhdr.order_no$+opt_invhdr.ar_inv_no$=opt_invhdr$)=1 then
+10140 if pos(opt_invhdr.firm_id$+opt_invhdr.ar_type$+opt_invhdr.customer_id$+opt_invhdr.order_no$+opt_invhdr.ar_inv_no$=opt_invhdr_key$)=1 then
 10145   if opt_invhdr.no_sls_tax_calc=1 then
 10150       avaTax_problem$="??"
 10155       rem --- Keep track of invoices skipped due to failed AvaTax tax calculation

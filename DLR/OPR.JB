@@ -462,7 +462,7 @@ rem ' 5220 PRINT (7)FNF$(A0$(5,P[0]),M0$),@(8),B1$(1,30),@(40),A0$(11,7),@(48),A
 10020 redim opt_invhdr$
 10030 opt_invhdr_key$=A0$(1,17)+A0$(42,7)
 10040 readrecord(opt_invhdr,key=opt_invhdr_key$,dom=*next)opt_invhdr$
-10045 if pos(opt_invhdr.firm_id$+opt_invhdr.ar_type$+opt_invhdr.customer_id$+opt_invhdr.order_no$+opt_invhdr.ar_inv_no$=opt_invhdr$)=1 then
+10045 if pos(opt_invhdr.firm_id$+opt_invhdr.ar_type$+opt_invhdr.customer_id$+opt_invhdr.order_no$+opt_invhdr.ar_inv_no$=opt_invhdr_key$)=1 then
 10050   if opt_invhdr.no_sls_tax_calc=1 then
 10055       avaTax_problem$="??"
 10060       rem --- Keep track of invoices skipped due to failed AvaTax tax calculation
