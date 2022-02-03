@@ -53,6 +53,7 @@
 0380 IVM02A: IOLIST X0$,X1$
 0500 REM " --- Initializations"
 0510 DIM C[2],T[15],X1$(20)
+0520 invNotCommitted$=""; rem --- V6H AvaTax
 0700 REM " --- Background"
 0710 PRINT @(40,5),"2 - Inventory And General Ledger",'CL',
 1000 REM " --- Position file"
@@ -60,14 +61,28 @@
 1100 REM " --- Read next invoice header"
 1105 PRECISION 2
 1110 LET K2$="",K3$="",K4$=""
-1120 LET K0$=KEY(ARE04_DEV,END=4000)
-1130 READ (ARE04_DEV)
-1135 IF K0$(1,3)<>N0$+"I" THEN GOTO 4000
-1140 EXTRACT (ARE03_DEV,KEY=K0$(1,2)+K0$(4)+"000",DOM=1100)IOL=ARE03A
-1145 IF A0$(68,2)<>"Y1" AND A0$(68,2)<>"Y2" THEN GOTO 1100
-1150 IF A0$(99,1)<>"Y" THEN GOTO 1170
-1155 DIM H0$(56),H1$(30),H[1]
-1160 FIND (ARE20_DEV,KEY=A0$(1,17),DOM=1170)IOL=ARE20A
+1115 LET K0$=KEY(ARE04_DEV,END=4000)
+1120 READ (ARE04_DEV)
+1125 IF K0$(1,3)<>N0$+"I" THEN GOTO 4000
+1130 EXTRACT (ARE03_DEV,KEY=K0$(1,2)+K0$(4)+"000",DOM=1100)IOL=ARE03A
+1135 IF A0$(68,2)<>"Y1" AND A0$(68,2)<>"Y2" THEN GOTO 1100
+1137 rem --- V6Hybrid AvaTax commit AvaTax transaction for successful sales tax calculation
+1138 if salesTax!<>null() then 
+1139    gosub AvaTax_SLS_TAX_CALC; rem --- V6Hybrid AvaTax sales tax calculation successful?
+1140    if cvs(opt_invhdr.ar_inv_no$,2)<>"" and avaTax_problem$="" then
+1141        success=0
+1142        transaction!=salesTax!.commitTransaction(A0$(5,6), A0$(11,7), A0$(42,7), "",err=*next); success=1
+1143        if success then
+1144           gosub AvaTax_remove_obsolete_records; rem --- V6Hybrid AvaTax remove records no longer needed for AvaTax interface
+1145        else
+1146            ar_inv_no=invNotCommitted$+ar_inv_no$+"; "
+1147            goto 1100
+1148        endif
+1149    endif
+1150 endif
+1155 IF A0$(99,1)<>"Y" THEN GOTO 1170
+1160 DIM H0$(56),H1$(30),H[1]
+1165 FIND (ARE20_DEV,KEY=A0$(1,17),DOM=1170)IOL=ARE20A
 1170 IF FNP$(A0$(24,3))="" THEN LET A0$(24,3)=F0$(7,3)
 1175 LET A0$(69,1)="2"
 1180 WRITE (ARE03_DEV,KEY=A0$(1,20))IOL=ARE03A
@@ -303,12 +318,6 @@
 3870 LET D[8]=D[8]+T0,D[9]=D[9]+T1
 3880 IF D[21]<Q9 THEN LET D[21]=Q9
 3890 WRITE (ARM06_DEV,KEY=D0$)IOL=ARM06A
-3891 rem --- V6H - commit the transaction
-3892 use ::opo_AvaTaxInterface.aon::AvaTaxInterface
-3893 sysgui_dev=unt; open (sysgui_dev)"X0"; sysGui!=BBjAPI().getSysGui(); Form!=sysGui!.addWindow(sysGui!.getAvailableContext(),10,10,20,20,"",$00000010$);rem small hidden window to facilitate progress meter when connecting to AvaTax (since hidden, progress meter won't show, but busyimagestart() method requires a BBjTopLevelWindow) 
-3894 salesTax!=new AvaTaxInterface(N0$)
-3895 success=salesTax!.connectClient(Form!);success=1
-3896 if success then transaction!=salesTax!.commitTransaction(A0$(5,6), A0$(11,7), A0$(42,7), "",err=*next)
 3900 REM " --- Remove/Rewrite Header"
 3905 REMOVE (ARE04_DEV,KEY=K0$,DOM=3910)
 3910 LET X0$=A0$,X0$(11,7)=X0$(42,7),X0$(42,7)=A0$(11,7),A[6]=T0,A[7]=T1
@@ -343,6 +352,14 @@
 4050 NEXT X
 4060 WRITE (ARS10_DEV,KEY=X0$)IOL=ARS10S
 4080 IF GL$="Y" THEN CALL "GLC.CA",STATUS
+4081 if salesTax!<>null() then salesTax!.close(); rem --- V6Hybrid AvaTax close connection to Sales Tax Service
+4082 if invNotCommitted$<>"" then
+4083    rem --- V6Hybrid AvaTax warn about invoices where committing AvaTax sales tax transaction failed
+4084    msg_id$ = "OP_INV_NOT_COMMITTED"
+4085    dim msg_tokens$[1]
+4086    msg_tokens$[1] = invNotCommitted$
+4087    call stbl("+DIR_SYP")+"bac_message.bbj",msg_id$,msg_tokens$[all],msg_opt$,rd_table_chans$[all]
+4088 endif
 4090 GOTO 9900
 6000 REM " --- Inventory Item Update"
 6010 LET IV_INFO$[1]=W0$(31,2),IV_INFO$[2]=W0$(33,20),IV_INFO$[3]=LS_NBR$
@@ -401,10 +418,16 @@
 6700 REM " --- Calculate and store taxes"
 6705 PRECISION 4
 6710 DIM X0$(60),TAX$(60)
-6720 LET X$=N0$+A0$(80,2)+FNYY_YY21$(FNA$(A0$(24,1),A0$(24,3)))+FNA$(A0$(25,1)
-6720:,A0$(24,3))
-6725 LET X0=0,X1=0,X=A[0],Y=0
-6730 FIND (ARM10_DEV,KEY=N0$+"B"+A0$(80,2),DOM=6855)IOL=ARM10B
+6715 LET X$=N0$+A0$(80,2)+FNYY_YY21$(FNA$(A0$(24,1),A0$(24,3)))+FNA$(A0$(25,1),A0$(24,3))
+6720 LET X0=0,X1=0,X=A[0],Y=0
+6725 FIND (ARM10_DEV,KEY=N0$+"B"+A0$(80,2),DOM=6855)IOL=ARM10B
+6727 if cvs(opt_invhdr.ar_inv_no$,2)<>"" and avaTax_problem$="" then
+6728    rem --- V6Hybrid AvaTax used successfully for the sales tax calculation
+6729    GOSUB 6600
+6730    TAX$(1)=X0$,ACCOUNT$=TAX$(46,10),AMOUNT=-X,UNITS=0
+6731    GOSUB GLPOST
+6732    goto 6895
+6733 endif
 6735 LET TAX$(1)=X0$,X=X0*A[4]/100
 6740 PRECISION 2
 6745 LET X=X*1
@@ -487,3 +510,31 @@
 9390 RETURN
 9900 RUN "SYS.AA"
 9999 END
+
+10100 AvaTax_SLS_TAX_CALC: rem --- V6Hybrid AvaTax sales tax calculation successful?
+10110 avaTax_problem$=""
+10120 redim opt_invhdr$
+10130 opt_invhdr_key$=A0$(1,17)+A0$(42,7)
+10135 readrecord(opt_invhdr,key=opt_invhdr_key$,dom=*next)opt_invhdr$
+10140 if pos(opt_invhdr.firm_id$+opt_invhdr.ar_type$+opt_invhdr.customer_id$+opt_invhdr.order_no$+opt_invhdr.ar_inv_no$=opt_invhdr_key$)=1 then
+10145   if opt_invhdr.no_sls_tax_calc=1 then
+10150       avaTax_problem$="??"
+10185   endif
+10190 endif
+10195 return
+
+10200 AvaTax_remove_obsolete_records: rem --- V6Hybrid AvaTax remove records no longer needed for AvaTax interface
+10205 remove(opt_invhdr,key=opt_invhdr_key$,dom=*next)
+10210 read(opt_invdet,key=opt_invhdr_key$,dom=*next)
+10215 while 1
+10220   opt_invdet_key$=key(opt_invdet,end=*break)
+10225   if pos(opt_invdet_key=opt_invhdr_key$)<>1 then break
+10230   remove(opt_invdet,key=opt_invdet_key$,dom=*next)
+10235 wend
+10240 read(opt_invship,key=opt_invhdr_key$,dom=*next)
+10245 while 1
+10250   opt_invship_key$=key(opt_invship,end=*break)
+10255   if pos(opt_invship_key=opt_invhdr_key$)<>1 then break
+10260   remove(opt_invship,key=opt_invship_key$,dom=*next)
+10265 wend
+10290 return
