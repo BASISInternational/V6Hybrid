@@ -61,19 +61,30 @@
 1100 REM " --- Read next invoice header"
 1105 PRECISION 2
 1110 LET K2$="",K3$="",K4$=""
-1115 LET K0$=KEY(ARE04_DEV,END=4000)
-1120 READ (ARE04_DEV)
-1125 IF K0$(1,3)<>N0$+"I" THEN GOTO 4000
-1130 EXTRACT (ARE03_DEV,KEY=K0$(1,2)+K0$(4)+"000",DOM=1100)IOL=ARE03A
-1135 IF A0$(68,2)<>"Y1" AND A0$(68,2)<>"Y2" THEN GOTO 1100
-1137 rem --- V6Hybrid AvaTax commit AvaTax transaction for successful sales tax calculation
-1138 if salesTax!<>null() then 
-1139    gosub AvaTax_SLS_TAX_CALC; rem --- V6Hybrid AvaTax sales tax calculation successful?
-1140    if cvs(opt_invhdr.ar_inv_no$,2)<>"" and avaTax_problem$="" then
-1141        success=0
-1142        transaction!=salesTax!.commitTransaction(A0$(5,6), A0$(11,7), A0$(42,7), "",err=*next); success=1
+1112 LET K0$=KEY(ARE04_DEV,END=4000)
+1114 READ (ARE04_DEV)
+1116 IF K0$(1,3)<>N0$+"I" THEN GOTO 4000
+1118 EXTRACT (ARE03_DEV,KEY=K0$(1,2)+K0$(4)+"000",DOM=1100)IOL=ARE03A
+1120 IF A0$(68,2)<>"Y1" AND A0$(68,2)<>"Y2" THEN GOTO 1100
+1126 if salesTax!<>null() then 
+1127    gosub AvaTax_SLS_TAX_CALC; rem --- V6Hybrid AvaTax sales tax calculation successful?
+1128    if cvs(opt_invhdr.ar_inv_no$,2)<>"" then
+1129        if avaTax_problem$="" then
+1130            rem --- V6Hybrid AvaTax commit AvaTax transaction for successful sales tax calculation
+1131            success=0
+1132            transaction!=salesTax!.commitTransaction(A0$(5,6), A0$(11,7), A0$(42,7), "",err=*next); success=1
+1133        else
+1134            rem --- V6Hybrid AvaTax void possible uncommitted transaction for on-demand or cash invoice when sales tax service failed. 
+1135            if cvs(ope01a.credit_invoice$,2)="" then
+1136                transType$="SalesInvoice"
+1137            else
+1138                transType$="ReturnInvoice"
+1139            endif
+1140            success=0
+1141            salesTax!.voidTransaction(customer_id$, order_no$, ar_inv_no$, transType$, err=*next); success=1
+1142        endif
 1143        if success then
-1144           gosub AvaTax_remove_obsolete_records; rem --- V6Hybrid AvaTax remove records no longer needed for AvaTax interface
+1144            gosub AvaTax_remove_obsolete_records; rem --- V6Hybrid AvaTax remove records no longer needed for AvaTax interface
 1145        else
 1146            ar_inv_no=invNotCommitted$+ar_inv_no$+"; "
 1147            goto 1100
