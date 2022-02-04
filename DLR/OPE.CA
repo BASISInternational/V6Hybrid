@@ -1,0 +1,221 @@
+0010 REM "OPE - Invoice Entry"
+0020 REM "Program OPE.CA"
+0022 REM "+-----------------------------------------------------------+"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.7 - 01Jul00 |"
+0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0028 REM "|                  All Rights Reserved                      |"
+0030 REM "+-----------------------------------------------------------+"
+0031 REM "19Feb97 WGH: Use IV Price Mask for price fields (280,490)"
+0032 REM "14Oct99 WGH: OP Terminal IDs are 4-characters long (6010)
+0040 REM 
+0050 REM "S$=General Flag String: (1,1)=Check credit limit - 0=YES, 1=NO
+0051 REM "                        (2,1)=Cash sales (parameter) - 0=OFF, 1=ON
+0052 REM "                        (3,1)=Cash sales (any acct) - 0=OFF, 1=ON
+0053 REM "                        (4,1)=New line in CD pgm - 0=NO, 1=YES
+0054 REM "                        (5,1)=Orig entry in CD pgm - 0=NO, 1=YES
+0055 REM "                        (6,1)=Enter price in CD pgm - 0=NO, 1=YES
+0056 REM "                        (7,1)=Call up old invoice/order - 0=N0, 1=YE
+0056:S
+0057 REM "                        (8,1)=Obsolete flag, no longer used
+0058 REM "                        (9,1)=Convert quote to sale - 0=NO, 1=YES
+0059 REM "                       (10,1)=Obsolete flag, no longer used
+0060 REM "                       (11,1)=Obsolete flag, no longer used
+0061 REM "                       (12,1)=Temp/New customer flag - 0=NO, 1=YES
+0070 BEGIN
+0085 SETESC 9000
+0090 SETERR 9000
+0100 REM " --- Open/Lock Files "
+0105 LET FILES=32
+0110 DIM FILES$[FILES],OPTIONS$[FILES],CHANNELS[FILES]
+0115 LET FILES$[1]="ARE-03",FILES$[2]="ARE-04",FILES$[3]="ARE-07",FILES$[4]="A
+0115:RE-13"
+0120 LET FILES$[5]="ARE-33",FILES$[6]="ARM-01",FILES$[7]="ARM-02",FILES$[8]="A
+0120:RM-03"
+0125 LET FILES$[9]="ARM-04",FILES$[10]="ARM-05",FILES$[11]="ARM-07",FILES$[12]
+0125:="ARM-10"
+0130 LET FILES$[13]="ARM-14",FILES$[14]="ARS-10",FILES$[15]="ART-03",FILES$[16
+0130:]=""
+0135 LET FILES$[17]="ART-13",FILES$[18]="ART-33",FILES$[19]="ART-53",FILES$[20
+0135:]="IVM-01"
+0140 LET FILES$[21]="IVM-02",FILES$[22]="IVM-03",FILES$[23]="IVM-06",FILES$[24
+0140:]="IVM-10"
+0145 LET FILES$[25]="IVM-14",FILES$[26]="ARE-43",FILES$[27]="ART-43",FILES$[28
+0145:]="SYS-01"
+0150 LET OPTIONS$[22]="F"
+0155 CALL "SYC.DA",1,1,28,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STATUS
+0160 IF STATUS>0 THEN GOTO 9900
+0165 LET ARE03_DEV=CHANNELS[1],ARE04_DEV=CHANNELS[2],ARE07_DEV=CHANNELS[3],ARE
+0165:13_DEV=CHANNELS[4]
+0170 LET ARE33_DEV=CHANNELS[5],ARM01_DEV=CHANNELS[6],ARM02_DEV=CHANNELS[7],ARM
+0170:03_DEV=CHANNELS[8]
+0175 LET ARM04_DEV=CHANNELS[9],ARM05_DEV=CHANNELS[10],ARM07_DEV=CHANNELS[11],A
+0175:RM10_DEV=CHANNELS[12]
+0180 LET ARM14_DEV=CHANNELS[13],ARS10_DEV=CHANNELS[14],ART03_DEV=CHANNELS[15]
+0185 LET ART13_DEV=CHANNELS[17],ART33_DEV=CHANNELS[18],ART53_DEV=CHANNELS[19],
+0185:IVM01_DEV=CHANNELS[20]
+0190 LET IVM02_DEV=CHANNELS[21],IVM03_DEV=CHANNELS[22],IVM06_DEV=CHANNELS[23],
+0190:IVM10_DEV=CHANNELS[24]
+0195 LET IVM14_DEV=CHANNELS[25],ARE43_DEV=CHANNELS[26],ART43_DEV=CHANNELS[27],
+0195:SYS01_DEV=CHANNELS[28]
+0200 REM " --- IOLists"
+0210 ARM07A: IOLIST R0$,R1$,R2$
+0250 SYS01T: IOLIST X$,F0$,X$,X$,X$,F4$,F5$,F6$
+0260 ARS01A: IOLIST X$,P1$,P2$,P3$(1),P4$,M0$,M1$,M2$,M3$
+0270 ARS01C: IOLIST C9$(1)
+0280 IVS01A: IOLIST I0$,I1$,I2$,I3$,I4$,I5$,M1$,M2$,M3$,M4$
+0290 SHS01A: IOLIST X0$,X1$
+0300 gosub AvaTax_open_tables; rem --- V6Hybrid AvaTax open tables
+0305 gosub AvaTax_initialize; rem --- V6Hybrid AvaTax create salesTax! object and get connection
+0400 REM " --- Parameters"
+0405 FIND (SYS01_DEV,KEY="T"+FID(0),DOM=9800)IOL=SYS01T
+0410 LET N0$=F0$(16,2),N1$=F4$,N2$="AR",N4$=F5$
+0415 DIM P3$(113)
+0420 FIND (SYS01_DEV,KEY=N0$+N2$+"00",DOM=9800)IOL=ARS01A
+0430 FIND (SYS01_DEV,KEY=N0$+"IV00",DOM=9800)IOL=IVS01A
+0435 DIM C9$(55); LET C9$(7,1)="N"
+0440 FIND (SYS01_DEV,KEY=N0$+"AR01",DOM=0450)IOL=ARS01C
+0450 GOSUB GET_OP_TERMINAL
+0460 DIM P[2],I[6]
+0465 FOR X=0 TO 6
+0470 LET I[X]=NUM(I2$(X*2+1,2))
+0475 NEXT X
+0480 LET DESCLEN=I[4]+I[5]+I[6]
+0485 LET P[0]=NUM(P2$(1,2)),P[1]=NUM(P2$(3,2)),P[2]=NUM(P3$(4,1))
+0490 LET M0=LEN(M0$),M2=LEN(M2$),M3=LEN(M3$),M4=LEN(M4$)
+0495 CALL "SYC.RM",M1$,M1,8,12
+0500 REM " --- Init Data"
+0510 DIM A0$(117),A[10]
+0520 LET A0$(1,2)=N0$,TAKEN_BY$=F0$(4,3)
+0530 LET PHONE$="(###) ###-####"
+0540 LET WHSE$=R2$(32,2); IF R2$(31,1)="N" AND WHSE$="  " THEN LET WHSE$=""
+0550 LET COMDATE$=F0$(7,3),ORDATE$=F0$(7,3),SHIPDATE$=F0$(7,3),COMDAYS=NUM(P3$
+0550:(86,3)),SHPDAYS=NUM(P3$(92,2))
+0560 IF COMDAYS<>0 THEN CALL "SYC.CA",ORDATE$,COMDATE$,COMDAYS
+0565 IF SHPDAYS<>0 THEN CALL "SYC.CA",ORDATE$,SHIPDATE$,SHPDAYS
+0570 DIM IV_FILES[44],IV_INFO$[3],IV_INFO[0],IV_PARAMS$[4],IV_PARAMS[3],IV_REF
+0570:S$[11],IV_REFS[5]
+0575 LET IV_FILES[0]=SYS01_DEV,IV_FILES[1]=IVM01_DEV,IV_FILES[2]=IVM02_DEV,IV_
+0575:FILES[3]=IVM03_DEV
+0580 LET IV_FILES[6]=IVM06_DEV,IV_FILES[10]=IVM10_DEV,IV_FILES[14]=IVM14_DEV
+0585 LET IV_INFO$[0]=N0$
+0590 LET IV_PARAMS$[0]=F0$(7,3),IV_PARAMS$[1]=F0$(4,3),IV_PARAMS$[2]=I2$,IV_PA
+0590:RAMS$[3]=I3$,IV_PARAMS$[4]=I4$
+0595 LET IV_PARAMS[0]=I[0],IV_PARAMS[1]=I[4],IV_PARAMS[2]=I[5],IV_PARAMS[3]=I[
+0595:6]
+0600 REM " --- Additional File Opens"
+0610 IF P3$(15,1)="Y" THEN LET FILES$[29]="ARE-20"
+0620 IF P3$(12,1)="Y" THEN LET FILES$[30]="ARM-09"
+0630 IF POS(I3$(17,1)="LS") THEN LET FILES$[31]="ARE-23",FILES$[32]="IVM-07"
+0640 CALL "SYC.DA",1,29,32,FILES$[ALL],OPTIONS$[ALL],CHANNELS[ALL],BATCH,STATU
+0640:S
+0650 IF STATUS>0 THEN GOTO 9900
+0660 LET ARE20_DEV=CHANNELS[29],ARM09_DEV=CHANNELS[30],ARE23_DEV=CHANNELS[31],
+0660:IVM07_DEV=CHANNELS[32]
+0670 LET IV_FILES[7]=IVM07_DEV
+0700 REM " --- Optional Modules"
+0705 DIM INFO$[20]
+0710 CALL "SYC.VA","OP",INFO$[ALL]
+0715 LET GL$=INFO$[9]
+0720 IF GL$<>"Y" THEN GOTO 0750
+0725 CALL "GLC.BA",ERR=0750,PGM(-2),"OP",GLW11$,GL$,STATUS
+0730 IF STATUS<>0 THEN GOTO 9900
+0750 DIM INFO$[20]
+0755 CALL "SYC.VA","SH",INFO$[ALL]
+0760 LET SHIP$=INFO$[20]
+0765 IF SHIP$="N" THEN GOTO 0800
+0770 FIND (SYS01_DEV,KEY=N0$+"SH00",DOM=9800)IOL=SHS01A
+0775 LET SHIP$=X1$(1,1)
+0800 REM " --- Background"
+0810 CALL "SYC.WC",1,0,80,0,0,8,0
+0820 PRINT 'SB',@(0,3),"Customer:",@(21)," Order:",@(38),"Ship-To:",@(55),"By:
+0820:",@(64),"Invoice:",@(4,4),"Bill:",@(41),"Ship:",
+0890 PRINT 'SF',
+4000 REM " --- Run Overlay"
+4090 RUN "OPE.CB"
+6000 REM " --- Get OP Terminal Information"
+6005 GET_OP_TERMINAL:
+6010 FIND (ARM07_DEV,KEY=N0$+PAD(FID(0),4),DOM=6050)IOL=ARM07A
+6040 RETURN
+6050 REM " --- Warning"
+6060 DIM MESSAGE$[1]
+6070 LET MESSAGE$[0]="OP Terminal Record Missing For This Terminal (<Enter>=Co
+6070:ntinue)"
+6080 CALL "SYC.XA",2,MESSAGE$[ALL],0,22,-1,V$,V3
+6090 EXITTO 9900
+9000 REM " --- Standard Error Routine (15May95)"
+9010 IF ERR=127 THEN GOTO 9300
+9020 CALL "SYC.EA",ERR=9090,EXIT_CTRL,PGM(-2),ERR,TCB(5),E$,E1,E2
+9030 IF E1=1 THEN GOTO 9100
+9040 IF E1=3 THEN GOTO 9200
+9080 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9090 ESCAPE
+9100 REM " --- Retry"
+9190 RETRY
+9200 REM " --- Return"
+9210 SETERR 9000
+9290 GOTO 9900
+9300 REM " --- Standard Escape Routine"
+9310 CALL "SYC.ES",ERR=9350,PGM(-2),TCB(8),E$,E2,V3
+9320 IF V3<>127 THEN GOTO 9390
+9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
+9350 ESCAPE
+9390 RETURN
+9800 REM " --- Display Parameter record error"
+9810 LET LINE_ERR$=LST(PGM(TCB(5)))
+9820 CALL "SYC.YA",LINE_ERR$,N2$,ERR
+9900 if salesTax!<>null() then salesTax!.close(); rem --- V6Hybrid AvaTax close connection to Sales Tax Service
+9905 RUN "SYS.AA"
+9999 END
+
+10000 AvaTax_open_tables: rem --- V6Hybrid open tables for AvaTax Interface
+10010 num_files=7
+10020 dim open_tables$[1:num_files],open_opts$[1:num_files],open_chans$[1:num_files],open_tpls$[1:num_files]
+10030 open_tables$[1]="OPS_PARAMS",  open_opts$[1]="OTA"
+10032 open_tables$[2]="OPC_TAXCODE",  open_opts$[2]="OTA"
+10034 open_tables$[3]="OPT_INVHDR",  open_opts$[3]="OTA"
+10036 open_tables$[4]="OPT_INVDET",  open_opts$[4]="OTA"
+10038 open_tables$[5]="ARM_CUSTMAST",  open_opts$[5]="OTA"
+10040 open_tables$[6]="ARM_CUSTSHIP",  open_opts$[6]="OTA"
+10042 open_tables$[7]="OPT_INVSHIP",  open_opts$[7]="OTA"
+10050 call stbl("+DIR_SYP")+"bac_open_tables.bbj", open_beg,open_end,open_tables$[all],open_opts$[all],open_chans$[all],open_tpls$[all],rd_table_chans$[all],open_batch,open_status$
+10060 if open_status$<>"" then
+10062   msg_id$="ENTRY_OPEN_ERROR"
+10064   dim msg_tokens$[1]
+10066   msg_tokens$[1]=open_status$
+10068   call stbl("+DIR_SYP")+"bac_message.bbj",msg_id$,msg_tokens$[all],msg_opt$,rd_table_chans$[all]
+10070   goto 9900
+10075 endif
+10080 ops_params=num(open_chans$[1]), opc_taxcode=num(open_chans$[2]), opt_invhdr=num(open_chans$[3]), opt_invdet=num(open_chans$[4]), arm_custmast=num(open_chans$[5]), arm_custship=num(open_chans$[6]), opt_invship=num(open_chans$[7])
+10090 dim ops_params$:open_tpls$[1], opc_taxcode$:open_tpls$[2], opt_invhdr$:open_tpls$[3], opt_invdet$:open_tpls$[4], arm_custmast$:open_tpls$[5], arm_custship$:open_tpls$[6], opt_invship$:open_tpls$[7]
+10095 return
+
+10100 AvaTax_initialize: rem --- V6Hybrid create AvaTax salesTax! object and get connection
+10105 salesTax!=null()
+10110 firm_id$=N0$
+10115 readrecord(ops_params,key=firm_id$+"AR00",dom=*next) ops_params$
+10120 if cvs(ops_params.sls_tax_intrface$,2)<>"" then
+10125   global_ns!=BBjAPI().getGlobalNamespace()
+10130   global_ns!.setValue("+build_task","ON");rem MDI progress meter on
+10135   rem --- Create salesTax! object and get connection to Sales Tax Service
+10140   use ::opo_AvaTaxInterface.aon::AvaTaxInterface
+10145   salesTax!=new AvaTaxInterface(firm_id$)
+10150   if salesTax!.connectClient(topWin!,err=connectErr) then
+10155       rem --- Warn if AvaTax in test mode
+10160       if salesTax!.isTestMode() then
+10165           rem --- Skip warning if they were previously warned
+10170           nsValue!=global_ns!.getValue(info(3,2)+date(0)+"_SalesTaxSvcTestWarning",err=*next)
+10175           if nsValue!=null() then
+10180               msg_id$="OP_SLS_TAX_SVC_TEST"
+10185               call stbl("+DIR_SYP")+"bac_message.bbj",msg_id$,msg_tokens$[all],msg_opt$,rd_table_chans$[all]
+10190               global_ns!.setValue(info(3,2)+date(0)+"_SalesTaxSvcTestWarning","Test mode warning")
+10195           endif
+10200       endif
+10205   else
+10210 connectErr:
+10215       if salesTax!<>null() then salesTax!.close()
+10220       salesTax!=null()
+10225       goto 9900
+10230   endif
+10235   global_ns!.setValue("+build_task","OFF");rem MDI progress meter off
+10240 endif
+10290 return
