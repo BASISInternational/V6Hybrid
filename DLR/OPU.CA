@@ -392,11 +392,12 @@
 9999 END
 
 10000 AvaTax_open_tables: rem --- V6Hybrid open tables for AvaTax Interface
-10010 num_files=3
+10010 num_files=4
 10020 dim open_tables$[1:num_files],open_opts$[1:num_files],open_chans$[1:num_files],open_tpls$[1:num_files]
 10030 open_tables$[1]="OPS_PARAMS",  open_opts$[1]="OTA"
-10035 open_tables$[2]="OPT_INVHDR",  open_opts$[2]="OTA"
-10040 open_tables$[3]="OPT_INVDET",  open_opts$[3]="OTA"
+10035 open_tables$[2]="OPC_TAXCODE",  open_opts$[2]="OTA"
+10040 open_tables$[3]="OPT_INVHDR",  open_opts$[3]="OTA"
+10045 open_tables$[4]="OPT_INVDET",  open_opts$[4]="OTA"
 10050 call stbl("+DIR_SYP")+"bac_open_tables.bbj", open_beg,open_end,open_tables$[all],open_opts$[all],open_chans$[all],open_tpls$[all],rd_table_chans$[all],open_batch,open_status$
 10060 if open_status$<>"" then
 10062   msg_id$="ENTRY_OPEN_ERROR"
@@ -405,8 +406,8 @@
 10068   call stbl("+DIR_SYP")+"bac_message.bbj",msg_id$,msg_tokens$[all],msg_opt$,rd_table_chans$[all]
 10070   goto 9900
 10075 endif
-10080 ops_params=num(open_chans$[1]), opt_invhdr=num(open_chans$[2]), opt_invdet=num(open_chans$[3])
-10090 dim ops_params$:open_tpls$[1], opt_invhdr$:open_tpls$[2], opt_invdet$:open_tpls$[3]
+10080 ops_params=num(open_chans$[1]), opc_taxcode=num(open_chans$[2]), opt_invhdr=num(open_chans$[3]), opt_invdet=num(open_chans$[4])
+10090 dim ops_params$:open_tpls$[1], opc_taxcode$:open_tpls$[2], opt_invhdr$:open_tpls$[3], opt_invdet$:open_tpls$[4]
 10095 return
 
 10100 AvaTax_initialize: rem --- V6Hybrid create AvaTax salesTax! object and get connection

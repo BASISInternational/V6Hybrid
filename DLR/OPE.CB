@@ -762,5 +762,6 @@
 9330 PRINT @(0,E2),'CL','CURSOR'("ON"),E$,'LF'
 9350 ESCAPE
 9390 RETURN
-9900 RUN "SYS.AA"
+9900 if salesTax!<>null() then salesTax!.close(); rem --- V6Hybrid AvaTax close connection to Sales Tax Service
+9905 RUN "SYS.AA"
 9999 END
