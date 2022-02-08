@@ -67,21 +67,21 @@
 1118 EXTRACT (ARE03_DEV,KEY=K0$(1,2)+K0$(4)+"000",DOM=1100)IOL=ARE03A
 1120 IF A0$(68,2)<>"Y1" AND A0$(68,2)<>"Y2" THEN GOTO 1100
 1122 if salesTax!<>null() then 
-1123    transType$="SalesInvoice"
-1124    if cvs(ope01a.credit_invoice$,2)<>"" then transType$="ReturnInvoice"
-1125    rem --- Must check the current Tax Code here. May have changed the Tax Code after using AvaTax for calculation and the opt_invhdr record was written.
-1126    redim opc_taxcode$
-1127    find record (opc_taxcode,key=firm_id$+ope01a.tax_code$,dom=*next) opc_taxcode$
-1128    if opc_taxcode.use_tax_service then 
-1129        gosub AvaTax_SLS_TAX_CALC; rem --- V6Hybrid AvaTax sales tax calculation successful?
+1123    gosub AvaTax_SLS_TAX_CALC; rem --- V6Hybrid AvaTax sales tax calculation successful?
+1124    transType$="SalesInvoice"
+1125    if cvs(opt_invhdr.credit_invoice$,2)<>"" then transType$="ReturnInvoice"
+1126    rem --- Must check the current Tax Code here. May have changed the Tax Code after using AvaTax for calculation and the opt_invhdr record was written.
+1127    redim opc_taxcode$
+1128    find record (opc_taxcode,key=firm_id$+opt_invhdr.tax_code$,dom=*next) opc_taxcode$
+1129    if opc_taxcode.use_tax_service then 
 1130        if avaTax_problem$="" then
 1131            rem --- V6Hybrid AvaTax commit AvaTax transaction for successful sales tax calculation
 1132            success=0
-1133            transaction!=salesTax!.commitTransaction(A0$(5,6), A0$(11,7), A0$(42,7), "",err=*next); success=1
+1133            transaction!=salesTax!.commitTransaction(opt_invhdr.customer_id$, opt_invhdr.order_no$, opt_invhdr.ar_inv_no$, "",err=*next); success=1
 1134        else
 1135            rem --- V6Hybrid AvaTax void possible uncommitted transaction for on-demand or cash invoice when sales tax service failed. 
 1136            success=0
-1137            salesTax!.voidTransaction(customer_id$, order_no$, ar_inv_no$, transType$, err=*next); success=1
+1137            salesTax!.voidTransaction(opt_invhdr.customer_id$, opt_invhdr.order_no$, opt_invhdr.ar_inv_no$, transType$, err=*next); success=1
 1138        endif
 1139        if success then
 1140            gosub AvaTax_remove_obsolete_records; rem --- V6Hybrid AvaTax remove records no longer needed for AvaTax interface
@@ -92,7 +92,7 @@
 1145    else
 1146        rem --- Void possible uncommitted transaction that was orphaned. Order/Invoice Tax Code changed to one NOT using AvaTax after first using AvaTax
 1147        success=0
-1148        salesTax!.voidTransaction(customer_id$, order_no$, ar_inv_no$, transType$, err=*next); success=1
+1148        salesTax!.voidTransaction(opt_invhdr.customer_id$, opt_invhdr.order_no$, opt_invhdr.ar_inv_no$, transType$, err=*next); success=1
 1149    endif
 1150 endif
 1155 IF A0$(99,1)<>"Y" THEN GOTO 1170
