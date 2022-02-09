@@ -74,7 +74,7 @@
 1127    redim opc_taxcode$
 1128    find record (opc_taxcode,key=firm_id$+opt_invhdr.tax_code$,dom=*next) opc_taxcode$
 1129    if opc_taxcode.use_tax_service then 
-1130        if avaTax_problem$="" then
+1130        if avaTax_problem$<>"??" then
 1131            rem --- V6Hybrid AvaTax commit AvaTax transaction for successful sales tax calculation
 1132            success=0
 1133            transaction!=salesTax!.commitTransaction(opt_invhdr.customer_id$, opt_invhdr.order_no$, opt_invhdr.ar_inv_no$, "",err=*next); success=1
@@ -91,9 +91,8 @@
 1144        endif
 1145    else
 1146        rem --- Void possible uncommitted transaction that was orphaned. Order/Invoice Tax Code changed to one NOT using AvaTax after first using AvaTax
-1147        success=0
-1148        salesTax!.voidTransaction(opt_invhdr.customer_id$, opt_invhdr.order_no$, opt_invhdr.ar_inv_no$, transType$, err=*next); success=1
-1149    endif
+1147        salesTax!.voidTransaction(opt_invhdr.customer_id$, opt_invhdr.order_no$, opt_invhdr.ar_inv_no$, transType$, err=*next)
+1148    endif
 1150 endif
 1155 IF A0$(99,1)<>"Y" THEN GOTO 1170
 1160 DIM H0$(56),H1$(30),H[1]
@@ -436,7 +435,7 @@
 6715 LET X$=N0$+A0$(80,2)+FNYY_YY21$(FNA$(A0$(24,1),A0$(24,3)))+FNA$(A0$(25,1),A0$(24,3))
 6720 LET X0=0,X1=0,X=A[0],Y=0
 6725 FIND (ARM10_DEV,KEY=N0$+"B"+A0$(80,2),DOM=6855)IOL=ARM10B
-6727 if cvs(opt_invhdr.ar_inv_no$,2)<>"" and avaTax_problem$="" then
+6727 if cvs(opt_invhdr.ar_inv_no$,2)<>"" and avaTax_problem$<>"??" then
 6728    rem --- V6Hybrid AvaTax used successfully for the sales tax calculation
 6729    GOSUB 6600
 6730    TAX$(1)=X0$,ACCOUNT$=TAX$(46,10),AMOUNT=-X,UNITS=0
@@ -527,7 +526,7 @@
 9999 END
 
 10100 AvaTax_SLS_TAX_CALC: rem --- V6Hybrid AvaTax sales tax calculation successful?
-10110 avaTax_problem$=""
+10110 avaTax_problem$="  "
 10120 redim opt_invhdr$
 10130 opt_invhdr_key$=A0$(1,17)+A0$(42,7)
 10135 readrecord(opt_invhdr,key=opt_invhdr_key$,dom=*next)opt_invhdr$

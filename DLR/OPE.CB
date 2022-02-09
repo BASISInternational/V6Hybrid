@@ -113,7 +113,7 @@
 1305 NEXT_ORDER:
 1310 LET S$(4)=FILL(12,"0"),NEWOLD$="NO",HIST_INV$="",OLDDISCCODE$="",OLDSALES
 1310:TOTAL=0,O0=0
-1315 credit_invoice$="";rem V6H - will set to invoice# if creating a credit invoice, for use with AvaTax interface
+1315 credit_invoice$="";rem V6Hybrid AvaTax - will be set to invoice# if creating a credit invoice with AvaTax interface
 1320 PRINT @(0,6),FILL(3),@(59,3),FILL(3),@(73,3),FILL(7),; REM "Clear previou
 1320:s B/O, Taken By and Invoice Number
 1330 GOSUB CLEAR_SHIPTO
@@ -169,7 +169,7 @@
 1725 GOSUB 7000
 1730 IF V3=4 THEN GOTO NEXT_ORDER
 1740 IF V$="C" THEN LET CREDIT=-1 ELSE LET CREDIT=1
-1745 if V$="C" and stbl("+V6DATA",err=*next)<>"" then credit_invoice$=A0$(11,7)+A0$(42,7)+A0$(24,3);rem V6H - save order/invoice#/invoice date being credited
+1745 if V$="C" then credit_invoice$=A0$(11,7)+A0$(42,7)+A0$(24,3);rem V6Hybrid AvaTax - save order/invoice#/invoice date for credit invoice being credited with AvaTax
 1750 LET A0$(21,3)="SI",A0$(24,3)=F0$(7,3),A0$(27,3)=F0$(7,3),A0$(68,1)="N",A0
 1750:$(77,3)=F0$(7,3),S$(7,1)="0",NEWOLD$="YES"
 1760 LET NEXT_NMBR=2; GOSUB 6000; REM "Get Next Order Number 

@@ -168,7 +168,7 @@
 9999 END
 
 10000 AvaTax_open_tables: rem --- V6Hybrid open tables for AvaTax Interface
-10010 num_files=7
+10010 num_files=8
 10020 dim open_tables$[1:num_files],open_opts$[1:num_files],open_chans$[1:num_files],open_tpls$[1:num_files]
 10030 open_tables$[1]="OPS_PARAMS",  open_opts$[1]="OTA"
 10032 open_tables$[2]="OPC_TAXCODE",  open_opts$[2]="OTA"
@@ -177,6 +177,7 @@
 10038 open_tables$[5]="ARM_CUSTMAST",  open_opts$[5]="OTA"
 10040 open_tables$[6]="ARM_CUSTSHIP",  open_opts$[6]="OTA"
 10042 open_tables$[7]="OPT_INVSHIP",  open_opts$[7]="OTA"
+10044 open_tables$[8]="ARC_SHIPVIACODE",  open_opts$[8]="OTA"
 10050 call stbl("+DIR_SYP")+"bac_open_tables.bbj", open_beg,open_end,open_tables$[all],open_opts$[all],open_chans$[all],open_tpls$[all],rd_table_chans$[all],open_batch,open_status$
 10060 if open_status$<>"" then
 10062   msg_id$="ENTRY_OPEN_ERROR"
@@ -185,8 +186,8 @@
 10068   call stbl("+DIR_SYP")+"bac_message.bbj",msg_id$,msg_tokens$[all],msg_opt$,rd_table_chans$[all]
 10070   goto 9900
 10075 endif
-10080 ops_params=num(open_chans$[1]), opc_taxcode=num(open_chans$[2]), opt_invhdr=num(open_chans$[3]), opt_invdet=num(open_chans$[4]), arm_custmast=num(open_chans$[5]), arm_custship=num(open_chans$[6]), opt_invship=num(open_chans$[7])
-10090 dim ops_params$:open_tpls$[1], opc_taxcode$:open_tpls$[2], opt_invhdr$:open_tpls$[3], opt_invdet$:open_tpls$[4], arm_custmast$:open_tpls$[5], arm_custship$:open_tpls$[6], opt_invship$:open_tpls$[7]
+10080 ops_params=num(open_chans$[1]), opc_taxcode=num(open_chans$[2]), opt_invhdr=num(open_chans$[3]), opt_invdet=num(open_chans$[4]), arm_custmast=num(open_chans$[5]), arm_custship=num(open_chans$[6]), opt_invship=num(open_chans$[7]), arc_shipviacode=num(open_chans$[8])
+10090 dim ops_params$:open_tpls$[1], opc_taxcode$:open_tpls$[2], opt_invhdr$:open_tpls$[3], opt_invdet$:open_tpls$[4], arm_custmast$:open_tpls$[5], arm_custship$:open_tpls$[6], opt_invship$:open_tpls$[7], arc_shipviacode$:open_tpls$[8]
 10095 return
 
 10100 AvaTax_initialize: rem --- V6Hybrid create AvaTax salesTax! object and get connection
