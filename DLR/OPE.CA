@@ -64,8 +64,6 @@
 0270 ARS01C: IOLIST C9$(1)
 0280 IVS01A: IOLIST I0$,I1$,I2$,I3$,I4$,I5$,M1$,M2$,M3$,M4$
 0290 SHS01A: IOLIST X0$,X1$
-0300 gosub AvaTax_open_tables; rem --- V6Hybrid AvaTax open tables
-0305 gosub AvaTax_initialize; rem --- V6Hybrid AvaTax create salesTax! object and get connection
 0400 REM " --- Parameters"
 0405 FIND (SYS01_DEV,KEY="T"+FID(0),DOM=9800)IOL=SYS01T
 0410 LET N0$=F0$(16,2),N1$=F4$,N2$="AR",N4$=F5$
@@ -130,6 +128,8 @@
 0820 PRINT 'SB',@(0,3),"Customer:",@(21)," Order:",@(38),"Ship-To:",@(55),"By:
 0820:",@(64),"Invoice:",@(4,4),"Bill:",@(41),"Ship:",
 0890 PRINT 'SF',
+0900 gosub AvaTax_open_tables; rem --- V6Hybrid AvaTax open tables
+0905 gosub AvaTax_initialize; rem --- V6Hybrid AvaTax create salesTax! object and get connection
 4000 REM " --- Run Overlay"
 4090 RUN "OPE.CB"
 6000 REM " --- Get OP Terminal Information"
