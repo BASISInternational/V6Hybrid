@@ -76,8 +76,6 @@
 0388 SAM10A: IOLIST X0$,X[ALL],Y[ALL],Z[ALL]
 0390 SAM11A: IOLIST X0$,X[ALL],Y[ALL],Z[ALL]
 0395 SAM21A: IOLIST X0$
-0397 gosub AvaTax_open_tables; rem --- V6Hybrid AvaTax open tables
-0398 gosub AvaTax_initialize; rem --- V6Hybrid AvaTax create salesTax! object and get connection
 0400 REM " --- Parameters"
 0405 DIM ARS01C$(55)
 0410 FIND (SYS01_DEV,KEY=N0$+"AR"+"01",DOM=0420)IOL=ARS01C
@@ -132,6 +130,8 @@
 0850 REM " --- Disallow 'M'enu Option In Error Routine"
 0860 LET EXIT_CTRL=1
 0890 PRINT @(40,5),"1 - Sales Analysis And History"
+0900 gosub AvaTax_open_tables; rem --- V6Hybrid AvaTax open tables
+0905 gosub AvaTax_initialize; rem --- V6Hybrid AvaTax create salesTax! object and get connection
 1000 REM " --- Position File"
 1090 READ (ARE04_DEV,KEY=N0$+"I",DOM=1100)
 1100 REM " --- Main read"
