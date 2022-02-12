@@ -542,13 +542,13 @@
 10210 read(opt_invdet,key=opt_invhdr_key$,dom=*next)
 10215 while 1
 10220   opt_invdet_key$=key(opt_invdet,end=*break)
-10225   if pos(opt_invdet_key=opt_invhdr_key$)<>1 then break
+10225   if pos(opt_invdet_key$=opt_invhdr_key$)<>1 then break
 10230   remove(opt_invdet,key=opt_invdet_key$,dom=*next)
 10235 wend
 10240 read(opt_invship,key=opt_invhdr_key$,dom=*next)
 10245 while 1
 10250   opt_invship_key$=key(opt_invship,end=*break)
-10255   if pos(opt_invship_key=opt_invhdr_key$)<>1 then break
+10255   if pos(opt_invship_key$=opt_invhdr_key$)<>1 then break
 10260   remove(opt_invship,key=opt_invship_key$,dom=*next)
 10265 wend
 10290 return
