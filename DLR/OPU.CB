@@ -89,6 +89,8 @@
 1142            ar_inv_no=invNotCommitted$+ar_inv_no$+"; "
 1143            goto 1100
 1144        endif
+1145    else
+1146        rem --- Void possible uncommitted transaction that was orphaned. Order/Invoice Tax Code changed to one NOT using AvaTax after first using AvaTax
 1147        salesTax!.voidTransaction(opt_invhdr.customer_id$, opt_invhdr.order_no$, opt_invhdr.ar_inv_no$, transType$, err=*next)
 1148    endif
 1150 endif
