@@ -444,14 +444,14 @@
 20120 ARE33A: IOLIST WMAN_D0$,WMAN_D1$(1)
 20130 rem --- ARE03A: IOLIST A0$,A[ALL]
 20135 ARE13A: IOLIST WW0$(1),WW1$(1),WW[ALL]
-20200 rem --- opt_invhdr$ fields: firm_id, ar_type, customer_id, order_no, ar_inv_no, credit_invoice, invoice_date, order_date, tax_code, discount_amt, shipto_type, shipto_no, ar_ship_via, freight_amt, no_sls_tax_calc
+20200 rem --- opt_invhdr$ fields: firm_id, ar_type, customer_id, order_no, ar_inv_no, credit_invoice, invoice_date, discount_amt, shipto_type, shipto_no, ar_ship_via, freight_amt, no_sls_tax_calc
 20210 rem --- opt_invdet$ fields: firm_id, ar_type, customer_id, order_no, ar_inv_no, internal_seq_no, line_code, order_memo, item_id, warehouse_id, line_no, taxable_amt, qty_shipped
 20220 rem --- arm_custmast$ fields: firm_id, customer_id, addr_line_1, addr_line_2, addr_line_3, zip_code, city, state_code
 20230 rem --- arm_custship$ fields: firm_id, customer_id, shipto_no, addr_line_1, addr_line_2, addr_line_3, zip_code, city, state_code
 20240 rem --- opt_invship$ fields: firm_id, customer_id, order_no, ar_inv_no, "S", addr_line_1, addr_line_2, addr_line_3, zip_code, city, state_code
 20300 rem --- order header - remove existing if there is one, then re-write
 20310 opt_invhdr.firm_id$=firm_id$, opt_invhdr.ar_type$=A0$(3,2), opt_invhdr.customer_id$=A0$(5,6), opt_invhdr.order_no$=A0$(11,7), opt_invhdr.ar_inv_no$=A0$(42,7)
-20320 opt_invhdr.invoice_date$=fnfulldate$(A0$(24,3)), opt_invhdr.order_date$=fnfulldate$(A0$(77,3)), opt_invhdr.tax_code$=A0$(80,2), opt_invhdr.discount_amt=A[2]
+20320 opt_invhdr.invoice_date$=fnfulldate$(A0$(24,3)), opt_invhdr.order_date$=fnfulldate$(A0$(77,3)), opt_invhdr.discount_amt=A[2]
 20330 opt_invhdr.shipto_no$=A0$(102,6), opt_invhdr.ar_ship_via$=A0$(32,10), opt_invhdr.freight_amt=A[1], opt_invhdr.no_sls_tax_calc=0
 20340 if num(A0$(102,6))=0 then opt_invhdr.shipto_type$="B" else if num(A0$(102,6))=99 then opt_invhdr.shipto_type$="M" else opt_invhdr.shipto_type$="S"
 20350 if credit_invoice$<>"" then opt_invhdr.credit_invoice$=credit_invoice$(8,7);rem --- order/invoice#/invoice date; set in OPE.CB when creating a credit invoice (also cleared there when setting up new order)
