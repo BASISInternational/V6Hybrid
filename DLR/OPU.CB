@@ -66,8 +66,10 @@
 1116 IF K0$(1,3)<>N0$+"I" THEN GOTO 4000
 1118 EXTRACT (ARE03_DEV,KEY=K0$(1,2)+K0$(4)+"000",DOM=1100)IOL=ARE03A
 1120 IF A0$(68,2)<>"Y1" AND A0$(68,2)<>"Y2" THEN GOTO 1100
-1122 if salesTax!<>null() then 
-1123    gosub AvaTax_SLS_TAX_CALC; rem --- V6Hybrid AvaTax sales tax calculation successful?
+
+1121 if salesTax!<>null() then 
+1122    gosub AvaTax_SLS_TAX_CALC; rem --- V6Hybrid AvaTax sales tax calculation successful?
+1123            if cvs(opt_invhdr.ar_inv_no$,2)<>"" then
 1124    transType$="SalesInvoice"
 1125    if cvs(opt_invhdr.credit_invoice$,2)<>"" then transType$="ReturnInvoice"
 1126    rem --- Must check the current Tax Code here. May have changed the Tax Code after using AvaTax for calculation and the opt_invhdr record was written.
@@ -86,14 +88,16 @@
 1139        if success then
 1140            gosub AvaTax_remove_obsolete_records; rem --- V6Hybrid AvaTax remove records no longer needed for AvaTax interface
 1141        else
-1142            ar_inv_no=invNotCommitted$+ar_inv_no$+"; "
+1142            invNotCommitted$=invNotCommitted$+opt_invhdr.ar_inv_no$+"; "
 1143            goto 1100
 1144        endif
 1145    else
 1146        rem --- Void possible uncommitted transaction that was orphaned. Order/Invoice Tax Code changed to one NOT using AvaTax after first using AvaTax
 1147        salesTax!.voidTransaction(opt_invhdr.customer_id$, opt_invhdr.order_no$, opt_invhdr.ar_inv_no$, transType$, err=*next)
 1148    endif
+1149            endif
 1150 endif
+
 1155 IF A0$(99,1)<>"Y" THEN GOTO 1170
 1160 DIM H0$(56),H1$(30),H[1]
 1165 FIND (ARE20_DEV,KEY=A0$(1,17),DOM=1170)IOL=ARE20A
@@ -530,12 +534,14 @@
 10120 redim opt_invhdr$
 10130 opt_invhdr_key$=A0$(1,17)+A0$(42,7)
 10135 readrecord(opt_invhdr,key=opt_invhdr_key$,dom=*next)opt_invhdr$
-10140 if pos(opt_invhdr.firm_id$+opt_invhdr.ar_type$+opt_invhdr.customer_id$+opt_invhdr.order_no$+opt_invhdr.ar_inv_no$=opt_invhdr_key$)=1 then
-10145   if opt_invhdr.no_sls_tax_calc=1 then
-10150       avaTax_problem$="??"
-10185   endif
-10190 endif
-10195 return
+10140 if cvs(opt_invhdr.ar_inv_no$,2)<>"" then
+10145   if pos(opt_invhdr.firm_id$+opt_invhdr.ar_type$+opt_invhdr.customer_id$+opt_invhdr.order_no$+opt_invhdr.ar_inv_no$=opt_invhdr_key$)=1 then
+10150       if opt_invhdr.no_sls_tax_calc=1 then
+10155           avaTax_problem$="??"
+10160       endif
+10165   endif
+10170 endif
+10190 return
 
 10200 AvaTax_remove_obsolete_records: rem --- V6Hybrid AvaTax remove records no longer needed for AvaTax interface
 10205 remove(opt_invhdr,key=opt_invhdr_key$,dom=*next)
