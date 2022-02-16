@@ -72,7 +72,7 @@
 1125    if cvs(opt_invhdr.credit_invoice$,2)<>"" then transType$="ReturnInvoice"
 1126    rem --- Must check the current Tax Code here. May have changed the Tax Code after using AvaTax for calculation and the opt_invhdr record was written.
 1127    redim opc_taxcode$
-1128    find record (opc_taxcode,key=firm_id$+A0$(80,2),dom=*next) opc_taxcode$
+1128    find record (opc_taxcode,key=firm_id$+pad(A0$(80,2),len(opc_taxcode.op_tax_code$)," "),dom=*next) opc_taxcode$
 1129    if opc_taxcode.use_tax_service then 
 1130        if avaTax_problem$<>"??" then
 1131            rem --- V6Hybrid AvaTax commit AvaTax transaction for successful sales tax calculation
