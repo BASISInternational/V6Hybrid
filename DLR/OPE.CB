@@ -417,6 +417,16 @@
 4360:0$(77,3))))+A0$(5,13),DOM=4370)
 4370 IF S$(12,1)="1" THEN GOSUB DELETE_TMP_CUST
 4380 GOSUB PURGE_HEADER
+
+4381 rem --- V6Hybrid AvaTax remove transaction for voided invoice
+4382 redim opt_invhdr$
+4383 opt_invhdr_key$=A0$(1,17)+A0$(42,7)
+4384 readrecord(opt_invhdr,key=opt_invhdr_key$,dom=*next)opt_invhdr$
+4385 if pos(opt_invhdr.firm_id$+opt_invhdr.ar_type$+opt_invhdr.customer_id$+opt_invhdr.order_no$+opt_invhdr.ar_inv_no$=opt_invhdr_key$)=1 then
+4386    remove(opt_invhdr,key=opt_invhdr.firm_id$+opt_invhdr.ar_type$+opt_invhdr.customer_id$+opt_invhdr.order_no$+opt_invhdr.ar_inv_no$,dom=*next)
+4387    salesTax!.voidTransaction(opt_invhdr.customer_id$, opt_invhdr.order_no$, opt_invhdr.ar_inv_no$, "SalesInvoice", err=*next)
+4388 endif
+
 4390 GOTO 0700
 4400 REM " --- REPRINT Order?"
 4410 CALL "SYC.YN",0,"Do You Wish To REPRINT This Order",4,V$,V3
