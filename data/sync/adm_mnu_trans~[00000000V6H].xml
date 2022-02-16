@@ -2473,6 +2473,16 @@
 	</barista_record>
 	<barista_record>
 		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
+		<MENUITEM_ID>cb672c41-84d0-44f3-917c-e7f41b4272c0</MENUITEM_ID>
+		<LANG_ID>ENU</LANG_ID>
+		<NO_SHOW>N</NO_SHOW>
+		<MENU_DESC>Enable/Disable Triggers</MENU_DESC>
+		<ASC_COMP_ID>00000000</ASC_COMP_ID>
+		<ASC_PROD_ID>V6H</ASC_PROD_ID>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<MOUNT_SYS_ID>V6HYBRID        </MOUNT_SYS_ID>
 		<MENUITEM_ID>cbf7cf93-8820-4e52-beaf-157bca895b9c</MENUITEM_ID>
 		<LANG_ID>ENU</LANG_ID>
 		<NO_SHOW> </NO_SHOW>
