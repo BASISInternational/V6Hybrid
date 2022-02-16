@@ -306,20 +306,22 @@
 5590 RETURN
 6000 REM " --- Calculate Multilevel Taxes"
 6005 TAX_CALC:
+
 6006 rem --- V6Hybrid AvaTax skip multilevel tax calculation when using sales tax service
-6007 skip_multilevel_calc=0
+6007 skip_multilevel_calc=0, voidSalesTax=0
 6008 if use_tax_service$="Y" then
 6009    skip_multilevel_calc=1
-6010    if avaTax_problem$="??" and (A0$(99,1)="Y" or on_demand) then
-6011        rem --- Use Tax Code's Tax Rate for Cash Sale or On-Demand Print with failed AvaTax calculation
-6012        skip_multilevel_calc=0
-6013        avaTax_problem$="  "
-6014        on_demand=0
-6015        remove(opt_invhdr,key=opt_invhdr.firm_id$+opt_invhdr.ar_type$+opt_invhdr.customer_id$+opt_invhdr.order_no$+opt_invhdr.ar_inv_no$,dom=*next)
-6016        salesTax!.voidTransaction(opt_invhdr.customer_id$, opt_invhdr.order_no$, opt_invhdr.ar_inv_no$, "SalesInvoice", err=*next)
-6017    endif
-6018 endif 
+6010    if avaTax_problem$="??" and (A0$(99,1)="Y" or on_demand) then voidSalesTax=1; rem --- Use Tax Code's Tax Rate for Cash Sale or On-Demand Print with failed AvaTax calculation
+6011 else
+6012    if avaTax_problem$="??" then voidSalesTax=1; rem --- AvaTax tax calculation failed, then switched to a Tax Code not using AvaTax
+6013 endif 
+6014 if voidSalesTax then
+6015    skip_multilevel_calc=0, avaTax_problem$="  ", on_demand=0
+6016    remove(opt_invhdr,key=opt_invhdr.firm_id$+opt_invhdr.ar_type$+opt_invhdr.customer_id$+opt_invhdr.order_no$+opt_invhdr.ar_inv_no$,dom=*next)
+6017    salesTax!.voidTransaction(opt_invhdr.customer_id$, opt_invhdr.order_no$, opt_invhdr.ar_inv_no$, "SalesInvoice", err=*next)
+6018 endif
 6019 if skip_multilevel_calc then return
+
 6020 IF U[1]<>0 THEN LET A[4]=U[1]-NEWDISC*U[1]/100 ELSE LET A[4]=0
 6030 IF Y1$(56,1)="Y" THEN LET A[4]=A[4]+A[1]
 6040 LET A[0]=0,X1=Y2
