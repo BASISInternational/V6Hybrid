@@ -235,16 +235,18 @@
 4120 GOSUB 5300
 4150 RUN "OPE.CB"
 4200 REM " --- Print"
-4205 LET A0$(69,1)="N"
+4202 LET A0$(69,1)="N"
+
+4204 if use_tax_service$="Y" and avaTax_problem$="??" then 
+4205    rem --- V6Hybrid AvaTax fix bad tax calculation for on-demand invoice/receipt print
+4206    on_demand=1
+4207    gosub tax_calc
+4208    gosub 5000
+4209 endif
+
 4210 GOSUB 5300
 4220 IF V$="PC" AND R2$(15,2)="  " OR (V$="PR" AND R2$(27,2)="  ") THEN GOTO 4
 4220:280
-4224 if use_tax_service$="Y" and avaTax_problem$="??" then 
-4225    rem --- V6Hybrid AvaTax fix bad tax calculation for on-demand invoice/receipt print
-4226    on_demand=1
-4227    gosub tax_calc
-4228    gosub 5000
-4229 endif
 4230 IF V$="PR" THEN LET RECEIPT_PRINTED=1; RUN P3$(71,6),ERR=4260
 4235 IF V$<>"PC" THEN GOTO 4260
 4240 LET O9$="OPE.CB",O9=2,PRTR_DEV=UNT
