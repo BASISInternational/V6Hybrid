@@ -93,6 +93,7 @@ rem --- Write the data
     rem --- see if the ar_ship_via$ exists in arc_shipviacode$, and add if not (it's a text field in V6, but validated in Addon)
     arc_shipviacode.firm_id$=inRec.firm_id$
     arc_shipviacode.ar_ship_via$=inRec.ar_ship_via$
+    arc_shipviacode.description$=inRec.ar_ship_via$
     found=0
     readrecord(arc_shipviacode,key=arc_shipviacode.firm_id$+arc_shipviacode.ar_ship_via$,dom=*next)arc_shipviacode$;found=1
     if !found
