@@ -195,8 +195,8 @@
 10110 firm_id$=N0$
 10115 readrecord(ops_params,key=firm_id$+"AR00",dom=*next) ops_params$
 10120 if cvs(ops_params.sls_tax_intrface$,2)<>"" then
-10125   global_ns!=BBjAPI().getGlobalNamespace()
-10130   global_ns!.setValue("+build_task","ON");rem MDI progress meter on
+10125   GSpace!=BBjAPI()!.getGroupNamespace()
+10130   GSpace!.setValue("+build_task","ON");rem MDI progress meter on
 10135   rem --- Create salesTax! object and get connection to Sales Tax Service
 10140   use ::opo_AvaTaxInterface.aon::AvaTaxInterface
 10145   salesTax!=new AvaTaxInterface(firm_id$)
@@ -204,11 +204,11 @@
 10155       rem --- Warn if AvaTax in test mode
 10160       if salesTax!.isTestMode() then
 10165           rem --- Skip warning if they were previously warned
-10170           nsValue!=global_ns!.getValue(info(3,2)+date(0)+"_SalesTaxSvcTestWarning",err=*next)
+10170           nsValue!=GSpace!.getValue(info(3,2)+date(0)+"_SalesTaxSvcTestWarning",err=*next)
 10175           if nsValue!=null() then
 10180               msg_id$="OP_SLS_TAX_SVC_TEST"
 10185               call stbl("+DIR_SYP")+"bac_message.bbj",msg_id$,msg_tokens$[all],msg_opt$,rd_table_chans$[all]
-10190               global_ns!.setValue(info(3,2)+date(0)+"_SalesTaxSvcTestWarning","Test mode warning")
+10190               GSpace!.setValue(info(3,2)+date(0)+"_SalesTaxSvcTestWarning","Test mode warning")
 10195           endif
 10200       endif
 10205   else
@@ -217,6 +217,6 @@
 10220       salesTax!=null()
 10225       goto 9900
 10230   endif
-10235   global_ns!.setValue("+build_task","OFF");rem MDI progress meter off
+10235   GSpace!.setValue("+build_task","OFF");rem MDI progress meter off
 10240 endif
 10290 return

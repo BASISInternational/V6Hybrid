@@ -426,7 +426,7 @@
 10490 return
 
 15000 Avatax_Calculation: rem --- V6Hybrid AvaTax use tax service for calculating the sales tax
-15005 global_ns!.setValue("+build_task","ON");rem MDI progress meter on
+15005 GSpace!.setValue("+build_task","ON");rem MDI progress meter on
 15010 gosub create_Addon_invoice
 15015 success=0
 15020 taxProps!=salesTax!.calculateTax(opt_invhdr$,"SalesInvoice",err=*next); success=1
@@ -438,7 +438,7 @@
 15050   opt_invhdr.no_sls_tax_calc=1
 15055   writerecord(opt_invhdr)opt_invhdr$
 15060 endif
-15085 global_ns!.setValue("+build_task","OFF");rem MDI progress meter off
+15085 GSpace!.setValue("+build_task","OFF");rem MDI progress meter off
 15090 return
 
 20000 create_Addon_invoice: rem --- V6Hybrid AvaTax
