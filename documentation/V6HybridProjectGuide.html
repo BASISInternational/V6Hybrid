@@ -1,0 +1,372 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>
+            V6Hybrid Project
+        </title>
+        <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+
+		<STYLE type="text/css">
+			
+			BODY {
+				color: #252525; 
+				font-size: 12px; 
+				font-family:Arial,Tahoma; 
+				margin: 0px 0px 0px 10px; 
+				padding: 0px 0px 0px 0px;
+				display: block;
+				overflow: auto;
+			}			
+			a:link, a:visited{
+				color:#0000FF; text-decoration: none;
+				padding: 1px;
+			}
+			a:hover, a:active{
+				color:#0000FF; 
+				text-decoration: none; 
+				background-color:#CCCCFF;
+				color: #000080;
+			}		
+			.indent1 {
+				padding-left: 15px;
+			}	
+			.indent2 {
+				padding-left: 75px;
+			}	            
+			.new {
+				color: #008040;
+				font-style: italic;
+				font-weight: bold;
+			}	
+			.code {
+				FONT-FAMILY: "Courier New", Courier, mono; font-size: 12px; font-weight:bolder; color:#000000;
+			}	
+			.title {
+				font-size: 18px; font-weight:bolder
+			}		
+			.style1 {
+				FONT-WEIGHT: bold; FONT-SIZE: 14px; 
+			}
+			.style2 {
+				FONT-WEIGHT:bolder; font-size:12px;
+			}		
+			.style3 {
+				FONT-WEIGHT:bold; font-size:9px;
+			}	
+			.style6 {
+				FONT-SIZE: 10px; COLOR: #339900; FONT-STYLE: italic; 
+			}
+		
+            .style7 {
+                font-family: "Courier New", Courier, mono;
+            }
+        </STYLE>
+        
+    </head>
+
+    <body>    
+    	
+		<a name="TOP" id="TOP"></a>
+		<center>
+			<br />
+            <span class="title">V6Hybrid Project Guide</span>
+		</center>
+		<br />
+        
+        <span class="style1">CONTENTS</span>
+		<br />
+		<div class="indent1">
+        
+        	<span class="style1"><p><a href="#PURPOSE">Purpose</a></p></span>
+            <span class="style1"><p><a href="#ARCHITECTURE">Architecture</a></p></span>
+            <span class="style1"><p><a href="#INSTALLATION">Installation</a></p></span>
+            <span class="style1"><p><a href="#AT A GLANCE">At a Glance</a></p></span>
+            <span class="style1"><p><a href="#IN DEPTH">In Depth</a></p></span>
+            <span class="style1"><p><a href="#ADDITIONAL NOTES">Additional Notes</a></p></span>
+            <span class="style1"><p><a href="#UPGRADES">Upgrades</a></p></span>
+            <span class="style1"><p><a href="#AVATAX">AvaTax</a></p></span>
+            
+        </div>
+               
+        	<span class="style1"><a name="PURPOSE" id="PURPOSE">Purpose</a></span><span class="style6"><a href="#TOP">(top of page)</a></span>
+            <div class="indent1"> 
+                <p>The V6Hybrid project provides an environment for running both the current version of AddonSoftware (Addon) and the legacy Version 6 (V6) within the Barista MDI, and offers a sampling of modern functionality to those running V6, but not yet ready or able to make a wholesale conversion to Addon, typically due to heavy customization in one or more V6 modules.</p>
+            </div>
+            <span class="style1"><a name="ARCHITECTURE" id="ARCHITECTURE">Architecture</a></span><span class="style6"><a href="#TOP">(top of page)</a></span>
+            <div class="indent1"> 
+                <p>The project is available for download from <a href="https://github.com/BASISInternational/V6Hybrid" target="_blank">GitHub</a>, and is designed to install either directly into the BBj_home instance of BBj/Barista/Addon for demonstration and/or evaluation, or into a separate production instance, with some minor modification. It is structured as a Barista application, with standard V6 programs and associated demo data added into the Barista project file structure. The project runs under BBj alongside Addon, so there is no need for a PRO/5 install. All of the V6 programs are in source format (rather than tokenized), and the demo data reflects a current timeframe (typically in March of the current release year). The demo hybrid assumes that Accounts Payable (AP) and General Ledger (GL) are running in Addon, and the remaining modules are running in V6. All tasks are launched from a single, integrated menu. Several trigger files exist to provide access to Addon's AP and GL data from V6 tasks,  as well as access to V6 data from within Addon's AP and GL modules.</p>
+            </div>
+            <span class="style1"><a name="INSTALLATION" id="INSTALLATION">Installation</a></span><span class="style6"><a href="#TOP">(top of page)</a></span>
+            <div class="indent1"> 
+                <p>There is one branch of the V6Hybrid per release year, typically named to correspond with the final BASIS release version (e.g. BBJ2114GA). The master branch represents the newest release or release candidate. You can either create a local clone of the V6Hybrid repo, and then use Git (command line, TortoiseGit, etc.) to Switch/Checkout to the branch that corresponds to your version of Addon, or switch to the desired branch while on GitHub and then create/download a zip file. While a clone contains all of the versions and version history, the zip file is a non-versioned copy of the selected branch. Either way, be sure to select the right branch for your Addon install. Once you have the V6Hybrid project, you can install it in one of two ways:</p>
+                <ul>
+                    <li>Demonstration version</li>
+                    <ul>
+                        <li>Extract/copy the V6Hybrid project into the apps directory inside BBj_home (e.g., C:/bbj/apps/V6Hybrid).</li>
+                        <li>Launch the Demo version Addon, go to the Barista Utilities menu, and select Auto-synchronize Barista. Uncheck all applications except for the V6Hybrid project.&nbsp;</li>
+                    </ul>
+                    <li>Production version</li>
+                    <ul>
+                        <li>Use the <a href="https://docs.google.com/document/d/1bUq_JUaX2m0TwI-VHAbTd9-zbIRWV3HHHzgcCM7FW9M/edit?usp=sharing" target="_blank" rel="noopener">AddonSoftware Installation Guide</a> to create and sync up a new instance of Addon in a different location, represented as &lt;aon_prod&gt; in the diagram below.</li>
+                        <li>Launch the new instance. Dismiss the welcome message, accept the license agreement, and allow the Create SPROC Definitions task to complete. Close out of the new instance.</li>
+                        <li>Copy/extract the V6Hybrid project into the &lt;aon_prod&gt; directory, and change the paths in the v6hybrid.syn file accordingly. In addition, add ALIAS lines as needed for users and printers (see Additional Notes later in this document for more information).&nbsp;</li>
+                        <li>Re-launch the new instance and use the Barista Install Application Wizard to install the V6Hybrid project (navigate to &lt;aon_prod&gt;/V6Hybrid/config/v6hybrid.syn). The file structure for the new instance of Addon with the V6Hybrid project should resemble Figure 1 below (not all directories are listed).</li>
+                    </ul>
+                </ul>
+
+                <div class="indent2"> 
+                <span class="code"><a name="FIGURE1" id="FIGURE1"></a>
+                <table border="1">
+                    <tbody>
+                        <tr>
+                            <td>
+                            <p><strong>&lt;aon_prod&gt;/</strong>(Where aon_prod is top level for the install)</p>
+                            <p>&nbsp; &nbsp; cust_images/</p>
+                            <p>&nbsp; &nbsp; documents/ (Present once a document is saved)</p>
+                            <p>&nbsp; &nbsp; images/</p>
+                            <p><span style="color:#0000ff"><strong>&nbsp; &nbsp; V6Hybrid/</strong></span></p>
+                            <p><strong>&nbsp; &nbsp; &nbsp; &nbsp;ACT/</strong></p>
+                            <p><strong>&nbsp; &nbsp; &nbsp; &nbsp;ADATA/ (V6 data files)</strong></p>
+                            <p><strong>&nbsp; &nbsp; &nbsp; &nbsp;...etc.</strong></p>
+                            <p><strong>&nbsp; &nbsp; &lt;vYY&gt;/</strong>(Where YY is the major version number)</p>
+                            <p>&nbsp; &nbsp; &nbsp; &nbsp; app_data/ (Addon data files)</p>
+                            <p><strong>&nbsp; &nbsp; &nbsp; &nbsp; &lt;vYYnn&gt; </strong>(Where YYnn is the major+minor version)</p>
+                            <p><strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</strong><span style="color:#0000ff"><strong>aon/</strong></span></p>
+                            <p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ad/</p>
+                            <p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ap/</p>
+                            <p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;...etc.</p>
+                            <p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="color:#0000ff"><strong>barista/</strong></span></p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                </span>
+                <p style="style3">Figure 1: File structure for AddonSoftware that incorporates the V6Hybrid project.</p>
+                </div>
+
+                <p>After installing V6Hybrid, log out and back in again so the auto-launch process can finish post-installation tasks specific to the V6Hybrid project. These tasks will create additional SPROC definitions, copy trigger definition and source files and change paths as needed, and disable the standard Addon menu, leaving only the "superset" V6Hybrid menu.</p>
+                <p>For versions prior to 22.00, navigate to the AddonSoftware Administration &gt; V6 Administration &gt; System Description Maintenance task. Call up each module and change the Data Path and Program Path to reference the V6Hybrid install location. With version 22.00+, the System Description records are updated automatically via an auto-launch task.</p>
+                <p>If you need to access V6 via the main CUI menu, as is sometimes the case during development and testing, then launch Barista Administration &gt; Menus, select the V6Hybrid menu from the listbutton, then scroll to the bottom and expand the AddonSoftware Administration tree to reveal the V6 Administration &gt; Utilities nodes. Select the Addon V6 CUI item, and alter the Config File Path to reference your install location (e.g. "&lt;aon_prod&gt;/V6Hybrid/config.aon"). Click the Save and then the Refresh button in the MDI toolbar, then close the menu. You will also need to examine the config.aon file located in the V6Hybrid folder and change pathnames in the PREFIX to reference your BBj install and aon_prod locations (e.g., "&lt;aon_prod&gt;/V6Hybrid/ADATA", etc.).</p>
+                <p>If you created a production instance of Addon and want demo data for testing, copy the data files only (not sub-directories) from the &lt;aon_prod&gt;/vYY/vYYnn/aon/data/ directory up to the &lt;aon_prod&gt;/vYY/app_data/ directory. As you work toward going live you will be replacing the V6Hybrid demo data with live V6 data, and clearing the Addon demo data in order to run DataPort for the AP and GL modules. You'll also need to compare your production V6 programs with those in the V6Hybrid's DLR, SCN, ACT, DIS, etc. directories to incorporate any customizations you may have in V6.</p>
+            </div>
+            
+            <span class="style1"><a name="AT A GLANCE" id="AT A GLANCE">At a Glance</a></span><span class="style6"><a href="#TOP">(top of page)</a></span>
+            <div class="indent1"> 
+                <p>At a high level, the V6Hybrid project demonstrates how to set up and run in a hybrid environment, where some tasks appear as CUI windows, and others as graphical forms, all launched from the integrated menu system and all running within the MDI. One obvious benefit of this approach is that you can control access to all of the tasks using Barista Role-based Security.&nbsp;</p>
+                <p>The top panel of the V6Hybrid menu weaves the modules together seamlessly, moving from Addon's Accounts Payable to V6's Accounts Receivable, etc.. In other words, the menu does not segregate the modules based on whether they're running in V6 or Addon. In the lower panel, each task for a given V6 module is defined individually. Launching a V6 task takes you directly into that CUI screen, and exiting the task dismisses the screen, leaving control with the MDI menu and bypassing the V6 menu altogether.&nbsp;</p>
+                <p>At a more detailed level, the demos included in the project showcase several ways in which V6 users can leverage modern Addon functionality from CUI V6.&nbsp;</p>
+                <ul>
+                <li>Dashboard&nbsp; &ndash;&nbsp; The dashboard is a hybrid in itself, with widgets pulling information from either the Addon or V6 data files, depending on the module.</li>
+                <ul>
+                <li>A new Sales Comparison widget uses SQL in the underlying SPROC to query the V6 Invoice History table, then summarizes the results into the recordset used to populate the widget. </li>
+                <li>The remaining Sales widgets and the Company Aging widget are derived from their standard Addon counterparts, but modified to use the V6 database, while the GL widgets are populated from the Addon database.&nbsp;</li>
+                </ul>
+                <li>Individual widgets&nbsp; &ndash;&nbsp; In addition to the traditional CUI display, the Aging/Sales Summary screen of the V6 Customer Maintenance task also launches a pie chart depicting the customer's aged balance.</li>
+                <li>Queries&nbsp; &ndash; Custom queries called from V6 programs add powerful functionality, including the ability to sort, search, and filter, as well as export to other formats.&nbsp;</li>
+                <ul>
+                <li>Customer Maintenance customer number.</li>
+                <li>Customer Maintenance Invoice History Inquiry.</li>
+                <li>Cash Receipts customer number.</li>
+                <li>Purchase Orders vendor number.</li>
+                </ul>
+                <li>DocOut reports&nbsp; &ndash;&nbsp; The DocOut reporting subsystem provides not only a convenient on-screen viewer, but also the ability to search, save, email and fax reports, as well as archive reports for later recall. Several of the reports listed here also make use of a DocOutWrapper custom class to make it even easier to convert legacy print programs*.</li>
+                <ul>
+                <li>AR Aging</li>
+                <li>Cash Receipts Register/GL Recap</li>
+                <li>Monthly Cash Receipts Journal*</li>
+                <li>Customer Ranking Report*</li>
+                <li>OP Sales Register*/Cash Sales*/Summary*</li>
+                <li>Invoice Edit Report*</li>
+                <li>Sales Analysis Reports*/12-Period Sales Analysis Reports*</li>
+                </ul>
+                <li>Jasper reports offer graphical reporting and interface to the current Report Control sub-system for automated email/faxing.</li>
+                <ul>
+                <li>AR Simple Invoice</li>
+                <li>AR Statements, on-demand and batch</li>
+                <li>OP Invoices, batch mode</li>
+                </ul>
+                <li>GUI form using V6 Data&nbsp; &ndash;&nbsp; This form shows how to use an existing graphical form design with V6 data, paving the way for a step-wise migration to GUI.</li>
+                <ul>
+                <li>The AR Distribution Codes Maintenance collects the code, description, and GL accounts in a GUI form and writes to the V6 database. The GL codes are validated against the current Addon database. Callpoint code has been altered to work against the V6 data and use V6 programs.</li>
+                </ul>
+                <li>The Executive Summary shows data from either the V6 or Addon module .</li>
+                <ul>
+                <li>Updates for both V6 and current Addon databases.</li>
+                <li>Calendar display pulls from the old or new database depending on the module.</li>
+                </ul>
+                <li>Triggers on V6 and Addon data files bring it all together "under the hood."</li>
+                <ul>
+                <li>When running a V6 task that accesses AP or GL data, the triggers access and/or write to the Addon AP and GL files instead of those in V6.</li>
+                <li>When running certain of Addon's AP tasks, triggers provide access to V6 data from other modules such as IV and POs.</li>
+                </ul>
+                <li>AddonSoftware Administration&nbsp; &ndash;&nbsp; This menu contains a V6 Maintenance and Utilities sub-menu that provides additional items for navigating and maintaining the hybrid environment. Tip: Add the Reports and SpeedSearch entries to your Favorites menu for even faster access.</li>
+                </ul>
+            </div>
+            
+            <span class="style1"><a name="IN DEPTH" id="IN DEPTH">In Depth</a></span><span class="style6"><a href="#TOP">(top of page)</a></span>
+            <div class="indent1"> 
+                <p>The V6Hybrid project is a standard Barista application structure, to which Version 6 programs and demo data have been added. As such, it can be installed into an existing demo of AddonSoftware, or into a production version created with the AddonSoftware Installation Wizard (AIUW). In the latter case, you can overlay or merge the standard V6 programs with your own, and copy in your production V6 data (taking into account any customizations you may have in your V6 install). This section provides a more detailed look inside the project directories, and additional information on administration and triggers.&nbsp;</p>
+                <ol>
+                <li>
+                <span class="style2">V6Hybrid</span>
+                </li>
+                    <ul>
+                    <li>ACT&nbsp; &ndash;&nbsp; Standard V6 programs for the Accounting module in source format.</li>
+                    <li>ADATA&nbsp; &ndash;&nbsp; Standard V6 demo data with dates adjusted to be aligned with current Addon demo data. Also contains trigger definition files, and a src subdirectory for trigger source code (see Triggers section for more information).</li>
+                    <li>ADM&nbsp; &ndash;&nbsp; Standard V6 programs for the Administrator module in source format.</li>
+                    <li>callpoints&nbsp; &ndash;&nbsp; Compiled callpoint code for the project's Barista-generated forms.</li>
+                    <li>config/v6hybrid.syn&nbsp; &ndash;&nbsp; The V6Hybrid synchronization file, containing settings that are forwarded to barista.cfg during the sync. Change the paths inside this file before installing the project in any location other than the default (bbj-home) location.</li>
+                    <li>cust_images&nbsp; &ndash;&nbsp; contains logos for use on Jasper reports.&nbsp;</li>
+                    <li>data&nbsp; &ndash;&nbsp; Contains no actual data files for this project, but has standard subdirectories to store synchronization files and definitions for Barista-defined aliases.</li>
+                        <ul>
+                        <li>/arc/enu &nbsp; &ndash;&nbsp; Contains the .arc files that Barista creates when the V6Hybrid is installed/synchronized.</li>
+                        <li>/bar &nbsp; &ndash;&nbsp; Contains Barista definition files in .xml format for each defined alias. With the exception of the arm10d alias which is an actual GUI form, the remainder of the V6-named aliases (are03.xml, are04.xml, etc.) are defined solely to provide string template or SQL access to V6 files for queries, reports, or dashboard widgets.</li>
+                        <li>/cdf  &nbsp; &ndash;&nbsp; Contains raw callpoint code.</li>
+                        <li>/sync  &nbsp; &ndash;&nbsp; Contains .xml formats for the menu files, custom queries, auto-launch tasks, and drill down definitions that ship with the V6Hybrid.</li>
+                        </ul>
+                    <li>DIS&nbsp; &ndash;&nbsp; Standard V6 programs for the Distribution module in source format.</li>
+                    <li>DLR&nbsp; &ndash;&nbsp; Standard V6 programs that have been modified for the V6Hybrid project (see Additional Notes, item f for more on managing the DLR directory programs).</li>
+                    <li>MFG&nbsp; &ndash;&nbsp; Standard V6 programs for the Manufacturing module in source format.</li>
+                    <li>prog  &nbsp; &ndash;&nbsp; These aren't part of Standard V6, but provide additional functionality or help install/manage the project.</li>
+                    <li>reports&nbsp; &ndash;&nbsp; Jasper report .jasper and .jrxml files.</li>
+                    <li>SCN&nbsp; &ndash;&nbsp; Software Change Notice versions of Standard V6 programs in source format.</li>
+                    <li>sprocs &nbsp; &ndash;&nbsp; Contains the .prc files (SPROC sourc code) used in the Dashboard and Jasper reports.</li>
+                    <li>util&nbsp; &ndash;&nbsp; Trigger definition and (in util/src/ subdirectory) source code files for Addon triggers (see Triggers section for more information).&nbsp;</li>
+                    </ul>
+                    </br>
+                <li>
+                <span class="style2">Administration</span>
+                </li>
+                    While the MDI serves as the common launch point for both the V6 and Addon tasks, there are some administrative files that need to be maintained in both V6 and Addon for the hybrid environment to run smoothly. The AddonSoftware Administration menu has a new V6 Administration submenu to provide quick access to V6 files that must be maintained regardless of whether a given module is running in V6 or Addon. In particular, if a module is installed in <em>either</em> V6 or Addon, then <em>both</em> systems must show the module as installed, and have the appropriate Process (for batching and GL Posting Control) entries set up.
+                    <ul>
+                    <li>User Maintenance</li>
+                    <li>Printer Maintenance</li>
+                    <li>System Description Maintenance</li>
+                    <li>Process Maintenance</li>
+                    <li>Company Maintenance</li>
+                    <li>Executive Summary Update</li>
+                    <li>Utilities</li>
+                        <ul>
+                        <li>F5 SpeedSearch</li>
+                        <li>F1 Reports</li>
+                        <li>Install V6Hybrid Menu</li>
+                        <li>Create Stored Procedure Definitions</li>
+                        <li>Create Trigger Definitions</li>
+                        <li>Update System Description Records</li>
+                        <li>Enable/Disable Triggers</li>
+                        <li>Addon V6 CUI&nbsp; &ndash;&nbsp; This task launches V6 into the main login/menu screen for full access if needed. <strong>CAUTION</strong>: Use this option only for testing or troubleshooting the initial install, and set security to disable access when no longer needed. To avoid data corruption, use this task with care, making sure not to launch any tasks for Addon modules (i.e., AP, GL).</li>
+                        </ul>
+                    </ul>
+                    </br>
+                <li>
+                <span class="style2">Triggers</span>
+                </li>
+                    Triggers are perhaps the most critical component of the hybrid environment. Triggers are BBj programs that are associated with a particular <em>physical data file</em>. Because triggers reside "below" the application code, they are invoked whenever an operation such as a read or write occurs on a given file, regardless of the application program involved. It is the triggers that provide access to Addon's AP and GL data from programs running in V6, and likewise access to V6 data from the Addon AP and GL programs. Understand that the V6Hybrid project does not function in a "parallel" fashion, where both databases are kept up to date. The AP and GL files are only updated in the Addon database, and the other modules update only the V6 database.</p>
+                    <p>Consider our hybrid environment, and the number of V6 programs outside of AP and GL that access AP or GL data: register/updates, SpeedSearch, lookups, Purchase Orders, Shop Floor, etc. Rather than modifying all of those V6 programs, we use triggers on the data files. With this approach, no V6 program changes are necessary. When a V6 program reads from or writes to an AP or GL file, the associated trigger code redirects the I/O to the Addon file instead. Similarly, there are places in Addon's AP module that access non-AP files, so triggers are used on these files to redirect the I/O to the V6 files.</p>
+                    <p>A trigger consists of a .trigger definition file, which must reside in the same directory as the physical data file, and the associated BBj source code file. The location of the source code file is specified within the .trigger definition. For V6 triggers, the .trigger files are in the &lt;aon_prod&gt;/V6Hybrid/ADATA/ directory, and the source code files are in&nbsp; &lt;aon_prod&gt;/V6Hybrid/ADATA/src/. Triggers needed for Addon ship in the&nbsp; &lt;aon_prod&gt;/V6Hybrid/util/ folder. After installing the V6Hybrid project, an Auto-launch task runs on the first launch to alter pathnames in the&nbsp; &lt;aon_prod&gt;/V6Hybrid/ADATA/*.trigger files relative to the install location, and to both move the Addon *.trigger and associated source code files from &lt;aon_prod&gt;/V6Hybrid/util/ to the &lt;aon_prod&gt;/vYY/app_data/ and &lt;aon_prod&gt;/vYY/app_data/src/ directories, and change the pathnames accordingly.
+                </ol>
+            </div>
+            <span class="style1"><a name="ADDITIONAL NOTES" id="ADDITIONAL NOTES">Additional Notes</a></span><span class="style6"><a href="#TOP">(top of page)</a></span>
+            <div class="indent1"> 
+                <ul>
+                    <li>Dictionary entries for V6 tables use the physical table name without the dash as the alias name. If a non-normalized file, the record ID is also part of the alias name. Element types have been defined with a "V6_" prefix to ensure that these aliases can live in the same database as Addon without conflicts. For example:</li>
+                    <ul>
+                        <li>V6 Salespersons</li>
+                        <ul>
+                            <li>Alias: ARM10F</li>
+                            <li>Data file: (+V6DATA)ARM-10</li>
+                            <ul>
+                                <li>V6_FIRM_ID</li>
+                                <li>V6_RECORD_ID_F</li>
+                                <li>V6_SLSPSN_CODE</li>
+                                <li>V6_CODE_DESC</li>
+                                <li>V6_RSRVD_STR</li>
+                                <li>V6_COMM_RATE</li>
+                            </ul>
+                        </ul>
+                    </ul>
+                    <li>All table/elements have been created using company 00-000000 and product V6H.</li>
+                    <li>Two new keys have been defined for ARM-01. For a production install, either&nbsp; use the Online Copy Job, or write your own program to copy your source ARM-01 data into the new file.</li>
+                    <ul>
+                        <li>CUST_NAME</li>
+                        <ul>
+                            <li>V6_FIRM_ID</li>
+                            <li>V6_CUST_NAME</li>
+                        </ul>
+                        <li>ALT_SEQ</li>
+                        <ul>
+                            <li>V6_FIRM_ID</li>
+                            <li>V6_ALT_SEQUENCE</li>
+                            <li>V6_CUSTOMER_NBR</li>
+                        </ul>
+                    </ul>
+                    <li>Some definitions in the dictionary are for non-normalized files (e.g., ARM10A, B, C, etc.). Do NOT rebuild the <strong><em>tables </em></strong>when adding or changing these definitions. Only update the <strong><em>templates</em></strong>. <strong>Rebuilding the tables may cause data corruption.</strong></li>
+                    <li>Search for "V6" in the DLR directory programs to locate remarks for changes specific to the V6Hybrid project. If setting up a production install, you'll most likely be copying programs from your current V6 DLR directory into the V6Hybrid/DLR/ directory. Follow these important steps:</li>
+                    <ul>
+                        <li>Make sure your V6 programs will run under BBj (see <a href="http://documentation.basis.com/BASISHelp/WebHelp/index.htm" target="_blank" rel="noopener"><span style="color: #3c78d8;">http://documentation.basis.com/BASISHelp/WebHelp/index</span></a><span style="color: #3c78d8; text-decoration: underline;">.htm</span>&nbsp;for information on the _keyword utility).</li>
+                        <li>Make sure to identify and analyze any programs that you have customized that are also in the V6Hybrid/DLR/ directory to determine if/how the V6Hybrid mods can be incorporated with your own.</li>
+                    </ul>
+                    <li>The v6hybrid.syn file initially contains just one ALIAS line for&nbsp; T0. Create additional entries for each V6 user/terminal and printer. These lines are pushed into barista.cfg when installing the V6Hybrid project.</li>
+                    <ul>
+                        <li>DEVICE=alias T&lt;n&gt; syswindow "" invisible, USERID=&lt;barista_user_id&gt;, LEGACYID=&lt;legacy_user_id&gt;,&nbsp;where &lt;n&gt; is the terminal ID number, &lt;barista_user_id&gt;&nbsp;is the login name used to log in to Addon, and &lt;legacy_user_id&gt;&nbsp;is the three-character login ID used to log into the V6 system. Note that the &lt;legacy_user_id&gt; login ID is case sensitive, and must match the User ID in V6 User Maintenance.</li>
+                        <li>UseDEVICE=&lt;alias_syntax&gt; for printers, where &lt;alias_syntax&gt; matches the alias line from the V6 config.aon file.</li>
+                    </ul>
+                    <li>If you are working in console mode in V6 programs launched from within Addon, you may notice that certain characters (quotation marks, for example) are interpreted as delimiters. To correct that behavior, add <span class="code">com.basis.bbj.console.rmi=false</span> to your bbj.properties file, then restart BBjServices.</li>
+                </ul>
+            </div>
+            <span class="style1"><a name="UPGRADES" id="UPGRADES">Upgrades</a></span><span class="style6"><a href="#TOP">(top of page)</a></span>
+            <div class="indent1"> 
+                <p>Upgrades when running with the V6Hybrid are largely the same as any other Addon upgrade. Refer to the AddonSoftware Upgrade Guide for more information on the upgrade process in general. The main difference when using the V6Hybrid is that the "main" Addon upgrade is performed first, and the V6Hybrid project is re-installed once the Addon upgrade is completed.</p>
+                <p>The reason for this processing flow centers around the EM Update Wizard. Dictionary entries for several of the V6 tables are written to the Barista database when the V6Hybrid is installed. These definitions should not be present when running the EM Update Wizard. If the V6Hybrid definitions <em>are</em> in place during the EM Update Wizard you will likely encounter one or more of these issues:&nbsp;</p>
+                <ul>
+                <li>There are duplicate physical file names in the dictionary. For example, ARM_CUSTMAST references physical table (+ARDATA)<strong>arm-01</strong>, and the V6 definition for ARM01 references (+V6DATA)<strong>arm-01</strong>. Because the EM Update Wizard copies all files to a single destination directory, in a case like this, the first arm-01 will be copied and the other will produce an error and not be copied (because the first file is present and still open by the OCJ).</li>
+                <li>Some definitions for V6 tables in the dictionary may be incomplete or inaccurate, such as:</li>
+                <ul>
+                <li>Definitions for certain record types in a non-normalized table. For example, there is a definition for ARM10F in order to allow Barista to query that table. That definition should not be used as part of a data copy, as it only represents one of the many record types in the file.</li>
+                <li>Definitions that are "shortcuts." For example, the IVM01 definition only describes the firm, item ID, and description, with the rest of the record as a "reserved" column. This allows Barista to query the V6 Item table for items/descriptions, without having to define in detail the entire record. Clearly this definition shouldn't be used for the data copy.</li>
+                </ul>
+                </ul>
+                <p>The basic flow for an Addon upgrade when using the V6Hybrid, then, is to complete the Addon upgrade on the TEST server, including copying data via the EM Update Wizard if applicable, and running post-upgrade conversions, and then install the V6Hybrid. Note that the V6Hybrid project should reside in a version-neutral location "above" AddonSoftware, as depicted earlier in <a href="#FIGURE1">Figure 1</a>. As such, there should be no reason to make a new copy of the project during an upgrade. You will simply reinstall the same V6Hybrid project into the upgraded Addon. Note, however, that depending on which version of Addon you're upgrading to, and depending on which modules you're running in V6 vs Addon, there may be trigger or other code changes in the standard V6Hybrid repo on GitHub that you'll want to examine in order to determine if any of the changes should be incorporated into your current V6Hybrid.</p>
+                <p>After installing V6Hybrid, use the Barista Utilities &gt; Auto-Launch Maintenance form to change the Process Status back to "Incomplete" on the V6BLDSPROC, V6BLDTRGRS, V6INITDEMO, and V6SYSDESCS tasks, then exit and re-launch. When you re-launch, those Auto-Launch tasks will once again run to finish setting up the hybrid environment (these tasks can also be run individually from the AddonSoftware Administration &gt; V6 Administration &gt; Utilities menu).</p>
+                <ul>
+                <li>Install V6Hybrid Menu&nbsp; &ndash;&nbsp; The V6Hybrid menu is a replacement for the standard Addon menu. This task renames the Addon menu so the V6Hybrid menu gets loaded into the menu panel instead.</li>
+                <li>Create Stored Procedure Definitions&nbsp; &ndash;&nbsp; This task changes config file location for the V6Hybrid-related SPROCs to reference the "New" barista.cfg file.</li>
+                <li>Update Trigger Definitions&nbsp; &ndash;&nbsp; This task changes the working directory and config file pathnames in the ADATA .trigger files to refer to the "New" Barista directory and barista.cfg file, copies the triggers stored in the V6Hybrid/util/triggers/ directory to the "New" &lt;aon_prod&gt;/vYY/app_data/ directory, and changes those pathnames as well.</li>
+                <li>Update System Description Records&nbsp; &ndash;&nbsp; Run this utility to change the "Data" and "Program" paths for the V6 modules to correspond to the V6Hybrid install location.</li>
+                </ul>
+                <p>After upgrading and testing on the TEST server, use the Barista Remove Applications utility to remove V6Hybrid from the upgraded instance of Addon on the TEST server. Then use Addon's Packager/Extractor to bundle up and then install the "New" Addon back on the production server. Follow the "go live" steps in the AddonSoftware Upgrade Guide to refresh data as needed, and finish the rest of the "go live" steps. Finally, reinstall the V6Hybrid and reset/re-run the Auto-launch tasks as described above.</p>
+            </div>
+        	<span class="style1"><a name="AVATAX" id="AVATAX">AvaTax</a></span><span class="style6"><a href="#TOP">(top of page)</a></span>
+            <div class="indent1"> 
+                <p>With version 22, the V6Hybrid project can use Addon's certified interface to Avalara's AvaTax service to accurately calculate and record sales tax transactions. If you plan to use AvaTax with your V6Hybrid install, you'll need to use DataPort on the following tables (in addition to the AP and GL tables).</p>
+                <ul>
+                    <li>ARM-01 (arm_custmast)</li>
+                    <li>ARM-03 (arm_custship)</li>
+                    <li>ARM-10B (opc_taxcode)</li>
+                    <li>ARM-10E (opc_linecode)</li>
+                    <li>IVM-01 (ivm_itemmast)</li>
+                    <li>IVM-10A (ivc_prodcode)</li>
+                    <li>IVM-10C (ivc_whsecode)</li>
+                    <li>IVM-13 (ivc_clascode)</li>
+                    <li>IVM-15 (ivc_typecode)</li>
+                    <li>SYS-01 (for AR and OP parameters)</li>
+                </ul>
+                <p>To facilitate the AvaTax interface, the V6Hybrid contains several additional triggers as of version 22. These after-write triggers keep the additional files DataPorted to Addon up to date with their V6 counterparts, since the AvaTax interface uses the Addon files.</p>
+                <p>The AddonSoftware Administration > AvaTax Interface menu contains several tasks you'll use to configure and manage the interface to AvaTax. See <a href="https://documentation.basis.com/AddonHelp/WebHelp/mergedProjects/AddonHelp/opoperations/appendix_b_-_ava_tax_user_implementation_guide.htm">Appendix B</a> in the Addon documentation for OP for more information on AvaTax.</p>
+                <ul>
+                    <li>AR Ship Via Codes&nbsp; &ndash;&nbsp;Maintain the AvaTax freight tax service codes for the defined Ship Via records.</li>
+                    <li>AR Customer Sales Tax Exempt&nbsp; &ndash;&nbsp;Enter and maintain sales tax exemption certificate numbers and expiration dates for customers who are exempt from sales tax. </li>
+                    <li>AR Entity Use Codes&nbsp; &ndash;&nbsp; AvaTax supports user-defined Entity/Use Codes as an alternate way to distinguish non-taxable customers.</li>
+                    <li>IV Tax Service Code by Category&nbsp; &ndash;&nbsp; Maintain the AvaTax tax service codes by the selected item category (by Item Type, Item Class, or Product Code).</li>
+                    <li>IV Tax Service Code by Item&nbsp; &ndash;&nbsp; Maintain the AvaTax tax service codes for individual items, if applicable.</li>
+                    <li>OP Sales Tax Service Parameters&nbsp; &ndash;&nbsp; Use this form to enable/disable using AvaTax, and to specify which item category you'll use to enter tax service codes.</li>
+                    <li>OP Tax Service Code by Line Code&nbsp; &ndash;&nbsp; Maintain AvaTax tax service codes for non-stock items in this form.</li>
+                    <li>OP Tax Codes Using Sales Tax Service&nbsp; &ndash;&nbsp; This form lets you select which of your existing Addon tax codes are using AvaTax and which should have tax calculated solely by the application.</li>
+                    <li>Sales Tax Service Configuration&nbsp; &ndash;&nbsp; Enter the configuration information for your AvaTax account in this form.</li>
+                    <li>Sales Tax Transaction History&nbsp; &ndash;&nbsp; This form lets you browse through and/or search for any past transaction that was successfully committed to AvaTax.</li>
+                </ul>
+            </div>
+    </body>
+</html>
