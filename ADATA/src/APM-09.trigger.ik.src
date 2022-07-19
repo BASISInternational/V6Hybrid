@@ -17,6 +17,7 @@ rem --- Read Barista Addon's apm_vendmast MEMO_1024 instead of V6 apm-09 comment
     nskey$="APM09"+"_"+grpID$+"_"+sessionID$
     
     rem ' trace
+    goto skip_trace;rem this line (and change pathname as applicable) to do the trace
     tfl$="C:/Temp/apm09.ik."+grpID$+"_"+sessionID$+"_"+str(fpt(tim))+".txt"
     erase tfl$,err=*next
     string tfl$
