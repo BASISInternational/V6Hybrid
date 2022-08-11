@@ -168,7 +168,7 @@
 4130 rem ' *****************************************************
 4140 doc!.setOutputData(out!)
 4150 doc!.process()
-4100 GOTO 9900
+4160 GOTO 9900
 5000 REM " --- Heading
 5020 LET L=HEADINGS+1
 5025 IF R6$="S" THEN LET HEADINGS$[4]=S1$
