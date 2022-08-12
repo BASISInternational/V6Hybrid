@@ -2,18 +2,6 @@
 <barista_record_table>ADS_AUTOLAUNCH</barista_record_table>
 <barista_admin_records>
 	<barista_record>
-		<PROCESS_ID>V6INITDEMO</PROCESS_ID>
-		<DESCRIPTION>Init for V6 demo environment</DESCRIPTION>
-		<PROGRAM_PATH>[V6HYBRID_PROG]adx_V6_initdemo.aon</PROGRAM_PATH>
-		<PROGRAM_ARGS>-u[+USER_ID]</PROGRAM_ARGS>
-		<PROCESS_TYPE>O</PROCESS_TYPE>
-		<PROCESS_STATUS>N</PROCESS_STATUS>
-		<ASC_COMP_ID>00000000</ASC_COMP_ID>
-		<ASC_PROD_ID>V6H</ASC_PROD_ID>
-		<COMMENTS>This program removes the standard Addon menu entries, leaving the V6Hybrid 'superset' menu installed.[$0a$]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </COMMENTS>
-		<USER_MODIFIED> </USER_MODIFIED>
-	</barista_record>
-	<barista_record>
 		<PROCESS_ID>V6SYSDESCS</PROCESS_ID>
 		<DESCRIPTION>Update V6 System Descriptions</DESCRIPTION>
 		<PROGRAM_PATH>[V6HYBRID_PROG]adx_V6_init_sysdesc.aon</PROGRAM_PATH>
@@ -47,6 +35,18 @@
 		<ASC_COMP_ID>00000000</ASC_COMP_ID>
 		<ASC_PROD_ID>V6H</ASC_PROD_ID>
 		<COMMENTS>This program edits Trigger definitions for V6Hybrid, both under V6's ADATA directory, and Addon's data directory.[$0a$]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </COMMENTS>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
+	<barista_record>
+		<PROCESS_ID>V6INITMENU</PROCESS_ID>
+		<DESCRIPTION>Choose menu for V6Hybrid</DESCRIPTION>
+		<PROGRAM_PATH>[V6HYBRID_PROG]adx_V6_initmenu.aon</PROGRAM_PATH>
+		<PROGRAM_ARGS>-u[+USER_ID]</PROGRAM_ARGS>
+		<PROCESS_TYPE>O</PROCESS_TYPE>
+		<PROCESS_STATUS>N</PROCESS_STATUS>
+		<ASC_COMP_ID>00000000</ASC_COMP_ID>
+		<ASC_PROD_ID>V6H</ASC_PROD_ID>
+		<COMMENTS>This program removes either the standard Addon menu or the V6Hybrid integrated menu, depending on which one is selected for the V6Hybrid instance.[$0a$]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             </COMMENTS>
 		<USER_MODIFIED> </USER_MODIFIED>
 	</barista_record>
 </barista_admin_records>
