@@ -255,12 +255,13 @@ rem --- Open template and masks files for use in getting Barista template for co
                         sys01.unit_mask$=unit_mask$
                         sys01.pct_mask$=pct_mask$
 
+                        calky$=ky$(1,2)+tpl.current_year$
                         alias$="GLS_CALENDAR"
                         filename$="gls_calendar"
                         gosub get_template
                         system_dev=unt
                         open (system_dev,err=trigger_error)gldir$+filename$
-                        read record(system_dev,key=ky$,dom=return_default)tpl$
+                        read record(system_dev,key=calky$,dom=return_default)tpl$
                         sys01.acct_pers$=tpl.total_pers$
                         for x=1 to 13
                             field sys01$,"per_"+str(x:"00") = fni$(field(tpl$,"period_end_"+str(x:"00")))
