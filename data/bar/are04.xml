@@ -17,13 +17,13 @@
 			<RESTRICT_AUTOADD id="ddm_tables.are04"></RESTRICT_AUTOADD>
 			<ASC_COMP_ID id="ddm_tables.are04">00000000</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_tables.are04">V6H</ASC_PROD_ID>
-			<ASC_VERSION_ID id="ddm_tables.are04">22.0      </ASC_VERSION_ID>
+			<ASC_VERSION_ID id="ddm_tables.are04">23.0      </ASC_VERSION_ID>
 			<ASC_LICENSE_ID id="ddm_tables.are04">26A0C09252CE4DF8A15C65749821DE1B</ASC_LICENSE_ID>
 			<DD_EXPORT_DATA id="ddm_tables.are04">Y</DD_EXPORT_DATA>
 			<DD_CREATE_DATE id="ddm_tables.are04">20161011</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_tables.are04">20220125</DD_LSTREV_DATE>
-			<DD_LSTSYNC_DATE id="ddm_tables.are04">20211209</DD_LSTSYNC_DATE>
-			<DD_LSTSYNC_TIME id="ddm_tables.are04">115240</DD_LSTSYNC_TIME>
+			<DD_LSTREV_DATE id="ddm_tables.are04">20230315</DD_LSTREV_DATE>
+			<DD_LSTSYNC_DATE id="ddm_tables.are04">20230315</DD_LSTSYNC_DATE>
+			<DD_LSTSYNC_TIME id="ddm_tables.are04">123042</DD_LSTSYNC_TIME>
 			<DD_ATTR_ATAB id="ddm_tables.are04"></DD_ATTR_ATAB>
 			<DD_ATTR_CPGM id="ddm_tables.are04"></DD_ATTR_CPGM>
 			<DD_ATTR_DKNM id="ddm_tables.are04"></DD_ATTR_DKNM>

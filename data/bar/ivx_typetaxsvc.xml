@@ -17,15 +17,15 @@
 			<RESTRICT_AUTOADD id="ddm_tables.ivx_typetaxsvc"></RESTRICT_AUTOADD>
 			<ASC_COMP_ID id="ddm_tables.ivx_typetaxsvc">00000000</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_tables.ivx_typetaxsvc">V6H</ASC_PROD_ID>
-			<ASC_VERSION_ID id="ddm_tables.ivx_typetaxsvc">22.0      </ASC_VERSION_ID>
+			<ASC_VERSION_ID id="ddm_tables.ivx_typetaxsvc">23.0      </ASC_VERSION_ID>
 			<ASC_LICENSE_ID id="ddm_tables.ivx_typetaxsvc">D727BF1B7C5BC720473EFBAD0C2B0F3F</ASC_LICENSE_ID>
 			<DD_EXPORT_DATA id="ddm_tables.ivx_typetaxsvc">Y</DD_EXPORT_DATA>
 			<DD_CREATE_DATE id="ddm_tables.ivx_typetaxsvc">2459592</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_tables.ivx_typetaxsvc">20220125</DD_LSTREV_DATE>
-			<DD_LSTSYNC_DATE id="ddm_tables.ivx_typetaxsvc">20220114</DD_LSTSYNC_DATE>
-			<DD_LSTSYNC_TIME id="ddm_tables.ivx_typetaxsvc">133314</DD_LSTSYNC_TIME>
+			<DD_LSTREV_DATE id="ddm_tables.ivx_typetaxsvc">20230315</DD_LSTREV_DATE>
+			<DD_LSTSYNC_DATE id="ddm_tables.ivx_typetaxsvc">20230315</DD_LSTSYNC_DATE>
+			<DD_LSTSYNC_TIME id="ddm_tables.ivx_typetaxsvc">123042</DD_LSTSYNC_TIME>
 			<DD_ATTR_ATAB id="ddm_tables.ivx_typetaxsvc">IVC_TYPECODE    </DD_ATTR_ATAB>
-			<DD_ATTR_CPGM id="ddm_tables.ivx_typetaxsvc">C:/aon_instances/aonv6h/avatax/V6Hybrid/;</DD_ATTR_CPGM>
+			<DD_ATTR_CPGM id="ddm_tables.ivx_typetaxsvc">../apps/V6Hybrid/;</DD_ATTR_CPGM>
 			<DD_ATTR_DKNM id="ddm_tables.ivx_typetaxsvc"></DD_ATTR_DKNM>
 			<DD_ATTR_FIMG id="ddm_tables.ivx_typetaxsvc"></DD_ATTR_FIMG>
 			<DD_ATTR_FTYP id="ddm_tables.ivx_typetaxsvc">T</DD_ATTR_FTYP>
@@ -116,7 +116,7 @@
 		<ID id="ddm_table_tpls">DDM_TABLE_TPLS</ID>
 		<RECORD id="ddm_table_tpls.ivx_typetaxsvc">
 			<DD_TABLE_ALIAS id="ddm_table_tpls.ivx_typetaxsvc">IVX_TYPETAXSVC  </DD_TABLE_ALIAS>
-			<DD_FILE_NAME id="ddm_table_tpls.ivx_typetaxsvc"></DD_FILE_NAME>
+			<DD_FILE_NAME id="ddm_table_tpls.ivx_typetaxsvc">ivm-15</DD_FILE_NAME>
 			<DD_TABLE_TPL id="ddm_table_tpls.ivx_typetaxsvc">firm_id:c(2),item_type:c(3),code_desc:c(20),code_inactive:c(1),tax_svc_cd:c(10)</DD_TABLE_TPL>
 		</RECORD>
 	</ALIAS>
@@ -381,7 +381,7 @@
 			<DD_LSTREV_DATE id="ddm_table_cols.ivx_typetaxsvc005">20220112</DD_LSTREV_DATE>
 			<DD_ATTR_ABLC id="ddm_table_cols.ivx_typetaxsvc005"></DD_ATTR_ABLC>
 			<DD_ATTR_ABLV id="ddm_table_cols.ivx_typetaxsvc005"></DD_ATTR_ABLV>
-			<DD_ATTR_CPGM id="ddm_table_cols.ivx_typetaxsvc005">C:/aon_instances/aonv6h/avatax/V6Hybrid/;</DD_ATTR_CPGM>
+			<DD_ATTR_CPGM id="ddm_table_cols.ivx_typetaxsvc005">../apps/V6Hybrid/;</DD_ATTR_CPGM>
 			<DD_ATTR_COLW id="ddm_table_cols.ivx_typetaxsvc005">0</DD_ATTR_COLW>
 			<DD_ATTR_CTLX id="ddm_table_cols.ivx_typetaxsvc005"></DD_ATTR_CTLX>
 			<DD_ATTR_CTLY id="ddm_table_cols.ivx_typetaxsvc005"></DD_ATTR_CTLY>
@@ -533,8 +533,8 @@
 			<DD_ATTR_CTLH id="ddm_elements.firm_id"></DD_ATTR_CTLH>
 			<DD_ATTR_CTYP id="ddm_elements.firm_id">H</DD_ATTR_CTYP>
 			<DD_ATTR_DCOL id="ddm_elements.firm_id"></DD_ATTR_DCOL>
-			<DD_ATTR_DCOM id="ddm_elements.firm_id">            </DD_ATTR_DCOM>
-			<DD_ATTR_DEXP id="ddm_elements.firm_id">            </DD_ATTR_DEXP>
+			<DD_ATTR_DCOM id="ddm_elements.firm_id"></DD_ATTR_DCOM>
+			<DD_ATTR_DEXP id="ddm_elements.firm_id"></DD_ATTR_DEXP>
 			<DD_ATTR_DFLT id="ddm_elements.firm_id"></DD_ATTR_DFLT>
 			<DD_ATTR_DKNM id="ddm_elements.firm_id"></DD_ATTR_DKNM>
 			<DD_ATTR_DKEY id="ddm_elements.firm_id"></DD_ATTR_DKEY>
@@ -571,7 +571,7 @@
 			<DD_DESCRIPTION id="ddm_elements.item_type">Item Type</DD_DESCRIPTION>
 			<DD_DATA_TYPE id="ddm_elements.item_type">C</DD_DATA_TYPE>
 			<DD_DATA_LENGTH id="ddm_elements.item_type">3</DD_DATA_LENGTH>
-			<DD_MASK_TYPE id="ddm_elements.item_type"> </DD_MASK_TYPE>
+			<DD_MASK_TYPE id="ddm_elements.item_type"></DD_MASK_TYPE>
 			<DD_SYSTEM_REC id="ddm_elements.item_type"></DD_SYSTEM_REC>
 			<ASC_COMP_ID id="ddm_elements.item_type">01007514</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_elements.item_type">IV </ASC_PROD_ID>
@@ -585,8 +585,8 @@
 			<DD_ATTR_CTLH id="ddm_elements.item_type"></DD_ATTR_CTLH>
 			<DD_ATTR_CTYP id="ddm_elements.item_type">E</DD_ATTR_CTYP>
 			<DD_ATTR_DCOL id="ddm_elements.item_type">CODE_DESC       </DD_ATTR_DCOL>
-			<DD_ATTR_DCOM id="ddm_elements.item_type">            </DD_ATTR_DCOM>
-			<DD_ATTR_DEXP id="ddm_elements.item_type">            </DD_ATTR_DEXP>
+			<DD_ATTR_DCOM id="ddm_elements.item_type"></DD_ATTR_DCOM>
+			<DD_ATTR_DEXP id="ddm_elements.item_type"></DD_ATTR_DEXP>
 			<DD_ATTR_DFLT id="ddm_elements.item_type"></DD_ATTR_DFLT>
 			<DD_ATTR_DKNM id="ddm_elements.item_type"></DD_ATTR_DKNM>
 			<DD_ATTR_DKEY id="ddm_elements.item_type">[+FIRM_ID]+@</DD_ATTR_DKEY>
@@ -623,7 +623,7 @@
 			<DD_DESCRIPTION id="ddm_elements.code_desc">Code Description</DD_DESCRIPTION>
 			<DD_DATA_TYPE id="ddm_elements.code_desc">C</DD_DATA_TYPE>
 			<DD_DATA_LENGTH id="ddm_elements.code_desc">20</DD_DATA_LENGTH>
-			<DD_MASK_TYPE id="ddm_elements.code_desc"> </DD_MASK_TYPE>
+			<DD_MASK_TYPE id="ddm_elements.code_desc"></DD_MASK_TYPE>
 			<DD_SYSTEM_REC id="ddm_elements.code_desc"></DD_SYSTEM_REC>
 			<ASC_COMP_ID id="ddm_elements.code_desc">01007514</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_elements.code_desc">AD </ASC_PROD_ID>
@@ -637,8 +637,8 @@
 			<DD_ATTR_CTLH id="ddm_elements.code_desc"></DD_ATTR_CTLH>
 			<DD_ATTR_CTYP id="ddm_elements.code_desc">E</DD_ATTR_CTYP>
 			<DD_ATTR_DCOL id="ddm_elements.code_desc"></DD_ATTR_DCOL>
-			<DD_ATTR_DCOM id="ddm_elements.code_desc">            </DD_ATTR_DCOM>
-			<DD_ATTR_DEXP id="ddm_elements.code_desc">            </DD_ATTR_DEXP>
+			<DD_ATTR_DCOM id="ddm_elements.code_desc"></DD_ATTR_DCOM>
+			<DD_ATTR_DEXP id="ddm_elements.code_desc"></DD_ATTR_DEXP>
 			<DD_ATTR_DFLT id="ddm_elements.code_desc"></DD_ATTR_DFLT>
 			<DD_ATTR_DKNM id="ddm_elements.code_desc"></DD_ATTR_DKNM>
 			<DD_ATTR_DKEY id="ddm_elements.code_desc"></DD_ATTR_DKEY>

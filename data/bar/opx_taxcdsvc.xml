@@ -17,15 +17,15 @@
 			<RESTRICT_AUTOADD id="ddm_tables.opx_taxcdsvc">N</RESTRICT_AUTOADD>
 			<ASC_COMP_ID id="ddm_tables.opx_taxcdsvc">00000000</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_tables.opx_taxcdsvc">V6H</ASC_PROD_ID>
-			<ASC_VERSION_ID id="ddm_tables.opx_taxcdsvc">22.0      </ASC_VERSION_ID>
+			<ASC_VERSION_ID id="ddm_tables.opx_taxcdsvc">23.0      </ASC_VERSION_ID>
 			<ASC_LICENSE_ID id="ddm_tables.opx_taxcdsvc">639F8172CD1603B94578ED720D331858</ASC_LICENSE_ID>
 			<DD_EXPORT_DATA id="ddm_tables.opx_taxcdsvc">Y</DD_EXPORT_DATA>
 			<DD_CREATE_DATE id="ddm_tables.opx_taxcdsvc">2459594</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_tables.opx_taxcdsvc">20220125</DD_LSTREV_DATE>
-			<DD_LSTSYNC_DATE id="ddm_tables.opx_taxcdsvc">20220114</DD_LSTSYNC_DATE>
-			<DD_LSTSYNC_TIME id="ddm_tables.opx_taxcdsvc">133602</DD_LSTSYNC_TIME>
+			<DD_LSTREV_DATE id="ddm_tables.opx_taxcdsvc">20230315</DD_LSTREV_DATE>
+			<DD_LSTSYNC_DATE id="ddm_tables.opx_taxcdsvc">20230315</DD_LSTSYNC_DATE>
+			<DD_LSTSYNC_TIME id="ddm_tables.opx_taxcdsvc">123042</DD_LSTSYNC_TIME>
 			<DD_ATTR_ATAB id="ddm_tables.opx_taxcdsvc">OPC_TAXCODE     </DD_ATTR_ATAB>
-			<DD_ATTR_CPGM id="ddm_tables.opx_taxcdsvc">C:/aon_instances/aonv6h/avatax/V6Hybrid/;</DD_ATTR_CPGM>
+			<DD_ATTR_CPGM id="ddm_tables.opx_taxcdsvc">../apps/V6Hybrid/;</DD_ATTR_CPGM>
 			<DD_ATTR_DKNM id="ddm_tables.opx_taxcdsvc"></DD_ATTR_DKNM>
 			<DD_ATTR_FIMG id="ddm_tables.opx_taxcdsvc"></DD_ATTR_FIMG>
 			<DD_ATTR_FTYP id="ddm_tables.opx_taxcdsvc">T</DD_ATTR_FTYP>
@@ -104,7 +104,7 @@
 		<ID id="ddm_table_tpls">DDM_TABLE_TPLS</ID>
 		<RECORD id="ddm_table_tpls.opx_taxcdsvc">
 			<DD_TABLE_ALIAS id="ddm_table_tpls.opx_taxcdsvc">OPX_TAXCDSVC    </DD_TABLE_ALIAS>
-			<DD_FILE_NAME id="ddm_table_tpls.opx_taxcdsvc"></DD_FILE_NAME>
+			<DD_FILE_NAME id="ddm_table_tpls.opx_taxcdsvc">opm-06</DD_FILE_NAME>
 			<DD_TABLE_TPL id="ddm_table_tpls.opx_taxcdsvc">firm_id:c(2),op_tax_code:c(10),reserved_str:c(5),code_desc:c(20),ar_tot_code_01:c(10),ar_tot_code_02:c(10),ar_tot_code_03:c(10),ar_tot_code_04:c(10),ar_tot_code_05:c(10),ar_tot_code_06:c(10),ar_tot_code_07:c(10),ar_tot_code_08:c(10),ar_tot_code_09:c(10),ar_tot_code_10:c(10),gl_account:c(10),tax_frt_flag:c(1),reserved_str_02:c(4*),tax_rate:n(7*),op_max_limit:n(7*),code_inactive:c(1),use_tax_service:n(1*)</DD_TABLE_TPL>
 		</RECORD>
 	</ALIAS>
@@ -1600,8 +1600,8 @@
 			<DD_ATTR_CTLH id="ddm_elements.firm_id"></DD_ATTR_CTLH>
 			<DD_ATTR_CTYP id="ddm_elements.firm_id">H</DD_ATTR_CTYP>
 			<DD_ATTR_DCOL id="ddm_elements.firm_id"></DD_ATTR_DCOL>
-			<DD_ATTR_DCOM id="ddm_elements.firm_id">            </DD_ATTR_DCOM>
-			<DD_ATTR_DEXP id="ddm_elements.firm_id">            </DD_ATTR_DEXP>
+			<DD_ATTR_DCOM id="ddm_elements.firm_id"></DD_ATTR_DCOM>
+			<DD_ATTR_DEXP id="ddm_elements.firm_id"></DD_ATTR_DEXP>
 			<DD_ATTR_DFLT id="ddm_elements.firm_id"></DD_ATTR_DFLT>
 			<DD_ATTR_DKNM id="ddm_elements.firm_id"></DD_ATTR_DKNM>
 			<DD_ATTR_DKEY id="ddm_elements.firm_id"></DD_ATTR_DKEY>
@@ -1638,7 +1638,7 @@
 			<DD_DESCRIPTION id="ddm_elements.op_tax_code">Tax Code</DD_DESCRIPTION>
 			<DD_DATA_TYPE id="ddm_elements.op_tax_code">C</DD_DATA_TYPE>
 			<DD_DATA_LENGTH id="ddm_elements.op_tax_code">10</DD_DATA_LENGTH>
-			<DD_MASK_TYPE id="ddm_elements.op_tax_code"> </DD_MASK_TYPE>
+			<DD_MASK_TYPE id="ddm_elements.op_tax_code"></DD_MASK_TYPE>
 			<DD_SYSTEM_REC id="ddm_elements.op_tax_code"></DD_SYSTEM_REC>
 			<ASC_COMP_ID id="ddm_elements.op_tax_code">01007514</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_elements.op_tax_code">OP </ASC_PROD_ID>
@@ -1652,8 +1652,8 @@
 			<DD_ATTR_CTLH id="ddm_elements.op_tax_code"></DD_ATTR_CTLH>
 			<DD_ATTR_CTYP id="ddm_elements.op_tax_code">E</DD_ATTR_CTYP>
 			<DD_ATTR_DCOL id="ddm_elements.op_tax_code">CODE_DESC</DD_ATTR_DCOL>
-			<DD_ATTR_DCOM id="ddm_elements.op_tax_code">            </DD_ATTR_DCOM>
-			<DD_ATTR_DEXP id="ddm_elements.op_tax_code">            </DD_ATTR_DEXP>
+			<DD_ATTR_DCOM id="ddm_elements.op_tax_code"></DD_ATTR_DCOM>
+			<DD_ATTR_DEXP id="ddm_elements.op_tax_code"></DD_ATTR_DEXP>
 			<DD_ATTR_DFLT id="ddm_elements.op_tax_code"></DD_ATTR_DFLT>
 			<DD_ATTR_DKNM id="ddm_elements.op_tax_code"></DD_ATTR_DKNM>
 			<DD_ATTR_DKEY id="ddm_elements.op_tax_code">[+FIRM_ID]+@</DD_ATTR_DKEY>
@@ -1742,7 +1742,7 @@
 			<DD_DESCRIPTION id="ddm_elements.code_desc">Code Description</DD_DESCRIPTION>
 			<DD_DATA_TYPE id="ddm_elements.code_desc">C</DD_DATA_TYPE>
 			<DD_DATA_LENGTH id="ddm_elements.code_desc">20</DD_DATA_LENGTH>
-			<DD_MASK_TYPE id="ddm_elements.code_desc"> </DD_MASK_TYPE>
+			<DD_MASK_TYPE id="ddm_elements.code_desc"></DD_MASK_TYPE>
 			<DD_SYSTEM_REC id="ddm_elements.code_desc"></DD_SYSTEM_REC>
 			<ASC_COMP_ID id="ddm_elements.code_desc">01007514</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_elements.code_desc">AD </ASC_PROD_ID>
@@ -1756,8 +1756,8 @@
 			<DD_ATTR_CTLH id="ddm_elements.code_desc"></DD_ATTR_CTLH>
 			<DD_ATTR_CTYP id="ddm_elements.code_desc">E</DD_ATTR_CTYP>
 			<DD_ATTR_DCOL id="ddm_elements.code_desc"></DD_ATTR_DCOL>
-			<DD_ATTR_DCOM id="ddm_elements.code_desc">            </DD_ATTR_DCOM>
-			<DD_ATTR_DEXP id="ddm_elements.code_desc">            </DD_ATTR_DEXP>
+			<DD_ATTR_DCOM id="ddm_elements.code_desc"></DD_ATTR_DCOM>
+			<DD_ATTR_DEXP id="ddm_elements.code_desc"></DD_ATTR_DEXP>
 			<DD_ATTR_DFLT id="ddm_elements.code_desc"></DD_ATTR_DFLT>
 			<DD_ATTR_DKNM id="ddm_elements.code_desc"></DD_ATTR_DKNM>
 			<DD_ATTR_DKEY id="ddm_elements.code_desc"></DD_ATTR_DKEY>
@@ -1794,7 +1794,7 @@
 			<DD_DESCRIPTION id="ddm_elements.ar_tot_code">AR Tax Total Code</DD_DESCRIPTION>
 			<DD_DATA_TYPE id="ddm_elements.ar_tot_code">C</DD_DATA_TYPE>
 			<DD_DATA_LENGTH id="ddm_elements.ar_tot_code">10</DD_DATA_LENGTH>
-			<DD_MASK_TYPE id="ddm_elements.ar_tot_code"> </DD_MASK_TYPE>
+			<DD_MASK_TYPE id="ddm_elements.ar_tot_code"></DD_MASK_TYPE>
 			<DD_SYSTEM_REC id="ddm_elements.ar_tot_code"></DD_SYSTEM_REC>
 			<ASC_COMP_ID id="ddm_elements.ar_tot_code">01007514</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_elements.ar_tot_code">AR </ASC_PROD_ID>
@@ -1808,8 +1808,8 @@
 			<DD_ATTR_CTLH id="ddm_elements.ar_tot_code"></DD_ATTR_CTLH>
 			<DD_ATTR_CTYP id="ddm_elements.ar_tot_code">E</DD_ATTR_CTYP>
 			<DD_ATTR_DCOL id="ddm_elements.ar_tot_code"></DD_ATTR_DCOL>
-			<DD_ATTR_DCOM id="ddm_elements.ar_tot_code">            </DD_ATTR_DCOM>
-			<DD_ATTR_DEXP id="ddm_elements.ar_tot_code">            </DD_ATTR_DEXP>
+			<DD_ATTR_DCOM id="ddm_elements.ar_tot_code"></DD_ATTR_DCOM>
+			<DD_ATTR_DEXP id="ddm_elements.ar_tot_code"></DD_ATTR_DEXP>
 			<DD_ATTR_DFLT id="ddm_elements.ar_tot_code"></DD_ATTR_DFLT>
 			<DD_ATTR_DKNM id="ddm_elements.ar_tot_code"></DD_ATTR_DKNM>
 			<DD_ATTR_DKEY id="ddm_elements.ar_tot_code">[+FIRM_ID]+@</DD_ATTR_DKEY>
@@ -1898,7 +1898,7 @@
 			<DD_DESCRIPTION id="ddm_elements.tax_frt_flag">Freight Taxable?              </DD_DESCRIPTION>
 			<DD_DATA_TYPE id="ddm_elements.tax_frt_flag">C</DD_DATA_TYPE>
 			<DD_DATA_LENGTH id="ddm_elements.tax_frt_flag">1</DD_DATA_LENGTH>
-			<DD_MASK_TYPE id="ddm_elements.tax_frt_flag"> </DD_MASK_TYPE>
+			<DD_MASK_TYPE id="ddm_elements.tax_frt_flag"></DD_MASK_TYPE>
 			<DD_SYSTEM_REC id="ddm_elements.tax_frt_flag"></DD_SYSTEM_REC>
 			<ASC_COMP_ID id="ddm_elements.tax_frt_flag">01007514</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_elements.tax_frt_flag">OP </ASC_PROD_ID>
@@ -1912,8 +1912,8 @@
 			<DD_ATTR_CTLH id="ddm_elements.tax_frt_flag"></DD_ATTR_CTLH>
 			<DD_ATTR_CTYP id="ddm_elements.tax_frt_flag">C</DD_ATTR_CTYP>
 			<DD_ATTR_DCOL id="ddm_elements.tax_frt_flag"></DD_ATTR_DCOL>
-			<DD_ATTR_DCOM id="ddm_elements.tax_frt_flag">            </DD_ATTR_DCOM>
-			<DD_ATTR_DEXP id="ddm_elements.tax_frt_flag">            </DD_ATTR_DEXP>
+			<DD_ATTR_DCOM id="ddm_elements.tax_frt_flag"></DD_ATTR_DCOM>
+			<DD_ATTR_DEXP id="ddm_elements.tax_frt_flag"></DD_ATTR_DEXP>
 			<DD_ATTR_DFLT id="ddm_elements.tax_frt_flag"></DD_ATTR_DFLT>
 			<DD_ATTR_DKNM id="ddm_elements.tax_frt_flag"></DD_ATTR_DKNM>
 			<DD_ATTR_DKEY id="ddm_elements.tax_frt_flag"></DD_ATTR_DKEY>
@@ -1964,8 +1964,8 @@
 			<DD_ATTR_CTLH id="ddm_elements.op_tax_rate"></DD_ATTR_CTLH>
 			<DD_ATTR_CTYP id="ddm_elements.op_tax_rate">N</DD_ATTR_CTYP>
 			<DD_ATTR_DCOL id="ddm_elements.op_tax_rate"></DD_ATTR_DCOL>
-			<DD_ATTR_DCOM id="ddm_elements.op_tax_rate">            </DD_ATTR_DCOM>
-			<DD_ATTR_DEXP id="ddm_elements.op_tax_rate">            </DD_ATTR_DEXP>
+			<DD_ATTR_DCOM id="ddm_elements.op_tax_rate"></DD_ATTR_DCOM>
+			<DD_ATTR_DEXP id="ddm_elements.op_tax_rate"></DD_ATTR_DEXP>
 			<DD_ATTR_DFLT id="ddm_elements.op_tax_rate"></DD_ATTR_DFLT>
 			<DD_ATTR_DKNM id="ddm_elements.op_tax_rate"></DD_ATTR_DKNM>
 			<DD_ATTR_DKEY id="ddm_elements.op_tax_rate"></DD_ATTR_DKEY>
@@ -2016,8 +2016,8 @@
 			<DD_ATTR_CTLH id="ddm_elements.op_max_limit"></DD_ATTR_CTLH>
 			<DD_ATTR_CTYP id="ddm_elements.op_max_limit">N</DD_ATTR_CTYP>
 			<DD_ATTR_DCOL id="ddm_elements.op_max_limit"></DD_ATTR_DCOL>
-			<DD_ATTR_DCOM id="ddm_elements.op_max_limit">            </DD_ATTR_DCOM>
-			<DD_ATTR_DEXP id="ddm_elements.op_max_limit">            </DD_ATTR_DEXP>
+			<DD_ATTR_DCOM id="ddm_elements.op_max_limit"></DD_ATTR_DCOM>
+			<DD_ATTR_DEXP id="ddm_elements.op_max_limit"></DD_ATTR_DEXP>
 			<DD_ATTR_DFLT id="ddm_elements.op_max_limit"></DD_ATTR_DFLT>
 			<DD_ATTR_DKNM id="ddm_elements.op_max_limit"></DD_ATTR_DKNM>
 			<DD_ATTR_DKEY id="ddm_elements.op_max_limit"></DD_ATTR_DKEY>
