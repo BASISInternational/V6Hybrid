@@ -82,9 +82,13 @@ rem --- Get the data
         inRec.trans_number$=glt_bankother.trans_no$
         inRec.trans_type$=glt_bankother.trans_type$
         inRec.posted_code$=glt_bankother.posted_code$
-        inRec.trns_date$=glt_bankother.trans_no$(2)
         inRec.description$=glt_bankother.description$
         inRec.trans_amt$=glt_bankother.trans_amt$
+
+        rem --- send YYYYMMDD back to V6 as CYMMDD
+        v6year$=fnyear_yy21$(num(glt_bankother.trns_date$(3,2)))
+        inRec.trns_date$=v6year$+glt_bankother.trns_date$(5)
+        
     endif
 
     next_ky$=nskey$+"**EOF";rem --- set default in case we take the end=
@@ -136,6 +140,15 @@ rem --- Functions
 			q2$=chr(num(q$(3,2))+132)
 		endif
 		return q2$+q1$
+	fnend
+
+    rem --- FNYEAR_YY21$ Convert Numeric Year to 21st Century 2-Char Year"   
+    def FNYEAR_YY21$(Q)=FNYY_YY21$(STR(MOD(Q,100):"00"))
+
+    rem --- FNYY_YY21$ Convert 2-Char Year to 21st Century 2-Char Year
+	def FNYY_YY21$(Q1$)
+	Q3$=" ABCDE56789ABCDEFGHIJ",Q1$(1,1)=Q3$(POS(Q1$(1,1)=" 0123456789ABCDEFGHIJ"))
+	return Q1$
 	fnend
 	
 std_exit:
