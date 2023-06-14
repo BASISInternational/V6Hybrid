@@ -1,8 +1,8 @@
 0010 REM "SYS - ADD+ON Advantage/V System Startup"
 0020 REM "Program SYS.ZA"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0 - 15May96 |"
-0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.0           |
+0026 REM "|      Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0040 REM 
@@ -71,7 +71,7 @@
 0745: Based Business Solution",@(24,12),"for Manufacturing and Distribution",
 0770 PRINT @(4,16),'BR',BAR$,'ER',
 0775 CALL "SYC.WC",0,0,74,4,3,18,1
-0780 PRINT @(5,19),'BLUE',"Copyright (c) 1996 Open Systems Holdings Corp. All 
+0780 PRINT @(5,19),'BLUE',"Copyright BASIS International Ltd.                   |
 0780:rights reserved.",
 0785 PRINT @(5,20),"For Terms And Conditions Of Use Refer To "+$22$+"Software 
 0785:License Agreement"+$22$+".",'WHITE',
