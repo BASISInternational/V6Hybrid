@@ -1,8 +1,8 @@
 0010 REM "OPC - Order Processing SpeedSearch (Open Order Header)"
 0020 REM "Program OPC.QC"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.4 - 15Dec97 |"
-0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.4           |
+0026 REM "|         Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "10Feb97 JWK: Display correct ship date, salesperson and screen liter

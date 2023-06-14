@@ -1,8 +1,8 @@
 0010 REM "POR - Purchase Order Cash Requirements Report
 0020 REM "Program POR.MA
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.3 - 15May97 |"
-0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.3           |
+0026 REM "|      Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "18Sep96 JAL: Period/Days description should be consistent (1180)"

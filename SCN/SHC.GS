@@ -1,8 +1,8 @@
 0010 REM "SHC - Open Scale Port as Raw Device"
 0020 REM "Program SHC.GS"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.5 - 01Dec98 |"
-0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.5           |
+0026 REM "|         Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "13May97 JAL: Error 36/Line 90 (90)"

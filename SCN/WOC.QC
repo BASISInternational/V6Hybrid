@@ -1,8 +1,8 @@
 0010 REM "WOC - Work Order SpeedSearch (Work Orders by Vendor)"
 0020 REM "Program WOC.QC"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.7 - 01Jul00 |"
-0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.7           |
+0026 REM "|         Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "24Apr00 KJS: Display Received and Balance correctly (2740,2750)"

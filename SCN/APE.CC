@@ -1,8 +1,8 @@
 0010 REM "APE - MANUAL CHECK ENTRY 3"
 0020 REM "Program APE.CC"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.6 - 15Aug99 |"
-0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.6           |
+0026 REM "|         Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "06Jan99 Caj: Use APE-22 not APE-02 for invoice number for temp vendo

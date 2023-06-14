@@ -1,8 +1,8 @@
 0010 REM "POU - Purchase Order Invoice Entry Register Update"
 0020 REM "Program POU.EA"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.4 - 15Dec97 |"
-0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.4           |
+0026 REM "|         Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "04Dec96 Caj: Wasn't always correctly posting the AP Credit for GL di

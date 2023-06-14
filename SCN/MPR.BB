@@ -1,8 +1,8 @@
 0010 REM "MPR - Planned Production Report (Report Overlay)"
 0020 REM "Program MPR.BB"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.7 - 01Jul00 |"
-0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.7           |
+0026 REM "|         Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "16Oct96 JJD: Determine "Projected Availability" correctly. (2170)"

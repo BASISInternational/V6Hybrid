@@ -1,8 +1,8 @@
 0010 REM "IVX - Rebuild Lot/Serial Xrefs"
 0020 REM "Program IVX.UA"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.4 - 15Dec97 |"
-0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.4           |
+0026 REM "|         Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "14Oct97 WGH: Remove IVM-07 and IVM-17 records with blank lot/serial 

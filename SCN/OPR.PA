@@ -1,8 +1,8 @@
 0010 REM "OPR - Order/Picking List (Form #203)"
 0020 REM "Program OPR.PA"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.7 - 01Jul00 |"
-0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.7           |
+0026 REM "|         Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "25Sep96 JJD: Clear previous "On Demand" TOTAL when printing "On Dema

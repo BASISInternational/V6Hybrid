@@ -1,8 +1,8 @@
 0010 REM "IVX - Convert 5.x IV Files to 6.0 Format"
 0020 REM "Program IVX60A"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.6 - 15Aug99 |"
-0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.6           |
+0026 REM "|         Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "25Jun96 WGH: Use correct IOLIST for 6.0 IVS-01 'C' record (390)"

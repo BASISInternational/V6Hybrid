@@ -1,8 +1,8 @@
 0010 REM "IVM - Item Maintenance (Menu Processing)"
 0020 REM "Program IVM.MA"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.6 - 15Aug99 |"
-0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.6           |
+0026 REM "|         Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "26Aug96 WGH: For new items, default Barcode to Item Number (1540)"

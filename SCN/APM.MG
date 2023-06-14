@@ -1,8 +1,8 @@
 0010 REM "APM - Vendor Maintenance (Hard Copy Printing)"
 0020 REM "Program APM.MG"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.3 - 15May97 |"
-0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.3           |
+0026 REM "|      Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "23Jan97 WGH: Stop printing when interrupt requested (5045)"

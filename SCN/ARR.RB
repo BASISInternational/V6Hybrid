@@ -1,8 +1,8 @@
 0010 REM "ARR - NAME LISTING 2
 0020 REM "Program ARR.RB"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.3 - 15May97 |"
-0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.3           |
+0026 REM "|      Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "29Jan97 JAL: Print entire address (540,1400-1570,8080)"

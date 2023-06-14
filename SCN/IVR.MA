@@ -1,8 +1,8 @@
 0010 REM "IVR - Inventory Requirements Report (Input Overlay)"
 0020 REM "Program IVR.MA"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.2 - 01Jan96 |"
-0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.2           |
+0026 REM "|      Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "20Aug96 WGH: Beginning and Ending Buyer is always redisplayed as Fir

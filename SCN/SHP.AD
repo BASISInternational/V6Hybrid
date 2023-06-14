@@ -1,8 +1,8 @@
 0010 REM "SHM - Terminal Parameters"
 0020 REM "Program SHP.AD"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.2 - 01Jan96 |"
-0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.2           |
+0026 REM "|      Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "16Oct96 WGH: Display Shipping Label Printer ID (5040)"

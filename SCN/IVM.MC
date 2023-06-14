@@ -1,8 +1,8 @@
 0010 REM "IVM - Item Maintenance (Warehouse Information)"
 0020 REM "Program IVM.MC"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.5 - 01Dec98 |"
-0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.5           |
+0026 REM "|         Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "23Aug96 JAL: Allow use of SPECIAL to change costs (4020,4060)"

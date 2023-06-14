@@ -1,8 +1,8 @@
 0010 REM "SAX - Rebuild Sales Anaylis From Invoice History (Rebuild Overlay)
 0020 REM "Program SAX.BB
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.4 - 15Dec97 |"
-0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.4           |
+0026 REM "|         Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "09Sep96 WGH: False file expansion of ART-03 (1120)"

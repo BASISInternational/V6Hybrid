@@ -1,8 +1,8 @@
 0010 REM "SYC - Print Screen Image"
 0020 REM "Program SYC.SP"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.1 - 22Jul96 |"
-0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.1           |
+0026 REM "|      Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "09Jul96 JAL: Error 47/2540 when print window bigger than 80x25 (2520

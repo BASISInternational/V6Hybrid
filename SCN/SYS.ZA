@@ -1,11 +1,11 @@
 0010 REM "SYS - ADD+ON Advantage/V System Startup"
 0020 REM "Program SYS.ZA"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.4 - 15Dec97 |"
-0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.4           |
+0026 REM "|         Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
-0031 REM "08Dec97 WGH: Change Copyright display (780)"
+0031 REM "08Dec97 WGH: Change Copyright BASIS International Ltd.                   |
 0032 REM "25Apr01 KJS: Changes for BBj (a300,a310,a320,m410,m9660)"
 0040 REM 
 0060 BEGIN
@@ -76,7 +76,7 @@
 0745: Based Business Solution",@(24,12),"for Manufacturing and Distribution",
 0770 PRINT @(4,16),'BR',BAR$,'ER',
 0775 CALL "SYC.WC",0,0,74,4,3,18,1
-0780 PRINT @(8,19),'BLUE',"Copyright (c) 1997 ADD+ON Software Inc.  All rights
+0780 PRINT @(8,19),'BLUE',"Copyright BASIS International Ltd.                   |
 0780: reserved.",
 0785 PRINT @(5,20),"For Terms And Conditions Of Use Refer To "+$22$+"Software 
 0785:License Agreement"+$22$+".",'WHITE',

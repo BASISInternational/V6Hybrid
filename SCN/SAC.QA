@@ -1,8 +1,8 @@
 0010 REM "SAC - Sales Analysis SpeedSearch (Customer Sales History)"
 0020 REM "Program SAC.QA"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.7 - 01Jul00 |"
-0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.7           |
+0026 REM "|         Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "31May96 JAL: Need to clear bottom window on exit (1005,4005,6060)"

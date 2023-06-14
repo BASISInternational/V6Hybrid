@@ -1,8 +1,8 @@
 0010 REM "DDM - Record Layout Maintenance (Duplicate Block)"
 0020 REM "Program DDM.BE"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.6 - 15Aug99 |"
-0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.6           |
+0026 REM "|         Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "16Mar99 WGH: Can't use <F1> for last field number (1870)

@@ -1,8 +1,8 @@
 0010 REM "IVM - Item Maintenance (Transaction History)"
 0020 REM "Program IVM.ML"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.1 - 22Jul96 |"
-0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.1           |
+0026 REM "|      Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "12Jul96 JAL: Correct heading alignment (570-575)"

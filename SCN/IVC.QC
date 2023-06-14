@@ -1,8 +1,8 @@
 0010 REM "IVC - Inventory SpeedSearch (Lot/Serial Numbers)"
 0020 REM "Program IVC.QC"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.6 - 15Aug99 |"
-0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.6           |
+0026 REM "|         Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "19Aug97 WGH: Use 10-char instead of 7-char for lot/serial location (

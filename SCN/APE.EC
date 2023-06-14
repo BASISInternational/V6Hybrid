@@ -1,8 +1,8 @@
 0010 REM "APE - PAYMENT SELECTION ENTRY/VENDOR & INVOICE"
 0020 REM "Program APE.EC"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.2 - 01Jan96 |"
-0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.2           |
+0026 REM "|      Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "30Oct96 Caj: Wasn't correctly writing key to APE-16 which resulted i

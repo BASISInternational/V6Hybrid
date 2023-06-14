@@ -1,8 +1,8 @@
 0010 REM "SYC - PF Reports Display (Print to Screen)"
 0020 REM "Program SYC.QS"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.1 - 22Jul96 |"
-0026 REM "|      Copyright (c) 1996 Open Systems Holdings Corp.       |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.1           |
+0026 REM "|      Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "10Jun96 JAL: Lightbar should remain on same line when moving from ri

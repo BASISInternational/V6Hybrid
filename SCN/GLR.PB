@@ -1,8 +1,8 @@
 0010 REM "GLR - Balance Sheet/Profit & Loss Statement"
 0020 REM "Program GLR.PB"
 0022 REM "+-----------------------------------------------------------+"
-0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.5 - 01Dec98 |"
-0026 REM "|         Copyright (c) 1997 ADD+ON Software Inc.           |"
+0024 REM "| ADD+ON Software, Inc. Advantage/V Version 6.0.5           |
+0026 REM "|         Copyright BASIS International Ltd.                   |
 0028 REM "|                  All Rights Reserved                      |"
 0030 REM "+-----------------------------------------------------------+"
 0031 REM "11Jun98 WGH: May not WRITE last Chart Of Accounts break to GLW-02 (9
