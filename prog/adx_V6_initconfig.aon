@@ -1,0 +1,183 @@
+rem ===============================================================================
+rem --- adx_V6_initconfig.aon
+rem --- Auto-Launch task that updates path to V6Hybrid/config.aon in ADM_MNU_ITEM and 
+rem --- paths in V6Hybrid/config.aon.
+rem --- 
+rem --- AddonSoftware V6Hybrid
+rem --- Copyright BASIS International Ltd.  All Rights Reserved.
+rem ===============================================================================
+    
+    setesc std_error
+    seterr std_error
+
+rem --- Get program arguments
+
+    if argc>1
+        for curr_argv=1 to argc-1
+            temp_argv$=argv(curr_argv)
+            if pos("-u"=temp_argv$)=1 user_id$=temp_argv$(3);rem User ID
+        next curr_argv
+    endif
+
+    if user_id$=""
+        use ::sys/prog/bao_security.bbj::Security
+        user_id$=Security.getURLUser()
+        if cvs(user_id$,2)="" then user_id$=stbl("+USER_ID",err=*next)
+        if cvs(user_id$,2)="" then user_id$="ADMIN"
+    endif
+
+SYM04A: IOLIST A0$(1),A1$(1),A2$(1),A3$(1),A[ALL]
+
+rem --- Initializations
+
+    dir_syp$=stbl("+DIR_SYP")
+
+    rem --- Make sure needed STBLs are set
+    call stbl("+DIR_SYP")+"bas_process_beg.bbj",user_id$,rd_table_chans$[all]
+    sysinfo_template$=stbl("+SYSINFO_TPL",err=*next)
+    dim sysinfo$:sysinfo_template$
+    sysinfo$=stbl("+SYSINFO",err=*next)
+
+rem --- Open File(s)
+    
+    num_files=3
+    dim open_tables$[1:num_files],open_opts$[1:num_files],open_chans$[1:num_files],open_tpls$[1:num_files]
+    open_tables$[1]="ADS_AUTOLAUNCH",open_opts$[1]="OTA"
+    open_tables$[2]="DDM_SYSTEMS",open_opts$[2]="OTA"
+    open_tables$[3]="ADM_MNU_ITEM",open_opts$[3]="OTA"
+
+    gosub open_tables
+
+    ads_autolaunch=num(open_chans$[1]);dim ads_autolaunch$:open_tpls$[1]
+    ddm_systems=num(open_chans$[2]);dim ddm_systems$:open_tpls$[2]
+    adm_mnuItem=num(open_chans$[3]);dim adm_mnuItem$:open_tpls$[3]
+
+rem --- Derive base installation directory for Addon
+
+    readrecord(ddm_systems,key=pad("V6HYBRID",16),dom=std_exit)ddm_systems$
+    baseDir!=ddm_systems.mount_dir$
+    baseDir$=baseDir!.replace("\", "/")
+
+rem --- Update path to V6Hybrid/config.aon in ADM_MNU_ITEM
+    readrecord(adm_mnuItem,key=pad("AONV6_CUI",20),knum="OPT_ID")adm_mnuItem$
+    adm_mnuItem.cfg_file$=baseDir$+"config.aon"
+    writerecord(adm_mnuItem)adm_mnuItem$
+
+rem --- Update paths in V6Hybrid/config.aon
+    replaceDir$="C:/bbj/apps/V6Hybrid/"
+    replaceLen=len(replaceDir$)
+    sourceChan=unt
+    open(sourceChan,isz=-1)baseDir$+"config.aon"
+    targetChan=unt
+    open(targetChan,isz=-1,mode="O_CREATE,O_TRUNC")baseDir$+"new_config.aon"
+    while 1
+        read(sourceChan,end=*break)record$
+        replacePos=pos(replaceDir$=record$)
+        while replacePos<>0
+            record$=record$(1,replacePos-1)+baseDir$+record$(replacePos+replaceLen)
+            replacePos=pos(replaceDir$=record$)
+        wend
+        write(targetChan)record$
+    wend
+    close(sourceChan)
+    close(targetChan)
+
+    rem --- Rename source and target
+    erase baseDir$+"config.aon.bak", err=*next
+    rename baseDir$+"config.aon" to baseDir$+"config.aon.bak", err=*next
+    rename baseDir$+"new_config.aon" to baseDir$+"config.aon", err=*next
+    
+done: rem --- All done
+
+    rem --- Update AutoLaunch Status
+    extractrecord(ads_autolaunch,key="V6INITCONF")ads_autolaunch$; rem Advisory Locking
+    ads_autolaunch.process_status$="C"
+    ads_autolaunch.trans_date$=date(0:"%Yl%Mz%Dz")
+    ads_autolaunch.trans_time$=date(0:"%Hz%mz%sz")
+    ads_autolaunch$=field(ads_autolaunch$)
+
+    rem --- Use bax_mount_sel to get rdMountVect! containing hashes of mounted system and backup directory info for use in bax_xmlrec_exp.bbj
+    dev_mode$=""
+    call stbl("+DIR_SYP")+"bax_mount_sel.bbj",rdMountVect!,table_chans$[all],dev_mode$
+
+    rem --- Update admin xml file
+    if rdMountVect!<>null() and rdMountVect!.size()>0
+        exp_action$="C"
+        exp_add_only$=""
+        call stbl("+DIR_SYP")+"bax_xmlrec_exp.bbj","ADS_AUTOLAUNCH",ads_autolaunch$,exp_action$,exp_add_only$,dev_mode$,rdMountVect!,table_chans$[all]
+    endif
+
+    writerecord(ads_autolaunch)ads_autolaunch$
+
+	goto std_exit
+
+open_tables:rem -----<Open Tables
+
+    call stbl("+DIR_SYP")+"bac_open_tables.bbj",
+:       open_beg,
+:       open_end,
+:       open_tables$[all],
+:       open_opts$[all],
+:       open_chans$[all],
+:       open_tpls$[all],
+:       rd_table_chans$[all],
+:       open_batch,
+:       open_status$
+
+    if open_status$<>""
+        msg_id$="ENTRY_OPEN_ERROR"
+        dim msg_tokens$[1]
+            msg_tokens$[1]=open_status$
+        gosub disp_message
+        status=-1
+    endif
+
+    return
+
+disp_message: rem --- Display Message Dialog
+
+    call stbl("+DIR_SYP")+"bac_message.bbj",msg_id$,msg_tokens$[all],msg_opt$,table_chans$[all]
+
+    return
+
+rem #include std_error.src
+
+std_error: rem --- Standard error handler (18Nov2014)
+
+    if tcb(19)>0
+        rem --- Escape handler
+        if and(chr(tcb(19)),$08$)=$08$
+            release
+        else
+            setesc std_error
+            return
+        endif
+    endif
+
+    if err=0   
+        rem --- Get tcb(12) and tcb(10) to send into bac_error
+        lock_byte=tcb(10)
+        lock_chan=tcb(12)  
+    endif
+
+    rd_err_text$=""
+    if tcb(2)=0 and tcb(5) then rd_err_text$=pgm(tcb(5),tcb(13),err=*next)
+    call stbl("+DIR_SYP")+"bac_error.bbj",pgm(-2),str(tcb(5)),str(err),rd_err_text$,rd_err_act$,lock_byte,lock_chan
+    if pos("ESCAPE"=rd_err_act$) seterr 0; setesc 0
+    if pos("RETRY"=rd_err_act$) retry
+    if pgm(-1)<>pgm(-2) status=999; exit 
+    release
+
+
+rem #endinclude std_error.src
+
+rem #include std_end.src
+
+std_exit: rem --- Standard program end (01Mar2006)
+
+    run stbl("+DIR_SYP",err=*next)+"bas_process_end.bbj",err=*next
+    release
+
+rem #endinclude std_end.src
+
+    end

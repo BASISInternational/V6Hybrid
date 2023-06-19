@@ -49,4 +49,16 @@
 		<COMMENTS>This program removes either the standard Addon menu or the V6Hybrid integrated menu, depending on which one is selected for the V6Hybrid instance.[$0a$]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             </COMMENTS>
 		<USER_MODIFIED> </USER_MODIFIED>
 	</barista_record>
+	<barista_record>
+		<PROCESS_ID>V6INITCONF</PROCESS_ID>
+		<DESCRIPTION>Update config.aon paths for V6Hybrid</DESCRIPTION>
+		<PROGRAM_PATH>[V6HYBRID_PROG]adx_V6_initconfig.aon</PROGRAM_PATH>
+		<PROGRAM_ARGS>-u[+USER_ID]</PROGRAM_ARGS>
+		<PROCESS_TYPE>O</PROCESS_TYPE>
+		<PROCESS_STATUS>N</PROCESS_STATUS>
+		<ASC_COMP_ID>00000000</ASC_COMP_ID>
+		<ASC_PROD_ID>V6H</ASC_PROD_ID>
+		<COMMENTS>This program updates path to V6Hybrid/config.aon in ADM_MNU_ITEM and paths in V6Hybrid/config.aon.[$0a$]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             </COMMENTS>
+		<USER_MODIFIED> </USER_MODIFIED>
+	</barista_record>
 </barista_admin_records>
