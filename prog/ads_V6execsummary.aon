@@ -548,7 +548,7 @@ disp_win:rem --- Display Window
 
 	dim ctl_misc$[20]
 
-	form_id$=stbl("V6HYBRID_PROG")+"arc/ads_V6execsummary.arc";rem --- V6demo
+	form_id$=stbl("V6HYBRID_PROG")+"ads_V6execsummary.arc";rem --- V6demo; this is a copy of the standard Addon arc from the aon/ad/arc/ directory. If you modify that one, you likely will want to make the same changes to this copy.
 
 	call dir_syp$+"bam_controls.bbj",
 :		gui_dev,
