@@ -317,7 +317,7 @@ rem ==============================================
         props_path$=stbl("+PROPS_PATH")
         user_locale$=stbl("+USER_LOCALE")
 
-		sql$="CALL GLBNKBAL_BAR ('"+firm_id$+"', '"+include_type$+"', '"+masks$+"', '"+barista_wd$+
+		sql$="CALL GLBNKBAL_BAR ('"+firm_id$+"', '"+include_type$+"', '"+masks$+"', '"+str(gl_acct_size)+"', '"+barista_wd$+
 :       "', '"+props_name$+"', '"+props_path$+"', '"+user_locale$+"')"
 		
 		bankacctBarChartDashboardWidget! = BarUtils.addBarChartDashboardWidget(acctDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,domainTitle$,rangeTitle$,flat,orientation,legend,sql$)
@@ -358,7 +358,7 @@ rem ==============================================
         props_path$=stbl("+PROPS_PATH")
         user_locale$=stbl("+USER_LOCALE")
 
-		sql$="CALL GLBNKBAL_RNG ('"+firm_id$+"', '"+include_type$+"', '"+str(min_amt)+"', '"+masks$+"', '"+barista_wd$+
+		sql$="CALL GLBNKBAL_RNG ('"+firm_id$+"', '"+include_type$+"', '"+str(min_amt)+"', '"+masks$+"', '"+str(gl_acct_size)+"', '"+barista_wd$+
 :       "', '"+props_name$+"', '"+props_path$+"', '"+user_locale$+"')"
 		bankacctRingChartDashboardWidget! = BarUtils.addRingChartDashboardWidget(acctDashboardCategory!,name$,title$,previewText$,previewImage$,chartTitle$,flat,legend,sql$)
 		
@@ -1147,7 +1147,7 @@ rem     The inner widget gives us access to the dataset so that we can provide n
     props_path$=stbl("+PROPS_PATH")
     user_locale$=stbl("+USER_LOCALE")
 
-	sql$="CALL GLBNKBAL_RNG ('"+firm_id$+"', '"+include_type$+"', '"+str(min_amt)+"', '"+masks$+"', '"+barista_wd$+
+	sql$="CALL GLBNKBAL_RNG ('"+firm_id$+"', '"+include_type$+"', '"+str(min_amt)+"', '"+masks$+"', '"+str(gl_acct_size)+"', '"+barista_wd$+
 :       "', '"+props_name$+"', '"+props_path$+"', '"+user_locale$+"')"
 	
 	rem Clear out the old data from the inner widget
@@ -2122,7 +2122,7 @@ rem ==============================================
 	masks$=masks$+"vendor_mask^"+msk$+"|"
 	call stbl("+DIR_PGM")+"adc_getmask.aon","","AD","U","",msk$,0,0
 	masks$=masks$+"ad_units_mask^"+msk$+"|"
-	call stbl("+DIR_PGM")+"adc_getmask.aon","","GL","A","",msk$,0,0
+	call stbl("+DIR_PGM")+"adc_getmask.aon","","GL","A","",msk$,0,gl_acct_size
 	masks$=masks$+"gl_amt_mask^"+msk$+"|"
 	call stbl("+DIR_PGM")+"adc_getmask.aon","","GL","I","",msk$,0,0
 	masks$=masks$+"gl_acct_mask^"+msk$+"|"
