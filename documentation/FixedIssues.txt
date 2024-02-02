@@ -1,0 +1,115 @@
+=======================================================================================================================================
+ Report Date:   2024-02-01
+ Report Branch: AddonSoftware V6Hybrid 23.06
+=======================================================================================================================================
+
+AddonSoftware 23.00 released 05/23/2023
+V6Hybrid branch 23.06 created 02/01/2024
+Fixes during the 23.00 release year are below.
+=======================================================================================================================================
+
+Revision: 082062cd72e696ddffbcede02bce92a0bd1b5037
+Author: Christine <chawkins@basis.com>
+Date: 12/21/2023 1:27:09 PM
+Message:
+Bug 10482 - V6H - Allow selection of Integrated V6Hybrid or Standard Addon menu
+ - Changed the V6 Admin menu item so it runs the adx_v6initmenu form instead of old/disabled adx_v6initdemo (forgot this on previous commit for this ER).
+----
+Modified: data/sync/adm_mnu_item~[00000000V6H].xml
+Modified: data/sync/adm_mnu_trans~[00000000V6H].xml
+Modified: data/sync/adm_mnu_trans~[01007514AD].xml
+Modified: data/sync/adm_mnu_trans~[01007514AP].xml
+Modified: data/sync/adm_mnu_trans~[01007514GL].xml
+=======================================================================================================================================
+
+Revision: 44a0db3d985f31e551e20f37a9a994adaf0c9903
+Author: Christine <chawkins@basis.com>
+Date: 10/27/2023 1:09:53 PM
+Message:
+Bug 10744 - V6H - Dashboard program needs new parameter when calling GL widget SPROCs
+ - call to adc_getmask.aon for GL/I now uses gl_acct_size
+ - three associated GL_BNKBAL* sproc calls also include str(gl_acct_size)
+----
+Modified: prog/adx_V6aondashboard.aon
+=======================================================================================================================================
+
+Revision: c8d4518ba8a578eed43e38c1885cd33d3c1d4d57
+Author: Christine <chawkins@basis.com>
+Date: 8/1/2023 3:17:27 PM
+Message:
+Bug 10377 - V6H - V6 Exec Summary Update failing with error 1's
+ - The .arc for V6 Exec Summary was missing. Copied standard Addon's arc from ad/arc/ into V6Hybrid project's prog/ folder.
+----
+Modified: prog/ads_V6execsummary.aon
+Added: prog/ads_V6execsummary.arc
+=======================================================================================================================================
+
+Revision: 6a30a2f5a5bf1497a3653321a24a05bb52b14840
+Author: Bill Halsted <bhalsted@basis.cloud>
+Date: 6/19/2023 7:54:50 PM
+Message:
+ER 9054: Added V6Hybrid auto-Launch task that updates path to
+V6Hybrid/config.aon in ADM_MNU_ITEM and paths in V6Hybrid/config.aon.
+----
+Modified: data/sync/ads_autolaunch~[00000000V6H].xml
+Added: prog/adx_V6_initconfig.aon
+=======================================================================================================================================
+
+Revision: b3e0762cebed410b4fb14065d5615b588945d3f0
+Author: Bill Halsted <bhalsted@basis.cloud>
+Date: 6/14/2023 4:29:18 PM
+Message:
+ER 9985: Updated copyright in v6Hybrid SCN programs.
+=======================================================================================================================================
+
+Revision: 7441e7f317f8b1c0ffb20c07321113b5d03295d2
+Author: Bill Halsted <bhalsted@basis.cloud>
+Date: 6/14/2023 4:25:01 PM
+Message:
+ER 9985: Updated copyright in v6Hybrid PAY programs.
+=======================================================================================================================================
+
+Revision: ce1a8d9d08bfb95944cfab973a3427fb0a59e864
+Author: Bill Halsted <bhalsted@basis.cloud>
+Date: 6/14/2023 4:21:31 PM
+Message:
+ER 9985: Updated copyright in v6Hybrid MFG programs.
+=======================================================================================================================================
+
+Revision: fd6c5c20fbc73921bbd0b0e95662c8bd751c7410
+Author: Bill Halsted <bhalsted@basis.cloud>
+Date: 6/14/2023 4:19:02 PM
+Message:
+ER 9985: Updated copyright in v6Hybrid GRW programs.
+=======================================================================================================================================
+
+Revision: a0a7b458cf523991983a9e509db27f4677f8f166
+Author: Bill Halsted <bhalsted@basis.cloud>
+Date: 6/14/2023 4:15:46 PM
+Message:
+ER 9985: Updated copyright in v6Hybrid DLR programs.
+=======================================================================================================================================
+
+Revision: 64c423053577403849fa382da021dd30f74e81c8
+Author: Bill Halsted <bhalsted@basis.cloud>
+Date: 6/14/2023 4:12:06 PM
+Message:
+ER 9985: Updated copyright in v6Hybrid DIS programs.
+=======================================================================================================================================
+
+Revision: 02c799892b4d5c256646264d4791b7c4930bcf6f
+Author: Bill Halsted <bhalsted@basis.cloud>
+Date: 6/14/2023 4:09:01 PM
+Message:
+ER 9985: Updated copyright in v6Hybrid ADM programs.
+=======================================================================================================================================
+
+Revision: 6c0f23113bc902bf816e787c6badfebfa2af666b
+Author: Bill Halsted <bhalsted@basis.cloud>
+Date: 6/14/2023 4:01:17 PM
+Message:
+ER 9985: Updated copyright in v6Hybrid ACT programs.
+=======================================================================================================================================
+
+
+
