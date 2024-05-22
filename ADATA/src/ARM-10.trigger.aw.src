@@ -9,6 +9,8 @@ rem be sure to thoroughly examine this trigger and test changes.
 rem --- Trigger for V6 AvaTax Interface
 rem --- Write Barista Addon's opc_taxcode (opm-06) or opc_linecode (opm-02) after corresponding writes to V6's ARM-10B or ARM-10E
 
+rem --- Also write Barista Addon's arc_cashcode after corresponding writes to V6's ARM-10C
+
 	setopts $080872202c2e$
 	seterr trigger_error
 
@@ -48,16 +50,21 @@ rem ---  Get the Trigger object from the BBj File System
     
 	wkdir$ = dir("")
 	opdir$ = stbl("+OPDATA")
+	ardir$ = stbl("+ARDATA")
 
-rem --- Templates for the V6 ARM-10B or E records being caught
+rem --- Templates for the V6 ARM-10B, C or E records being caught
 
-    switch pos(ky$(3,1)="BE")
+    switch pos(ky$(3,1)="BCE")
         case 1; rem B - Tax Codes
             intemp$="firm_id:c(2),record_id_b:c(1),tax_code:c(2),code_desc:c(20),ar_tot_code_01:c(2),ar_tot_code_02:c(2),"
             intemp$=intemp$+"ar_tot_code_03:c(2),ar_tot_code_04:c(2),ar_tot_code_05:c(2),ar_tot_code_06:c(2),ar_tot_code_07:c(2),"
             intemp$=intemp$+"ar_tot_code_08:c(2),ar_tot_code_09:c(2),ar_tot_code_10:c(2),gl_account:c(10),tax_frt_flag:c(1),reserved_str:c(4*=10),tax_rate:n(7*=10),max_limit:n(7*=10)"
         break
-        case 2; rem E - Line Codes
+        case 2; rem C - Cash Receipt Codes
+            intemp$="firm_id:c(2),record_id_c:c(1),cash_rec_cd:c(3),code_desc:c(20),cash_flag:c(1),disc_flag:c(1),ar_gl_both:c(1),"
+            intemp$=intemp$+"reserved_str:c(1*=10),gl_cash_acct:c(10),gl_disc_acct:c(10),pos_csh_type:c(1*=10)"
+        break
+        case 3; rem E - Line Codes
             intemp$="firm_id:c(2),record_id_e:c(1),line_code:c(1),code_desc:c(20),line_type:c(1),taxable_flag:c(1),dropship:c(1),"
             intemp$=intemp$+"message_type:c(1),product_type:c(3),prod_type_pr:c(1*=10),gl_rev_acct:c(10),dist_code:c(2*=10)"
         break
@@ -69,12 +76,12 @@ rem --- Templates for the V6 ARM-10B or E records being caught
     dim inRec$:intemp$
     inRec$=td!.getWriteBuffer()
 
-rem --- Open Barista Addon OPC_TAXCODE or OPC_LINECODE and get corresponding templates
+rem --- Open Barista Addon OPC_TAXCODE, ARC_CASHCODE or OPC_LINECODE and get corresponding templates
 
 	tpl_dev=unt
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 
-    switch pos(ky$(3,1)="BE")
+    switch pos(ky$(3,1)="BCE")
         case 1; rem B - Tax Codes
             alias$="OPC_TAXCODE"
             filename$="opm-06"
@@ -115,7 +122,31 @@ rem --- Open Barista Addon OPC_TAXCODE or OPC_LINECODE and get corresponding tem
             tpl$=field(tpl$)
             writerecord (code_dev)tpl$
         break
-        case 2; rem E - Line Codes
+        case 2; rem C - Cash Receipt Codes
+            alias$="ARC_CASHCODE"
+            filename$="arc_cashcode"
+            gosub get_template
+            code_dev=unt
+            open (code_dev,err=trigger_error)ardir$+filename$
+            
+            tpl.firm_id$=inRec.firm_id$
+            tpl.record_id_c$=inRec.record_id_c$
+            tpl.cash_rec_cd$=inRec.cash_rec_cd$
+            
+            readrecord(code_dev,key=tpl.firm_id$+tpl.record_id_c$+tpl.cash_rec_cd$,dom=*next)tpl$
+            
+            tpl.code_desc$=inRec.code_desc$
+            tpl.cash_flag$=inRec.cash_flag$
+            tpl.disc_flag$=inRec.disc_flag$
+            tpl.arglboth$=inRec.ar_gl_both$
+            tpl.reserved_str$=inRec.reserved_str$
+            tpl.gl_cash_acct$=inRec.gl_cash_acct$
+            tpl.gl_disc_acct$=inRec.gl_disc_acct$
+            tpl.trans_type$=inRec.pos_csh_type$
+            tpl$=field(tpl$)
+            writerecord (code_dev)tpl$
+        break
+        case 3; rem E - Line Codes
             alias$="OPC_LINECODE"
             filename$="opm-02"
             gosub get_template
