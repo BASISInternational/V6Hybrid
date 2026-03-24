@@ -17,13 +17,13 @@
 			<RESTRICT_AUTOADD id="ddm_tables.ivx_clastaxsvc"></RESTRICT_AUTOADD>
 			<ASC_COMP_ID id="ddm_tables.ivx_clastaxsvc">00000000</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_tables.ivx_clastaxsvc">V6H</ASC_PROD_ID>
-			<ASC_VERSION_ID id="ddm_tables.ivx_clastaxsvc">23.0      </ASC_VERSION_ID>
+			<ASC_VERSION_ID id="ddm_tables.ivx_clastaxsvc">26.0      </ASC_VERSION_ID>
 			<ASC_LICENSE_ID id="ddm_tables.ivx_clastaxsvc">C3BCD4FFC0B4FE630BD718A813BD33B7</ASC_LICENSE_ID>
 			<DD_EXPORT_DATA id="ddm_tables.ivx_clastaxsvc">Y</DD_EXPORT_DATA>
 			<DD_CREATE_DATE id="ddm_tables.ivx_clastaxsvc">2459593</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_tables.ivx_clastaxsvc">20230315</DD_LSTREV_DATE>
-			<DD_LSTSYNC_DATE id="ddm_tables.ivx_clastaxsvc">20230315</DD_LSTSYNC_DATE>
-			<DD_LSTSYNC_TIME id="ddm_tables.ivx_clastaxsvc">123042</DD_LSTSYNC_TIME>
+			<DD_LSTREV_DATE id="ddm_tables.ivx_clastaxsvc">20260324</DD_LSTREV_DATE>
+			<DD_LSTSYNC_DATE id="ddm_tables.ivx_clastaxsvc">20260323</DD_LSTSYNC_DATE>
+			<DD_LSTSYNC_TIME id="ddm_tables.ivx_clastaxsvc">162528</DD_LSTSYNC_TIME>
 			<DD_ATTR_ATAB id="ddm_tables.ivx_clastaxsvc">IVC_CLASCODE    </DD_ATTR_ATAB>
 			<DD_ATTR_CPGM id="ddm_tables.ivx_clastaxsvc">../apps/V6Hybrid/;</DD_ATTR_CPGM>
 			<DD_ATTR_DKNM id="ddm_tables.ivx_clastaxsvc"></DD_ATTR_DKNM>
