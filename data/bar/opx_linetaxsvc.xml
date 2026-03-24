@@ -17,13 +17,13 @@
 			<RESTRICT_AUTOADD id="ddm_tables.opx_linetaxsvc"></RESTRICT_AUTOADD>
 			<ASC_COMP_ID id="ddm_tables.opx_linetaxsvc">00000000</ASC_COMP_ID>
 			<ASC_PROD_ID id="ddm_tables.opx_linetaxsvc">V6H</ASC_PROD_ID>
-			<ASC_VERSION_ID id="ddm_tables.opx_linetaxsvc">23.0      </ASC_VERSION_ID>
+			<ASC_VERSION_ID id="ddm_tables.opx_linetaxsvc">24.0      </ASC_VERSION_ID>
 			<ASC_LICENSE_ID id="ddm_tables.opx_linetaxsvc">94E9697FFE9272E23E9DC4A717A01EFE</ASC_LICENSE_ID>
 			<DD_EXPORT_DATA id="ddm_tables.opx_linetaxsvc">Y</DD_EXPORT_DATA>
 			<DD_CREATE_DATE id="ddm_tables.opx_linetaxsvc">2459594</DD_CREATE_DATE>
-			<DD_LSTREV_DATE id="ddm_tables.opx_linetaxsvc">20230315</DD_LSTREV_DATE>
-			<DD_LSTSYNC_DATE id="ddm_tables.opx_linetaxsvc">20230315</DD_LSTSYNC_DATE>
-			<DD_LSTSYNC_TIME id="ddm_tables.opx_linetaxsvc">123042</DD_LSTSYNC_TIME>
+			<DD_LSTREV_DATE id="ddm_tables.opx_linetaxsvc">20260324</DD_LSTREV_DATE>
+			<DD_LSTSYNC_DATE id="ddm_tables.opx_linetaxsvc">20260324</DD_LSTSYNC_DATE>
+			<DD_LSTSYNC_TIME id="ddm_tables.opx_linetaxsvc">135226</DD_LSTSYNC_TIME>
 			<DD_ATTR_ATAB id="ddm_tables.opx_linetaxsvc">OPC_LINECODE    </DD_ATTR_ATAB>
 			<DD_ATTR_CPGM id="ddm_tables.opx_linetaxsvc">../apps/V6Hybrid/;</DD_ATTR_CPGM>
 			<DD_ATTR_DKNM id="ddm_tables.opx_linetaxsvc"></DD_ATTR_DKNM>
@@ -118,36 +118,6 @@
 			<DD_TABLE_ALIAS id="ddm_table_tpls.opx_linetaxsvc">OPX_LINETAXSVC  </DD_TABLE_ALIAS>
 			<DD_FILE_NAME id="ddm_table_tpls.opx_linetaxsvc">opm-02</DD_FILE_NAME>
 			<DD_TABLE_TPL id="ddm_table_tpls.opx_linetaxsvc">firm_id:c(2),line_code:c(1),reserved_str:c(1),code_desc:c(20),line_type:c(1),taxable_flag:c(1),dropship:c(1),message_type:c(1),product_type:c(3),prod_type_pr:c(1),gl_rev_acct:c(10),ar_dist_code:c(2),code_inactive:c(1),tax_svc_cd:c(10)</DD_TABLE_TPL>
-		</RECORD>
-	</ALIAS>
-	<ALIAS id="ddm_table_ref">
-		<ID id="ddm_table_ref">DDM_TABLE_REF</ID>
-		<RECORD id="ddm_table_ref.opx_linetaxsvcgl_rev_acctglm_acct">
-			<DD_TABLE_ALIAS id="ddm_table_ref.opx_linetaxsvcgl_rev_acctglm_acct">OPX_LINETAXSVC  </DD_TABLE_ALIAS>
-			<DD_TABLE_COL id="ddm_table_ref.opx_linetaxsvcgl_rev_acctglm_acct">GL_REV_ACCT     </DD_TABLE_COL>
-			<REF_TABLE_ALIAS id="ddm_table_ref.opx_linetaxsvcgl_rev_acctglm_acct">GLM_ACCT        </REF_TABLE_ALIAS>
-			<TABLE_REF_NAME id="ddm_table_ref.opx_linetaxsvcgl_rev_acctglm_acct">FK_OPX_LINETAXSVC_GL_REV_ACCT_GLM_ACCT                                                                                                                                                                                                                         </TABLE_REF_NAME>
-		</RECORD>
-	</ALIAS>
-	<ALIAS id="ddm_table_refcol">
-		<ID id="ddm_table_refcol">DDM_TABLE_REFCOL</ID>
-		<RECORD id="ddm_table_refcol.opx_linetaxsvcgl_rev_acctglm_acct0001">
-			<DD_TABLE_ALIAS id="ddm_table_refcol.opx_linetaxsvcgl_rev_acctglm_acct0001">OPX_LINETAXSVC  </DD_TABLE_ALIAS>
-			<DD_TABLE_COL id="ddm_table_refcol.opx_linetaxsvcgl_rev_acctglm_acct0001">GL_REV_ACCT     </DD_TABLE_COL>
-			<REF_TABLE_ALIAS id="ddm_table_refcol.opx_linetaxsvcgl_rev_acctglm_acct0001">GLM_ACCT        </REF_TABLE_ALIAS>
-			<REF_KEY_NUMBER id="ddm_table_refcol.opx_linetaxsvcgl_rev_acctglm_acct0001">00</REF_KEY_NUMBER>
-			<REF_KEY_SEGMENT id="ddm_table_refcol.opx_linetaxsvcgl_rev_acctglm_acct0001">01</REF_KEY_SEGMENT>
-			<REF_KEY_COLUMN id="ddm_table_refcol.opx_linetaxsvcgl_rev_acctglm_acct0001">FIRM_ID         </REF_KEY_COLUMN>
-			<FK_TABLE_COL id="ddm_table_refcol.opx_linetaxsvcgl_rev_acctglm_acct0001">FIRM_ID         </FK_TABLE_COL>
-		</RECORD>
-		<RECORD id="ddm_table_refcol.opx_linetaxsvcgl_rev_acctglm_acct0002">
-			<DD_TABLE_ALIAS id="ddm_table_refcol.opx_linetaxsvcgl_rev_acctglm_acct0002">OPX_LINETAXSVC  </DD_TABLE_ALIAS>
-			<DD_TABLE_COL id="ddm_table_refcol.opx_linetaxsvcgl_rev_acctglm_acct0002">GL_REV_ACCT     </DD_TABLE_COL>
-			<REF_TABLE_ALIAS id="ddm_table_refcol.opx_linetaxsvcgl_rev_acctglm_acct0002">GLM_ACCT        </REF_TABLE_ALIAS>
-			<REF_KEY_NUMBER id="ddm_table_refcol.opx_linetaxsvcgl_rev_acctglm_acct0002">00</REF_KEY_NUMBER>
-			<REF_KEY_SEGMENT id="ddm_table_refcol.opx_linetaxsvcgl_rev_acctglm_acct0002">02</REF_KEY_SEGMENT>
-			<REF_KEY_COLUMN id="ddm_table_refcol.opx_linetaxsvcgl_rev_acctglm_acct0002">GL_ACCOUNT      </REF_KEY_COLUMN>
-			<FK_TABLE_COL id="ddm_table_refcol.opx_linetaxsvcgl_rev_acctglm_acct0002">GL_REV_ACCT     </FK_TABLE_COL>
 		</RECORD>
 	</ALIAS>
 	<ALIAS id="ddm_keys">
