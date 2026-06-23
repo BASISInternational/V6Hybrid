@@ -130,6 +130,8 @@ rem --- Open template and masks files for use in getting Barista template for co
     gns!=BBjAPI().getGroupNamespace()
     gns!.setValue(nskey$,next_ky$)
 
+    close(tpl_dev)
+    close(code_dev,err=*next)
     if dom_flag=1
         err_num=11
         goto trigger_error_forced

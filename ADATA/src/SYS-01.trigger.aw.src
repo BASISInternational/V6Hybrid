@@ -194,6 +194,7 @@ rem --- Open Barista Addon ars_params or ars_report and get corresponding templa
         break
     swend
 
+    close(tpl_dev)
     goto std_exit
     
 rem --- Subroutines

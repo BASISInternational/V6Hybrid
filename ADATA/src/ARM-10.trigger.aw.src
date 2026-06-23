@@ -42,6 +42,7 @@ rem --- Load up the field_translations used in Dataport to convert V6 key value 
           field_trans_aontov6!.put(keyval$,dataval$)
        endif
     wend
+    close(field_trans)
 
 rem ---  Get the Trigger object from the BBj File System
 
@@ -174,6 +175,8 @@ rem --- Open Barista Addon OPC_TAXCODE, ARC_CASHCODE or OPC_LINECODE and get cor
         break
     swend
 
+    close(tpl_dev)
+    close(code_dev,err=*next)
     goto std_exit
     
 rem --- Subroutines

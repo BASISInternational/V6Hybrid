@@ -50,10 +50,21 @@ non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from n
 
 rem --- Template for the APM-05 record being caught
 
-	intemp$="firm_id:c(2),vendor_nbr:c(6),purch_addr:c(2*=10),name:c(30),addr_line_1:c(24),addr_line_2:c(24),addr_line_3:c(24),zip_code:c(9),"
-	intemp$=intemp$+"phone_number:c(10),phone_exten:c(4),contact_name:c(20),"
-	intemp$=intemp$+"fax_number:c(10),reserved_str:c(5*=10)"
+	apm05_dev=unt
+	open (apm05_dev,err=trigger_error)v6data_dir$+"APM-05"
+
+    intemp$=""
+    BBjFileSystem!=BBjAPI().getFileSystem()
+    BBjFileInfo!=BBjFileSystem!.getFileInfo(apm05_dev)
+    intemp$=BBjFileInfo!.getText(err=*next)
+    if cvs(intemp$,2)="" then
+        intemp$="firm_id:c(2),vendor_nbr:c(6),purch_addr:c(2*=10),name:c(30),addr_line_1:c(24),addr_line_2:c(24),addr_line_3:c(24),zip_code:c(9),"
+        intemp$=intemp$+"phone_number:c(10),phone_exten:c(4),contact_name:c(20),"
+        intemp$=intemp$+"fax_number:c(10),reserved_str:c(5*=10)"
+    endif
 	dim inRec$:intemp$
+    
+    close(apm05_dev)
 
 rem --- Open Barista Vendor Purchase Address table
 
@@ -63,6 +74,7 @@ rem --- Open Barista Vendor Purchase Address table
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("APM_VENDADDR",16),dom=trigger_error) *,*,apm_vendaddr_tpl$
 	dim apm_vendaddr$:apm_vendaddr_tpl$
+    close(tpl_dev)
 	
 rem --- Get the data
 
@@ -107,6 +119,7 @@ rem --- Get the data
     gns!=BBjAPI().getGroupNamespace()
     gns!.setValue(nskey$,next_ky$)
 
+    close(apm_vendaddr)
     if dom_flag=1
         err_num=11
         goto trigger_error_forced

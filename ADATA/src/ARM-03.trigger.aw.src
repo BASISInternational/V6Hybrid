@@ -29,14 +29,25 @@ rem ---  Get the Trigger object from the BBj File System
 	wkdir$ = dir("")
 	ardir$ = stbl("+ARDATA")
 
-rem --- Template for the V6 ARM-01 record being caught
+rem --- Template for the V6 ARM-03 record being caught
 
-    intemp$="firm_id:c(2),customer_nbr:c(6),shipto_nbr:c(6*=10),name:c(30),addr_line_1:c(24),addr_line_2:c(24),"
-    intemp$=intemp$+"addr_line_3:c(24),zip_code:c(9),phone_number:c(10),phone_exten:c(4),contact_name:c(20),"
-    intemp$=intemp$+"slspsn_code:c(3),territory:c(3),tax_code:c(2),db_number:c(9),sic_code:c(8),reserved_str:c(4*=10)"
+	arm03_dev=unt
+	open (arm03_dev,err=trigger_error)v6data_dir$+"ARM-03"
+
+    intemp$=""
+    BBjFileSystem!=BBjAPI().getFileSystem()
+    BBjFileInfo!=BBjFileSystem!.getFileInfo(arm03_dev)
+    intemp$=BBjFileInfo!.getText(err=*next)
+    if cvs(intemp$,2)="" then
+        intemp$="firm_id:c(2),customer_nbr:c(6),shipto_nbr:c(6*=10),name:c(30),addr_line_1:c(24),addr_line_2:c(24),"
+        intemp$=intemp$+"addr_line_3:c(24),zip_code:c(9),phone_number:c(10),phone_exten:c(4),contact_name:c(20),"
+        intemp$=intemp$+"slspsn_code:c(3),territory:c(3),tax_code:c(2),db_number:c(9),sic_code:c(8),reserved_str:c(4*=10)"
+    endif
 
 	dim inRec$:intemp$
     inRec$=td!.getWriteBuffer()
+    
+    close(arm03_dev)
 
 rem --- Open Barista Addon ARM_CUSTSHIP and get the template
 
@@ -46,6 +57,7 @@ rem --- Open Barista Addon ARM_CUSTSHIP and get the template
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("ARM_CUSTSHIP",16),dom=trigger_error) *,*,arm_custship_tpl$
 	dim arm_custship$:arm_custship_tpl$
+    close(tpl_dev)
 	
 rem --- Write the data
 
@@ -79,6 +91,7 @@ rem --- Write the data
     arm_custship$=field(arm_custship$)
     writerecord (arm_custship)arm_custship$
 
+    close(arm_custship)
 	goto std_exit
 
 reformat_address:

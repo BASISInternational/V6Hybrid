@@ -51,10 +51,20 @@ non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from n
 
 rem --- Template for the APT-11 record being caught
 
-    intemp$="firm_id:c(2),ap_type:c(2),vendor_nbr:c(6),ap_inv_nbr:c(10),sequence_num:c(2*),"
-    intemp$=intemp$+"trans_type:c(1),trans_date:c(3),trans_ref:c(7*),trans_amt:n(7*),trans_disc:n(7*),trans_ret:n(7*)"
+	apt11_dev=unt
+	open (apt11_dev,err=trigger_error)v6data_dir$+"APT-11"
 
+    intemp$=""
+    BBjFileSystem!=BBjAPI().getFileSystem()
+    BBjFileInfo!=BBjFileSystem!.getFileInfo(apt11_dev)
+    intemp$=BBjFileInfo!.getText(err=*next)
+    if cvs(intemp$,2)="" then
+        intemp$="firm_id:c(2),ap_type:c(2),vendor_nbr:c(6),ap_inv_nbr:c(10),sequence_num:c(2*),"
+        intemp$=intemp$+"trans_type:c(1),trans_date:c(3),trans_ref:c(7*),trans_amt:n(7*),trans_disc:n(7*),trans_ret:n(7*)"
+    endif
 	dim inRec$:intemp$
+    
+    close(apt11_dev)
 
 rem --- Open Barista AP Invoice Detail table
 
@@ -64,6 +74,7 @@ rem --- Open Barista AP Invoice Detail table
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("APT_INVOICEDET",16),dom=trigger_error) *,*,apt_invoicedet_tpl$
 	dim apt_invoicedet$:apt_invoicedet_tpl$
+    close(tpl_dev)
 	
 rem --- Get the data
 
@@ -102,6 +113,7 @@ rem --- Get the data
     gns!=BBjAPI().getGroupNamespace()
     gns!.setValue(nskey$,next_ky$)
 
+    close(apt_invoicedet)
     if dom_flag=1
         err_num=11
         goto trigger_error_forced

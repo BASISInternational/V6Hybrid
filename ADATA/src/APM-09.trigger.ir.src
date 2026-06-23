@@ -52,8 +52,19 @@ non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from n
 
 rem --- Template for the APM-09 record being caught
 
-    intemp$="firm_id:c(2),vendor_nbr:c(6),sequence_num:c(2*=10),std_comments:c(48*=10)"
+	apm09_dev=unt
+	open (apm09_dev,err=trigger_error)v6data_dir$+"APM-09"
+
+    intemp$=""
+    BBjFileSystem!=BBjAPI().getFileSystem()
+    BBjFileInfo!=BBjFileSystem!.getFileInfo(apm09_dev)
+    intemp$=BBjFileInfo!.getText(err=*next)
+    if cvs(intemp$,2)="" then
+        intemp$="firm_id:c(2),vendor_nbr:c(6),sequence_num:c(2*=10),std_comments:c(48*=10)"
+    endif
 	dim inRec$:intemp$
+    
+    close(apm09_dev)
 
 rem --- Open Barista Vendor Master table
 
@@ -63,6 +74,7 @@ rem --- Open Barista Vendor Master table
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("APM_VENDMAST",16),dom=trigger_error) *,*,apm_vendmast_tpl$
 	dim apm_vendmast$:apm_vendmast_tpl$
+    close(tpl_dev)
 	
 rem --- Get the data
 
@@ -134,6 +146,7 @@ rem --- Get the data
     rem --- store remainder of memo_1024$ in group namespace
     gns!.setValue(nsdata$,memo_1024$)
 
+    close(apm_vendmast)
     if dom_flag=1
         err_num=11
         goto trigger_error_forced

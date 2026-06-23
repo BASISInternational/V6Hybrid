@@ -51,12 +51,22 @@ non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from n
 
 rem --- Template for the APT-01 record being caught
 
-    intemp$="firm_id:c(2),ap_type:c(2),vendor_nbr:c(6),ap_inv_nbr:c(10),sequence_00:c(2),dist_code:c(2),"
-    intemp$=intemp$+"payment_grp:c(2),terms_code:c(2),invoice_date:c(3),accting_date:c(3),inv_due_date:c(3),disc_date:c(3),"
-    intemp$=intemp$+"reference:c(10),ap_inv_memo:c(16),hold_flag:c(1),mc_inv_flag:c(1),mc_inv_adj:c(1),mc_inv_rev:c(1),"
-    intemp$=intemp$+"reserved_str:c(1*=10),invoice_amt:n(7*=10),discount_amt:n(7*=10),retention:n(7*=10)"
+	apt01_dev=unt
+	open (apt01_dev,err=trigger_error)v6data_dir$+"APT-01"
 
+    intemp$=""
+    BBjFileSystem!=BBjAPI().getFileSystem()
+    BBjFileInfo!=BBjFileSystem!.getFileInfo(apt01_dev)
+    intemp$=BBjFileInfo!.getText(err=*next)
+    if cvs(intemp$,2)="" then
+        intemp$="firm_id:c(2),ap_type:c(2),vendor_nbr:c(6),ap_inv_nbr:c(10),sequence_00:c(2),dist_code:c(2),"
+        intemp$=intemp$+"payment_grp:c(2),terms_code:c(2),invoice_date:c(3),accting_date:c(3),inv_due_date:c(3),disc_date:c(3),"
+        intemp$=intemp$+"reference:c(10),ap_inv_memo:c(16),hold_flag:c(1),mc_inv_flag:c(1),mc_inv_adj:c(1),mc_inv_rev:c(1),"
+        intemp$=intemp$+"reserved_str:c(1*=10),invoice_amt:n(7*=10),discount_amt:n(7*=10),retention:n(7*=10)"
+    endif
 	dim inRec$:intemp$
+    
+    close(apt01_dev)
 
 rem --- Open Barista AP Invoice Header table
 
@@ -66,6 +76,7 @@ rem --- Open Barista AP Invoice Header table
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("APT_INVOICEHDR",16),dom=trigger_error) *,*,apt_invoicehdr_tpl$
 	dim apt_invoicehdr$:apt_invoicehdr_tpl$
+    close(tpl_dev)
 	
 rem --- Get the data
 
@@ -110,6 +121,7 @@ rem --- Get the data
     gns!=BBjAPI().getGroupNamespace()
     gns!.setValue(nskey$,next_ky$)
 
+    close(apt_invoicehdr)
     if dom_flag=1
         err_num=11
         goto trigger_error_forced

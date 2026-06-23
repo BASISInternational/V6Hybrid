@@ -288,6 +288,8 @@ rem --- Open template and masks files for use in getting Barista template for co
     
 return_default:
 
+    close(tpl_dev)
+    close(ads_masks_dev)
     goto std_exit
 
     

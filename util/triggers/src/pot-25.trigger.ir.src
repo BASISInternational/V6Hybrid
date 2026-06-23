@@ -54,25 +54,32 @@ non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from n
         endif
     endif
 
-rem --- Template for the V6 POT-25 record being read
-
-	intemp$="firm_id:c(2),ap_type:c(2),vendor_nbr:c(6),ap_inv_nbr:c(10),sequence_nbr:c(3),line_number:c(3*=10),"
-    intemp$=intemp$+"po_number:c(7),po_line_nbr:c(3),receiver_nbr:c(7),po_line_code:c(2),order_memo:c(40),"
-	intemp$=intemp$+"reserved_str:c(37*=10),dealer_str:c(1*=10),"
-	intemp$=intemp$+"unit_cost:n(7*=10),qty_received:n(7*=10),receipt_cost:n(7*=10),reserved_num:n(1*=10),dealer_num:n(1*=10)"
-	dim pot25a$:intemp$
-
 rem --- Get template for Barista Addon's POT_INVDET table
 
 	tpl_dev=unt
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("POT_INVDET",16),dom=trigger_error) *,*,pot_invdet_tpl$
 	dim pot_invdet$:pot_invdet_tpl$
+    close(tpl_dev)
 
 rem --- Open V6 POT-25 file
 
 	pot25_dev=unt
 	open (pot25_dev,err=trigger_error)v6data_dir$+"POT-25"
+
+rem --- Template for the V6 POT-25 record being read
+
+    intemp$=""
+    BBjFileSystem!=BBjAPI().getFileSystem()
+    BBjFileInfo!=BBjFileSystem!.getFileInfo(pot25_dev)
+    intemp$=BBjFileInfo!.getText(err=*next)
+    if cvs(intemp$,2)="" then
+        intemp$="firm_id:c(2),ap_type:c(2),vendor_nbr:c(6),ap_inv_nbr:c(10),sequence_nbr:c(3),line_number:c(3*=10),"
+        intemp$=intemp$+"po_number:c(7),po_line_nbr:c(3),receiver_nbr:c(7),po_line_code:c(2),order_memo:c(40),"
+        intemp$=intemp$+"reserved_str:c(37*=10),dealer_str:c(1*=10),"
+        intemp$=intemp$+"unit_cost:n(7*=10),qty_received:n(7*=10),receipt_cost:n(7*=10),reserved_num:n(1*=10),dealer_num:n(1*=10)"
+	dim pot25a$:intemp$
+    endif
 	
 rem --- Get the data
 
@@ -167,6 +174,7 @@ rem --- Get next key
     gns!=BBjAPI().getGroupNamespace()
     gns!.setValue(nskey$,keyName$+"::"+next_ky$)
     
+    close(pot25_dev)
     if dom_flag=1
         err_num=11
         goto trigger_error_forced

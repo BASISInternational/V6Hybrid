@@ -77,6 +77,7 @@ rem --- Open Barista AP Invoice Header file
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("APT_INVOICEHDR",16),dom=trigger_error) *,*,apt_invoicehdr_tpl$
 	dim apt_invoicehdr$:apt_invoicehdr_tpl$
+    close(tpl_dev)
 	
 rem --- Get the data
 
@@ -123,6 +124,7 @@ store_key:
     gns!=BBjAPI().getGroupNamespace()
     gns!.setValue(nskey$,next_ky$)
 
+    close(apt_invoicehdr)
     if dom_flag=1
         err_num=11
         goto trigger_error_forced

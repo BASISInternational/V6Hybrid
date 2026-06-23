@@ -73,6 +73,7 @@ rem --- Open Barista Vendor Master file
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("APM_VENDMAST",16),dom=trigger_error) *,*,apm_vendmast_tpl$
 	dim apm_vendmast$:apm_vendmast_tpl$
+    close(tpl_dev)
 	
 rem --- Get the data
 
@@ -115,6 +116,7 @@ store_key:
     gns!=BBjAPI().getGroupNamespace()
     gns!.setValue(nskey$,next_ky$)
 
+    close(apm_vendmast)
     if dom_flag=1
         err_num=11
         goto trigger_error_forced

@@ -37,11 +37,22 @@ rem ---  Get the Trigger object from the BBj File System
 
 rem --- Template for the APT-02 record being caught
 
-    intemp$="firm_id:c(2),ap_type:c(2),vendor_nbr:c(6),invoice_type:c(1),reference:c(10),gl_account:c(10),"
-    intemp$=intemp$+"accting_date:c(3*=10),gl_post_amt:n(7*=10),units:n(7*=10)"
+	apt02_dev=unt
+	open (apt02_dev,err=trigger_error)v6data_dir$+"APT-02"
+
+    intemp$=""
+    BBjFileSystem!=BBjAPI().getFileSystem()
+    BBjFileInfo!=BBjFileSystem!.getFileInfo(apt02_dev)
+    intemp$=BBjFileInfo!.getText(err=*next)
+    if cvs(intemp$,2)="" then
+        intemp$="firm_id:c(2),ap_type:c(2),vendor_nbr:c(6),invoice_type:c(1),reference:c(10),gl_account:c(10),"
+        intemp$=intemp$+"accting_date:c(3*=10),gl_post_amt:n(7*=10),units:n(7*=10)"
+    endif
 
 	dim inRec$:intemp$
     inRec$=td!.getWriteBuffer()
+    
+    close(apt02_dev)
 
 rem --- Open Barista AP Invoice GL Distribution table
 
@@ -51,6 +62,7 @@ rem --- Open Barista AP Invoice GL Distribution table
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("APT_INVOICEDIST",16),dom=trigger_error) *,*,apt_invoicedist_tpl$
 	dim apt_invoicedist$:apt_invoicedist_tpl$
+    close(tpl_dev)
 	
 rem --- Write the data
 
@@ -74,6 +86,7 @@ rem --- Write the data
         writerecord (apt_invoicedist)apt_invoicedist$
     endif
 
+    close(apt_invoicedist)
 	goto std_exit
 
 fix_ymd_date: rem --- Convert ymd packed dates to yyyymmdd

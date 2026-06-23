@@ -21,10 +21,21 @@ rem ---  Get the Trigger object from the BBj File System
 
 rem --- Template for the GLM-03 record being caught
 
- 	intemp$="firm_id:c(2),journal_id:c(2),code_desc:c(20),permit_je:c(1),post_yr_end:c(1),"
-	intemp$=intemp$+"post_locked:c(1),reserved_str1:c(5*=10),reserved_str2:c(1*=10),"
-	intemp$=intemp$+"reserved_1:n(7*=10),reserved_2:n(7*=10),reserved_3:n(7*=10)"
+	glm03_dev=unt
+	open (glm03_dev,err=trigger_error)v6data_dir$+"GLM-03"
+
+    intemp$=""
+    BBjFileSystem!=BBjAPI().getFileSystem()
+    BBjFileInfo!=BBjFileSystem!.getFileInfo(glm03_dev)
+    intemp$=BBjFileInfo!.getText(err=*next)
+    if cvs(intemp$,2)="" then
+        intemp$="firm_id:c(2),journal_id:c(2),code_desc:c(20),permit_je:c(1),post_yr_end:c(1),"
+        intemp$=intemp$+"post_locked:c(1),reserved_str1:c(5*=10),reserved_str2:c(1*=10),"
+        intemp$=intemp$+"reserved_1:n(7*=10),reserved_2:n(7*=10),reserved_3:n(7*=10)"
+    endif
 	dim inRec$:intemp$
+    
+    close(glm03_dev)
 	
 rem --- Open Barista Journal ID Code table
 
@@ -34,6 +45,7 @@ rem --- Open Barista Journal ID Code table
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("GLC_JOURNALCODE",16),dom=trigger_error) *,*,journal$
 	dim journal$:journal$
+    close(tpl_dev)
 	
 rem --- Get the data
 
@@ -52,6 +64,7 @@ rem --- Get the data
 
 	td!.setReadBuffer(inRec$)
 
+    close(glm03_dev)
 	goto std_exit
 
 trigger_error:

@@ -51,10 +51,21 @@ non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from n
 
 rem --- Template for the APM-01 record being caught
 
-	intemp$="firm_id:c(2),vendor_nbr:c(6*=10),vendor_name:c(30),addr_line_1:c(24),addr_line_2:c(24),addr_line_3:c(24),zip_code:c(9),"
-	intemp$=intemp$+"phone_number:c(10),phone_exten:c(4),contact_name:c(20),alt_sequence:c(10),opened_date:c(3),hold_flag:c(1),"
-	intemp$=intemp$+"federal_id:c(15),vend_1099:c(1),vendor_acct:c(10),fax_number:c(10),fob:c(15),ap_ship_via:c(15),reserved_str:c(20*=10)"
+	apm01_dev=unt
+	open (apm01_dev,err=trigger_error)v6data_dir$+"APM-01"
+
+    intemp$=""
+    BBjFileSystem!=BBjAPI().getFileSystem()
+    BBjFileInfo!=BBjFileSystem!.getFileInfo(apm01_dev)
+    intemp$=BBjFileInfo!.getText(err=*next)
+    if cvs(intemp$,2)="" then
+        intemp$="firm_id:c(2),vendor_nbr:c(6*=10),vendor_name:c(30),addr_line_1:c(24),addr_line_2:c(24),addr_line_3:c(24),zip_code:c(9),"
+        intemp$=intemp$+"phone_number:c(10),phone_exten:c(4),contact_name:c(20),alt_sequence:c(10),opened_date:c(3),hold_flag:c(1),"
+        intemp$=intemp$+"federal_id:c(15),vend_1099:c(1),vendor_acct:c(10),fax_number:c(10),fob:c(15),ap_ship_via:c(15),reserved_str:c(20*=10)"
+    endif
 	dim inRec$:intemp$
+    
+    close(apm01_dev)
 
 rem --- Open Barista Vendor Master table
 
@@ -64,6 +75,7 @@ rem --- Open Barista Vendor Master table
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("APM_VENDMAST",16),dom=trigger_error) *,*,apm_vendmast_tpl$
 	dim apm_vendmast$:apm_vendmast_tpl$
+    close(tpl_dev)
 	
 rem --- Get the data
 
@@ -114,7 +126,8 @@ rem --- Get the data
     rem --- store key info in group namespace (for looping back to k$=key() in calling code)
     gns!=BBjAPI().getGroupNamespace()
     gns!.setValue(nskey$,next_ky$)
-    
+
+    close(apm_vendmast)
     if dom_flag=1
         err_num=11
         goto trigger_error_forced

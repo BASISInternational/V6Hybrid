@@ -38,8 +38,18 @@ rem ---  Get the Trigger object from the BBj File System
 
 rem --- Template for the APM-12 record being caught
 
-    intemp$="firm_id:c(2),gl_cash_acct:c(10),trans_number:c(7*),trans_type:c(1),posted_code:c(1),"
-    intemp$=intemp$+"trns_date:c(6),description:c(30),reserved_str:c(12*),trans_amt:n(7*),reserved_num:n(1*)"
+	apm12_dev=unt
+	open (apm12_dev,err=trigger_error)v6data_dir$+"APM-12"
+
+    intemp$=""
+    BBjFileSystem!=BBjAPI().getFileSystem()
+    BBjFileInfo!=BBjFileSystem!.getFileInfo(apm12_dev)
+    intemp$=BBjFileInfo!.getText(err=*next)
+    if cvs(intemp$,2)="" then
+        intemp$="firm_id:c(2),gl_cash_acct:c(10),trans_number:c(7*),trans_type:c(1),posted_code:c(1),"
+        intemp$=intemp$+"trns_date:c(6),description:c(30),reserved_str:c(12*),trans_amt:n(7*),reserved_num:n(1*)"
+    endif
+    close(apm12_dev)
 
 	dim inRec$:intemp$
     inRec$=td!.getWriteBuffer()
@@ -52,6 +62,7 @@ rem --- Open Barista Bank Rec Other table
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("GLT_BANKOTHER",16),dom=trigger_error) *,*,glt_bankother_tpl$
 	dim glt_bankother$:glt_bankother_tpl$
+    close(tpl_dev)
 	
 rem --- Write the data
 
@@ -75,6 +86,7 @@ rem --- Write the data
         writerecord (glt_bankother)glt_bankother$
     endif
 
+    close(glt_bankother)
 	goto std_exit
 
 fix_yymmdd_date: rem --- Convert yy dates to yyyy, and yymmdd dates to yyyymmdd

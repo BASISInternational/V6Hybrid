@@ -54,27 +54,34 @@ non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from n
         endif
     endif
 
-rem --- Template for the V6 POT-04 record being read
-
-	intemp$="firm_id:c(2),vendor_nbr:c(6),po_number:c(7),receiver_nbr:c(7*),"
-    intemp$=intemp$+"warehouse_id:c(2),purch_addr:c(2),ord_date:c(6),promise_date:c(6),not_b4_date:c(6),reqd_date:c(6),recpt_date:c(6),hold_flag:c(1),"
-    intemp$=intemp$+"rsrvd_str:c(1),rsrvd_str_02:c(1),terms_code:c(2),rsrvd_str_03:c(4),po_frt_terms:c(15),ap_ship_via:c(15),acknowledge:c(20),fob:c(15),"
-    intemp$=intemp$+"po_msg_code:c(3),req_number:c(7),packing_list:c(15),rec_complete:c(1),rsrvd_str_04:c(26*),rsrvd_str_05:c(1*),dealer_str:c(1*),"
-    intemp$=intemp$+"rsrvd_num_01:n(1*),rsrvd_num_02:n(1*),rsrvd_num_03:n(1*),rsrvd_num_04:n(1*),rsrvd_num_05:n(1*),rsrvd_num_06:n(1*),"
-    intemp$=intemp$+"dealer_num_01:n(1*),dealer_num_02:n(1*),dealer_num_03:n(1*)"
-	dim pot04a$:intemp$
-
 rem --- Get template for Barista Addon's POT_RECHDR table
 
 	tpl_dev=unt
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("POT_RECHDR",16),dom=trigger_error) *,*,pot_rechdr_tpl$
 	dim pot_rechdr$:pot_rechdr_tpl$
+    close(tpl_dev)
 
 rem --- Open V6 POT-04 file
 
 	pot04_dev=unt
 	open (pot04_dev,err=trigger_error)v6data_dir$+"POT-04"
+
+rem --- Template for the V6 POT-04 record being read
+
+    intemp$=""
+    BBjFileSystem!=BBjAPI().getFileSystem()
+    BBjFileInfo!=BBjFileSystem!.getFileInfo(pot04_dev)
+    intemp$=BBjFileInfo!.getText(err=*next)
+    if cvs(intemp$,2)="" then
+        intemp$="firm_id:c(2),vendor_nbr:c(6),po_number:c(7),receiver_nbr:c(7*),"
+        intemp$=intemp$+"warehouse_id:c(2),purch_addr:c(2),ord_date:c(6),promise_date:c(6),not_b4_date:c(6),reqd_date:c(6),recpt_date:c(6),hold_flag:c(1),"
+        intemp$=intemp$+"rsrvd_str:c(1),rsrvd_str_02:c(1),terms_code:c(2),rsrvd_str_03:c(4),po_frt_terms:c(15),ap_ship_via:c(15),acknowledge:c(20),fob:c(15),"
+        intemp$=intemp$+"po_msg_code:c(3),req_number:c(7),packing_list:c(15),rec_complete:c(1),rsrvd_str_04:c(26*),rsrvd_str_05:c(1*),dealer_str:c(1*),"
+        intemp$=intemp$+"rsrvd_num_01:n(1*),rsrvd_num_02:n(1*),rsrvd_num_03:n(1*),rsrvd_num_04:n(1*),rsrvd_num_05:n(1*),rsrvd_num_06:n(1*),"
+        intemp$=intemp$+"dealer_num_01:n(1*),dealer_num_02:n(1*),dealer_num_03:n(1*)"
+    endif
+	dim pot04a$:intemp$
 	
 rem --- Get the data
 
@@ -219,6 +226,7 @@ rem --- Get next key
     gns!=BBjAPI().getGroupNamespace()
     gns!.setValue(nskey$,keyName$+"::"+next_ky$)
     
+    close(pot04_dev)
     if dom_flag=1
         err_num=11
         goto trigger_error_forced

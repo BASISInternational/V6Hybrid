@@ -33,17 +33,28 @@ rem ---  Get the Trigger object from the BBj File System
 
 rem --- Template for the GLT-04 record being caught
 
-	intemp$="firm_id:c(2),journal_id:c(2),gl_adt_nbr:c(7),posting_year_1:c(2),"
-	intemp$=intemp$+"posting_per_1:c(2),gl_post_date:c(6),gl_account:c(10),"
-	intemp$=intemp$+"gl_post_seq:c(5*=10),reference_01:c(10),reference_02:c(10),"
-	intemp$=intemp$+"reference_03:c(10),gl_post_memo:c(30),posting_per_2:c(2),"
-	intemp$=intemp$+"posting_year_2:c(2*=10),dealer_str:c(1*=10),gl_post_amt:n(7*=10),"
-	intemp$=intemp$+"units:n(7*=10),dealer_num_01:n(1*=10),dealer_num_02:n(1*=10),"
-	intemp$=intemp$+"dealer_num_03:n(1*=10)"
+	glt04_dev=unt
+	open (glt04_dev,err=trigger_error)v6data_dir$+"GLT-04"
+
+    intemp$=""
+    BBjFileSystem!=BBjAPI().getFileSystem()
+    BBjFileInfo!=BBjFileSystem!.getFileInfo(glt04_dev)
+    intemp$=BBjFileInfo!.getText(err=*next)
+    if cvs(intemp$,2)="" then
+        intemp$="firm_id:c(2),journal_id:c(2),gl_adt_nbr:c(7),posting_year_1:c(2),"
+        intemp$=intemp$+"posting_per_1:c(2),gl_post_date:c(6),gl_account:c(10),"
+        intemp$=intemp$+"gl_post_seq:c(5*=10),reference_01:c(10),reference_02:c(10),"
+        intemp$=intemp$+"reference_03:c(10),gl_post_memo:c(30),posting_per_2:c(2),"
+        intemp$=intemp$+"posting_year_2:c(2*=10),dealer_str:c(1*=10),gl_post_amt:n(7*=10),"
+        intemp$=intemp$+"units:n(7*=10),dealer_num_01:n(1*=10),dealer_num_02:n(1*=10),"
+        intemp$=intemp$+"dealer_num_03:n(1*=10)"
+    endif
 	dim inRec$:intemp$
 
 	inRec$=td!.getWriteBuffer()
 	inRec$=field(inRec$)
+    
+    close(glt04_dev)
 	
 rem --- Open Barista G/L files
 
@@ -57,6 +68,7 @@ rem --- Open Barista G/L files
 	dim glt_detail$:glt_detail$
 	read (tpl_dev,key=pad("GLM_ACCT",16),dom=trigger_error) *,*,glm_acct$
 	dim glm_acct$:glm_acct$
+    close(tpl_dev)
 	
 rem --- Assign the data
 
@@ -142,6 +154,8 @@ rem '----write the data
 	write record(glt04_dev)glt_detail$
 	close(glt04_dev)
 	
+    close(glt04_dev)
+    close(glm01_dev)
 	goto std_exit
 
 trigger_error:

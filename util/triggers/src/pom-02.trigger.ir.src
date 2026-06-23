@@ -54,24 +54,31 @@ non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from n
         endif
     endif
 
-rem --- Template for the V6 POM-02 record being read
-
-	intemp$="firm_id:c(2),po_line_code:c(2*),"
-    intemp$=intemp$+"code_desc:c(20),line_type:c(1),dropship:c(1),lead_tim_flg:c(1),land_cst_flg:c(1),add_options:c(1),rsrvd_str:c(7*),"
-    intemp$=intemp$+"gl_exp_acct:c(10*)"
-	dim pom02a$:intemp$
-
 rem --- Get template for Barista Addon's POC_LINECODE table
 
 	tpl_dev=unt
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("POC_LINECODE",16),dom=trigger_error) *,*,poc_linecode_tpl$
 	dim poc_linecode$:poc_linecode_tpl$
+    close(tpl_dev)
 
 rem --- Open V6 POM-02 file
 
 	pom02_dev=unt
 	open (pom02_dev,err=trigger_error)v6data_dir$+"POM-02"
+
+rem --- Template for the V6 POM-02 record being read
+
+    intemp$=""
+    BBjFileSystem!=BBjAPI().getFileSystem()
+    BBjFileInfo!=BBjFileSystem!.getFileInfo(pom02_dev)
+    intemp$=BBjFileInfo!.getText(err=*next)
+    if cvs(intemp$,2)="" then
+        intemp$="firm_id:c(2),po_line_code:c(2*),"
+        intemp$=intemp$+"code_desc:c(20),line_type:c(1),dropship:c(1),lead_tim_flg:c(1),land_cst_flg:c(1),add_options:c(1),rsrvd_str:c(7*),"
+        intemp$=intemp$+"gl_exp_acct:c(10*)"
+    endif
+	dim pom02a$:intemp$
 	
 rem --- Get the data
 
@@ -127,6 +134,7 @@ rem --- Get next key
     gns!=BBjAPI().getGroupNamespace()
     gns!.setValue(nskey$,keyName$+"::"+next_ky$)
     
+    close(pom02_dev)
     if dom_flag=1
         err_num=11
         goto trigger_error_forced

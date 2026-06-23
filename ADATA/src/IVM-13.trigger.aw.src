@@ -40,6 +40,7 @@ rem --- Load up the field_translations used in Dataport to convert V6 key value 
           field_trans_aontov6!.put(keyval$,dataval$)
        endif
     wend
+    close(field_trans)
 
 rem ---  Get the Trigger object from the BBj File System
 
@@ -50,10 +51,21 @@ rem ---  Get the Trigger object from the BBj File System
 
 rem --- Template for the V6 IVM-13 record being caught
 
-    intemp$="firm_id:c(2),item_class:c(3*=10),code_desc:c(20),reserved_str:c(12*=10)"
+	ivm13_dev=unt
+	open (ivm13_dev,err=trigger_error)v6data_dir$+"IVM-13"
+
+    intemp$=""
+    BBjFileSystem!=BBjAPI().getFileSystem()
+    BBjFileInfo!=BBjFileSystem!.getFileInfo(ivm13_dev)
+    intemp$=BBjFileInfo!.getText(err=*next)
+    if cvs(intemp$,2)="" then
+        intemp$="firm_id:c(2),item_class:c(3*=10),code_desc:c(20),reserved_str:c(12*=10)"
+    endif
 
 	dim inRec$:intemp$
     inRec$=td!.getWriteBuffer()
+    
+    close(ivm13_dev)
 
 rem --- Open Barista Addon IVC_CLASCODE and get its template
 
@@ -63,6 +75,7 @@ rem --- Open Barista Addon IVC_CLASCODE and get its template
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("IVC_CLASCODE",16),dom=trigger_error) *,*,ivc_clascode_tpl$
 	dim ivc_clascode$:ivc_clascode_tpl$
+    close(tpl_dev)
 
 rem --- Translate V6 key to Addon's, based on field translations
     aonvalue!=field_trans_v6toaon!.get("ITEM_CLASS."+cvs(inRec.item_class$,3))
@@ -84,6 +97,7 @@ rem --- Write the data
     ivc_clascode$=field(ivc_clascode$)
     writerecord (ivc_clascode)ivc_clascode$
 
+    close(ivc_clascode)
 	goto std_exit
 
 trigger_error:

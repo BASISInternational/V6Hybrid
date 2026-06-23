@@ -37,11 +37,21 @@ rem ---  Get the Trigger object from the BBj File System
 
 rem --- Template for the APM-06 record being caught
 
-    intemp$="firm_id:c(2),vendor_nbr:c(6),buyer_code:c(3*=10),pri_rev_date:c(3),nxt_rev_date:c(3),"
-    intemp$=intemp$+"purch_addr:c(2),pur_tgt_type:c(1),lstrec_date:c(3),reserved_str:c(12*=10),"
-    intemp$=intemp$+"rev_days:n(3*=10),pur_targ_amt:n(7*=10),pur_targ_lbs:n(7*=10),pur_tgt_unit:n(7*=10),"
-    intemp$=intemp$+"ytd_rec_amt:n(7*=10),ytd_rec_lbs:n(7*=10),ytd_rec_unts:n(7*=10),"
-    intemp$=intemp$+"nyr_rec_amt:n(7*=10),nyr_rec_lbs:n(7*=10),nyr_rec_unit:n(7*=10),reserved_num:n(1*=10),reserved_num_02:n(1*=10)"
+	apm06_dev=unt
+	open (apm06_dev,err=trigger_error)v6data_dir$+"APM-06"
+
+    intemp$=""
+    BBjFileSystem!=BBjAPI().getFileSystem()
+    BBjFileInfo!=BBjFileSystem!.getFileInfo(apm06_dev)
+    intemp$=BBjFileInfo!.getText(err=*next)
+    if cvs(intemp$,2)="" then
+        intemp$="firm_id:c(2),vendor_nbr:c(6),buyer_code:c(3*=10),pri_rev_date:c(3),nxt_rev_date:c(3),"
+        intemp$=intemp$+"purch_addr:c(2),pur_tgt_type:c(1),lstrec_date:c(3),reserved_str:c(12*=10),"
+        intemp$=intemp$+"rev_days:n(3*=10),pur_targ_amt:n(7*=10),pur_targ_lbs:n(7*=10),pur_tgt_unit:n(7*=10),"
+        intemp$=intemp$+"ytd_rec_amt:n(7*=10),ytd_rec_lbs:n(7*=10),ytd_rec_unts:n(7*=10),"
+        intemp$=intemp$+"nyr_rec_amt:n(7*=10),nyr_rec_lbs:n(7*=10),nyr_rec_unit:n(7*=10),reserved_num:n(1*=10),reserved_num_02:n(1*=10)"
+    endif
+    close(apm06_dev)
 
 	dim inRec$:intemp$
     inRec$=td!.getWriteBuffer()
@@ -54,6 +64,7 @@ rem --- Open Barista Vendor Replenishment Detail table
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("APM_VENDREPL",16),dom=trigger_error) *,*,apm_vendrepl_tpl$
 	dim apm_vendrepl$:apm_vendrepl_tpl$
+    close(tpl_dev)
 	
 rem --- Write the data
 
@@ -125,6 +136,8 @@ rem --- Write the data
         goto trigger_error_forced
     endif
 
+    close(apm_vendrepl)
+    
 	goto std_exit
 
 fix_ymd_date: rem --- Convert ymd packed dates to yyyymmdd

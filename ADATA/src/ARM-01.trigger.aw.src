@@ -31,14 +31,25 @@ rem ---  Get the Trigger object from the BBj File System
 
 rem --- Template for the V6 ARM-01 record being caught
 
-    intemp$="firm_id:c(2),customer_nbr:c(6*=10),cust_name:c(30),addr_line_1:c(24),addr_line_2:c(24),"
-    intemp$=intemp$+"addr_line_3:c(24),zip_code:c(9),phone_number:c(10),phone_exten:c(4),resale_nbr:c(20),"
-    intemp$=intemp$+"alt_sequence:c(10),opened_date:c(3),ar_ship_via:c(10),fax_number:c(10),addr_line_4:c(24),"
-    intemp$=intemp$+"addr_line_5:c(24),retain_cust:c(1),contact_name:c(20),db_number:c(9),sic_code:c(8),"
-    intemp$=intemp$+"country:c(24),fob:c(15),op_frt_terms:c(2*=10)"
+	arm01_dev=unt
+	open (arm01_dev,err=trigger_error)v6data_dir$+"ARM-01"
+
+    intemp$=""
+    BBjFileSystem!=BBjAPI().getFileSystem()
+    BBjFileInfo!=BBjFileSystem!.getFileInfo(arm01_dev)
+    intemp$=BBjFileInfo!.getText(err=*next)
+    if cvs(intemp$,2)="" then
+        intemp$="firm_id:c(2),customer_nbr:c(6*=10),cust_name:c(30),addr_line_1:c(24),addr_line_2:c(24),"
+        intemp$=intemp$+"addr_line_3:c(24),zip_code:c(9),phone_number:c(10),phone_exten:c(4),resale_nbr:c(20),"
+        intemp$=intemp$+"alt_sequence:c(10),opened_date:c(3),ar_ship_via:c(10),fax_number:c(10),addr_line_4:c(24),"
+        intemp$=intemp$+"addr_line_5:c(24),retain_cust:c(1),contact_name:c(20),db_number:c(9),sic_code:c(8),"
+        intemp$=intemp$+"country:c(24),fob:c(15),op_frt_terms:c(2*=10)"
+    endif
 
 	dim inRec$:intemp$
     inRec$=td!.getWriteBuffer()
+    
+    close(arm01_dev)
 
 rem --- Open Barista Addon ARM_CUSTMAST and ARC_SHIPVIACODE and get their templates
 
@@ -52,6 +63,7 @@ rem --- Open Barista Addon ARM_CUSTMAST and ARC_SHIPVIACODE and get their templa
 	dim arm_custmast$:arm_custmast_tpl$
 	read (tpl_dev,key=pad("ARC_SHIPVIACODE",16),dom=trigger_error) *,*,arc_shipviacode_tpl$
 	dim arc_shipviacode$:arc_shipviacode_tpl$
+    close(tpl_dev)
 	
 rem --- Write the data
 
@@ -100,6 +112,8 @@ rem --- Write the data
         writerecord(arc_shipviacode)arc_shipviacode$
     endif
 
+    close(arm_custmast)
+    close(arc_shipviacode)
 	goto std_exit
 
 reformat_address:

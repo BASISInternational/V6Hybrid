@@ -51,10 +51,19 @@ non_keyed_read: rem --- if read doesn't have key=k$, will need to get ky$ from n
 
 rem --- Template for the GLM-04 key being caught
 
-    xref_key$="AO_DESC_ACCT"
-    intemp$="firm_id:c(2),record_id:c(1),gl_acct_desc:c(35),gl_account:c(10)"
+	glm04_dev=unt
+	open (glm04_dev,err=trigger_error)v6data_dir$+"GLM-04"
 
+    intemp$=""
+    BBjFileSystem!=BBjAPI().getFileSystem()
+    BBjFileInfo!=BBjFileSystem!.getFileInfo(glm04_dev)
+    intemp$=BBjFileInfo!.getText(err=*next)
+    if cvs(intemp$,2)="" then
+        intemp$="firm_id:c(2),record_id:c(1),gl_acct_desc:c(35),gl_account:c(10)"
+    endif
 	dim inRec$:intemp$
+    
+    close(glm04_dev)
 	
 rem --- Open Barista GL Account Master file
 
@@ -64,11 +73,13 @@ rem --- Open Barista GL Account Master file
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("GLM_ACCT",16),dom=trigger_error) *,*,glm_acct_tpl$
 	dim glm_acct$:glm_acct_tpl$
+    close(tpl_dev)
 	
 rem --- Get the data
 
     dom_flag=1
 
+    xref_key$="AO_DESC_ACCT"
     if ky$="" and keyed_read=0
         read record (glm_acct,knum=xref_key$,end=trigger_error) glm_acct$; dom_flag=0
     else
@@ -98,6 +109,7 @@ store_key:
     gns!=BBjAPI().getGroupNamespace()
     gns!.setValue(nskey$,next_ky$)
 
+    close(glm_acct)
     if dom_flag=1
         err_num=11
         goto trigger_error_forced

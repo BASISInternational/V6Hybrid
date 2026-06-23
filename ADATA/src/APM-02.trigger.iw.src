@@ -37,11 +37,21 @@ rem ---  Get the Trigger object from the BBj File System
 
 rem --- Template for the APM-02 record being caught
 
-    intemp$="firm_id:c(2),vendor_nbr:c(6),ap_type:c(2*=10),dist_code:c(2),payment_grp:c(2),terms_code:c(2),"
-    intemp$=intemp$+"lstinv_date:c(3),lstpay_date:c(3),reserved_str:c(12*=10),gl_account:c(10*=10),"
-    intemp$=intemp$+"open_invs:n(7*=10),open_ret:n(7*=10),ytd_purch:n(7*=10),pyr_purch:n(7*=10),nyr_purch:n(7*=10),"
-    intemp$=intemp$+"ytd_discs:n(7*=10),pri_yr_discs:n(7*=10),nyr_disc:n(7*=10),ytd_payments:n(7*=10),pyr_payments:n(7*=10),"
-    intemp$=intemp$+"nyr_payments:n(7*=10),cur_cal_pmts:n(7*=10),pri_cal_pmt:n(7*=10),nxt_cyr_pmts:n(7*=10)"
+	apm02_dev=unt
+	open (apm02_dev,err=trigger_error)v6data_dir$+"APM-02"
+
+    intemp$=""
+    BBjFileSystem!=BBjAPI().getFileSystem()
+    BBjFileInfo!=BBjFileSystem!.getFileInfo(apm02_dev)
+    intemp$=BBjFileInfo!.getText(err=*next)
+    if cvs(intemp$,2)="" then
+        intemp$="firm_id:c(2),vendor_nbr:c(6),ap_type:c(2*=10),dist_code:c(2),payment_grp:c(2),terms_code:c(2),"
+        intemp$=intemp$+"lstinv_date:c(3),lstpay_date:c(3),reserved_str:c(12*=10),gl_account:c(10*=10),"
+        intemp$=intemp$+"open_invs:n(7*=10),open_ret:n(7*=10),ytd_purch:n(7*=10),pyr_purch:n(7*=10),nyr_purch:n(7*=10),"
+        intemp$=intemp$+"ytd_discs:n(7*=10),pri_yr_discs:n(7*=10),nyr_disc:n(7*=10),ytd_payments:n(7*=10),pyr_payments:n(7*=10),"
+        intemp$=intemp$+"nyr_payments:n(7*=10),cur_cal_pmts:n(7*=10),pri_cal_pmt:n(7*=10),nxt_cyr_pmts:n(7*=10)"
+    endif
+    close(apm02_dev)
 
 	dim inRec$:intemp$
     inRec$=td!.getWriteBuffer()
@@ -54,6 +64,7 @@ rem --- Open Barista Vendor Codes and History table
 	open (tpl_dev,err=trigger_error) wkdir$+"sys/data/ddm_table_tpls.dat"
 	read (tpl_dev,key=pad("APM_VENDHIST",16),dom=trigger_error) *,*,apm_vendhist_tpl$
 	dim apm_vendhist$:apm_vendhist_tpl$;rem --- Template for the APM-12 record being caught
+    close(tpl_dev)
 	
 rem --- Write the data
 
@@ -93,6 +104,8 @@ rem --- Write the data
         writerecord (apm_vendhist)apm_vendhist$
     endif
 
+    close(apm_vendhist)
+    
 	goto std_exit
 
 fix_ymd_date: rem --- Convert ymd packed dates to yyyymmdd
